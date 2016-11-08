@@ -1,0 +1,29 @@
+﻿{
+  "version": "0.0.1-alpha",
+  "title": "contentful.net",
+  "description": ".NET SDK for Contentful's Content Delivery API.",
+  "language": "en-US",
+  "authors": [ "Robert Linde" ],
+  "packOptions": {
+    "projectUrl": "https://github.com/contentful/contentful.net",
+    "tags": [ "contentful", "CMS" ],
+    "licenseUrl": "https://raw.github.com/JamesNK/Newtonsoft.Json/master/LICENSE.md",
+    "iconUrl": "http://www.newtonsoft.com/content/images/nugeticon.png",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/contentful/contentful.net"
+    }
+  },
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "Newtonsoft.Json": "9.0.1"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
