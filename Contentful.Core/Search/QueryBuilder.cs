@@ -77,7 +77,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder WithinRadius(string field, string latitude, string longitude, float radius)
         {
-            _querystringValues.Add(new KeyValuePair<string, string>($"{field}[within]", $"{latitude},{latitude},{radius}"));
+            _querystringValues.Add(new KeyValuePair<string, string>($"{field}[within]", $"{latitude},{longitude},{radius}"));
             return this;
         }
 
