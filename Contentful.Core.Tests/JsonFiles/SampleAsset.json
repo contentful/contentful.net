@@ -1,0 +1,32 @@
+﻿{
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "n9r7gd2bwvqt"
+      }
+    },
+    "id": "1yOyYLi6CcOGkowo6esaE8",
+    "type": "Asset",
+    "createdAt": "2016-11-03T15:06:48.621Z",
+    "updatedAt": "2016-11-03T15:06:48.621Z",
+    "revision": 1,
+    "locale": "en-US"
+  },
+  "fields": {
+    "title": "ihavenoidea",
+    "file": {
+      "url": "//images.contentful.com/n9r7gd2bwvqt/1yOyYLi6CcOGkowo6esaE8/60445f36fff83dcd7928ea772a278dc8/ihavenoidea.jpg",
+      "details": {
+        "size": 46022,
+        "image": {
+          "width": 600,
+          "height": 600
+        }
+      },
+      "fileName": "ihavenoidea.jpg",
+      "contentType": "image/jpeg"
+    }
+  }
+}

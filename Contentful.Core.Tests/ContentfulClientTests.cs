@@ -11,6 +11,7 @@ using Xunit;
 using System.Net;
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
+using Contentful.Core.Search;
 using File = System.IO.File;
 
 namespace Contentful.Core.Tests
@@ -114,6 +115,66 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(9, res.Count());
             Assert.Equal("Home & Kitchen", res.First().Fields.Title);
+        }
+
+        [Fact]
+        public async Task GetEntriesByTypeShouldAddCorrectFilter()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EntriesCollection.json");
+            var builder = new QueryBuilder();
+            //Act
+            var res = await _client.GetEntriesByType<TestEntryModel>("666", builder);
+
+            //Assert
+            Assert.Equal(9, res.Count());
+            Assert.Equal("Home & Kitchen", res.First().Title);
+            Assert.Equal("?content_type=666", builder.Build());
+        }
+
+        [Fact]
+        public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollection()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EntriesCollection.json");
+
+            //Act
+            var res = await _client.GetEntriesCollectionAsync<Entry<TestEntryModel>>();
+
+            //Assert
+            Assert.Equal(9, res.Total);
+            Assert.Equal(100, res.Limit);
+            Assert.Equal(0, res.Skip);
+            Assert.Equal(9, res.Items.Count());
+            Assert.Equal("Home & Kitchen", res.Items.First().Fields.Title);
+            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.899Z").ToUniversalTime(), res.Items.First().SystemProperties.CreatedAt);
+            Assert.Equal("6XwpTaSiiI2Ak2Ww0oi6qa", res.Items.First().SystemProperties.ContentType.SystemProperties.Id);
+        }
+
+        [Fact]
+        public async Task GetAssetByIdShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAsset.json");
+
+            //Act
+            var res = await _client.GetAssetAsync("12");
+
+            //Assert
+            Assert.Equal("ihavenoidea", res.Title);
+            Assert.Null(res.Description);
+        }
+
+        [Fact]
+        public async Task GetAssetByIdShouldThrowArgumentExceptionIfNoAssetIdIsProvided()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAsset.json");
+
+            //Act
+
+            //Assert
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAssetAsync(""));
         }
 
         private HttpResponseMessage GetResponseFromFile(string file)

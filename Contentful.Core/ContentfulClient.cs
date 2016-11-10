@@ -169,7 +169,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder queryBuilder) where T : IContentfulResource
         {
-            return await GetEntriesCollectionAsync<T>(queryBuilder.Build());
+            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build());
         }
 
         /// <summary>
@@ -216,9 +216,9 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var asset = jsonObject.ToObject<Asset>();
 
-            asset.Title = jsonObject.SelectToken("$.fields.title").ToString();
-            asset.Description = jsonObject.SelectToken("$.fields.description").ToString();
-            asset.File = jsonObject.SelectToken("$.fields.file").ToObject<File>();
+            asset.Title = jsonObject.SelectToken("$.fields.title")?.ToString();
+            asset.Description = jsonObject.SelectToken("$.fields.description")?.ToString();
+            asset.File = jsonObject.SelectToken("$.fields.file")?.ToObject<File>();
 
             return asset;
         }
