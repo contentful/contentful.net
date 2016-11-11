@@ -54,6 +54,23 @@ namespace Contentful.Core
             }
         }
 
+        public ContentfulClient(HttpClient httpClient, ContentfulOptions options):
+            this(httpClient, new OptionsWrapper<ContentfulOptions>(options))
+        {
+            
+        }
+
+        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string spaceId, bool usePreviewApi = false):
+            this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
+            {
+                DeliveryApiKey = deliveryApiKey,
+                SpaceId = spaceId,
+                UsePreviewApi = usePreviewApi
+            }))
+        {
+            
+        }
+
         /// <summary>
         /// Returns whether or not the client is using the preview API.
         /// </summary>

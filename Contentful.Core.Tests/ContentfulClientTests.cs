@@ -25,13 +25,13 @@ namespace Contentful.Core.Tests
         {
             _handler = new FakeMessageHandler();
             var httpClient = new HttpClient(_handler);
-            _client = new ContentfulClient(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
             {
                 DeliveryApiKey = "123",
                 ManagementApiKey = "123",
                 SpaceId = "666",
                 UsePreviewApi = false
-            }));
+            });
         }
 
         [Fact]
