@@ -253,9 +253,10 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var asset = jsonObject.SelectTokens("$..items[*]").Select(c => new Asset()
             {
-                Title = c.SelectToken("$.fields.title").ToString(),
-                Description = c.SelectToken("$.fields.description").ToString(),
-                File = c.SelectToken("$.fields.file").ToObject<File>()
+                Title = c.SelectToken("$.fields.title")?.ToString(),
+                Description = c.SelectToken("$.fields.description")?.ToString(),
+                File = c.SelectToken("$.fields.file")?.ToObject<File>(),
+                SystemProperties = c.SelectToken("$.sys")?.ToObject<SystemProperties>()
             });
 
             return asset;
@@ -269,7 +270,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(QueryBuilder queryBuilder)
         {
-            return await GetAssetsCollectionAsync(queryBuilder.Build());
+            return await GetAssetsCollectionAsync(queryBuilder?.Build());
         }
 
         /// <summary>
@@ -290,11 +291,12 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>();
-            var assets = jsonObject.SelectTokens("$..items[*]").Select(c => new Asset()
+            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => new Asset()
             {
-                Title = c.SelectToken("$.fields.title").ToString(),
-                Description = c.SelectToken("$.fields.description").ToString(),
-                File = c.SelectToken("$.fields.file").ToObject<File>()
+                Title = c.SelectToken("$.fields.title")?.ToString(),
+                Description = c.SelectToken("$.fields.description")?.ToString(),
+                File = c.SelectToken("$.fields.file")?.ToObject<File>(),
+                SystemProperties = c.SelectToken("$.sys")?.ToObject<SystemProperties>()
             });
             collection.Items = assets;
             return collection;

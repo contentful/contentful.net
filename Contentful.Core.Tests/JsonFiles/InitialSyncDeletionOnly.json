@@ -1,0 +1,25 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "n9r7gd2bwvqt"
+          }
+        },
+        "id": "1ztkXqvVC8e2gAIyUEgmii",
+        "type": "DeletedAsset",
+        "createdAt": "2016-11-08T11:58:49.646Z",
+        "updatedAt": "2016-11-08T11:58:49.646Z",
+        "deletedAt": "2016-11-08T11:58:49.646Z",
+        "revision": 2
+      }
+    }
+  ],
+  "nextSyncUrl": "https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=nono"
+}

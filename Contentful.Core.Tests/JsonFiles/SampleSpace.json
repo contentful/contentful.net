@@ -1,0 +1,21 @@
+﻿{
+  "sys": {
+    "type": "Space",
+    "id": "n9r7gd2bwvqt"
+  },
+  "name": "Products",
+  "locales": [
+    {
+      "code": "en-US",
+      "default": true,
+      "name": "U.S. English",
+      "fallbackCode": null
+    },
+    {
+      "code": "sv",
+      "default": false,
+      "name": "Swedish",
+      "fallbackCode": "en-US"
+    }
+  ]
+}
