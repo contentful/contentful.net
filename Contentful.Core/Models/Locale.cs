@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Contentful.Core.Models
 {
     /// <summary>
-    /// Represents one available locale of a <seealso cref="Space"/>
+    /// Represents one available locale of a <see cref="Space"/>
     /// </summary>
     public class Locale
     {
@@ -17,7 +17,7 @@ namespace Contentful.Core.Models
         public string Code { get; set; }
 
         /// <summary>
-        /// Whether this locale is the default locale for the current <seealso cref="Space"/>
+        /// Whether this locale is the default locale for the current <see cref="Space"/>
         /// </summary>
         public bool Default { get; set; }
 

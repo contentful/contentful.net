@@ -7,7 +7,7 @@ namespace Contentful.Core.Models
 {
     /// <summary>
     /// Represents a field in a <seealso cref="ContentType"/>. Note that this is not the representation of a field with 
-    /// actual value in an <seealso cref="Entry"/> or <seealso cref="Asset"/>, but merely a representation of the fields data structure.
+    /// actual value in an <seealso cref="Entry{T}"/> or <seealso cref="Asset"/>, but merely a representation of the fields data structure.
     /// </summary>
     public class Field
     {

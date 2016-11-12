@@ -46,17 +46,17 @@ namespace Contentful.Core.Models
         public DateTime? DeletedAt { get; set; }
 
         /// <summary>
-        /// The locale of the resource. Will only have a value for <seealso cref="Asset"/> and <seealso cref="Entry"/> resource types.
+        /// The locale of the resource. Will only have a value for <seealso cref="Asset"/> and <seealso cref="Entry{T}"/> resource types.
         /// </summary>
         public string Locale { get; set; }
 
         /// <summary>
-        /// The <seealso cref="ContentType"/> of the resource. Only applicable for <seealso cref="Entry"/> resource types.
+        /// The <seealso cref="ContentType"/> of the resource. Only applicable for <seealso cref="Entry{T}"/> resource types.
         /// </summary>
         public ContentType ContentType { get; set; }
 
         /// <summary>
-        /// The <seealso cref="Space"/> of the resource. Only applicable for <seealso cref="Entry"/>, <seealso cref="Asset"/> and <seealso cref="ContentType"/> resource types.
+        /// The <seealso cref="Space"/> of the resource. Only applicable for <seealso cref="Entry{T}"/>, <seealso cref="Asset"/> and <seealso cref="ContentType"/> resource types.
         /// </summary>
         public Space Space { get; set; }
     }

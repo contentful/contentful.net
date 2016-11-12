@@ -28,7 +28,7 @@ namespace Contentful.Core
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class. 
         /// The main class for interaction with the contentful deliver and preview APIs.
         /// </summary>
-        /// <param name="httpClient">The <see cref="HttpClient"/> of your application.</param>
+        /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="options">The options object used to retrieve the <see cref="ContentfulOptions"/> for this client.</param>
         /// <exception cref="ArgumentException">The <param name="options">options</param> parameter was null or empty</exception>
         public ContentfulClient(HttpClient httpClient, IOptions<ContentfulOptions> options)
@@ -57,7 +57,7 @@ namespace Contentful.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class.
         /// </summary>
-        /// <param name="httpClient">The <see cref="HttpClient"/> of your application.</param>
+        /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="options">The <see cref="ContentfulOptions"/> used for this client.</param>
         public ContentfulClient(HttpClient httpClient, ContentfulOptions options):
             this(httpClient, new OptionsWrapper<ContentfulOptions>(options))
@@ -68,11 +68,11 @@ namespace Contentful.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class.
         /// </summary>
-        /// <param name="httpClient">The <see cref="HttpClient"/> of your application.</param>
+        /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="deliveryApiKey">The delivery API key used when communicating with the Contentful API</param>
         /// <param name="spaceId">The ID of the space to fetch content from.</param>
         /// <param name="usePreviewApi">Whether or not to use the Preview API for requests.
-        /// If this is set to true the preview API key needs to be used for <see cref="deliveryApiKey"/>
+        /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
         public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string spaceId, bool usePreviewApi = false):
             this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
@@ -96,7 +96,7 @@ namespace Contentful.Core
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="entryId">The ID of the entry.</param>
-        /// <returns>The response from the API serialized into <see cref="T"/></returns>
+        /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
         public async Task<T> GetEntryAsync<T>(string entryId)

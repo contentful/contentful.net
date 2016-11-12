@@ -19,7 +19,7 @@ namespace Contentful.Core
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="entryId">The ID of the entry.</param>
-        /// <returns>The response from the API serialized into <see cref="T"/></returns>
+        /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
         Task<T> GetEntryAsync<T>(string entryId);
