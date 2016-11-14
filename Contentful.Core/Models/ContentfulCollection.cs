@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ namespace Contentful.Core.Models
     /// Represents a collection of contentful resources with additional medadata regarding, skip, limit and total amount of items.
     /// </summary>
     /// <typeparam name="T">The type to serialize the items array from the API response into. Must be of type <seealso cref="IContentfulResource"/>.</typeparam>
-    public class ContentfulCollection<T> where T : IContentfulResource
+    [JsonObject]
+    public class ContentfulCollection<T> : IEnumerable<T> where T : IContentfulResource
     {
         /// <summary>
         /// Common system managed metadata properties.
@@ -37,5 +39,15 @@ namespace Contentful.Core.Models
         /// The <see cref="IEnumerable{T}"/> of items to be serialized from the API response.
         /// </summary>
         public IEnumerable<T> Items { get; set; }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }
