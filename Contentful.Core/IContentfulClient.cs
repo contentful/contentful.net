@@ -33,7 +33,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<T>> GetEntriesByType<T>(string contentTypeId, QueryBuilder queryBuilder = null);
+        Task<IEnumerable<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder queryBuilder = null);
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder"/>.

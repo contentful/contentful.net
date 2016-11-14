@@ -135,7 +135,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<IEnumerable<T>> GetEntriesByType<T>(string contentTypeId, QueryBuilder queryBuilder = null)
+        public async Task<IEnumerable<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder queryBuilder = null)
         {
             var builder = queryBuilder ?? new QueryBuilder();
 
