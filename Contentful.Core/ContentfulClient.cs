@@ -175,20 +175,39 @@ namespace Contentful.Core
                 await CreateExceptionForFailedRequest(res);
             }
 
-            IEnumerable<T> ob;
+            IEnumerable<T> entries;
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            var links = json.SelectTokens("$.items..fields..sys").ToList();
+
+            for (var i = links.Count-1; i >=0; i--)
+            {
+                var linkToken = links[i];
+                if(!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
+                {
+                    var replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+
+                    if(replacementToken != null)
+                    {
+                        var grandParent = linkToken.Parent.Parent;
+                        grandParent.RemoveAll();
+                        grandParent.Add(replacementToken.Children());
+                    }
+                }
+            }
+
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T)))
             {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync()).SelectTokens("$..items[*]")
+                entries = json.SelectTokens("$..items[*]")
                         .Select(t => t.ToObject<T>()); ;
             }
             else
             {
-                ob =
-                   JObject.Parse(await res.Content.ReadAsStringAsync())
-                       .SelectTokens("$..items..fields")
+                entries = json
+                       .SelectTokens("$..items[*].fields")
                        .Select(t => t.ToObject<T>());
             }
-            return ob;
+            return entries;
         }
 
         /// <summary>
@@ -247,10 +266,6 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var asset = jsonObject.ToObject<Asset>();
 
-            asset.Title = jsonObject.SelectToken("$.fields.title")?.ToString();
-            asset.Description = jsonObject.SelectToken("$.fields.description")?.ToString();
-            asset.File = jsonObject.SelectToken("$.fields.file")?.ToObject<File>();
-
             return asset;
         }
 
@@ -282,13 +297,7 @@ namespace Contentful.Core
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
-            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => new Asset()
-            {
-                Title = c.SelectToken("$.fields.title")?.ToString(),
-                Description = c.SelectToken("$.fields.description")?.ToString(),
-                File = c.SelectToken("$.fields.file")?.ToObject<File>(),
-                SystemProperties = c.SelectToken("$.sys")?.ToObject<SystemProperties>()
-            });
+            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>());
 
             return asset;
         }
@@ -322,13 +331,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>();
-            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => new Asset()
-            {
-                Title = c.SelectToken("$.fields.title")?.ToString(),
-                Description = c.SelectToken("$.fields.description")?.ToString(),
-                File = c.SelectToken("$.fields.file")?.ToObject<File>(),
-                SystemProperties = c.SelectToken("$.sys")?.ToObject<SystemProperties>()
-            });
+            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>()); ;
             collection.Items = assets;
             return collection;
         }

@@ -13,6 +13,7 @@ using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using File = System.IO.File;
+using Newtonsoft.Json;
 
 namespace Contentful.Core.Tests
 {
@@ -101,6 +102,21 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(9, res.Count());
             Assert.Equal("Home & Kitchen", res.First().Title);
+        }
+
+        [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithIncludes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EntriesCollectionWithIncludes.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
+
+            //Assert
+            Assert.Equal(2, res.Count());
+            Assert.Equal("AssetId4", res.Last().FeaturedImage.SystemProperties.Id);
+            Assert.Equal("Mike Springer", res.First().Author.First().Fields.Name);
         }
 
         [Fact]
@@ -410,5 +426,20 @@ namespace Contentful.Core.Tests
         public string ProductName { get; set; }
         public string Slug { get; set; }
         public string Title { get; set; }
+    }
+
+    public class TestModelWithIncludes
+    {
+        public string Title { get; set; }
+        public string Slug { get; set; }
+
+        
+        public Asset FeaturedImage { get; set; }
+        public IEnumerable<Entry<Author>> Author { get; set; }
+    }
+
+    public class Author
+    {
+        public string Name { get; set; }
     }
 }
