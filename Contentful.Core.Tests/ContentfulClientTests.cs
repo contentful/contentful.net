@@ -114,12 +114,13 @@ namespace Contentful.Core.Tests
 
             //Act
             var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
-
+            var list = res.ToList();
             //Assert
-            Assert.Equal(2, res.Count());
-            Assert.Equal("AssetId4", res.Last().FeaturedImage.SystemProperties.Id);
-            Assert.Equal("Alice in Wonderland", res.Last().FeaturedImage.Title);
-            Assert.Equal("Mike Springer", res.First().Author.First().Fields.Name);
+            Assert.Equal(2, list.Count);
+            Assert.Equal("AssetId4", list.Last().FeaturedImage.SystemProperties.Id);
+            Assert.Equal("Alice in Wonderland", list.Last().FeaturedImage.Title);
+            Assert.Equal("Mike Springer", list.First().Author.First().Name);
+            Assert.Equal("Lewis Carroll", list.Last().Author.First().Name);
         }
 
         [Fact]
@@ -456,9 +457,10 @@ namespace Contentful.Core.Tests
 
         
         public Asset FeaturedImage { get; set; }
-        public IEnumerable<Entry<Author>> Author { get; set; }
+        public List<Author> Author { get; set; }
     }
 
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Author
     {
         public string Name { get; set; }
