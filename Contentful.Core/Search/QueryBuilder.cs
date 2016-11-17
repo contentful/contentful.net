@@ -116,6 +116,18 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
+        /// Select the number of levels of referenced content that should be included in the response.
+        /// The default is 1 if this querystring parameter is omitted.
+        /// </summary>
+        /// <param name="levels">The number of levels of referenced content to include.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder Include(int levels)
+        {
+            _querystringValues.Add(new KeyValuePair<string, string>("include", levels.ToString()));
+            return this;
+        }
+
+        /// <summary>
         /// Filters the returned resources by the specified locale.
         /// </summary>
         /// <param name="locale">The locale to filter by.</param>

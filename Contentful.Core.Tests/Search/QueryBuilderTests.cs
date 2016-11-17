@@ -21,6 +21,17 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void AddingMultipleQueryParametersShouldCorrectlyAddQueryStringValues()
+        {
+            //Arrange
+            var builder = new QueryBuilder();
+            //Act
+            var result = builder.ContentTypeIs("123").Include(5).Limit(6).Build();
+            //Assert
+            Assert.Equal("?content_type=123&include=5&limit=6", result);
+        }
+
+        [Fact]
         public void ContentTypeRestrictionShouldAddCorrectQueryString()
         {
             //Arrange
@@ -117,6 +128,17 @@ namespace Contentful.Core.Tests.Search
             var result = builder.Skip(3).Build();
             //Assert
             Assert.Equal("?skip=3", result);
+        }
+
+        [Fact]
+        public void IncludeShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder();
+            //Act
+            var result = builder.Include(3).Build();
+            //Assert
+            Assert.Equal("?include=3", result);
         }
 
         [Fact]
