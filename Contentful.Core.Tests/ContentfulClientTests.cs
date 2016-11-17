@@ -14,6 +14,8 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using File = System.IO.File;
 using Newtonsoft.Json;
+using System.Reflection;
+using System.IO;
 
 namespace Contentful.Core.Tests
 {
@@ -394,8 +396,11 @@ namespace Contentful.Core.Tests
 
         private HttpResponseMessage GetResponseFromFile(string file)
         {
+            //So, this is an ugly hack... Any better way to get the absolute path of the test project?
+            var projectPath = Directory.GetParent(typeof(Asset).GetTypeInfo().Assembly.Location).Parent.Parent.Parent.FullName;
             var response = new HttpResponseMessage();
-            response.Content = new StringContent(File.ReadAllText(file));
+            var fullPath = Path.Combine(projectPath, file);
+            response.Content = new StringContent(File.ReadAllText(fullPath));
             return response;
         }
     }

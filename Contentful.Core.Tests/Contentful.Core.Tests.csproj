@@ -1,0 +1,53 @@
+﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="**\*.cs" />
+    <EmbeddedResource Include="**\*.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="JsonFiles\AssetsCollection.json" />
+    <Content Include="JsonFiles\ContenttypesCollection.json" />
+    <Content Include="JsonFiles\EntriesCollection.json" />
+    <Content Include="JsonFiles\EntriesCollectionWithIncludes.json" />
+    <Content Include="JsonFiles\ErrorInvalidToken.json" />
+    <Content Include="JsonFiles\InitialSyncDeletionOnly.json" />
+    <Content Include="JsonFiles\InitialSyncNextPagePresent.json" />
+    <Content Include="JsonFiles\InitialSyncNoNextPage.json" />
+    <Content Include="JsonFiles\NextSyncUrl.json" />
+    <Content Include="JsonFiles\SampleAsset.json" />
+    <Content Include="JsonFiles\SampleContentType.json" />
+    <Content Include="JsonFiles\SampleEntry.json" />
+    <Content Include="JsonFiles\SampleSpace.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.App">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Sdk">
+      <Version>1.0.0-alpha-20161104-2</Version>
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk">
+      <Version>15.0.0-preview-20161024-02</Version>
+    </PackageReference>
+    <PackageReference Include="xunit">
+      <Version>2.2.0-beta3-build3402</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio">
+      <Version>2.2.0-beta4-build1188</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Contentful.Core\Contentful.Core.csproj" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -110,7 +110,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var ob = default(T);
@@ -172,7 +172,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             IEnumerable<T> entries;
@@ -236,7 +236,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<ContentfulCollection<T>>();
@@ -260,7 +260,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
@@ -293,7 +293,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
@@ -326,7 +326,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
@@ -347,7 +347,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
@@ -374,7 +374,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
@@ -393,7 +393,7 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
@@ -419,10 +419,10 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
-            var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync());
+            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync());
 
             return syncResult;
         }
@@ -450,10 +450,10 @@ namespace Contentful.Core
 
             if (!res.IsSuccessStatusCode)
             {
-                await CreateExceptionForFailedRequest(res);
+                await CreateExceptionForFailedRequestAsync(res);
             }
 
-            var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync());
+            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync());
 
             return syncResult;
         }
@@ -490,7 +490,7 @@ namespace Contentful.Core
             return syncResult;
         }
 
-        private SyncResult ParseSyncResult(string content)
+        private SyncResult ParseSyncResultAsync(string content)
         {
             var jsonObject = JObject.Parse(content);
             var syncResult = jsonObject.ToObject<SyncResult>();
@@ -550,16 +550,17 @@ namespace Contentful.Core
         }
 
 
-        private async Task CreateExceptionForFailedRequest(HttpResponseMessage res)
+        private async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
         {
             var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync());
             var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
             var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
-            var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message").ToString());
-            ex.RequestId = jsonError.SelectToken("$.requestId").ToString();
-            ex.ErrorDetails = errorDetails;
-            ex.SystemProperties = sys;
-
+            var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message").ToString())
+            {
+                RequestId = jsonError.SelectToken("$.requestId").ToString(),
+                ErrorDetails = errorDetails,
+                SystemProperties = sys
+            };
             throw ex;
         }
     }

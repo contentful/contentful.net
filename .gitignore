@@ -8,6 +8,7 @@ _ReSharper.*
 *.resharper.user
 .vs/
 .vscode/
+Backup/
 *.lock.json
 *.nuget.props
 *.nuget.targets
