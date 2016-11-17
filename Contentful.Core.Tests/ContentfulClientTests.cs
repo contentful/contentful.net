@@ -118,6 +118,7 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(2, res.Count());
             Assert.Equal("AssetId4", res.Last().FeaturedImage.SystemProperties.Id);
+            Assert.Equal("Alice in Wonderland", res.Last().FeaturedImage.Title);
             Assert.Equal("Mike Springer", res.First().Author.First().Fields.Name);
         }
 
@@ -167,6 +168,21 @@ namespace Contentful.Core.Tests
             Assert.Equal("Home & Kitchen", res.Items.First().Fields.Title);
             Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.899Z").ToUniversalTime(), res.Items.First().SystemProperties.CreatedAt);
             Assert.Equal("6XwpTaSiiI2Ak2Ww0oi6qa", res.Items.First().SystemProperties.ContentType.SystemProperties.Id);
+        }
+
+        [Fact]
+        public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithIncludes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EntriesCollectionWithIncludes.json");
+
+            //Act
+            var res = await _client.GetEntriesCollectionAsync<Entry<TestModelWithIncludes>>();
+
+            //Assert
+            Assert.Equal(2, res.Count());
+            Assert.Equal("Alice in Wonderland", res.IncludedAssets.Single(c => c.SystemProperties.Id == "AssetId4").Title);
+            Assert.Equal("Lewis Carroll", res.IncludedEntries.Single(c => c.SystemProperties.Id == "EntryId6").Fields.name.ToString());
         }
 
         [Fact]

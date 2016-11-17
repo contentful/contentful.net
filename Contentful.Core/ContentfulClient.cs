@@ -239,7 +239,13 @@ namespace Contentful.Core
                 await CreateExceptionForFailedRequestAsync(res);
             }
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<ContentfulCollection<T>>();
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<T>>();
+
+            collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>());
+            collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>());
+
+            return collection;
         }
 
         /// <summary>

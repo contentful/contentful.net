@@ -40,11 +40,27 @@ namespace Contentful.Core.Models
         /// </summary>
         public IEnumerable<T> Items { get; set; }
 
+        /// <summary>
+        /// The <see cref="IEnumerable{Entry{dynamic}}" /> of included referenced entries
+        /// </summary>
+        public IEnumerable<Entry<dynamic>> IncludedEntries { get; set; }
+
+        /// <summary>
+        /// The <see cref="IEnumerable{Asset}" /> of included referenced assets
+        /// </summary>
+        public IEnumerable<Asset> IncludedAssets { get; set; }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Items"/> collection
+        /// </summary>
         public IEnumerator<T> GetEnumerator()
         {
             return Items.GetEnumerator();
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Items"/> collection
+        /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
