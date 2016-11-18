@@ -15,7 +15,7 @@ namespace Contentful.Core
     public class ContentfulManagementClient
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://cdn.contentful.com/spaces/";
+        private readonly string _baseUrl = "https://api.contentful.com/spaces/";
         private readonly ContentfulOptions _options;
 
         /// <summary>
