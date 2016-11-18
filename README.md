@@ -74,7 +74,9 @@ still want to use our own class.
     Console.WriteLine(entry.Fields.Author); // => Contentful
     Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
 
+# Further information
 
+You can read the full documentation and explore the api at [https://contentful.github.io/contentful.net-docs/][https://contentful.github.io/contentful.net-docs/]
 
 
 
