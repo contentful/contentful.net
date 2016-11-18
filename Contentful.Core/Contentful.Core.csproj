@@ -1,11 +1,11 @@
-﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
   <PropertyGroup>
     <Description>Official .NET SDK for the Contentful Content Delivery API.</Description>
     <PackageId>contentful.csharp</PackageId>
     <AssemblyTitle>contentful.net</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>0.6.1-alpha</VersionPrefix>
+    <VersionPrefix>0.6.2-alpha</VersionPrefix>
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>Contentful.Core</AssemblyName>
     <PackageTags>contentful;CMS</PackageTags>
