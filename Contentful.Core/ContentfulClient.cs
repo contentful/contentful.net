@@ -45,6 +45,9 @@ namespace Contentful.Core
             {
                 _httpClient.DefaultRequestHeaders.Remove("Authorization");
             }
+            if(!_httpClient.DefaultRequestHeaders.Contains("User-Agent")) {
+                _httpClient.DefaultRequestHeaders.Add("User-Agent", "Contentful-.NET-SDK");
+            }
 
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_options.DeliveryApiKey}");
 

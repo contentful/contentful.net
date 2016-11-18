@@ -38,6 +38,28 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public void CreatingAContentfulClientShouldAddAuthHeader()
+        {
+            //Arrange
+            var httpClient = new HttpClient(_handler);
+            //Act
+            var client = new ContentfulClient(httpClient, "123", "435");
+            //Assert
+            Assert.Equal("123", httpClient.DefaultRequestHeaders.Authorization.Parameter);
+        }
+
+        [Fact]
+        public void CreatingAContentfulClientShouldAddUserAgentHeader()
+        {
+            //Arrange
+            var httpClient = new HttpClient(_handler);
+            //Act
+            var client = new ContentfulClient(httpClient, "123", "435");
+            //Assert
+            Assert.Equal("Contentful-.NET-SDK", httpClient.DefaultRequestHeaders.UserAgent.First().Product.Name);
+        }
+
+        [Fact]
         public async Task GetEntryShouldSerializeResponseToArbitraryModelCorrectly()
         {
             //Arrange
