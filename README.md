@@ -76,7 +76,7 @@ still want to use our own class.
 
 # Further information
 
-You can read the full documentation and explore the api at [https://contentful.github.io/contentful.net-docs/][https://contentful.github.io/contentful.net-docs/]
+You can read the full documentation and explore the api at [https://contentful.github.io/contentful.net-docs/](https://contentful.github.io/contentful.net-docs/)
 
 
 
