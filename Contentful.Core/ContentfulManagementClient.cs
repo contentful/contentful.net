@@ -39,17 +39,13 @@ namespace Contentful.Core
             {
                 _httpClient.DefaultRequestHeaders.Remove("Authorization");
             }
-            if (_httpClient.DefaultRequestHeaders.Contains("Content-Type"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("Content-Type");
-            }
+           
             if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
             {
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "Contentful-.NET-SDK");
             }
 
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_options.ManagementApiKey}");
-            _httpClient.DefaultRequestHeaders.Add("Content-Type", "application/vnd.contentful.management.v1+json");
 
         }
 
@@ -114,7 +110,7 @@ namespace Contentful.Core
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
         {
-            return new StringContent(JsonConvert.SerializeObject(ob), Encoding.UTF8, "application/json");
+            return new StringContent(JsonConvert.SerializeObject(ob), Encoding.UTF8, "application/vnd.contentful.management.v1+json");
         }
 
         private async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
