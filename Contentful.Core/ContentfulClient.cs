@@ -118,7 +118,7 @@ namespace Contentful.Core
 
             var ob = default(T);
 
-            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T)))
+            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 ob = JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<T>();
             }
@@ -199,7 +199,7 @@ namespace Contentful.Core
                 }
             }
 
-            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T)))
+            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 entries = json.SelectTokens("$..items[*]")
                         .Select(t => t.ToObject<T>()); ;
