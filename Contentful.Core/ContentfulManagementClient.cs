@@ -91,14 +91,14 @@ namespace Contentful.Core
         /// <param name="defaultLocale">The default locale for this space.</param>
         /// <param name="organisation">The organisation to create a space for. Not required if the account belongs to only one organisation.</param>
         /// <returns></returns>
-        public async Task CreateSpace(string name, string defaultLocale, string organisation = null)
+        public async Task<Space> CreateSpace(string name, string defaultLocale, string organisation = null)
         {
             if (!string.IsNullOrEmpty(organisation))
             {
                 _httpClient.DefaultRequestHeaders.Add("X-Contentful-Organization", organisation);
             }
 
-            var res = await _httpClient.PostAsync("", ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale }));
+            var res = await _httpClient.PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale }));
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
@@ -106,6 +106,10 @@ namespace Contentful.Core
             {
                 await CreateExceptionForFailedRequestAsync(res);
             }
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return json.ToObject<Space>();
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
