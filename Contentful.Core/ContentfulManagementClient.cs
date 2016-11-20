@@ -189,7 +189,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
-            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<Space>()); ;
+            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<Space>());
         }
 
         /// <summary>
@@ -205,6 +205,68 @@ namespace Contentful.Core
             {
                 await CreateExceptionForFailedRequestAsync(res);
             }
+        }
+
+        /// <summary>
+        /// Get all content types of a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space to create the content type in. Will default to the one set when creating the client.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        public async Task<IEnumerable<ContentType>> GetContentTypes(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
+        }
+
+        /// <summary>
+        /// Creates or updates a ContentType. Updates if a content type with the same id already exists.
+        /// </summary>
+        /// <param name="contentType">The <see cref="ContentType"/> to create or update. **Remember to set the id property.**</param>
+        /// <param name="spaceId">The id of the space to create the content type in. Will default to the one set when creating the client.</param>
+        /// <param name="version">The last version known of the content type. Must be set for existing content types. Should be null if one is created.</param>
+        /// <returns>The created or updated <see cref="ContentType"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
+        public async Task<ContentType> CreateOrUpdateContentType(ContentType contentType, string spaceId = null, int? version = null)
+        {
+            if(contentType.SystemProperties?.Id == null)
+            {
+                throw new ArgumentException("The id of the content type must be set.", nameof(contentType));
+            }
+
+            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
+            {
+                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
+            }
+            if (version.HasValue)
+            {
+                _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
+            }
+
+            var res = await _httpClient.PutAsync(
+                $"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentType.SystemProperties.Id}",
+                ConvertObjectToJsonStringContent(new { name = contentType.Name, fields = contentType.Fields }));
+
+            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
+            {
+                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
+            }
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return json.ToObject<ContentType>();
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
