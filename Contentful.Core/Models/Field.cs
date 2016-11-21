@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contentful.Core.Models.Management;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,5 +51,10 @@ namespace Contentful.Core.Models
         /// Defines a schema for the elements of an array field. Will be null for other types.
         /// </summary>
         public Schema Items { get; set; }
+
+        /// <summary>
+        /// The validations that should be applied to the field.
+        /// </summary>
+        public List<IFieldValidator> Validations { get; set; }
     }
 }
