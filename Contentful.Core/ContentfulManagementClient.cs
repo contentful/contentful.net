@@ -210,7 +210,7 @@ namespace Contentful.Core
         /// <summary>
         /// Get all content types of a space.
         /// </summary>
-        /// <param name="spaceId">The id of the space to create the content type in. Will default to the one set when creating the client.</param>
+        /// <param name="spaceId">The id of the space to get the content types of. Will default to the one set when creating the client.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync(string spaceId = null)
         {
@@ -273,17 +273,18 @@ namespace Contentful.Core
         /// Gets a <see cref="ContentType"/> by the specified ID.
         /// </summary>
         /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="spaceId">The id of the space to get the content type from. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
-        public async Task<ContentType> GetContentTypeAsync(string contentTypeId)
+        public async Task<ContentType> GetContentTypeAsync(string contentTypeId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}");
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -294,6 +295,100 @@ namespace Contentful.Core
             var contentType = jsonObject.ToObject<ContentType>();
 
             return contentType;
+        }
+
+        /// <summary>
+        /// Deletes a <see cref="ContentType"/> by the specified ID.
+        /// </summary>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="spaceId">The id of the space to delete the content type in. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        public async Task DeleteContentTypeAsync(string contentTypeId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+        }
+
+        /// <summary>
+        /// Activates a <see cref="ContentType"/> by the specified ID.
+        /// </summary>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="spaceId">The id of the space to activate the content type in. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        public async Task<ContentType> ActivateContentTypeAsync(string contentTypeId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", null);
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var contentType = jsonObject.ToObject<ContentType>();
+
+            return contentType;
+        }
+
+        /// <summary>
+        /// Deactivates a <see cref="ContentType"/> by the specified ID.
+        /// </summary>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="spaceId">The id of the space to deactivate the content type in. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        public async Task DeactivateContentTypeAsync(string contentTypeId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+        }
+
+        /// <summary>
+        /// Get all activated content types of a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space to get the activated content types of. Will default to the one set when creating the client.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        public async Task<IEnumerable<ContentType>> GetActivatedContentTypesAsync(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
