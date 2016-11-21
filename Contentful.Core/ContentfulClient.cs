@@ -124,7 +124,13 @@ namespace Contentful.Core
             }
             else
             {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync()).SelectToken("$.fields").ToObject<T>();
+                var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+                //move the sys object beneath the fields to make serialization more logical for the end user.
+                var sys = json.SelectToken("$.sys");
+                var fields = json.SelectToken("$.fields");
+                fields["sys"] = sys;
+                ob = fields.ToObject<T>();
             }
             return ob;
         }
@@ -206,9 +212,17 @@ namespace Contentful.Core
             }
             else
             {
-                entries = json
-                       .SelectTokens("$..items[*].fields")
-                       .Select(t => t.ToObject<T>());
+                var entryTokens = json.SelectTokens("$..items[*].fields");
+
+                //Move sys properties into the fields object to make serialization more logical on client
+                foreach (var token in entryTokens)
+                {
+                    var sys = token.Parent.Parent["sys"];
+                    token["sys"] = sys;
+                }
+
+
+                entries = entryTokens.Select(t => t.ToObject<T>());
             }
             return entries;
         }

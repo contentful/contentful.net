@@ -74,6 +74,23 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntryShouldSerializeResponseToArbitraryModelWithSystemPropertiesCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntry.json");
+
+            //Act
+            var res = await _client.GetEntryAsync<TestEntryWithSysProperties>("12");
+
+            //Assert
+            Assert.Equal("SoSo Wall Clock", res.ProductName);
+            Assert.Equal("soso-wall-clock", res.Slug);
+            Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Sys.Id);
+            Assert.Equal(4, res.Sys.Revision);
+            Assert.Equal("n9r7gd2bwvqt", res.Sys.Space.SystemProperties.Id);
+        }
+
+        [Fact]
         public async Task GetEntryWithInvalidAccessTokenShouldSerializeErrorMessageCorrectlyAndThrowContentfulException()
         {
             //Arrange
@@ -126,6 +143,21 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(9, res.Count());
             Assert.Equal("Home & Kitchen", res.First().Title);
+        }
+
+        [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithSystemProperties()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EntriesCollection.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<TestEntryWithSysProperties>();
+            var list = res.ToList();
+            //Assert
+            Assert.Equal(9, list.Count);
+            Assert.Equal("Home & Kitchen", list.First().Title);
+            Assert.Equal("5KsDBWseXY6QegucYAoacS", list[1].Sys.Id);
         }
 
         [Fact]
@@ -470,6 +502,11 @@ namespace Contentful.Core.Tests
         public string ProductName { get; set; }
         public string Slug { get; set; }
         public string Title { get; set; }
+    }
+
+    public class TestEntryWithSysProperties : TestEntryModel
+    {
+        public SystemProperties Sys { get; set; }
     }
 
     public class TestModelWithIncludes
