@@ -212,7 +212,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="spaceId">The id of the space to create the content type in. Will default to the one set when creating the client.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetContentTypes(string spaceId = null)
+        public async Task<IEnumerable<ContentType>> GetContentTypesAsync(string spaceId = null)
         {
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types");
 
@@ -234,7 +234,7 @@ namespace Contentful.Core
         /// <param name="version">The last version known of the content type. Must be set for existing content types. Should be null if one is created.</param>
         /// <returns>The created or updated <see cref="ContentType"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
-        public async Task<ContentType> CreateOrUpdateContentType(ContentType contentType, string spaceId = null, int? version = null)
+        public async Task<ContentType> CreateOrUpdateContentTypeAsync(ContentType contentType, string spaceId = null, int? version = null)
         {
             if(contentType.SystemProperties?.Id == null)
             {
@@ -267,6 +267,33 @@ namespace Contentful.Core
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return json.ToObject<ContentType>();
+        }
+
+        /// <summary>
+        /// Gets a <see cref="ContentType"/> by the specified ID.
+        /// </summary>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        public async Task<ContentType> GetContentTypeAsync(string contentTypeId)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var contentType = jsonObject.ToObject<ContentType>();
+
+            return contentType;
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
