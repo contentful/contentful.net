@@ -38,6 +38,11 @@ namespace Contentful.Core.Models
         public bool Localized { get; set; }
 
         /// <summary>
+        /// The type of link, if any. Normally Asset or Entry.
+        /// </summary>
+        public string LinkType { get; set; }
+
+        /// <summary>
         /// Whether this field is disabled. Disabled fields are not visible in the Contentful web app.
         /// </summary>
         public bool Disabled { get; set; }
