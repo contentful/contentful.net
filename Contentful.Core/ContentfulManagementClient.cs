@@ -319,14 +319,18 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
-        public async Task<ContentType> ActivateContentTypeAsync(string contentTypeId, string spaceId = null)
+        public async Task<ContentType> ActivateContentTypeAsync(string contentTypeId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", null);
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {

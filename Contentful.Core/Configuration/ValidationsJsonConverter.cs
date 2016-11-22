@@ -30,7 +30,7 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject.TryGetValue("range", out jToken))
             {
-                return new SizeValidator(
+                return new RangeValidator(
                     jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,
                     jToken["max"] != null ? new int?(int.Parse(jToken["max"].ToString())) : null,
                     jsonObject["message"]?.ToString());
