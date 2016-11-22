@@ -1,6 +1,7 @@
 ﻿using Contentful.Core.Configuration;
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -133,17 +134,13 @@ namespace Contentful.Core
                 _httpClient.DefaultRequestHeaders.Add("X-Contentful-Organization", organisation);
             }
 
-            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-            }
-
-            _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
+            AddVersionHeader(version);
 
             var res = await _httpClient.PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name = name }));
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
-            _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
@@ -241,23 +238,13 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the content type must be set.", nameof(contentType));
             }
 
-            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-            }
-            if (version.HasValue)
-            {
-                _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
-            }
+            AddVersionHeader(version);
 
             var res = await _httpClient.PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentType.SystemProperties.Id}",
                 ConvertObjectToJsonStringContent(new { name = contentType.Name, fields = contentType.Fields }));
 
-            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-            }
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
@@ -389,6 +376,84 @@ namespace Contentful.Core
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
+        }
+
+        /// <summary>
+        /// Gets a <see cref="EditorInterface"/> for a specific <see cref="ContentType"/>.
+        /// </summary>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into a <see cref="EditorInterface"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        public async Task<EditorInterface> GetEditorInterfaceAsync(string contentTypeId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var editorInterface = jsonObject.ToObject<EditorInterface>();
+
+            return editorInterface;
+        }
+
+        /// <summary>
+        /// Updates a <see cref="EditorInterface"/> for a specific <see cref="ContentType"/>.
+        /// </summary>
+        /// <param name="editorInterface">The editor interface to update.</param>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into a <see cref="EditorInterface"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        public async Task<EditorInterface> UpdateEditorInterfaceAsync(EditorInterface editorInterface, string contentTypeId, string spaceId = null, int? version = null)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", 
+                ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls }));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var updatedEditorInterface = jsonObject.ToObject<EditorInterface>();
+
+            return updatedEditorInterface;
+        }
+
+        private void AddVersionHeader(int? version)
+        {
+            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
+            {
+                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
+            }
+            if (version.HasValue)
+            {
+                _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
+            }
+        }
+
+        private void RemoveVersionHeader()
+        {
+            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
+            {
+                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
+            }
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
