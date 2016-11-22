@@ -422,8 +422,12 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", 
                 ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls }));
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
