@@ -5,7 +5,7 @@
     <PackageId>contentful.csharp</PackageId>
     <AssemblyTitle>contentful.net</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>0.6.2.4-alpha</VersionPrefix>
+    <VersionPrefix>0.6.2.5-alpha</VersionPrefix>
     <TargetFramework>netstandard1.4</TargetFramework>
     <AssemblyName>Contentful.Core</AssemblyName>
     <PackageTags>contentful;CMS</PackageTags>
