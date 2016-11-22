@@ -6,6 +6,7 @@ using Contentful.Core.Search;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -711,7 +712,11 @@ namespace Contentful.Core
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
         {
-            return new StringContent(JsonConvert.SerializeObject(ob), Encoding.UTF8, "application/vnd.contentful.management.v1+json");
+            var serializedObject = JsonConvert.SerializeObject(ob, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+            return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
         }
 
         private async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)

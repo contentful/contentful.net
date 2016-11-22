@@ -1,4 +1,6 @@
-﻿using Contentful.Core.Search;
+﻿using Contentful.Core.Configuration;
+using Contentful.Core.Search;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace Contentful.Core.Models.Management
 {
+    [JsonConverter(typeof(ValidationsJsonConverter))]
     public interface IFieldValidator
     {
         object CreateValidator();
