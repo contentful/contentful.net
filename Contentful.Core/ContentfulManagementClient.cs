@@ -2,6 +2,7 @@
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
+using Contentful.Core.Search;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,7 +69,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="managementApiKey">The management API key used when communicating with the Contentful API</param>
-        /// <param name="spaceId">The ID of the space to fetch content from.</param>
+        /// <param name="spaceId">The id of the space to fetch content from.</param>
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
         public ContentfulManagementClient(HttpClient httpClient, string deliveryApiKey, string spaceId):
@@ -257,9 +259,9 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// Gets a <see cref="ContentType"/> by the specified ID.
+        /// Gets a <see cref="ContentType"/> by the specified id.
         /// </summary>
-        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="contentTypeId">The id of the content type.</param>
         /// <param name="spaceId">The id of the space to get the content type from. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
@@ -285,9 +287,9 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// Deletes a <see cref="ContentType"/> by the specified ID.
+        /// Deletes a <see cref="ContentType"/> by the specified id.
         /// </summary>
-        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="contentTypeId">The id of the content type.</param>
         /// <param name="spaceId">The id of the space to delete the content type in. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
@@ -309,9 +311,9 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// Activates a <see cref="ContentType"/> by the specified ID.
+        /// Activates a <see cref="ContentType"/> by the specified id.
         /// </summary>
-        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="contentTypeId">The id of the content type.</param>
         /// <param name="spaceId">The id of the space to activate the content type in. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
@@ -337,9 +339,9 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// Deactivates a <see cref="ContentType"/> by the specified ID.
+        /// Deactivates a <see cref="ContentType"/> by the specified id.
         /// </summary>
-        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="contentTypeId">The id of the content type.</param>
         /// <param name="spaceId">The id of the space to deactivate the content type in. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
@@ -381,7 +383,7 @@ namespace Contentful.Core
         /// <summary>
         /// Gets a <see cref="EditorInterface"/> for a specific <see cref="ContentType"/>.
         /// </summary>
-        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="contentTypeId">The id of the content type.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
@@ -410,7 +412,7 @@ namespace Contentful.Core
         /// Updates a <see cref="EditorInterface"/> for a specific <see cref="ContentType"/>.
         /// </summary>
         /// <param name="editorInterface">The editor interface to update.</param>
-        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="contentTypeId">The id of the content type.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
@@ -440,6 +442,256 @@ namespace Contentful.Core
             return updatedEditorInterface;
         }
 
+        /// <summary>
+        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder"/>.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder queryBuilder) where T : IContentfulResource
+        {
+            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build());
+        }
+
+        /// <summary>
+        /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
+        /// to construct a query manually is to use the <see cref="QueryBuilder"/> class.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null) where T : IContentfulResource
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<T>>();
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates or updates an <see cref="Entry{T}"/>. Updates if an entry with the same id already exists.
+        /// </summary>
+        /// <param name="entry">The entry to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry. Need only be set if you are creating a new entry.</param>
+        /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
+        /// <returns></returns>
+        public async Task<Entry<dynamic>> CreateOrUpdateEntryAsync(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = null)
+        {
+            if (string.IsNullOrEmpty(entry.SystemProperties?.Id))
+            {
+                throw new ArgumentException("The id of the entry must be set.");
+            }
+
+            if (!string.IsNullOrEmpty(contentTypeId))
+            {
+                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
+                _httpClient.DefaultRequestHeaders.Add("X-Contentful-Content-Type", contentTypeId);
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entry.SystemProperties.Id}",
+                ConvertObjectToJsonStringContent(new { fields = entry.Fields }));
+
+            RemoveVersionHeader();
+            _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
+
+            return updatedEntry;
+        }
+
+        /// <summary>
+        /// Get a single entry by the specified id.
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> GetEntryAsync(string entryId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+        }
+
+        /// <summary>
+        /// Deletes a single entry by the specified id.
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        public async Task DeleteEntryAsync(string entryId, int version, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
+
+            RemoveVersionHeader();
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+        }
+
+        /// <summary>
+        /// Publishes an entry by the specified id.
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> PublishEntryAsync(string entryId, int version, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published");
+
+            RemoveVersionHeader();
+
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+        }
+
+        /// <summary>
+        /// Unpublishes an entry by the specified id.
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> UnpublishEntryAsync(string entryId, int version, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published");
+
+            RemoveVersionHeader();
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+        }
+
+        /// <summary>
+        /// Archives an entry by the specified id.
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> ArchiveEntryAsync(string entryId, int version, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived");
+
+            RemoveVersionHeader();
+
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+        }
+
+        /// <summary>
+        /// Unarchives an entry by the specified id.
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> UnarchiveEntryAsync(string entryId, int version, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived");
+
+            RemoveVersionHeader();
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+        }
+
+
         private void AddVersionHeader(int? version)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
@@ -454,10 +706,7 @@ namespace Contentful.Core
 
         private void RemoveVersionHeader()
         {
-            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
-            {
                 _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-            }
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
