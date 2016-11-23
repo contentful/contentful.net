@@ -593,7 +593,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published");
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published", null);
 
             RemoveVersionHeader();
 
@@ -654,7 +654,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived");
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived", null);
 
             RemoveVersionHeader();
 
