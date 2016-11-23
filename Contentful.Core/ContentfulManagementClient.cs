@@ -703,7 +703,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="ManagementAsset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAllAssetsCollectionAsync(string spaceId = null)
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(string spaceId = null)
         {
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets");
 
