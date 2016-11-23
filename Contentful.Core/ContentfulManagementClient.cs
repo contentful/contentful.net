@@ -719,20 +719,156 @@ namespace Contentful.Core
 
             return collection;
         }
+        
         /// <summary>
         /// Gets an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to get.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The <see cref="ManagementAsset"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ManagementAsset> GetAssetAsync(string assetId, string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets");
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
 
             if (!res.IsSuccessStatusCode)
             {
                 await CreateExceptionForFailedRequestAsync(res);
             }
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<ManagementAsset>();
+        }
+
+        /// <summary>
+        /// Deletes an asset by the specified id.
+        /// </summary>
+        /// <param name="assetId">The id of the asset to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteAssetAsync(string assetId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+        }
+
+        /// <summary>
+        /// Publishes an asset by the specified id.
+        /// </summary>
+        /// <param name="assetId">The id of the asset to publish.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="ManagementAsset"/> published.</returns>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementAsset> PublishAssetAsync(string assetId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published", null);
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<ManagementAsset>();
+        }
+
+        /// <summary>
+        /// Unpublishes an asset by the specified id.
+        /// </summary>
+        /// <param name="assetId">The id of the asset to unpublish.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="ManagementAsset"/> unpublished.</returns>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementAsset> UnpublishAssetAsync(string assetId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<ManagementAsset>();
+        }
+
+        /// <summary>
+        /// Archives an asset by the specified id.
+        /// </summary>
+        /// <param name="assetId">The id of the asset to archive.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="ManagementAsset"/> archived.</returns>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementAsset> ArchiveAssetAsync(string assetId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<ManagementAsset>();
+        }
+
+        /// <summary>
+        /// Unarchives an asset by the specified id.
+        /// </summary>
+        /// <param name="assetId">The id of the asset to unarchive.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="ManagementAsset"/> unarchived.</returns>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementAsset> UnarchiveAssetAsync(string assetId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<ManagementAsset>();
