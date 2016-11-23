@@ -3,7 +3,9 @@ using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -104,6 +106,64 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Null(res.Name);
+        }
+
+        [Fact]
+        public async Task EditorInterfaceShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+
+            //Act
+            var res = await _client.GetEditorInterfaceAsync("someid");
+
+            //Assert
+            Assert.Equal(7, res.Controls.Count);
+            Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
+        }
+
+        [Fact]
+        public async Task EditorInterfaceShouldSerializeCorrectly()
+        {
+            //Arrange
+            var editorInterface = new EditorInterface();
+            editorInterface.Controls = new List<EditorInterfaceControl>()
+            {
+                new EditorInterfaceControl()
+                {
+                    FieldId = "field1",
+                    WidgetId = SystemWidgetIds.SingleLine
+                },
+                new EditorInterfaceControl()
+                {
+                    FieldId = "field2",
+                    WidgetId = SystemWidgetIds.Boolean,
+                    Settings = new BooleanEditorInterfaceControlSettings()
+                    {
+                        HelpText = "Help me here!",
+                        TrueLabel = "Truthy",
+                        FalseLabel = "Falsy"
+                    }
+                }
+            };
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+
+            //Act
+            var res = await _client.UpdateEditorInterfaceAsync(editorInterface, "123", 1);
+
+            //Assert
+            Assert.Equal(7, res.Controls.Count);
+            Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
+        }
+
+        private HttpResponseMessage GetResponseFromFile(string file)
+        {
+            //So, this is an ugly hack... Any better way to get the absolute path of the test project?
+            var projectPath = Directory.GetParent(typeof(Asset).GetTypeInfo().Assembly.Location).Parent.Parent.Parent.FullName;
+            var response = new HttpResponseMessage();
+            var fullPath = Path.Combine(projectPath, file);
+            response.Content = new StringContent(System.IO.File.ReadAllText(fullPath));
+            return response;
         }
     }
 }

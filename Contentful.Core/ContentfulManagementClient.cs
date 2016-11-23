@@ -418,11 +418,12 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="editorInterface">The editor interface to update.</param>
         /// <param name="contentTypeId">The id of the content type.</param>
+        /// <param name="version">The last known version of the content type.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The response from the API serialized into a <see cref="EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
-        public async Task<EditorInterface> UpdateEditorInterfaceAsync(EditorInterface editorInterface, string contentTypeId, string spaceId = null, int? version = null)
+        public async Task<EditorInterface> UpdateEditorInterfaceAsync(EditorInterface editorInterface, string contentTypeId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {

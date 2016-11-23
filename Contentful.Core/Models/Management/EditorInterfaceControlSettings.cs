@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Contentful.Core.Models.Management
 {
+
     public class EditorInterfaceControlSettings
     {
         public string HelpText { get; set; }
@@ -24,7 +22,8 @@ namespace Contentful.Core.Models.Management
 
     public class DatePickerEditorInterfaceControlSettings : EditorInterfaceControlSettings
     {
-        public EditorInterfaceDateFormat Format { get; set; }
+        [JsonProperty("format")]
+        public EditorInterfaceDateFormat DateFormat { get; set; }
         [JsonProperty("ampm")]
         public string ClockFormat { get; set; }
     }
