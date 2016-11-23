@@ -750,17 +750,22 @@ namespace Contentful.Core
         /// Deletes an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to delete.</param>
+        /// <param name="version">The last known version of the asset.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteAssetAsync(string assetId, string spaceId = null)
+        public async Task DeleteAssetAsync(string assetId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
@@ -772,18 +777,23 @@ namespace Contentful.Core
         /// Publishes an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to publish.</param>
+        /// <param name="version">The last known version of the asset.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The <see cref="ManagementAsset"/> published.</returns>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> PublishAssetAsync(string assetId, string spaceId = null)
+        public async Task<ManagementAsset> PublishAssetAsync(string assetId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published", null);
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
@@ -798,18 +808,23 @@ namespace Contentful.Core
         /// Unpublishes an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to unpublish.</param>
+        /// <param name="version">The last known version of the asset.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The <see cref="ManagementAsset"/> unpublished.</returns>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> UnpublishAssetAsync(string assetId, string spaceId = null)
+        public async Task<ManagementAsset> UnpublishAssetAsync(string assetId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published");
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
@@ -825,18 +840,23 @@ namespace Contentful.Core
         /// Archives an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to archive.</param>
+        /// <param name="version">The last known version of the asset.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The <see cref="ManagementAsset"/> archived.</returns>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> ArchiveAssetAsync(string assetId, string spaceId = null)
+        public async Task<ManagementAsset> ArchiveAssetAsync(string assetId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
@@ -851,18 +871,23 @@ namespace Contentful.Core
         /// Unarchives an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to unarchive.</param>
+        /// <param name="version">The last known version of the asset.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The <see cref="ManagementAsset"/> unarchived.</returns>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> UnarchiveAssetAsync(string assetId, string spaceId = null)
+        public async Task<ManagementAsset> UnarchiveAssetAsync(string assetId, int version, string spaceId = null)
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
+            AddVersionHeader(version);
+
             var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived");
+
+            RemoveVersionHeader();
 
             if (!res.IsSuccessStatusCode)
             {
