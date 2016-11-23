@@ -11,6 +11,7 @@ namespace Contentful.Core.Models.Management
     {
         public string FieldId { get; set; }
         public string WidgetId { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public EditorInterfaceControlSettings Settings { get; set; }
     }
 }
