@@ -73,10 +73,10 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to fetch content from.</param>
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulManagementClient(HttpClient httpClient, string deliveryApiKey, string spaceId):
+        public ContentfulManagementClient(HttpClient httpClient, string managementApiKey, string spaceId):
             this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
             {
-                DeliveryApiKey = deliveryApiKey,
+                ManagementApiKey = managementApiKey,
                 SpaceId = spaceId
             }))
         {
@@ -854,7 +854,9 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
+            HttpResponseMessage res = null;
+
+            res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
 
             RemoveVersionHeader();
 
@@ -897,6 +899,68 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<ManagementAsset>();
+        }
+
+        /// <summary>
+        /// Processes an asset by the specified id.
+        /// </summary>
+        /// <param name="assetId">The id of the asset to process.</param>
+        /// <param name="version">The last known version of the asset.</param>
+        /// <param name="locale">The locale for which files should be processed.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task ProcessAssetAsync(string assetId, int version, string locale, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(assetId))
+            {
+                throw new ArgumentException(nameof(assetId));
+            }
+
+            AddVersionHeader(version);
+
+            HttpResponseMessage res = null;
+
+            res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/{locale}/process", null);
+
+            RemoveVersionHeader();
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+        }
+
+        /// <summary>
+        /// Creates or updates an <see cref="ManagementAsset"/>. Updates if an asset with the same id already exists.
+        /// </summary>
+        /// <param name="asset">The asset to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="version">The last known version of the entry. Must be set when updating an asset.</param>
+        /// <returns></returns>
+        public async Task<Entry<dynamic>> CreateOrUpdateAssetAsync(ManagementAsset asset, string spaceId = null, int? version = null)
+        {
+            if (string.IsNullOrEmpty(asset.SystemProperties?.Id))
+            {
+                throw new ArgumentException("The id of the entry must be set.");
+            }
+
+            AddVersionHeader(version);
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{asset.SystemProperties.Id}",
+                ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }));
+
+            RemoveVersionHeader();
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
+
+            return updatedEntry;
         }
 
         private void AddVersionHeader(int? version)
