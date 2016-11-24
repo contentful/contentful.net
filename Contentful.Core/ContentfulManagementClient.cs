@@ -1019,7 +1019,17 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<Locale> CreateLocaleAsync(Locale locale, string spaceId = null)
         {
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales", ConvertObjectToJsonStringContent(locale));
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales",
+                ConvertObjectToJsonStringContent(
+                    new
+                    {
+                        code = locale.Code,
+                        contentDeliveryApi = locale.ContentDeliveryApi,
+                        contentManagementApi = locale.ContentManagementApi,
+                        fallbackCode = locale.FallbackCode,
+                        name = locale.Name,
+                        optional = locale.Optional
+                    }));
 
             if (!res.IsSuccessStatusCode)
             {
