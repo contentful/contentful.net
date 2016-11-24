@@ -1017,7 +1017,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The created <see cref="Locale"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> CreateLocale(Locale locale, string spaceId = null)
+        public async Task<Locale> CreateLocaleAsync(Locale locale, string spaceId = null)
         {
             var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales", ConvertObjectToJsonStringContent(locale));
 
@@ -1039,7 +1039,7 @@ namespace Contentful.Core
         /// <returns>The requested <see cref="Locale"/>.</returns>
         /// <exception cref="ArgumentException">The <param name="localeId">localeId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> GetLocale(string localeId, string spaceId = null)
+        public async Task<Locale> GetLocaleAsync(string localeId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(localeId))
             {
@@ -1065,7 +1065,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The created <see cref="Locale"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> UpdateLocale(Locale locale, string spaceId = null)
+        public async Task<Locale> UpdateLocaleAsync(Locale locale, string spaceId = null)
         {
             if (string.IsNullOrEmpty(locale.SystemProperties?.Id))
             {
@@ -1091,7 +1091,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <exception cref="ArgumentException">The <param name="localeId">localeId</param> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteLocale(string localeId, string spaceId = null)
+        public async Task DeleteLocaleAsync(string localeId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(localeId))
             {
