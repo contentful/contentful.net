@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,11 @@ namespace Contentful.Core.Models
         /// An absolute URL to this file.
         /// </summary>
         public string Url { get; set; }
+        /// <summary>
+        /// The url to upload this file from.
+        /// </summary>
+        [JsonProperty("upload")]
+        public string UploadUrl { get; set; }
         /// <summary>
         /// Detailed information about the file stored by Contentful.
         /// </summary>
