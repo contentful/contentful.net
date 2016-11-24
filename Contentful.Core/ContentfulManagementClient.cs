@@ -1153,6 +1153,7 @@ namespace Contentful.Core
         /// <param name="webhook">The webhook to create.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The created <see cref="WebHook"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<WebHook> CreateWebHookAsync(WebHook webhook, string spaceId = null)
         {
             //Not allowed to post system properties
@@ -1176,6 +1177,8 @@ namespace Contentful.Core
         /// <param name="webhook">The webhook to create or update.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The created <see cref="WebHook"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The id of the webhook parameter was null or empty.</exception>
         public async Task<WebHook> CreateOrUpdateWebHookAsync(WebHook webhook, string spaceId = null)
         {
             if (string.IsNullOrEmpty(webhook?.SystemProperties?.Id))
@@ -1206,6 +1209,8 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>The <see cref="WebHook"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="webhookId">webhookId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<WebHook> GetWebHookAsync(string webhookId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(webhookId))
@@ -1230,6 +1235,8 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="webhookId">The id of the webhook to delete.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ArgumentException">The <param name="webhookId">webhookId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task DeleteWebHookAsync(string webhookId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(webhookId))
@@ -1243,6 +1250,100 @@ namespace Contentful.Core
             {
                 await CreateExceptionForFailedRequestAsync(res);
             }
+        }
+
+        /// <summary>
+        /// Gets all recent call details for a webhook.
+        /// </summary>
+        /// <param name="webhookId">The id of the webhook to get details for.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="WebHookCallDetails"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="webhookId">webhookId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<WebHookCallDetails>> GetWebHookCallDetailsCollectionAsync(string webhookId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(webhookId))
+            {
+                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>();
+            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHookCallDetails>());
+            collection.Items = hooks;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets the details of a specific webhook call.
+        /// </summary>
+        /// <param name="callId">The id of the call to get details for.</param>
+        /// <param name="webhookId">The id of the webhook to get details for.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="WebHookCallDetails"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="webhookId">webhookId</param> or <param name="callId">callId</param> parameter was null or empty.</exception>
+        public async Task<WebHookCallDetails> GetWebHookCallDetailsAsync(string callId, string webhookId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(callId))
+            {
+                throw new ArgumentException("The id of the webhook call must be set", nameof(callId));
+            }
+
+            if (string.IsNullOrEmpty(webhookId))
+            {
+                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<WebHookCallDetails>();
+        }
+
+        /// <summary>
+        /// Gets a response containing an overview of the recent webhook calls.
+        /// </summary>
+        /// <param name="webhookId">The id of the webhook to get health details for.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="WebHookHealthResponse"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="webhookId">webhookId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<WebHookHealthResponse> GetWebHookHealthAsync(string webhookId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(webhookId))
+            {
+                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var health = new WebHookHealthResponse();
+            health.SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>();
+            health.TotalCalls = jsonObject["calls"]["total"].Value<int>();
+            health.TotalHealthy = jsonObject["calls"]["healthy"].Value<int>();
+
+            return health;
         }
 
         private void AddVersionHeader(int? version)
