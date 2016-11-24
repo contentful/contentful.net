@@ -921,7 +921,7 @@ namespace Contentful.Core
 
             HttpResponseMessage res = null;
 
-            res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/{locale}/process", null);
+            res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/files/{locale}/process", null);
 
             RemoveVersionHeader();
 
