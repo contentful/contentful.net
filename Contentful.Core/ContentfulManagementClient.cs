@@ -1124,6 +1124,127 @@ namespace Contentful.Core
             }
         }
 
+        /// <summary>
+        /// Gets all webhooks for a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="WebHook"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<WebHook>> GetWebHooksCollectionAsync(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>();
+            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHook>());
+            collection.Items = hooks;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates a webhook in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="webhook">The webhook to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="WebHook"/>.</returns>
+        public async Task<WebHook> CreateWebHookAsync(WebHook webhook, string spaceId = null)
+        {
+            //Not allowed to post system properties
+            webhook.SystemProperties = null;
+
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<WebHook>();
+        }
+
+        /// <summary>
+        /// Creates or updates a webhook in a <see cref="Space"/>.  Updates if a webhook with the same id already exists.
+        /// </summary>
+        /// <param name="webhook">The webhook to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="WebHook"/>.</returns>
+        public async Task<WebHook> CreateOrUpdateWebHookAsync(WebHook webhook, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(webhook?.SystemProperties?.Id))
+            {
+                throw new ArgumentException("The id of the webhook must be set");
+            }
+
+            var id = webhook.SystemProperties.Id;
+
+            //Not allowed to post system properties
+            webhook.SystemProperties = null;
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<WebHook>();
+        }
+
+        /// <summary>
+        /// Gets a single webhook from a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="webhookId">The id of the webhook to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="WebHook"/>.</returns>
+        public async Task<WebHook> GetWebHookAsync(string webhookId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(webhookId))
+            {
+                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<WebHook>();
+        }
+
+        /// <summary>
+        /// Deletes a webhook from a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="webhookId">The id of the webhook to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        public async Task DeleteWebHookAsync(string webhookId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(webhookId))
+            {
+                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+        }
+
         private void AddVersionHeader(int? version)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
