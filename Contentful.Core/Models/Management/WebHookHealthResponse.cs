@@ -16,7 +16,14 @@ namespace Contentful.Core.Models.Management
         [JsonProperty("sys", NullValueHandling = NullValueHandling.Ignore)]
         public SystemProperties SystemProperties { get; set; }
 
+        /// <summary>
+        /// The total number of webhook calls made.
+        /// </summary>
         public int TotalCalls { get; set; }
+
+        /// <summary>
+        /// The total number of healthy calls.
+        /// </summary>
         public int TotalHealthy { get; set; }
     }
 }
