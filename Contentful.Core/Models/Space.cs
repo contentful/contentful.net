@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Contentful.Core.Models.Management;
 
 namespace Contentful.Core.Models
 {

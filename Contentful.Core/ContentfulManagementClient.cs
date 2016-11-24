@@ -960,12 +960,13 @@ namespace Contentful.Core
         /// <param name="asset">The asset to create or update.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="version">The last known version of the entry. Must be set when updating an asset.</param>
-        /// <returns></returns>
+        /// <returns>The updated <see cref="ManagementAsset"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ManagementAsset> CreateOrUpdateAssetAsync(ManagementAsset asset, string spaceId = null, int? version = null)
         {
             if (string.IsNullOrEmpty(asset.SystemProperties?.Id))
             {
-                throw new ArgumentException("The id of the entry must be set.");
+                throw new ArgumentException("The id of the asset must be set.");
             }
 
             AddVersionHeader(version);
@@ -984,6 +985,125 @@ namespace Contentful.Core
             var updatedAsset = jsonObject.ToObject<ManagementAsset>();
 
             return updatedAsset;
+        }
+
+        /// <summary>
+        /// Gets all locales in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{Locale}"/> of locales.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<Locale>> GetLocalesCollectionAsync(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<Locale>>();
+            var locales = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Locale>());
+            collection.Items = locales;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates a locale in the specified <see cref="Space"/>.
+        /// </summary>
+        /// <param name="locale">The <see cref="Locale"/> to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="Locale"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<Locale> CreateLocale(Locale locale, string spaceId = null)
+        {
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales", ConvertObjectToJsonStringContent(locale));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<Locale>();
+        }
+
+        /// <summary>
+        /// Gets a locale in the specified <see cref="Space"/>.
+        /// </summary>
+        /// <param name="localeId">The id of the locale to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The requested <see cref="Locale"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="localeId">localeId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<Locale> GetLocale(string localeId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(localeId))
+            {
+                throw new ArgumentException("The localeId must be set.");
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<Locale>();
+        }
+
+        /// <summary>
+        /// Updates a locale in the specified <see cref="Space"/>.
+        /// </summary>
+        /// <param name="locale">The <see cref="Locale"/> to update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="Locale"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<Locale> UpdateLocale(Locale locale, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(locale.SystemProperties?.Id))
+            {
+                throw new ArgumentException("The id of the Locale must be set.");
+            }
+
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(locale));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<Locale>();
+        }
+
+        /// <summary>
+        /// Deletes a locale by the specified id.
+        /// </summary>
+        /// <param name="localeId">The id of the locale to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ArgumentException">The <param name="localeId">localeId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteLocale(string localeId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(localeId))
+            {
+                throw new ArgumentException("The localeId must be set.");
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
         }
 
         private void AddVersionHeader(int? version)
