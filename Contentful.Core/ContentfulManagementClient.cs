@@ -1082,7 +1082,15 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the Locale must be set.");
             }
 
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(locale));
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(new
+            {
+                code = locale.Code,
+                contentDeliveryApi = locale.ContentDeliveryApi,
+                contentManagementApi = locale.ContentManagementApi,
+                fallbackCode = locale.FallbackCode,
+                name = locale.Name,
+                optional = locale.Optional
+            }));
 
             if (!res.IsSuccessStatusCode)
             {
