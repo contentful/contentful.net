@@ -938,7 +938,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="version">The last known version of the entry. Must be set when updating an asset.</param>
         /// <returns></returns>
-        public async ManagementAsset CreateOrUpdateAssetAsync(ManagementAsset asset, string spaceId = null, int? version = null)
+        public async Task<ManagementAsset> CreateOrUpdateAssetAsync(ManagementAsset asset, string spaceId = null, int? version = null)
         {
             if (string.IsNullOrEmpty(asset.SystemProperties?.Id))
             {
