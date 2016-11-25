@@ -1494,9 +1494,13 @@ namespace Contentful.Core
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
         {
+            var resolver = new CamelCasePropertyNamesContractResolver();
+            resolver.NamingStrategy.OverrideSpecifiedNames = false;
+
             var serializedObject = JsonConvert.SerializeObject(ob, new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = resolver
+
             });
             return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
         }
