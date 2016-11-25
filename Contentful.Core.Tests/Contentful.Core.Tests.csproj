@@ -23,6 +23,7 @@
     <Content Include="JsonFiles\SampleContentType.json" />
     <Content Include="JsonFiles\SampleEntry.json" />
     <Content Include="JsonFiles\SampleSpace.json" />
+    <Content Include="JsonFiles\webhookcalldetails.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App">

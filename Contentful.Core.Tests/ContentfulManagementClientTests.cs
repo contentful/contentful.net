@@ -156,6 +156,20 @@ namespace Contentful.Core.Tests
             Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
         }
 
+        [Fact]
+        public async Task WebHookCallDetailsShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetails.json");
+            //Act
+            var res = await _client.GetWebHookCallDetailsAsync("b", "s");
+
+            //Assert
+            Assert.Equal("unarchive", res.EventType);
+            Assert.Equal("close", res.Response.Headers["connection"]);
+
+        }
+
         private HttpResponseMessage GetResponseFromFile(string file)
         {
             //So, this is an ugly hack... Any better way to get the absolute path of the test project?

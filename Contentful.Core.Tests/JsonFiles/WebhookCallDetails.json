@@ -1,0 +1,57 @@
+{
+  "sys": {
+    "id": "gemlmQJxReG4G0SC4G02M",
+    "type": "WebhookCallDetails",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "WebhookDefinition",
+        "id": "2PCWZTHhjvfUYTfgSNamDn"
+      }
+    },
+    "createdAt": "2016-11-24T13:47:21.478Z"
+  },
+  "request": {
+    "url": "https://robertlinde.se/",
+    "method": "POST",
+    "headers": {
+      "bob": "uncle",
+      "X-Contentful-Topic": "ContentManagement.Asset.unarchive",
+      "X-Contentful-Webhook-Name": "Testhook",
+      "Content-Type": "application/vnd.contentful.management.v1+json",
+      "Authorization": "Basic YmFzaWM6YXV0aA=="
+    },
+    "body": "{\"fields\":{\"title\":{\"en-US\":\"New asset from API\"},\"description\":null,\"file\":{\"en-US\":{\"fileName\":\"prop.png\",\"contentType\":\"image/png\",\"url\":\"//images.contentful.com/321/new-asset/123/prop.png\",\"details\":{\"image\":{\"width\":1168,\"height\":798},\"size\":14106}}}},\"sys\":{\"id\":\"new-asset\",\"type\":\"Asset\",\"createdAt\":\"2016-11-24T11:09:56.353Z\",\"createdBy\":{\"sys\":{\"type\":\"Link\",\"linkType\":\"User\",\"id\":\"0w7AzFDgzUA8MWo79R1Qf7\"}},\"space\":{\"sys\":{\"type\":\"Link\",\"linkType\":\"Space\",\"id\":\"gw484zixu8ng\"}},\"version\":6,\"updatedAt\":\"2016-11-24T13:47:21.470Z\",\"updatedBy\":{\"sys\":{\"type\":\"Link\",\"linkType\":\"User\",\"id\":\"0w7AzFDgzUA8MWo79R1Qf7\"}}}}",
+    "timeout": 30000
+  },
+  "response": {
+    "statusCode": 403,
+    "body": "<!DOCTYPE html>\n \n<html></html>\n",
+    "headers": {
+      "date": "Thu, 24 Nov 2016 13:47:21 GMT",
+      "content-type": "text/html",
+      "transfer-encoding": "chunked",
+      "connection": "close",
+      "set-cookie": [ "__cfduid=d383515243b573296deb80152df8f9d231479995241; expires=Fri, 24-Nov-17 13:47:21 GMT; path=/; domain=.robertlinde.se; HttpOnly" ],
+      "cache-control": "no-cache",
+      "strict-transport-security": "max-age=15552000; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare-nginx",
+      "cf-ray": "306d4ff4a81f239c-IAD"
+    },
+    "url": "https://robertlinde.se/"
+  },
+  "statusCode": 403,
+  "responseAt": "2016-11-24T13:47:21.715Z",
+  "errors": [ "ClientError" ],
+  "eventType": "unarchive",
+  "url": "https://robertlinde.se/",
+  "requestAt": "2016-11-24T13:47:21.478Z"
+}
