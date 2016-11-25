@@ -1396,12 +1396,19 @@ namespace Contentful.Core
             return collection;
         }
 
-        public async Task<Role> CreateRoleAsync(Role role, string spaceId= null)
+        /// <summary>
+        /// Creates a role in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="role">The role to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="Role"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<Role> CreateRoleAsync(Role role, string spaceId = null)
         {
             //Not allowed to post system properties
             role.SystemProperties = null;
 
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1410,7 +1417,62 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
-            return jsonObject.ToObject<WebHook>();
+            return jsonObject.ToObject<Role>();
+        }
+
+        /// <summary>
+        /// Updates a role in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="role">The role to update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The updated <see cref="Role"/>.</returns>
+        /// <exception cref="ArgumentException">The id parameter of the role was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<Role> UpdateRoleAsync(Role role, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(role?.SystemProperties?.Id))
+            {
+                throw new ArgumentException("The id of the role must be set");
+            }
+
+            var id = role.SystemProperties.Id;
+
+            //Not allowed to post system properties
+            role.SystemProperties = null;
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<Role>();
+        }
+
+        /// <summary>
+        /// Deletes a role by the specified id.
+        /// </summary>
+        /// <param name="roleId">The id of the role to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ArgumentException">The <param name="roleId">roleId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteRoleAsync(string roleId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(roleId))
+            {
+                throw new ArgumentException("The id of the role must be set", nameof(roleId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
         }
 
         private void AddVersionHeader(int? version)
