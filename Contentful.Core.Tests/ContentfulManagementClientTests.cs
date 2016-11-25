@@ -1,6 +1,8 @@
 ﻿using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -168,6 +170,65 @@ namespace Contentful.Core.Tests
             Assert.Equal("unarchive", res.EventType);
             Assert.Equal("close", res.Response.Headers["connection"]);
 
+        }
+
+        [Fact]
+        public void ConstraintsShouldSerializeCorrectly()
+        {
+            //Arrange
+            var policy = new Policy();
+            policy.Effect = "allow";
+            policy.Actions = new List<string>()
+            {
+                "create",
+                "delete"
+            };
+            policy.Constraint =
+                new AndConstraint()
+                {
+                    new EqualsConstraint()
+                    {
+                        Property = "sys.type",
+                        ValueToEqual = "Entry"
+                    },
+                    new EqualsConstraint()
+                    {
+                        Property = "sys.createdBy.sys.id",
+                        ValueToEqual = "User.current()"
+                    },
+                    new NotConstraint()
+                    {
+                        ConstraintToInvert = new EqualsConstraint()
+                        {
+                            Property = "sys.contentType.sys.id",
+                            ValueToEqual = "123"
+                        }
+                    }
+            };
+
+            //Act
+            string output = JsonConvert.SerializeObject(policy, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+
+            //Assert
+            Assert.Equal(@"{""effect"":""allow"",""actions"":[""create"",""delete""],""constraint"":{""and"":[{""equals"":[{""doc"":""sys.type""},""Entry""]},{""equals"":[{""doc"":""sys.createdBy.sys.id""},""User.current()""]},{""not"":{""equals"":[{""doc"":""sys.contentType.sys.id""},""123""]}}]}}", output);
+        }
+
+        [Fact]
+        public async Task RolesShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+
+            //Act
+            var res = await _client.GetRoleAsync("123");
+
+            //Assert
+            Assert.Equal("Developer", res.Name);
+            Assert.Equal("sys.type", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).Property);
+            Assert.Equal("Asset", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).ValueToEqual);
         }
 
         private HttpResponseMessage GetResponseFromFile(string file)

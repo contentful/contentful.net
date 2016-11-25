@@ -1,0 +1,77 @@
+﻿{
+  "name": "Developer",
+  "description": "Allows reading Entries and managing API Keys",
+  "policies": [
+    {
+      "effect": "allow",
+      "actions": [
+        "read"
+      ],
+      "constraint": {
+        "and": [
+          {
+            "equals": [
+              {
+                "doc": "sys.type"
+              },
+              "Entry"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "effect": "allow",
+      "actions": [
+        "read"
+      ],
+      "constraint": {
+        "and": [
+          {
+            "equals": [
+              {
+                "doc": "sys.type"
+              },
+              "Asset"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "permissions": {
+    "ContentModel": [
+      "read"
+    ],
+    "Settings": [],
+    "ContentDelivery": "all"
+  },
+  "sys": {
+    "type": "Role",
+    "id": "7fGXphrw2d8uPHbnK88173",
+    "version": 0,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "createdAt": "2016-11-15T07:34:57Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "updatedAt": "2016-11-15T07:34:57Z"
+  }
+}

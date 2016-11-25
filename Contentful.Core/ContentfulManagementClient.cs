@@ -1346,6 +1346,73 @@ namespace Contentful.Core
             return health;
         }
 
+        /// <summary>
+        /// Gets a role by the specified id.
+        /// </summary>
+        /// <param name="roleId">The id of the role.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="Role"/></returns>
+        /// <exception cref="ArgumentException">The <param name="roleId">roleId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<Role> GetRoleAsync(string roleId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(roleId))
+            {
+                throw new ArgumentException("The id of the role must be set", nameof(roleId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<Role>();
+        }
+
+        /// <summary>
+        /// Gets all <see cref="Role">roles</see> of a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Role"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<Role>> GetAllRolesAsync(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<Role>>();
+            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Role>());
+            collection.Items = roles;
+
+            return collection;
+        }
+
+        public async Task<Role> CreateRoleAsync(Role role, string spaceId= null)
+        {
+            //Not allowed to post system properties
+            role.SystemProperties = null;
+
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<WebHook>();
+        }
+
         private void AddVersionHeader(int? version)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
