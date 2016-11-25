@@ -44,7 +44,7 @@ After creating a `ContentfulClient`, you can now query for a single entry:
 ```csharp
 var entry = await client.GetEntryAsync<Entry<dynamic>>("<entry_id>");
 
-Console.WriteLine(entry.Fields.author.ToString()); // => Contentful
+Console.WriteLine(entry.Fields.productName.ToString()); // => Contentful
 ```
 
 Normally you serialize this response into your own class instead of the generic `Entry<>` type. You can do this by providing a suitable type to seralize into. Take the following class as an example:
