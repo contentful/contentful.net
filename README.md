@@ -1,84 +1,84 @@
 # contentful.net
-.NET SDK for [Contentful's][1] Content Delivery API.
 
-# About
+[https://www.contentful.com](Contentful) is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
-[Contentful][1] is a content management platform for web applications, 
-mobile apps and connected devices. It allows you to create, edit & manage 
-content in the cloud and publish it anywhere via a powerful API. Contentful offers 
-tools for managing editorial teams and enabling cooperation between organizations.
+This is the .NET SDK for [Contentful's][1] Content Delivery API.
 
-# Setup 
+## Setup
 
-The best and simplest way to add the package to your .Net solution is to use the NuGet package manager.
-Run the following command from your NuGet package manager console.
+We recommend you use the NuGet package manager to add Contentful to your .Net application using the following command in your NuGet package manager console.
 
-    Install-Package contentful.csharp -prerelease
+```csharp
+Install-Package contentful.csharp -prerelease
+```
 
+## Usage
 
-# Usage
+The `ContentfulClient` handles all communication with the Contentful API.
 
-The `ContentfulClient` is responsible for all communication with the Contentful API.
+To create a new client you need to pass an `HttpClient`, your delivery API key and any other configuration options:
 
-Creating a new client requires you to pass an `HttpClient` and your delivery API key and other options
+```csharp
+var httpClient = new HttpClient();
+var client = new ContentfulClient(httpClient, "<content_delivery_api_key>", "<space_id>");
+```
 
-    var httpClient = new HttpClient();
-    var client = new ContentfulClient(httpClient, "authTokenForDeliveryAPI", "SpaceId");
+or:
 
-or
+```csharp
+var httpClient = new HttpClient();
+var options = new ContentfulOptions()
+{
+    DeliveryApiKey = "<content_delivery_api_key>",
+    SpaceId = "<space_id>"
+}
+var client = new ContentfulClient(httpClient, options);
+```
 
-    var httpClient = new HttpClient();
-    var options = new ContentfulOptions()
-    {
-        DeliveryApiKey = "authTokenForDeliveryAPI",
-        SpaceId = "SpaceId"
-    }
-    var client = new ContentfulClient(httpClient, options);
+If you are running asp.net core and wish to take advantage of [the options pattern][2] you can do so by passing an `IOptions<ContentfulOptions>` to the constructor. This lets you keep your authorization token in your application settings, in environment variables or your own custom `Microsoft.Extensions.Configuration.IConfigurationSource` provider.
 
-If you are running asp.net core and wish to take advantage of [the options pattern][2] you can do so 
-by passing in an `IOptions<ContentfulOptions>` to the constructor. This means you can keep your authorization token in your 
-application settings, in environment varibles or your own custom `Microsoft.Extensions.Configuration.IConfigurationSource` provider.
+### Querying for content
 
-## Querying for content
+After creating a `ContentfulClient`, you can now query for a single entry:
 
-Using a `ContentfulClient` created as in the example above we can now query for a single entry like this.
+```csharp
+var entry = await client.GetEntryAsync<Entry<dynamic>>("<entry_id>");
 
-    var httpClient = new HttpClient();
-    var client = new ContentfulClient(httpClient, "0b7f6x59a0", "developer_bookshelf")
-    var entry = await client.GetEntryAsync<Entry<dynamic>>("5PeGS2SoZGSa4GuiQsigQu");
+Console.WriteLine(entry.Fields.productName.ToString()); // => Contentful
+```
 
-    Console.WriteLine(entry.Fields.author.ToString()); // => Contentful
+Normally you serialize this response into your own class instead of the generic `Entry<>` type. You can do this by providing a suitable type to seralize into. Take the following class as an example:
 
-Normally though, we'd like to serialize this response into our own class rather than into the generic `Entry<>` type. We can do that by 
-providing a suitable type to seralize into. Imagine the following simple class.
+```csharp
+public class Product {
+    public string ProductName { get; set; }
+    public string Price { get; set; }
+    public string Description { get; set; }
+}
+```
 
-    public class Book {
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public string Description { get; set; }
-    }
+Pass this class to the `GetEntryAsync<>` method to serialize the response correctly.
 
-We could pass that to the `GetEntryAsync<>` method and the response would be serialized correctly.
+```csharp
+var product = await client.GetEntryAsync<Product>("<entry_id>");
 
-    var book = await client.GetEntryAsync<Book>("5PeGS2SoZGSa4GuiQsigQu");
-    
-    Console.WriteLine(book.Name); // => How to manage content in a developer-friendly manner
-    Console.WriteLine(book.Author); // => Contentful
-    Console.WriteLine(book.Description); // => Make an API request, get JSON in return.
+Console.WriteLine(product.ProductName); // => How to manage content in a developer-friendly manner
+Console.WriteLine(product.Price); // => Contentful
+Console.WriteLine(product.Description); // => Make an API request, get JSON in return.
+```
 
-We could even combine the two approaches if we are interested in the system properties of the entry but 
-still want to use our own class.
+You can combine the two approaches if you're interested in the system properties of the entry but still want to use your own class.
 
-    var bookEntry = await client.GetEntryAsync<Entry<Book>>("2CfTFQGwogugS6QcOuwO6q");
+```csharp
+var productEntry = await client.GetEntryAsync<Entry<product>>("<entry_id>");
 
-    Console.WriteLine(entry.Fields.Author); // => Contentful
-    Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
+Console.WriteLine(entry.Fields.Price); // => Contentful
+Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
+```
 
-# Further information
+## Further information
 
-You can read the full documentation and explore the api at [https://contentful.github.io/contentful.net-docs/](https://contentful.github.io/contentful.net-docs/)
-
-
+You can read the full documentation and explore the api at <https://contentful.github.io/contentful.net-docs/>
 
 [1]: https://www.contentful.com
 [2]: https://docs.asp.net/en/latest/fundamentals/configuration.html#options-config-objects
