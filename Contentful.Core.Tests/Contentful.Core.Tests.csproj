@@ -49,7 +49,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
-    <VisualStudio>
+    <VisualStudio xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
       <UserProperties />
     </VisualStudio>
   </ProjectExtensions>

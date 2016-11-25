@@ -231,6 +231,49 @@ namespace Contentful.Core.Tests
             Assert.Equal("Asset", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).ValueToEqual);
         }
 
+        [Fact]
+        public async Task RoleShouldSerializeCorrectly()
+        {
+            //Arrange
+            var role = new Role();
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+
+
+            role.Name = "test";
+            role.Description = "desc";
+            role.Permissions = new ContentfulPermissions();
+            role.Permissions.ContentDelivery = new List<string>() { "all" };
+            role.Permissions.ContentModel = new List<string>() { "read" };
+            role.Permissions.Settings = new List<string>() { "read", "manage" };
+            role.Policies = new List<Policy>();
+            role.Policies.Add(new Policy()
+            {
+                Effect = "allow",
+                Actions = new List<string>()
+                {
+                    "read",
+                    "create",
+                    "update"
+                },
+                Constraint = new AndConstraint()
+                {
+                    new EqualsConstraint()
+                    {
+                        Property = "sys.type",
+                        ValueToEqual = "Entry"
+                    }
+                }
+            });
+
+            //Act
+            var res = await _client.CreateRoleAsync(role);
+
+            //Assert
+            Assert.Equal("Developer", res.Name);
+            Assert.Equal("sys.type", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).Property);
+            Assert.Equal("Asset", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).ValueToEqual);
+        }
+
         private HttpResponseMessage GetResponseFromFile(string file)
         {
             //So, this is an ugly hack... Any better way to get the absolute path of the test project?
