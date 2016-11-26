@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -272,6 +273,24 @@ namespace Contentful.Core.Tests
             Assert.Equal("Developer", res.Name);
             Assert.Equal("sys.type", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).Property);
             Assert.Equal("Asset", ((res.Policies[1].Constraint as AndConstraint)[0] as EqualsConstraint).ValueToEqual);
+        }
+
+        [Fact]
+        public async Task RolesCollectionShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRolesCollection.json");
+
+            //Act
+            var res = await _client.GetAllRolesAsync();
+
+            //Assert
+            Assert.Equal(7, res.Total);
+            Assert.Equal("Author", res.First().Name);
+            Assert.Equal("create", res.First().Policies.First().Actions[0]);
+            Assert.Equal("Translator 1", res.ElementAt(4).Name);
+            Assert.Equal("Entry", ((res.ElementAt(4).Policies.First().Constraint as AndConstraint).First() as EqualsConstraint).ValueToEqual);
+
         }
 
         private HttpResponseMessage GetResponseFromFile(string file)

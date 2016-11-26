@@ -70,7 +70,7 @@ namespace Contentful.Core.Configuration
             {
                 var pathsConstraint = new PathConstraint();
 
-                pathsConstraint.Fields = jObject["equals"][0]["doc"]?.ToString();
+                pathsConstraint.Fields = jObject["paths"][0]["doc"]?.ToString();
 
                 return pathsConstraint;
             }
