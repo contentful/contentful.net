@@ -1,0 +1,65 @@
+{
+  "total": 1,
+  "limit": 25,
+  "skip": 0,
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "admin": true,
+      "sys": {
+        "type": "SpaceMembership",
+        "id": "7fZZsLPjXU2PZHNZvPZIvv",
+        "version": 0,
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "createdAt": "2016-11-15T07:34:57Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedAt": "2016-11-15T07:34:57Z"
+      },
+      "user": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "0w7AzFDgzUA8MWo79R1Qf7"
+        }
+      },
+      "roles": [
+        {
+          "type": "Link",
+          "linkType": "Role",
+          "id": "1ElgCn1mi1UHSBLTP2v4TD"
+        },
+        {
+          "type": "Link",
+          "linkType": "Role",
+          "id": "123"
+        },
+        {
+          "type": "Link",
+          "linkType": "Role",
+          "id": "342"
+        }
+      ]
+    }
+  ]
+}

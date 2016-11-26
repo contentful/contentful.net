@@ -1475,7 +1475,7 @@ namespace Contentful.Core
 
         }
 
-        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntry(string entryId, string spaceId = null)
+        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntryAsync(string entryId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -1497,7 +1497,7 @@ namespace Contentful.Core
             return collection;
         }
 
-        public async Task<Snapshot> GetSnapshotForEntry(string snapshotId, string entryId, string spaceId = null)
+        public async Task<Snapshot> GetSnapshotForEntryAsync(string snapshotId, string entryId, string spaceId = null)
         {
             if (string.IsNullOrEmpty(snapshotId))
             {
@@ -1519,6 +1519,169 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<Snapshot>();
+        }
+
+        public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMembershipsAsync(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<SpaceMembership>>();
+            var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SpaceMembership>());
+            collection.Items = memberships;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates a membership in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="spaceMembership">The membership to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="SpaceMembership"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<SpaceMembership> CreateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null)
+        {
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<SpaceMembership>();
+        }
+
+        /// <summary>
+        /// Gets a single <see cref="SpaceMembership"/> for a space.
+        /// </summary>
+        /// <param name="spaceMembershipId">The id of the space membership to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="SpaceMembership"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="spaceMembershipId">spaceMembershipId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<SpaceMembership> GetSpaceMembershipAsync(string spaceMembershipId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(spaceMembershipId))
+            {
+                throw new ArgumentException("The id of the space membership must be set", nameof(spaceMembershipId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<SpaceMembership>();
+        }
+
+        /// <summary>
+        /// Updates a <see cref="SpaceMembership"/> for a space.
+        /// </summary>
+        /// <param name="spaceMembership">The membership to update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The <see cref="SpaceMembership"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="spaceMembership">spaceMembership</param> id was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<SpaceMembership> GetSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(spaceMembership?.SystemProperties?.Id))
+            {
+                throw new ArgumentException("The id of the space membership id must be set", nameof(spaceMembership));
+            }
+
+            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<SpaceMembership>();
+        }
+
+        /// <summary>
+        /// Deletes a <see cref="SpaceMembership"/> for a space.
+        /// </summary>
+        /// <param name="spaceMembershipId">The id of the space membership to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <exception cref="ArgumentException">The <param name="spaceMembershipId">spaceMembershipId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteSpaceMembershipAsync(string spaceMembershipId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(spaceMembershipId))
+            {
+                throw new ArgumentException("The id of the space membership must be set", nameof(spaceMembershipId));
+            }
+
+            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+        }
+
+        /// <summary>
+        /// Gets a collection of all <see cref="ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ApiKey>> GetAllApiKeysAsync(string spaceId = null)
+        {
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>();
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiKey>());
+            collection.Items = keys;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates an <see cref="ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="name">The name of the API key to create.</param>
+        /// <param name="description">The description of the API key to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>The created <see cref="ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ApiKey> CreateApiKeyAsync(string name, string description, string spaceId = null)
+        {
+            if(string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("The name of the api key must be set.", nameof(name));
+            }
+
+            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }));
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<ApiKey>();
         }
 
         private void AddVersionHeader(int? version)

@@ -300,10 +300,49 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"JsonFiles\SnapshotsCollection.json");
 
             //Act
-            var res = await _client.GetAllSnapshotsForEntry("123");
+            var res = await _client.GetAllSnapshotsForEntryAsync("123");
 
             //Assert
             Assert.Equal("Seven Tips From Ernest Hemingway on How to Write Fiction", res.First().Fields["title"]["en-US"]);
+        }
+
+        [Fact]
+        public async Task SpaceMembershipsShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+
+            //Act
+            var res = await _client.GetSpaceMembershipsAsync();
+
+            //Assert
+            Assert.Equal(1, res.Total);
+            Assert.True(res.First().Admin);
+            Assert.Equal("123", res.First().Roles[1]);
+        }
+
+        [Fact]
+        public async Task SpaceMembershipShouldSerializeCorrectly()
+        {
+            //Arrange
+            var membership = new SpaceMembership();
+            membership.Admin = true;
+            membership.Roles = new List<string>()
+            {
+                "123",
+                "231",
+                "12344"
+            };
+            var serializedMembership = JsonConvert.SerializeObject(membership);
+            _handler.Response = new HttpResponseMessage() { Content = new StringContent(serializedMembership) };
+
+            //Act
+            var res = await _client.CreateSpaceMembershipAsync(membership);
+
+            //Assert
+            Assert.True(res.Admin);
+            Assert.Equal(3, res.Roles.Count);
+            Assert.Equal("231", res.Roles[1]);
         }
 
         private HttpResponseMessage GetResponseFromFile(string file)
