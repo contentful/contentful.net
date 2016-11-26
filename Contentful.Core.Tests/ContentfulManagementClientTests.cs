@@ -293,6 +293,19 @@ namespace Contentful.Core.Tests
 
         }
 
+        [Fact]
+        public async Task SnapshotsShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SnapshotsCollection.json");
+
+            //Act
+            var res = await _client.GetAllSnapshotsForEntry("123");
+
+            //Assert
+            Assert.Equal("Seven Tips From Ernest Hemingway on How to Write Fiction", res.First().Fields["title"]["en-US"]);
+        }
+
         private HttpResponseMessage GetResponseFromFile(string file)
         {
             //So, this is an ugly hack... Any better way to get the absolute path of the test project?

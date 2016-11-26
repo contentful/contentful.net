@@ -1475,6 +1475,52 @@ namespace Contentful.Core
 
         }
 
+        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntry(string entryId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException("The id of the entry must be set", nameof(entryId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>();
+            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>());
+            collection.Items = roles;
+
+            return collection;
+        }
+
+        public async Task<Snapshot> GetSnapshotForEntry(string snapshotId, string entryId, string spaceId = null)
+        {
+            if (string.IsNullOrEmpty(snapshotId))
+            {
+                throw new ArgumentException("The id of the snapshot must be set", nameof(snapshotId));
+            }
+
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException("The id of the entry must be set", nameof(entryId));
+            }
+
+            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}");
+
+            if (!res.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(res);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+
+            return jsonObject.ToObject<Snapshot>();
+        }
+
         private void AddVersionHeader(int? version)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))

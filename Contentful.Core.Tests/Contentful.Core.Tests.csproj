@@ -9,6 +9,7 @@
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="JsonFiles\SnapshotsCollection.json" />
     <Content Include="JsonFiles\AssetsCollection.json" />
     <Content Include="JsonFiles\ContenttypesCollection.json" />
     <Content Include="JsonFiles\EditorInterface.json" />

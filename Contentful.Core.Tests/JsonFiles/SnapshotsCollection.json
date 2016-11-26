@@ -1,0 +1,366 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "sys": {
+        "type": "Snapshot",
+        "snapshotType": "publish",
+        "id": "6U1xjMul1TRT2e1CiRwtLG",
+        "createdAt": "2016-11-15T08:42:59.146Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedAt": "2016-11-15T08:42:59.146Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        }
+      },
+      "snapshot": {
+        "fields": {
+          "title": {
+            "en-US": "Seven Tips From Ernest Hemingway on How to Write Fiction"
+          },
+          "slug": {
+            "en-US": "seven-tips-from-ernest-hemingway-on-how-to-write-fiction"
+          },
+          "author": {
+            "en-US": [
+              {
+                "sys": {
+                  "id": "5JQ715oDQW68k8EiEuKOk8",
+                  "type": "Link",
+                  "linkType": "Entry"
+                }
+              }
+            ]
+          },
+          "body": {
+            "en-US": "### To get started, write one true sentence\n\nSometimes when I was starting a new story and I could not get it going, I would sit in front of the fire and squeeze the peel of the little oranges into the edge of the flame and watch the sputter of blue that they made. I would stand and look out over the roofs of Paris and think, “Do not worry. You have always written before and you will write now. All you have to do is write one true sentence. Write the truest sentence that you know.”\n\nSo finally I would write one true sentence, and then go on from there. It was easy then because there was always one true sentence that I knew or had seen or had heard someone say. If I started to write elaborately, or like someone introducing or presenting something, I found that I could cut that scrollwork or ornament out and throw it away and start with the first true simple declarative sentence I had written.\n\n\n### Always stop for the day while you still know what will happen next\n\nThe best way is always to stop when you are going good and when you know what will happen next. If you do that every day when you are writing a novel you will never be stuck. That is the most valuable thing I can tell you so try to remember it.\n\n\n### Never think about the story when you’re not working\n\nWhen I was writing, it was necessary for me to read after I had written. If you kept thinking about it, you would lose the thing you were writing before you could go on with it the next day. It was necessary to get exercise, to be tired in the body, and it was very good to make love with whom you loved.\n\nThat was better than anything. But afterwards, when you were empty, it was necessary to read in order not to think or worry about your work until you could do it again. I had learned already never to empty the well of my writing, but always to stop when there was still something there in the deep part of the well, and let it refill at night from the springs that fed it.\n\n\n### When it’s time to work again, always start by reading what you’ve written so far\n\nThe best way is to read it all every day from the start, correcting as you go along, then go on from where you stopped the day before. When it gets so long that you can’t do this every day read back two or three chapters each day; then each week read it all from the start. That’s how you make it all of one piece.\n\n\n### Don’t describe an emotion–make it\n\nI was trying to write then and I found the greatest difficulty, aside from knowing truly what you really felt, rather than what you were supposed to feel, and had been taught to feel, was to put down what really happened in action; what the actual things were which produced the emotion that you experienced. In writing for a newspaper you told what happened and, with one trick and another, you communicated the emotion aided by the element of timeliness which gives a certain emotion to any account of something that has happened on that day; but the real thing, the sequence of motion and fact which made the emotion and which would be as valid in a year or in ten years or, with luck and if you stated it purely enough, always, was beyond me and I was working very hard to get it.\n\n\n### Use a pencil\n\nWhen you start to write you get all the kick and the reader gets none. So you might as well use a typewriter because it is that much easier and you enjoy it that much more. After you learn to write your whole object is to convey everything, every sensation, sight, feeling, place and emotion to the reader. To do this you have to work over what you write.\n\nIf you write with a pencil you get three different sights at it to see if the reader is getting what you want him to. First when you read it over; then when it is typed you get another chance to improve it, and again in the proof. Writing it first in pencil gives you one-third more chance to improve it. That is .333 which is a damned good average for a hitter. It also keeps it fluid longer so you can better it easier.\n\n\n### Be brief\n\nIt wasn’t by accident that the Gettysburg address was so short. The laws of prose writing are as immutable as those of flight, of mathematics, of physics.\n\nThe original, unabbreviated version of the blog post can be found on the [Open Culture](http://www.openculture.com/) website."
+          },
+          "category": {
+            "en-US": [
+              {
+                "sys": {
+                  "id": "6XL7nwqRZ6yEw0cUe4y0y6",
+                  "type": "Link",
+                  "linkType": "Entry"
+                }
+              }
+            ]
+          },
+          "comments": {
+            "en-US": false
+          },
+          "tags": {
+            "en-US": [
+              "writing",
+              "hemingway"
+            ]
+          },
+          "date": {
+            "en-US": "2016-11-01"
+          }
+        },
+        "sys": {
+          "id": "A96usFSlY4G0W4kwAqswk",
+          "type": "Entry",
+          "createdAt": "2016-11-15T07:35:07.722Z",
+          "createdBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "gw484zixu8ng"
+            }
+          },
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "2wKn6yEnZewu2SCCkus4as"
+            }
+          },
+          "version": 22,
+          "updatedAt": "2016-11-15T08:42:59.137Z",
+          "updatedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "firstPublishedAt": "2016-11-15T07:35:13.166Z",
+          "publishedCounter": 3,
+          "publishedAt": "2016-11-15T08:42:59.137Z",
+          "publishedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "publishedVersion": 21
+        }
+      }
+    },
+    {
+      "sys": {
+        "type": "Snapshot",
+        "snapshotType": "publish",
+        "id": "7GW5KlNAqbevW5imn8hatx",
+        "createdAt": "2016-11-15T08:23:52.401Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedAt": "2016-11-15T08:23:52.401Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        }
+      },
+      "snapshot": {
+        "fields": {
+          "title": {
+            "en-US": "Seven Tips From Ernest Hemingway on How to Write Fiction"
+          },
+          "slug": {
+            "en-US": "seven-tips-from-ernest-hemingway-on-how-to-write-fiction"
+          },
+          "author": {
+            "en-US": [
+              {
+                "sys": {
+                  "id": "5JQ715oDQW68k8EiEuKOk8",
+                  "type": "Link",
+                  "linkType": "Entry"
+                }
+              }
+            ]
+          },
+          "body": {
+            "en-US": "### To get started, write one true sentence\n\nSometimes when I was starting a new story and I could not get it going, I would sit in front of the fire and squeeze the peel of the little oranges into the edge of the flame and watch the sputter of blue that they made. I would stand and look out over the roofs of Paris and think, “Do not worry. You have always written before and you will write now. All you have to do is write one true sentence. Write the truest sentence that you know.”\n\nSo finally I would write one true sentence, and then go on from there. It was easy then because there was always one true sentence that I knew or had seen or had heard someone say. If I started to write elaborately, or like someone introducing or presenting something, I found that I could cut that scrollwork or ornament out and throw it away and start with the first true simple declarative sentence I had written.\n\n\n### Always stop for the day while you still know what will happen next\n\nThe best way is always to stop when you are going good and when you know what will happen next. If you do that every day when you are writing a novel you will never be stuck. That is the most valuable thing I can tell you so try to remember it.\n\n\n### Never think about the story when you’re not working\n\nWhen I was writing, it was necessary for me to read after I had written. If you kept thinking about it, you would lose the thing you were writing before you could go on with it the next day. It was necessary to get exercise, to be tired in the body, and it was very good to make love with whom you loved.\n\nThat was better than anything. But afterwards, when you were empty, it was necessary to read in order not to think or worry about your work until you could do it again. I had learned already never to empty the well of my writing, but always to stop when there was still something there in the deep part of the well, and let it refill at night from the springs that fed it.\n\n\n### When it’s time to work again, always start by reading what you’ve written so far\n\nThe best way is to read it all every day from the start, correcting as you go along, then go on from where you stopped the day before. When it gets so long that you can’t do this every day read back two or three chapters each day; then each week read it all from the start. That’s how you make it all of one piece.\n\n\n### Don’t describe an emotion–make it\n\nI was trying to write then and I found the greatest difficulty, aside from knowing truly what you really felt, rather than what you were supposed to feel, and had been taught to feel, was to put down what really happened in action; what the actual things were which produced the emotion that you experienced. In writing for a newspaper you told what happened and, with one trick and another, you communicated the emotion aided by the element of timeliness which gives a certain emotion to any account of something that has happened on that day; but the real thing, the sequence of motion and fact which made the emotion and which would be as valid in a year or in ten years or, with luck and if you stated it purely enough, always, was beyond me and I was working very hard to get it.\n\n\n### Use a pencil\n\nWhen you start to write you get all the kick and the reader gets none. So you might as well use a typewriter because it is that much easier and you enjoy it that much more. After you learn to write your whole object is to convey everything, every sensation, sight, feeling, place and emotion to the reader. To do this you have to work over what you write.\n\nIf you write with a pencil you get three different sights at it to see if the reader is getting what you want him to. First when you read it over; then when it is typed you get another chance to improve it, and again in the proof. Writing it first in pencil gives you one-third more chance to improve it. That is .333 which is a damned good average for a hitter. It also keeps it fluid longer so you can better it easier.\n\n\n### Be brief\n\nIt wasn’t by accident that the Gettysburg address was so short. The laws of prose writing are as immutable as those of flight, of mathematics, of physics.\n\nThe original, unabbreviated version of the blog post can be found on the [Open Culture](http://www.openculture.com/) website."
+          },
+          "category": {
+            "en-US": [
+              {
+                "sys": {
+                  "id": "6XL7nwqRZ6yEw0cUe4y0y6",
+                  "type": "Link",
+                  "linkType": "Entry"
+                }
+              }
+            ]
+          },
+          "comments": {
+            "en-US": false
+          },
+          "tags": {
+            "en-US": [
+              "writing",
+              "hemingway"
+            ]
+          }
+        },
+        "sys": {
+          "id": "A96usFSlY4G0W4kwAqswk",
+          "type": "Entry",
+          "createdAt": "2016-11-15T07:35:07.722Z",
+          "createdBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "gw484zixu8ng"
+            }
+          },
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "2wKn6yEnZewu2SCCkus4as"
+            }
+          },
+          "version": 20,
+          "updatedAt": "2016-11-15T08:23:52.391Z",
+          "updatedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "firstPublishedAt": "2016-11-15T07:35:13.166Z",
+          "publishedCounter": 2,
+          "publishedAt": "2016-11-15T08:23:52.391Z",
+          "publishedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "publishedVersion": 19
+        }
+      }
+    },
+    {
+      "sys": {
+        "type": "Snapshot",
+        "snapshotType": "publish",
+        "id": "4gbTpnUB0KtLxWMs0ajhdI",
+        "createdAt": "2016-11-15T07:35:13.175Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedAt": "2016-11-15T07:35:13.175Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        }
+      },
+      "snapshot": {
+        "fields": {
+          "title": {
+            "en-US": "Seven Tips From Ernest Hemingway on How to Write Fiction"
+          },
+          "slug": {
+            "en-US": "seven-tips-from-ernest-hemingway-on-how-to-write-fiction"
+          },
+          "author": {
+            "en-US": [
+              {
+                "sys": {
+                  "id": "5JQ715oDQW68k8EiEuKOk8",
+                  "type": "Link",
+                  "linkType": "Entry"
+                }
+              }
+            ]
+          },
+          "body": {
+            "en-US": "### To get started, write one true sentence\n\nSometimes when I was starting a new story and I could not get it going, I would sit in front of the fire and squeeze the peel of the little oranges into the edge of the flame and watch the sputter of blue that they made. I would stand and look out over the roofs of Paris and think, “Do not worry. You have always written before and you will write now. All you have to do is write one true sentence. Write the truest sentence that you know.”\n\nSo finally I would write one true sentence, and then go on from there. It was easy then because there was always one true sentence that I knew or had seen or had heard someone say. If I started to write elaborately, or like someone introducing or presenting something, I found that I could cut that scrollwork or ornament out and throw it away and start with the first true simple declarative sentence I had written.\n\n\n### Always stop for the day while you still know what will happen next\n\nThe best way is always to stop when you are going good and when you know what will happen next. If you do that every day when you are writing a novel you will never be stuck. That is the most valuable thing I can tell you so try to remember it.\n\n\n### Never think about the story when you’re not working\n\nWhen I was writing, it was necessary for me to read after I had written. If you kept thinking about it, you would lose the thing you were writing before you could go on with it the next day. It was necessary to get exercise, to be tired in the body, and it was very good to make love with whom you loved.\n\nThat was better than anything. But afterwards, when you were empty, it was necessary to read in order not to think or worry about your work until you could do it again. I had learned already never to empty the well of my writing, but always to stop when there was still something there in the deep part of the well, and let it refill at night from the springs that fed it.\n\n\n### When it’s time to work again, always start by reading what you’ve written so far\n\nThe best way is to read it all every day from the start, correcting as you go along, then go on from where you stopped the day before. When it gets so long that you can’t do this every day read back two or three chapters each day; then each week read it all from the start. That’s how you make it all of one piece.\n\n\n### Don’t describe an emotion–make it\n\nI was trying to write then and I found the greatest difficulty, aside from knowing truly what you really felt, rather than what you were supposed to feel, and had been taught to feel, was to put down what really happened in action; what the actual things were which produced the emotion that you experienced. In writing for a newspaper you told what happened and, with one trick and another, you communicated the emotion aided by the element of timeliness which gives a certain emotion to any account of something that has happened on that day; but the real thing, the sequence of motion and fact which made the emotion and which would be as valid in a year or in ten years or, with luck and if you stated it purely enough, always, was beyond me and I was working very hard to get it.\n\n\n### Use a pencil\n\nWhen you start to write you get all the kick and the reader gets none. So you might as well use a typewriter because it is that much easier and you enjoy it that much more. After you learn to write your whole object is to convey everything, every sensation, sight, feeling, place and emotion to the reader. To do this you have to work over what you write.\n\nIf you write with a pencil you get three different sights at it to see if the reader is getting what you want him to. First when you read it over; then when it is typed you get another chance to improve it, and again in the proof. Writing it first in pencil gives you one-third more chance to improve it. That is .333 which is a damned good average for a hitter. It also keeps it fluid longer so you can better it easier.\n\n\n### Be brief\n\nIt wasn’t by accident that the Gettysburg address was so short. The laws of prose writing are as immutable as those of flight, of mathematics, of physics.\n\nThe original, unabbreviated version of the blog post can be found on the [Open Culture](http://www.openculture.com/) website."
+          },
+          "category": {
+            "en-US": [
+              {
+                "sys": {
+                  "id": "6XL7nwqRZ6yEw0cUe4y0y6",
+                  "type": "Link",
+                  "linkType": "Entry"
+                }
+              }
+            ]
+          },
+          "comments": {
+            "en-US": false
+          }
+        },
+        "sys": {
+          "id": "A96usFSlY4G0W4kwAqswk",
+          "type": "Entry",
+          "createdAt": "2016-11-15T07:35:07.722Z",
+          "createdBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "gw484zixu8ng"
+            }
+          },
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "2wKn6yEnZewu2SCCkus4as"
+            }
+          },
+          "version": 2,
+          "updatedAt": "2016-11-15T07:35:13.166Z",
+          "updatedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "firstPublishedAt": "2016-11-15T07:35:13.166Z",
+          "publishedCounter": 1,
+          "publishedAt": "2016-11-15T07:35:13.166Z",
+          "publishedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "0w7AzFDgzUA8MWo79R1Qf7"
+            }
+          },
+          "publishedVersion": 1
+        }
+      }
+    }
+  ],
+  "skip": 0,
+  "limit": 100
+}
