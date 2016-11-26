@@ -19,6 +19,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The actions this policy refers to.
         /// </summary>
+        [JsonConverter(typeof(StringAllToListJsonConverter))]
         public List<string> Actions { get; set; }
         
         /// <summary>
