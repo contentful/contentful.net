@@ -136,9 +136,9 @@ namespace Contentful.Core.Tests
             {
                  headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Organization").First() == "112";
             };
-            _handler.VerifyContent = async (HttpContent content) =>
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (content as StringContent).ReadAsStringAsync();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
 
             //Act
@@ -161,9 +161,9 @@ namespace Contentful.Core.Tests
             {
                 headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First() == "37";
             };
-            _handler.VerifyContent = async (HttpContent content) =>
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (content as StringContent).ReadAsStringAsync();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
 
             //Act

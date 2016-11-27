@@ -485,7 +485,7 @@ namespace Contentful.Core.Tests
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            VerifyContent?.Invoke(request.Content);
+            VerifyRequest?.Invoke(request);
             VerificationBeforeSend?.Invoke();
 
             if (Responses.Count > 0)
@@ -495,7 +495,7 @@ namespace Contentful.Core.Tests
 
             return await Task.FromResult(Response);
         }
-        public Action<HttpContent> VerifyContent { get; set; }
+        public Action<HttpRequestMessage> VerifyRequest { get; set; }
         public Action VerificationBeforeSend { get; set; }
         public Queue<HttpResponseMessage> Responses { get; set; }
         public HttpResponseMessage Response { get; set; }
