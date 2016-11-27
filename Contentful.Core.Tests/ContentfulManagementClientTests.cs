@@ -175,6 +175,30 @@ namespace Contentful.Core.Tests
             Assert.Equal("Products", res.Name);
         }
 
+        [Theory]
+        [InlineData("123")]
+        [InlineData("54")]
+        [InlineData("345")]
+        public async Task DeletingASpaceShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteSpaceAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/{id}", requestUrl);
+        }
+
         [Fact]
         public async Task EditorInterfaceShouldSerializeCorrectly()
         {
