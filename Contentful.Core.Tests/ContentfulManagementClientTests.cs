@@ -126,6 +126,56 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task CreateSpaceShouldCreateCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpace.json");
+            var headerSet = false;
+            var contentSet = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                 headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Organization").First() == "112";
+            };
+            _handler.VerifyContent = async (HttpContent content) =>
+            {
+                contentSet = await (content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateSpaceAsync("Spaceman", "en-US", "112");
+
+            //Assert
+            Assert.True(headerSet);
+            Assert.Equal(@"{""name"":""Spaceman"",""defaultLocale"":""en-US""}", contentSet);
+            Assert.Equal("Products", res.Name);
+        }
+
+        [Fact]
+        public async Task UpdateSpaceShouldCreateCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpace.json");
+            var headerSet = false;
+            var contentSet = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First() == "37";
+            };
+            _handler.VerifyContent = async (HttpContent content) =>
+            {
+                contentSet = await (content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateSpaceNameAsync("spaceId", "Spacemaster", 37, "333");
+
+            //Assert
+            Assert.True(headerSet);
+            Assert.Equal(@"{""name"":""Spacemaster""}", contentSet);
+            Assert.Equal("Products", res.Name);
+        }
+
+        [Fact]
         public async Task EditorInterfaceShouldSerializeCorrectly()
         {
             //Arrange
