@@ -1,0 +1,431 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 7,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "3S1ngcWajSia6I4sssQwyK",
+        "type": "Asset",
+        "createdAt": "2016-11-15T07:35:04.262Z",
+        "updatedAt": "2016-11-24T09:55:28.326Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 5,
+        "version": 27,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 26,
+        "firstPublishedAt": "2016-11-15T07:35:06.685Z",
+        "publishedAt": "2016-11-24T09:55:28.322Z"
+      },
+      "fields": {
+        "title": {
+          "en-US": "Ernest Hemingway (1950)"
+        },
+        "description": {
+          "en-US": "Hemingway in the cabin of his boat Pilar, off the coast of Cuba"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/3S1ngcWajSia6I4sssQwyK/a71cb5b54327134340031a89dc43a4fc/Ernest_Hemingway_1950.jpg",
+            "details": {
+              "size": 2290561,
+              "image": {
+                "width": 2940,
+                "height": 2934
+              }
+            },
+            "fileName": "Ernest_Hemingway_1950.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "5Q6yYElPe8w8AEsKeki4M4",
+        "type": "Asset",
+        "createdAt": "2016-11-15T07:35:04.314Z",
+        "updatedAt": "2016-11-15T07:35:06.657Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 3,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 2,
+        "firstPublishedAt": "2016-11-15T07:35:06.649Z",
+        "publishedAt": "2016-11-15T07:35:06.649Z"
+      },
+      "fields": {
+        "title": {
+          "en-US": "Pen icon"
+        },
+        "description": {
+          "en-US": "Icon set for categories"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/5Q6yYElPe8w8AEsKeki4M4/8e11991e082283e5506d3720b6527223/Streamline-28-64.png",
+            "details": {
+              "size": 1423,
+              "image": {
+                "width": 64,
+                "height": 64
+              }
+            },
+            "fileName": "Streamline-28-64.png",
+            "contentType": "image/png"
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "new-asset",
+        "type": "Asset",
+        "createdAt": "2016-11-24T11:09:56.353Z",
+        "updatedAt": "2016-11-24T13:47:21.472Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "version": 6
+      },
+      "fields": {
+        "title": {
+          "en-US": "New asset from API"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/new-asset/d9f8e7ec46ddbe024822aec99dcff7ed/prop.png",
+            "details": {
+              "size": 14106,
+              "image": {
+                "width": 1168,
+                "height": 798
+              }
+            },
+            "fileName": "prop.png",
+            "contentType": "image/png"
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "6JCShApjO0O4CUkUKAKAaS",
+        "type": "Asset",
+        "createdAt": "2016-11-15T07:35:04.370Z",
+        "updatedAt": "2016-11-15T07:35:06.664Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 3,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 2,
+        "firstPublishedAt": "2016-11-15T07:35:06.652Z",
+        "publishedAt": "2016-11-15T07:35:06.652Z"
+      },
+      "fields": {
+        "title": {
+          "en-US": "Letter cubes"
+        },
+        "description": {
+          "en-US": "Category icon set"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/6JCShApjO0O4CUkUKAKAaS/ff39710ef5b0ea1ccab0503b8f58aaf1/letter-cubes.png",
+            "details": {
+              "size": 3905,
+              "image": {
+                "width": 256,
+                "height": 256
+              }
+            },
+            "fileName": "letter-cubes.png",
+            "contentType": "image/png"
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "2ReMHJhXoAcy4AyamgsgwQ",
+        "type": "Asset",
+        "createdAt": "2016-11-15T07:35:04.369Z",
+        "updatedAt": "2016-11-15T07:35:06.669Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 3,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 2,
+        "firstPublishedAt": "2016-11-15T07:35:06.658Z",
+        "publishedAt": "2016-11-15T07:35:06.658Z"
+      },
+      "fields": {
+        "title": {
+          "en-US": "Lewis Carroll"
+        },
+        "description": {
+          "en-US": "Taken on January 1, 1855"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/2ReMHJhXoAcy4AyamgsgwQ/13547943bc3eaf8723ad18579502381d/lewis-carroll-1.jpg",
+            "details": {
+              "size": 21113,
+              "image": {
+                "width": 300,
+                "height": 250
+              }
+            },
+            "fileName": "lewis-carroll-1.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "2xA3oKlZTuQ0Wgs2Wm2Mkk",
+        "type": "Asset",
+        "createdAt": "2016-11-15T07:35:04.296Z",
+        "updatedAt": "2016-11-15T07:35:06.663Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 3,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 2,
+        "firstPublishedAt": "2016-11-15T07:35:06.655Z",
+        "publishedAt": "2016-11-15T07:35:06.655Z"
+      },
+      "fields": {
+        "title": {
+          "en-US": "Mike Springer"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/2xA3oKlZTuQ0Wgs2Wm2Mkk/5d82287130d944acf7196447ee92b35e/kenchoong.jpeg",
+            "details": {
+              "size": 3559,
+              "image": {
+                "width": 200,
+                "height": 200
+              }
+            },
+            "fileName": "kenchoong.jpeg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "bXvdSYHB3Guy2uUmuEco8",
+        "type": "Asset",
+        "createdAt": "2016-11-15T07:35:04.237Z",
+        "updatedAt": "2016-11-15T07:35:06.689Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 3,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 2,
+        "firstPublishedAt": "2016-11-15T07:35:06.679Z",
+        "publishedAt": "2016-11-15T07:35:06.679Z"
+      },
+      "fields": {
+        "title": {
+          "en-US": "Alice in Wonderland"
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.contentful.com/gw484zixu8ng/bXvdSYHB3Guy2uUmuEco8/75e0565e7894a290da6d70a6e2d6ba3c/alice-in-wonderland.gif",
+            "details": {
+              "size": 24238,
+              "image": {
+                "width": 644,
+                "height": 610
+              }
+            },
+            "fileName": "alice-in-wonderland.gif",
+            "contentType": "image/gif"
+          }
+        }
+      }
+    }
+  ]
+}

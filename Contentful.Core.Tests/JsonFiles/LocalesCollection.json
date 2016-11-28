@@ -1,0 +1,48 @@
+{
+  "total": 1,
+  "limit": 100,
+  "skip": 0,
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "name": "U.S. English",
+      "internal_code": "en-US",
+      "code": "en-US",
+      "fallbackCode": null,
+      "default": true,
+      "contentManagementApi": true,
+      "contentDeliveryApi": true,
+      "optional": false,
+      "sys": {
+        "type": "Locale",
+        "id": "7fBbetpNW1yVJNw0oz7IQV",
+        "version": 0,
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "createdAt": "2016-11-15T07:34:56Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedAt": "2016-11-15T07:34:56Z"
+      }
+    }
+  ]
+}

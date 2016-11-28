@@ -1,0 +1,68 @@
+﻿{
+  "sys": {
+    "id": "42BwcCt4TeeskG0eq8S2CQ",
+    "type": "Entry",
+    "createdAt": "2016-11-23T09:40:56.857Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "testagain"
+      }
+    },
+    "firstPublishedAt": "2016-11-23T09:44:08.742Z",
+    "publishedCounter": 1,
+    "publishedAt": "2016-11-23T09:44:08.742Z",
+    "publishedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "publishedVersion": 18,
+    "version": 19,
+    "updatedAt": "2016-11-23T09:44:08.771Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    }
+  },
+  "fields": {
+    "field2": {
+      "en-US": {
+        "lat": 59.40713655426177,
+        "lon": 17.978289127349854
+      }
+    },
+    "field1": {
+      "en-US": "Somethi"
+    },
+    "field4": {
+      "en-US": {
+        "sys": {
+          "id": "2ReMHJhXoAcy4AyamgsgwQ",
+          "linkType": "Asset",
+          "type": "Link"
+        }
+      }
+    }
+  }
+}

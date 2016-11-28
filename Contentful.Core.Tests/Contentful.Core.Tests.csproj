@@ -9,7 +9,12 @@
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="JsonFiles\LocalesCollection.json" />
+    <Content Include="JsonFiles\AssetsCollectionManagement.json" />
     <Content Include="JsonFiles\ContenttypesCollectionManagement.json" />
+    <Content Include="JsonFiles\EntriesCollectionManagement.json" />
+    <Content Include="JsonFiles\SampleAssetManagement.json" />
+    <Content Include="JsonFiles\SampleEntryManagement.json" />
     <Content Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
     <Content Include="JsonFiles\SnapshotsCollection.json" />
     <Content Include="JsonFiles\AssetsCollection.json" />
