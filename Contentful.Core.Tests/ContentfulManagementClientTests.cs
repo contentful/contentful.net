@@ -200,6 +200,304 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetContentTypesShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\ContenttypesCollectionManagement.json");
+            //Act
+            var res = await _client.GetContentTypesAsync();
+
+            //Assert
+            Assert.Equal(4, res.Count());
+            Assert.Equal("someName", res.First().Name);
+            Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateContentTypeShouldThrowIfNoIdSet()
+        {
+            //Arrange
+            var contentType = new ContentType();
+            contentType.Name = "Barbossa";
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentTypeAsync(contentType));
+
+            //Assert
+            Assert.Equal("The id of the content type must be set.\r\nParameter name: contentType", ex.Message);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateContentTypeShouldCreateCorrectObject()
+        {
+            //Arrange
+            var contentType = new ContentType();
+            contentType.Name = "Barbossa";
+            contentType.SystemProperties = new SystemProperties();
+            contentType.SystemProperties.Id = "323";
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+
+            var versionHeader = "";
+            var contentSet = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateContentTypeAsync(contentType, version: 22);
+
+            //Assert
+            Assert.Equal("22", versionHeader);
+            Assert.Contains(@"""name"":""Barbossa""", contentSet);
+        }
+
+        [Fact]
+        public async Task GetContentTypeShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+
+            //Act
+            var res = await _client.GetContentTypeAsync("someid");
+
+            //Assert
+            Assert.Equal("Product", res.Name);
+            Assert.Equal("productName", res.DisplayField);
+            Assert.Equal(12, res.Fields.Count);
+            Assert.True(res.Fields[0].Localized);
+            Assert.Equal("Description", res.Fields[2].Name);
+            Assert.Equal("Link", res.Fields[4].Items.Type);
+
+        }
+
+        [Fact]
+        public async Task GetContentTypeShouldThrowForEmptyId()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+
+            //Act
+            var res = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetContentTypeAsync(""));
+
+            //Assert
+            Assert.Equal("contentTypeId", res.Message);
+        }
+
+        [Theory]
+        [InlineData("777")]
+        [InlineData("456")]
+        [InlineData("666")]
+        public async Task DeletingAContentTypeShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteContentTypeAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/content_types/{id}", requestUrl);
+        }
+
+        [Fact]
+        public async Task ActivatingContentTypeShouldThrowForEmptyId()
+        {
+            //Arrange
+            
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.ActivateContentTypeAsync("", 34));
+
+            //Assert
+            Assert.Equal("contentTypeId", ex.Message);
+        }
+
+        [Fact]
+        public async Task ActivatingContentTypeShouldCallCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+
+            var versionHeader = "";
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerificationBeforeSend = () =>
+            {
+                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+            };
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.ActivateContentTypeAsync("758", 345);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/content_types/758/published", requestUrl);
+            Assert.Equal("345", versionHeader);
+        }
+
+        [Fact]
+        public async Task DeactivatingContentTypeShouldThrowForEmptyId()
+        {
+            //Arrange
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeactivateContentTypeAsync(""));
+
+            //Assert
+            Assert.Equal("contentTypeId", ex.Message);
+        }
+
+        [Fact]
+        public async Task DeactivatingContentTypeShouldCallCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeactivateContentTypeAsync("324");
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/content_types/324/published", requestUrl);
+        }
+
+        [Fact]
+        public async Task GetActivatedContentTypesShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\ContenttypesCollectionManagement.json");
+            var requestUrl = "";
+
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.GetActivatedContentTypesAsync();
+
+            //Assert
+            Assert.Equal(4, res.Count());
+            Assert.Equal($"https://api.contentful.com/spaces/666/public/content_types", requestUrl);
+            Assert.Equal("someName", res.First().Name);
+            Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
+
+        }
+
+        [Fact]
+        public async Task GetEditorInterfaceShouldThrowForEmptyId()
+        {
+            //Arrange
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEditorInterfaceAsync(""));
+            //Assert
+            Assert.Equal("contentTypeId", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetEditorInterfaceShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+
+            //Act
+            var res = await _client.GetEditorInterfaceAsync("23");
+            //Assert
+            Assert.Equal(7, res.Controls.Count);
+            Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
+            Assert.IsType<RatingEditorInterfaceControlSettings>(res.Controls[5].Settings);
+            Assert.Equal(7, (res.Controls[5].Settings as RatingEditorInterfaceControlSettings).NumberOfStars);
+            Assert.Equal("How many do you likez?", res.Controls[5].Settings.HelpText);
+            Assert.IsType<DatePickerEditorInterfaceControlSettings>(res.Controls[6].Settings);
+            Assert.Equal(EditorInterfaceDateFormat.time, (res.Controls[6].Settings as DatePickerEditorInterfaceControlSettings).DateFormat);
+
+        }
+
+        [Fact]
+        public async Task UpdateEditorInterfaceShouldThrowForEmptyId()
+        {
+            //Arrange
+            var editorInterface = new EditorInterface();
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateEditorInterfaceAsync(editorInterface, "", 6));
+            //Assert
+            Assert.Equal("contentTypeId", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdateEditorInterfaceShouldCallCorrectUrl()
+        {
+            //Arrange
+            var editorInterface = new EditorInterface();
+            editorInterface.Controls = new List<EditorInterfaceControl>()
+            {
+                new EditorInterfaceControl()
+                {
+                    FieldId = "field1",
+                    WidgetId = SystemWidgetIds.SingleLine
+                },
+                new EditorInterfaceControl()
+                {
+                    FieldId = "field2",
+                    WidgetId = SystemWidgetIds.Boolean,
+                    Settings = new BooleanEditorInterfaceControlSettings()
+                    {
+                        HelpText = "Help me here!",
+                        TrueLabel = "Truthy",
+                        FalseLabel = "Falsy"
+                    }
+                }
+            };
+            var versionHeader = "";
+            var contentSet = "";
+            var requestUrl = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+
+            //Act
+            var res = await _client.UpdateEditorInterfaceAsync(editorInterface, "123", 16);
+
+            //Assert
+            Assert.Equal("16", versionHeader);
+            Assert.Equal("https://api.contentful.com/spaces/666/content_types/123/editor_interface", requestUrl);
+            Assert.Equal(@"{""controls"":[{""fieldId"":""field1"",""widgetId"":""singleLine""},{""fieldId"":""field2"",""widgetId"":""boolean"",""settings"":{""trueLabel"":""Truthy"",""falseLabel"":""Falsy"",""helpText"":""Help me here!""}}]}", contentSet);
+        }
+
+        [Fact]
         public async Task EditorInterfaceShouldSerializeCorrectly()
         {
             //Arrange

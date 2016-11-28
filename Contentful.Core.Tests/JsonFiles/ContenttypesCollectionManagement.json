@@ -1,0 +1,472 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 4,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "testagain",
+        "type": "ContentType",
+        "createdAt": "2016-11-22T18:39:20.352Z",
+        "updatedAt": "2016-11-23T08:03:24.852Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 2,
+        "version": 5,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 4,
+        "firstPublishedAt": "2016-11-23T07:37:45.142Z",
+        "publishedAt": "2016-11-23T08:03:24.838Z"
+      },
+      "displayField": "field1",
+      "name": "someName",
+      "description": null,
+      "fields": [
+        {
+          "id": "field1",
+          "name": "Field1",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "size": {
+                "min": 2,
+                "max": 8
+              },
+              "message": null
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "field2",
+          "name": "Field2",
+          "type": "Location",
+          "localized": true,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "field3",
+          "name": "Field3",
+          "type": "Text",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": true,
+          "omitted": false
+        },
+        {
+          "id": "field4",
+          "name": "Field4",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "1kUEViTN4EmGiEaaeC6ouY",
+        "type": "ContentType",
+        "createdAt": "2016-11-15T07:35:01.693Z",
+        "updatedAt": "2016-11-15T07:35:02.126Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 2,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 1,
+        "firstPublishedAt": "2016-11-15T07:35:02.107Z",
+        "publishedAt": "2016-11-15T07:35:02.107Z"
+      },
+      "displayField": "name",
+      "name": "Author",
+      "description": null,
+      "fields": [
+        {
+          "id": "name",
+          "name": "Name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "website",
+          "name": "Website",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "profilePhoto",
+          "name": "Profile Photo",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkMimetypeGroup": "image"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        },
+        {
+          "id": "biography",
+          "name": "Biography",
+          "type": "Text",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "size": {
+                "min": 0,
+                "max": 1000
+              }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "createdEntries",
+          "name": "Created Entries",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "validations": [
+              {
+                "linkContentType": [
+                  "2wKn6yEnZewu2SCCkus4as"
+                ]
+              }
+            ],
+            "linkType": "Entry"
+          }
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "5KMiN6YPvi42icqAUQMCQe",
+        "type": "ContentType",
+        "createdAt": "2016-11-15T07:35:01.313Z",
+        "updatedAt": "2016-11-15T07:35:02.063Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 2,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 1,
+        "firstPublishedAt": "2016-11-15T07:35:02.054Z",
+        "publishedAt": "2016-11-15T07:35:02.054Z"
+      },
+      "displayField": "title",
+      "name": "Category",
+      "description": null,
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "shortDescription",
+          "name": "Short description",
+          "type": "Text",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": true,
+          "omitted": false
+        },
+        {
+          "id": "icon",
+          "name": "Icon",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkMimetypeGroup": "image"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "id": "2wKn6yEnZewu2SCCkus4as",
+        "type": "ContentType",
+        "createdAt": "2016-11-15T07:35:01.139Z",
+        "updatedAt": "2016-11-15T07:35:02.099Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedCounter": 1,
+        "version": 2,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "publishedVersion": 1,
+        "firstPublishedAt": "2016-11-15T07:35:02.081Z",
+        "publishedAt": "2016-11-15T07:35:02.082Z"
+      },
+      "displayField": "title",
+      "name": "Post",
+      "description": null,
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Text",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "slug",
+          "name": "Slug",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "author",
+          "name": "Author",
+          "type": "Array",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "validations": [
+              {
+                "linkContentType": [
+                  "1kUEViTN4EmGiEaaeC6ouY"
+                ]
+              }
+            ],
+            "linkType": "Entry"
+          }
+        },
+        {
+          "id": "body",
+          "name": "Body",
+          "type": "Text",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "category",
+          "name": "Category",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "validations": [
+              {
+                "linkContentType": [
+                  "5KMiN6YPvi42icqAUQMCQe"
+                ]
+              }
+            ],
+            "linkType": "Entry"
+          }
+        },
+        {
+          "id": "tags",
+          "name": "Tags",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Symbol",
+            "validations": []
+          }
+        },
+        {
+          "id": "featuredImage",
+          "name": "Featured image",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkMimetypeGroup": "image"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        },
+        {
+          "id": "date",
+          "name": "Date",
+          "type": "Date",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "comments",
+          "name": "Comments",
+          "type": "Boolean",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        }
+      ]
+    }
+  ]
+}
