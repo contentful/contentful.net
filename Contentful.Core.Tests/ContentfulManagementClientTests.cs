@@ -1143,6 +1143,58 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task CreateLocaleShouldCreateCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
+            var locale = new Locale();
+            locale.Name = "Unintelligible English";
+            locale.FallbackCode = "sv-SE";
+            locale.Optional = true;
+            locale.Code = "en-UI";
+            var contentSet = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateLocaleAsync(locale);
+
+            //Assert
+            Assert.Equal(@"{""code"":""en-UI"",""contentDeliveryApi"":false,""contentManagementApi"":false,""fallbackCode"":""sv-SE"",""name"":""Unintelligible English"",""optional"":true}", contentSet);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetLocaleShouldThrowWhenIdIsNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetLocaleAsync(id));
+
+            //Assert
+            Assert.Equal("The localeId must be set.", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetLocaleShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
+
+            //Act
+            var res = await _client.GetLocaleAsync("art");
+
+            //Assert
+            Assert.Equal("U.S. English", res.Name);
+            Assert.Equal("en-US", res.Code);
+        }
+
+        [Fact]
         public async Task WebHookCallDetailsShouldDeserializeCorrectly()
         {
             //Arrange

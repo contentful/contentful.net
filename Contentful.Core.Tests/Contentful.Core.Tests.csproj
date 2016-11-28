@@ -13,6 +13,7 @@
     <Content Include="JsonFiles\AssetsCollectionManagement.json" />
     <Content Include="JsonFiles\ContenttypesCollectionManagement.json" />
     <Content Include="JsonFiles\EntriesCollectionManagement.json" />
+    <Content Include="JsonFiles\SampleLocale.json" />
     <Content Include="JsonFiles\SampleAssetManagement.json" />
     <Content Include="JsonFiles\SampleEntryManagement.json" />
     <Content Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
