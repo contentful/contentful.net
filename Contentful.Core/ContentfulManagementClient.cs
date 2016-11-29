@@ -1183,7 +1183,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(webhook?.SystemProperties?.Id))
             {
-                throw new ArgumentException("The id of the webhook must be set");
+                throw new ArgumentException("The id of the webhook must be set.");
             }
 
             var id = webhook.SystemProperties.Id;
@@ -1215,7 +1215,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(webhookId))
             {
-                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+                throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");

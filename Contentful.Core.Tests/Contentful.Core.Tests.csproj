@@ -16,6 +16,7 @@
     <Content Include="JsonFiles\SampleLocale.json" />
     <Content Include="JsonFiles\SampleAssetManagement.json" />
     <Content Include="JsonFiles\SampleEntryManagement.json" />
+    <Content Include="JsonFiles\SampleWebHook.json" />
     <Content Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
     <Content Include="JsonFiles\SnapshotsCollection.json" />
     <Content Include="JsonFiles\AssetsCollection.json" />
@@ -34,6 +35,7 @@
     <Content Include="JsonFiles\SampleEntry.json" />
     <Content Include="JsonFiles\SampleRolesCollection.json" />
     <Content Include="JsonFiles\SampleSpace.json" />
+    <Content Include="JsonFiles\WebhookCollection.json" />
     <Content Include="JsonFiles\webhookcalldetails.json" />
   </ItemGroup>
   <ItemGroup>

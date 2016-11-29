@@ -1,0 +1,47 @@
+﻿{
+  "url": "https://robertlinde.se/",
+  "httpBasicUsername": "basic",
+  "name": "Testhook",
+  "headers": [
+    {
+      "key": "bob",
+      "value": "uncle"
+    }
+  ],
+  "topics": [
+    "Asset.archive",
+    "Asset.unarchive",
+    "ContentType.create",
+    "ContentType.save",
+    "Entry.publish",
+    "Entry.unpublish"
+  ],
+  "sys": {
+    "type": "WebhookDefinition",
+    "id": "2PCWZTHhjvfUYTfgSNamDn",
+    "version": 0,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "createdAt": "2016-11-24T13:46:45Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "updatedAt": "2016-11-24T13:46:45Z"
+  }
+}

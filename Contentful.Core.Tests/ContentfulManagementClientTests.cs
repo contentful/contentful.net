@@ -1194,6 +1194,186 @@ namespace Contentful.Core.Tests
             Assert.Equal("en-US", res.Code);
         }
 
+        [Theory]
+        [InlineData("asg")]
+        [InlineData("21345")]
+        [InlineData("hgf633f")]
+        public async Task DeletingLocaleShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+
+            //Act
+            await _client.DeleteLocaleAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/locales/{id}", requestUrl);
+        }
+
+        [Fact]
+        public async Task GetAllWebHooksShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCollection.json");
+
+            //Act
+            var res = await _client.GetWebHooksCollectionAsync();
+
+            //Assert
+            Assert.Equal(1, res.Total);
+            Assert.Equal(1, res.Count());
+            Assert.Equal("Testhook", res.First().Name);
+            Assert.Equal("https://robertlinde.se/", res.First().Url);
+        }
+
+        [Fact]
+        public async Task CreateWebHookShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
+
+            var webhook = new WebHook();
+            webhook.Name = "Some hook";
+            webhook.Url = "https://www.cracked.com/";
+            webhook.HttpBasicPassword = "Tepes";
+            webhook.HttpBasicUsername = "Vlad";
+            webhook.Topics = new List<string>()
+            {
+                "Entry.create",
+                "Asset.publish"
+            };
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateWebHookAsync(webhook);
+
+            //Assert
+            Assert.Equal(HttpMethod.Post, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/webhook_definitions", url);
+            Assert.Contains(@"""name"":""Some hook""", contentSet);
+            Assert.Contains(@"""url"":""https://www.cracked.com/""", contentSet);
+            Assert.Contains(@"""httpBasicUsername"":""Vlad""", contentSet);
+            Assert.Contains(@"""httpBasicPassword"":""Tepes""", contentSet);
+            Assert.Contains(@"""Entry.create""", contentSet);
+            Assert.Contains(@"""Asset.publish""", contentSet);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task CreateOrUpdateWebHookShouldThrowIfNoIdSet(string id)
+        {
+            //Arrange
+            var webHook = new WebHook();
+            webHook.SystemProperties = new SystemProperties();
+            webHook.SystemProperties.Id = id;
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateWebHookAsync(webHook));
+
+            //Assert
+            Assert.Equal("The id of the webhook must be set.", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("2354")]
+        [InlineData("33")]
+        [InlineData("vadfb#¤123")]
+        public async Task CreateOrUpdateWebHookShouldCallCorrectUrlWithData(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
+
+            var webhook = new WebHook();
+            webhook.SystemProperties = new SystemProperties();
+            webhook.SystemProperties.Id = id;
+            webhook.Name = "Bingo";
+            webhook.Url = "http://www.imdb.com/name/nm0001159/";
+            webhook.HttpBasicPassword = "Caligula";
+            webhook.HttpBasicUsername = "Emperor";
+            webhook.Topics = new List<string>()
+            {
+                "Asset.create",
+                "Entry.*"
+            };
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateWebHookAsync(webhook);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/spaces/666/webhook_definitions/{id}", url);
+            Assert.Contains(@"""name"":""Bingo""", contentSet);
+            Assert.Contains(@"""url"":""http://www.imdb.com/name/nm0001159/""", contentSet);
+            Assert.Contains(@"""httpBasicUsername"":""Emperor""", contentSet);
+            Assert.Contains(@"""httpBasicPassword"":""Caligula""", contentSet);
+            Assert.Contains(@"""Asset.create""", contentSet);
+            Assert.Contains(@"""Entry.*""", contentSet);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetWebHookShouldThrowIfNoIdSet(string id)
+        {
+            //Arrange
+
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookAsync(id));
+
+            //Assert
+            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetWebHookShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
+
+            //Act
+            var res = await _client.GetWebHookAsync("ertg");
+
+            //Assert
+            Assert.Equal("Testhook", res.Name);
+            Assert.Equal("https://robertlinde.se/", res.Url);
+            Assert.Collection(res.Topics, 
+                (t) => Assert.Equal("Asset.archive", t),
+                (t) => Assert.Equal("Asset.unarchive", t),
+                (t) => Assert.Equal("ContentType.create", t),
+                (t) => Assert.Equal("ContentType.save", t),
+                (t) => Assert.Equal("Entry.publish", t),
+                (t) => Assert.Equal("Entry.unpublish", t));
+            Assert.Collection(res.Headers, (h) => { Assert.Equal("bob", h.Key); Assert.Equal("uncle", h.Value); });
+        }
+
         [Fact]
         public async Task WebHookCallDetailsShouldDeserializeCorrectly()
         {
