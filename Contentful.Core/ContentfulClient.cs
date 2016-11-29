@@ -17,12 +17,9 @@ namespace Contentful.Core
     /// <summary>
     /// Main class for interaction with the contentful delivery and preview APIs
     /// </summary>
-    public class ContentfulClient : IContentfulClient
+    public class ContentfulClient : ContentfulClientBase, IContentfulClient
     {
-        private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://cdn.contentful.com/spaces/";
-        private readonly ContentfulOptions _options;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class. 
@@ -428,13 +425,13 @@ namespace Contentful.Core
         /// <summary>
         /// Fetches an initial sync result of content. Note that this sync might not contain the entire result. 
         /// If the <see cref="SyncResult"/> returned contains a <see cref="SyncResult.NextPageUrl"/> that means 
-        /// there are more resources to fetch. See also the <see cref="SyncInitialRecursive"/> method.
+        /// there are more resources to fetch. See also the <see cref="SyncInitialRecursiveAsync"/> method.
         /// </summary>
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "")
+        public async Task<SyncResult> SyncInitialAsync(SyncType syncType = SyncType.All, string contentTypeId = "")
         {
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
@@ -458,7 +455,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ArgumentException">The <param name="nextSyncOrPageUrl">nextSyncOrPageUrl</param> parameter was null or empty</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncNextResult(string nextSyncOrPageUrl)
+        public async Task<SyncResult> SyncNextResultAsync(string nextSyncOrPageUrl)
         {
             if (string.IsNullOrEmpty(nextSyncOrPageUrl))
             {
@@ -485,20 +482,20 @@ namespace Contentful.Core
         /// Fetches an inital sync result of content and then recursively calls the api for any further 
         /// content available using the <see cref="SyncResult.NextPageUrl"/>. Note that this might result in
         /// multiple outgoing calls to the Contentful API. If you have a large amount of entries to sync consider using 
-        /// the <see cref="SyncInitial"/> method in conjunction with the <see cref="SyncNextResult"/> method and 
+        /// the <see cref="SyncInitialAsync"/> method in conjunction with the <see cref="SyncNextResultAsync"/> method and 
         /// handling each response separately.
         /// </summary>
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "")
+        public async Task<SyncResult> SyncInitialRecursiveAsync(SyncType syncType = SyncType.All, string contentTypeId = "")
         {
-            var syncResult = await SyncInitial(syncType, contentTypeId);
+            var syncResult = await SyncInitialAsync(syncType, contentTypeId);
 
             while (!string.IsNullOrEmpty(syncResult.NextPageUrl))
             {
-                var nextResult = await SyncNextResult(syncResult.NextPageUrl);
+                var nextResult = await SyncNextResultAsync(syncResult.NextPageUrl);
 
                 syncResult.Entries = syncResult.Entries.Concat(nextResult.Entries);
                 syncResult.Assets = syncResult.Assets.Concat(nextResult.Assets);
@@ -570,21 +567,6 @@ namespace Contentful.Core
             }
 
             return query.ToString();
-        }
-
-
-        private async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
-        {
-            var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync());
-            var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
-            var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
-            var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message").ToString())
-            {
-                RequestId = jsonError.SelectToken("$.requestId").ToString(),
-                ErrorDetails = errorDetails,
-                SystemProperties = sys
-            };
-            throw ex;
         }
     }
 }

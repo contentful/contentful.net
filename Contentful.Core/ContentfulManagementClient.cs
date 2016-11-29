@@ -17,12 +17,10 @@ using System.Threading.Tasks;
 
 namespace Contentful.Core
 {
-    public class ContentfulManagementClient
+    public class ContentfulManagementClient : ContentfulClientBase, IContentfulManagementClient
     {
-        private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://api.contentful.com/spaces/";
-        private readonly ContentfulOptions _options;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulManagementClient"/> class. 
         /// The main class for interaction with the contentful deliver and preview APIs.
@@ -596,7 +594,6 @@ namespace Contentful.Core
             var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published", null);
 
             RemoveVersionHeader();
-
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1338,11 +1335,12 @@ namespace Contentful.Core
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
-            var health = new WebHookHealthResponse();
-            health.SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>();
-            health.TotalCalls = jsonObject["calls"]["total"].Value<int>();
-            health.TotalHealthy = jsonObject["calls"]["healthy"].Value<int>();
-
+            var health = new WebHookHealthResponse()
+            {
+                SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>(),
+                TotalCalls = jsonObject["calls"]["total"].Value<int>(),
+                TotalHealthy = jsonObject["calls"]["healthy"].Value<int>()
+            };
             return health;
         }
 
@@ -1684,22 +1682,7 @@ namespace Contentful.Core
             return jsonObject.ToObject<ApiKey>();
         }
 
-        private void AddVersionHeader(int? version)
-        {
-            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-            }
-            if (version.HasValue)
-            {
-                _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
-            }
-        }
 
-        private void RemoveVersionHeader()
-        {
-                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-        }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
         {
@@ -1712,20 +1695,6 @@ namespace Contentful.Core
 
             });
             return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
-        }
-
-        private async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
-        {
-            var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync());
-            var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
-            var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
-            var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message").ToString())
-            {
-                RequestId = jsonError.SelectToken("$.requestId").ToString(),
-                ErrorDetails = errorDetails,
-                SystemProperties = sys
-            };
-            throw ex;
         }
     }
 }

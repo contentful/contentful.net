@@ -19,7 +19,7 @@ using System.IO;
 
 namespace Contentful.Core.Tests
 {
-    public class ContentfulClientTests
+    public class ContentfulClientTests : ClientTestsBase
     {
         private ContentfulClient _client;
         private FakeMessageHandler _handler;
@@ -373,7 +373,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"JsonFiles\InitialSyncNoNextPage.json");
 
             //Act
-            var res = await _client.SyncInitial();
+            var res = await _client.SyncInitialAsync();
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -394,7 +394,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"JsonFiles\InitialSyncDeletionOnly.json");
 
             //Act
-            var res = await _client.SyncInitial(SyncType.Deletion);
+            var res = await _client.SyncInitialAsync(SyncType.Deletion);
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -413,7 +413,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"JsonFiles\NextSyncUrl.json");
 
             //Act
-            var res = await _client.SyncNextResult("SomeSyncToken");
+            var res = await _client.SyncNextResultAsync("SomeSyncToken");
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -435,10 +435,9 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"JsonFiles\NextSyncUrl.json");
 
             //Act
-
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResultAsync(""));
             //Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResult(""));
-
+            Assert.Equal("nextPageUrl must be specified.\r\nParameter name: nextSyncOrPageUrl", ex.Message);
         }
 
         [Fact]
@@ -451,7 +450,7 @@ namespace Contentful.Core.Tests
             _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles\InitialSyncNoNextPage.json"));
 
             //Act
-            var res = await _client.SyncInitialRecursive();
+            var res = await _client.SyncInitialRecursiveAsync();
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -464,68 +463,5 @@ namespace Contentful.Core.Tests
             Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
         }
-
-        private HttpResponseMessage GetResponseFromFile(string file)
-        {
-            //So, this is an ugly hack... Any better way to get the absolute path of the test project?
-            var projectPath = Directory.GetParent(typeof(Asset).GetTypeInfo().Assembly.Location).Parent.Parent.Parent.FullName;
-            var response = new HttpResponseMessage();
-            var fullPath = Path.Combine(projectPath, file);
-            response.Content = new StringContent(File.ReadAllText(fullPath));
-            return response;
-        }
-    }
-
-    public class FakeMessageHandler : HttpClientHandler
-    {
-        public FakeMessageHandler()
-        {
-            Responses = new Queue<HttpResponseMessage>();
-        }
-
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            VerifyRequest?.Invoke(request);
-            VerificationBeforeSend?.Invoke();
-
-            if (Responses.Count > 0)
-            {
-                return await Task.FromResult(Responses.Dequeue());
-            }
-
-            return await Task.FromResult(Response);
-        }
-        public Action<HttpRequestMessage> VerifyRequest { get; set; }
-        public Action VerificationBeforeSend { get; set; }
-        public Queue<HttpResponseMessage> Responses { get; set; }
-        public HttpResponseMessage Response { get; set; }
-    }
-
-    public class TestEntryModel
-    {
-        public string ProductName { get; set; }
-        public string Slug { get; set; }
-        public string Title { get; set; }
-    }
-
-    public class TestEntryWithSysProperties : TestEntryModel
-    {
-        public SystemProperties Sys { get; set; }
-    }
-
-    public class TestModelWithIncludes
-    {
-        public string Title { get; set; }
-        public string Slug { get; set; }
-
-        
-        public Asset FeaturedImage { get; set; }
-        public List<Author> Author { get; set; }
-    }
-
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
-    public class Author
-    {
-        public string Name { get; set; }
     }
 }

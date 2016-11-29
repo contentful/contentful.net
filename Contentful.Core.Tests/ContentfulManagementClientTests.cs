@@ -16,7 +16,7 @@ using Xunit;
 
 namespace Contentful.Core.Tests
 {
-    public class ContentfulManagementClientTests
+    public class ContentfulManagementClientTests : ClientTestsBase
     {
         private ContentfulManagementClient _client;
         private FakeMessageHandler _handler;
@@ -2004,17 +2004,6 @@ namespace Contentful.Core.Tests
             Assert.Equal(HttpMethod.Post, method);
             Assert.Equal("https://api.contentful.com/spaces/666/api_keys", url);
             Assert.Equal(@"{""name"":""Key sharp!"",""description"":""This is the desc""}", contentSet);
-
-        }
-
-        private HttpResponseMessage GetResponseFromFile(string file)
-        {
-            //So, this is an ugly hack... Any better way to get the absolute path of the test project?
-            var projectPath = Directory.GetParent(typeof(Asset).GetTypeInfo().Assembly.Location).Parent.Parent.Parent.FullName;
-            var response = new HttpResponseMessage();
-            var fullPath = Path.Combine(projectPath, file);
-            response.Content = new StringContent(System.IO.File.ReadAllText(fullPath));
-            return response;
         }
     }
 }

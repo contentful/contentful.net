@@ -144,13 +144,13 @@ namespace Contentful.Core
         /// <summary>
         /// Fetches an initial sync result of content. Note that this sync might not contain the entire result. 
         /// If the <see cref="SyncResult"/> returned contains a <see cref="SyncResult.NextPageUrl"/> that means 
-        /// there are more resources to fetch. See also the <see cref="SyncInitialRecursive"/> method.
+        /// there are more resources to fetch. See also the <see cref="SyncInitialRecursiveAsync"/> method.
         /// </summary>
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "");
+        Task<SyncResult> SyncInitialAsync(SyncType syncType = SyncType.All, string contentTypeId = "");
 
         /// <summary>
         /// Syncs the delta changes since the last sync or the next page of an incomplete sync. 
@@ -160,20 +160,20 @@ namespace Contentful.Core
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ArgumentException">The <param name="nextSyncOrPageUrl">nextSyncOrPageUrl</param> parameter was null or empty</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<SyncResult> SyncNextResult(string nextSyncOrPageUrl);
+        Task<SyncResult> SyncNextResultAsync(string nextSyncOrPageUrl);
 
         /// <summary>
         /// Fetches an inital sync result of content and then recursively calls the api for any further 
         /// content available using the <see cref="SyncResult.NextPageUrl"/>. Note that this might result in
         /// multiple outgoing calls to the Contentful API. If you have a large amount of entries to sync consider using 
-        /// the <see cref="SyncInitial"/> method in conjunction with the <see cref="SyncNextResult"/> method and 
+        /// the <see cref="SyncInitialAsync"/> method in conjunction with the <see cref="SyncNextResultAsync"/> method and 
         /// handling each response separately.
         /// </summary>
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "");
+        Task<SyncResult> SyncInitialRecursiveAsync(SyncType syncType = SyncType.All, string contentTypeId = "");
 
         /// <summary>
         /// Returns whether or not the client is using the preview API.
