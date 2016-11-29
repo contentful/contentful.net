@@ -29,6 +29,17 @@ namespace Contentful.Core
             throw ex;
         }
 
+        protected async Task<HttpResponseMessage> SendHttpRequestAsync(string url, HttpMethod method, string authToken, HttpContent content = null)
+        {
+            var httpRequestMessage = new HttpRequestMessage();
+            httpRequestMessage.RequestUri = new Uri(url);
+            httpRequestMessage.Method = method;
+            httpRequestMessage.Headers.Add("Authorization", $"Bearer {authToken}");
+            httpRequestMessage.Content = content;
+
+            return await _httpClient.SendAsync(httpRequestMessage);
+        }
+
         protected void AddVersionHeader(int? version)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))

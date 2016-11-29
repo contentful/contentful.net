@@ -38,15 +38,10 @@ namespace Contentful.Core
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
 
-            if (_httpClient.DefaultRequestHeaders.Contains("Authorization"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("Authorization");
-            }
+
             if(!_httpClient.DefaultRequestHeaders.Contains("User-Agent")) {
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "Contentful-.NET-SDK");
             }
-
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_options.DeliveryApiKey}");
 
             if (_options.UsePreviewApi)
             {
@@ -106,7 +101,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -174,7 +169,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<T>> GetEntriesAsync<T>(string queryString = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -246,7 +241,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null) where T : IContentfulResource
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -276,7 +271,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -309,7 +304,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<Asset>> GetAssetsAsync(string queryString = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -342,7 +337,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(string queryString = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -363,7 +358,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<Space> GetSpaceAsync()
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -390,7 +385,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -409,7 +404,7 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync()
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -435,7 +430,7 @@ namespace Contentful.Core
         {
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -466,7 +461,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken:syncToken);
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -567,6 +562,11 @@ namespace Contentful.Core
             }
 
             return query.ToString();
+        }
+
+        private async Task<HttpResponseMessage> GetAsync(string url)
+        {
+            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.DeliveryApiKey);
         }
     }
 }

@@ -37,19 +37,11 @@ namespace Contentful.Core
             {
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
-
-            if (_httpClient.DefaultRequestHeaders.Contains("Authorization"))
-            {
-                _httpClient.DefaultRequestHeaders.Remove("Authorization");
-            }
            
             if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
             {
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "Contentful-.NET-SDK");
             }
-
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_options.ManagementApiKey}");
-
         }
 
         /// <summary>
@@ -95,7 +87,7 @@ namespace Contentful.Core
                 _httpClient.DefaultRequestHeaders.Add("X-Contentful-Organization", organisation);
             }
 
-            var res = await _httpClient.PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale }));
+            var res = await PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale }));
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
@@ -137,7 +129,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name = name }));
+            var res = await PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name = name }));
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
@@ -160,7 +152,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Space" /></returns>
         public async Task<Space> GetSpaceAsync(string id)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{id}");
+            var res = await GetAsync($"{_baseUrl}{id}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -178,7 +170,7 @@ namespace Contentful.Core
         /// <returns></returns>
         public async Task<IEnumerable<Space>> GetSpacesAsync()
         {
-            var res = await _httpClient.GetAsync(_baseUrl);
+            var res = await GetAsync(_baseUrl);
 
             if (!res.IsSuccessStatusCode)
             {
@@ -197,7 +189,7 @@ namespace Contentful.Core
         /// <returns></returns>
         public async Task DeleteSpaceAsync(string id)
         {
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{id}");
+            var res = await DeleteAsync($"{_baseUrl}{id}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -212,7 +204,7 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -241,7 +233,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync(
+            var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentType.SystemProperties.Id}",
                 ConvertObjectToJsonStringContent(new { name = contentType.Name, fields = contentType.Fields }));
 
@@ -272,7 +264,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -300,7 +292,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -326,7 +318,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", null);
 
             RemoveVersionHeader();
 
@@ -356,7 +348,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -371,7 +363,7 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetActivatedContentTypesAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -398,7 +390,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -430,7 +422,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", 
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", 
                 ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls }));
 
             RemoveVersionHeader();
@@ -468,7 +460,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null) where T : IContentfulResource
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -504,7 +496,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entry.SystemProperties.Id}",
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entry.SystemProperties.Id}",
                 ConvertObjectToJsonStringContent(new { fields = entry.Fields }));
 
             RemoveVersionHeader();
@@ -536,7 +528,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -563,7 +555,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
 
             RemoveVersionHeader();
 
@@ -591,7 +583,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published", null);
 
             RemoveVersionHeader();
 
@@ -621,7 +613,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published");
 
             RemoveVersionHeader();
 
@@ -651,7 +643,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived", null);
 
             RemoveVersionHeader();
 
@@ -682,7 +674,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived");
 
             RemoveVersionHeader();
 
@@ -702,7 +694,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -725,7 +717,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ManagementAsset>> GetPublishedAssetsCollectionAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -755,7 +747,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -783,7 +775,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
 
             RemoveVersionHeader();
 
@@ -811,7 +803,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published", null);
 
             RemoveVersionHeader();
 
@@ -842,7 +834,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published");
 
             RemoveVersionHeader();
 
@@ -876,7 +868,7 @@ namespace Contentful.Core
 
             HttpResponseMessage res = null;
 
-            res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
+            res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
 
             RemoveVersionHeader();
 
@@ -907,7 +899,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived");
 
             RemoveVersionHeader();
 
@@ -941,7 +933,7 @@ namespace Contentful.Core
 
             HttpResponseMessage res = null;
 
-            res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/files/{locale}/process", null);
+            res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/files/{locale}/process", null);
 
             RemoveVersionHeader();
 
@@ -968,7 +960,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{asset.SystemProperties.Id}",
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{asset.SystemProperties.Id}",
                 ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }));
 
             RemoveVersionHeader();
@@ -992,7 +984,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Locale>> GetLocalesCollectionAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1016,7 +1008,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<Locale> CreateLocaleAsync(Locale locale, string spaceId = null)
         {
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales",
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales",
                 ConvertObjectToJsonStringContent(
                     new
                     {
@@ -1053,7 +1045,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The localeId must be set.");
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1079,7 +1071,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the Locale must be set.");
             }
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(new
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(new
             {
                 code = locale.Code,
                 contentDeliveryApi = locale.ContentDeliveryApi,
@@ -1113,7 +1105,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The localeId must be set.");
             }
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1129,7 +1121,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<WebHook>> GetWebHooksCollectionAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1156,7 +1148,7 @@ namespace Contentful.Core
             //Not allowed to post system properties
             webhook.SystemProperties = null;
 
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1188,7 +1180,7 @@ namespace Contentful.Core
             //Not allowed to post system properties
             webhook.SystemProperties = null;
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook));
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1215,7 +1207,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1241,7 +1233,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
             }
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1264,7 +1256,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1300,7 +1292,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1327,7 +1319,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1359,7 +1351,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the role must be set", nameof(roleId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1379,7 +1371,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Role>> GetAllRolesAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1406,7 +1398,7 @@ namespace Contentful.Core
             //Not allowed to post system properties
             role.SystemProperties = null;
 
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1438,7 +1430,7 @@ namespace Contentful.Core
             //Not allowed to post system properties
             role.SystemProperties = null;
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role));
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1464,7 +1456,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the role must be set", nameof(roleId));
             }
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1480,7 +1472,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the entry must be set", nameof(entryId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1507,7 +1499,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the entry must be set.", nameof(entryId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1521,7 +1513,7 @@ namespace Contentful.Core
 
         public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMembershipsAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1545,7 +1537,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SpaceMembership> CreateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null)
         {
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1572,7 +1564,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership must be set", nameof(spaceMembershipId));
             }
 
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1599,7 +1591,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership id must be set", nameof(spaceMembership));
             }
 
-            var res = await _httpClient.PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership));
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1625,7 +1617,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership must be set", nameof(spaceMembershipId));
             }
 
-            var res = await _httpClient.DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1641,7 +1633,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ApiKey>> GetAllApiKeysAsync(string spaceId = null)
         {
-            var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys");
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1671,7 +1663,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The name of the api key must be set.", nameof(name));
             }
 
-            var res = await _httpClient.PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }));
 
             if (!res.IsSuccessStatusCode)
             {
@@ -1682,7 +1674,25 @@ namespace Contentful.Core
             return jsonObject.ToObject<ApiKey>();
         }
 
+        private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content)
+        {
+            return await SendHttpRequestAsync(url, HttpMethod.Post, _options.ManagementApiKey, content);
+        }
 
+        private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content)
+        {
+            return await SendHttpRequestAsync(url, HttpMethod.Put, _options.ManagementApiKey, content);
+        }
+
+        private async Task<HttpResponseMessage> DeleteAsync(string url)
+        {
+            return await SendHttpRequestAsync(url, HttpMethod.Delete, _options.ManagementApiKey);
+        }
+
+        private async Task<HttpResponseMessage> GetAsync(string url)
+        {
+            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.ManagementApiKey);
+        }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)
         {

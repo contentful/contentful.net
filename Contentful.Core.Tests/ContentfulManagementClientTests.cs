@@ -41,7 +41,7 @@ namespace Contentful.Core.Tests
             
             //Act
             //Assert
-            Assert.Equal("564", _httpClient.DefaultRequestHeaders.Authorization.Parameter);
+            Assert.Equal("Contentful-.NET-SDK", _httpClient.DefaultRequestHeaders.GetValues("User-Agent").First());
         }
         
         [Fact]
