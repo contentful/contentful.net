@@ -9,6 +9,7 @@
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="JsonFiles\ApiKeysCollection.json" />
     <Content Include="JsonFiles\LocalesCollection.json" />
     <Content Include="JsonFiles\AssetsCollectionManagement.json" />
     <Content Include="JsonFiles\ContenttypesCollectionManagement.json" />
@@ -35,6 +36,9 @@
     <Content Include="JsonFiles\SampleEntry.json" />
     <Content Include="JsonFiles\SampleRolesCollection.json" />
     <Content Include="JsonFiles\SampleSpace.json" />
+    <Content Include="JsonFiles\WebhookCallDetailsCollection.json" />
+    <Content Include="JsonFiles\SampleSnapshot.json" />
+    <Content Include="JsonFiles\WebhookHealth.json" />
     <Content Include="JsonFiles\WebhookCollection.json" />
     <Content Include="JsonFiles\webhookcalldetails.json" />
   </ItemGroup>

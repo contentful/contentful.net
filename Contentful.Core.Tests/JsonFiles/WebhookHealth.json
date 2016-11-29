@@ -1,0 +1,24 @@
+{
+  "sys": {
+    "id": "2PCWZTHhjvfUYTfgSNamDn",
+    "type": "Webhook",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "WebhookDefinition",
+        "id": "2PCWZTHhjvfUYTfgSNamDn"
+      }
+    }
+  },
+  "calls": {
+    "total": 2,
+    "healthy": 0
+  }
+}

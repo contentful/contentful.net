@@ -1264,7 +1264,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(webhookId))
             {
-                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+                throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls");
@@ -1295,12 +1295,12 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(callId))
             {
-                throw new ArgumentException("The id of the webhook call must be set", nameof(callId));
+                throw new ArgumentException("The id of the webhook call must be set.", nameof(callId));
             }
 
             if (string.IsNullOrEmpty(webhookId))
             {
-                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+                throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}");
@@ -1327,7 +1327,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(webhookId))
             {
-                throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
+                throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health");
@@ -1432,7 +1432,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(role?.SystemProperties?.Id))
             {
-                throw new ArgumentException("The id of the role must be set");
+                throw new ArgumentException("The id of the role must be set.");
             }
 
             var id = role.SystemProperties.Id;
@@ -1501,12 +1501,12 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(snapshotId))
             {
-                throw new ArgumentException("The id of the snapshot must be set", nameof(snapshotId));
+                throw new ArgumentException("The id of the snapshot must be set.", nameof(snapshotId));
             }
 
             if (string.IsNullOrEmpty(entryId))
             {
-                throw new ArgumentException("The id of the entry must be set", nameof(entryId));
+                throw new ArgumentException("The id of the entry must be set.", nameof(entryId));
             }
 
             var res = await _httpClient.GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}");
@@ -1594,7 +1594,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="SpaceMembership"/>.</returns>
         /// <exception cref="ArgumentException">The <param name="spaceMembership">spaceMembership</param> id was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> GetSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null)
+        public async Task<SpaceMembership> UpdateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null)
         {
             if (string.IsNullOrEmpty(spaceMembership?.SystemProperties?.Id))
             {

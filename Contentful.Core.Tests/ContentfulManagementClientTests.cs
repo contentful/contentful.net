@@ -1374,6 +1374,30 @@ namespace Contentful.Core.Tests
             Assert.Collection(res.Headers, (h) => { Assert.Equal("bob", h.Key); Assert.Equal("uncle", h.Value); });
         }
 
+        [Theory]
+        [InlineData("346")]
+        [InlineData("yw345")]
+        [InlineData("xcb345af")]
+        public async Task DeletingWebhookShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteWebHookAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/webhook_definitions/{id}", requestUrl);
+        }
+
         [Fact]
         public async Task WebHookCallDetailsShouldDeserializeCorrectly()
         {
@@ -1385,7 +1409,95 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal("unarchive", res.EventType);
             Assert.Equal("close", res.Response.Headers["connection"]);
+        }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task WebHookCallDetailShouldThrowForWebHookIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetails.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync("some", id));
+
+            //Assert
+            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task WebHookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetails.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync(id, "some"));
+
+            //Assert
+            Assert.Equal("The id of the webhook call must be set.\r\nParameter name: callId", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task WebHookCallDetailsShouldThrowForIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetailsCollection.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsCollectionAsync(id));
+
+            //Assert
+            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+        }
+
+        [Fact]
+        public async Task WebHookCallDetailsCollectionShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetailsCollection.json");
+
+            //Act
+            var res = await _client.GetWebHookCallDetailsCollectionAsync("aaf");
+
+            //Assert
+            Assert.Equal(2, res.Total);
+            Assert.Equal(2, res.Count());
+            Assert.Equal(403, res.First().StatusCode);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task WebHookHealthShouldThrowForIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookHealth.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookHealthAsync(id));
+
+            //Assert
+            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+        }
+
+        [Fact]
+        public async Task WebHookHealthShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookHealth.json");
+
+            //Act
+            var res = await _client.GetWebHookHealthAsync("aaf");
+
+            //Assert
+            Assert.Equal(2, res.TotalCalls);
+            Assert.Equal(0, res.TotalHealthy);
         }
 
         [Fact]
@@ -1433,7 +1545,7 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task RolesShouldDeserializeCorrectly()
+        public async Task RoleShouldDeserializeCorrectly()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
@@ -1505,7 +1617,149 @@ namespace Contentful.Core.Tests
             Assert.Equal("create", res.First().Policies.First().Actions[0]);
             Assert.Equal("Translator 1", res.ElementAt(4).Name);
             Assert.Equal("Entry", ((res.ElementAt(4).Policies.First().Constraint as AndConstraint).First() as EqualsConstraint).ValueToEqual);
+        }
 
+        [Fact]
+        public async Task CreateRoleShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+
+            var role = new Role();
+            role.Name = "Da role";
+            role.Description = "Descriptive stuff";
+            role.Permissions = new ContentfulPermissions()
+            {
+                ContentDelivery = new List<string>()
+                {
+                    "all"
+                },
+                ContentModel = new List<string>()
+                {
+                    "read"
+                },
+                Settings = new List<string> ()
+                {
+                    "read",
+                    "manage"
+                }
+            };
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateRoleAsync(role);
+
+            //Assert
+            Assert.Equal(HttpMethod.Post, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/roles", url);
+            Assert.Contains(@"""name"":""Da role""", contentSet);
+            Assert.Contains(@"""description"":""Descriptive stuff""", contentSet);
+            Assert.Contains(@"""ContentDelivery"":""all""", contentSet);
+            Assert.Contains(@"""ContentModel"":[""read""]", contentSet);
+            Assert.Contains(@"""Settings"":[""read"",""manage""]", contentSet);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task UpdateRoleShouldThrowForIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+            var role = new Role();
+            role.SystemProperties = new SystemProperties();
+            role.SystemProperties.Id = id;
+            
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateRoleAsync(role));
+
+            //Assert
+            Assert.Equal("The id of the role must be set.", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("agsdg455")]
+        [InlineData("324")]
+        [InlineData("bcvb")]
+        public async Task UpdateRoleShouldCallCorrectUrlWithData(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+
+            var role = new Role();
+            role.SystemProperties = new SystemProperties();
+            role.SystemProperties.Id = id;
+            role.Name = "Rolemodel";
+            role.Description = "Merry christmas!";
+            role.Permissions = new ContentfulPermissions()
+            {
+                ContentDelivery = new List<string>()
+                {
+                    "read","delete"
+                },
+                ContentModel = new List<string>()
+                {
+                    "all"
+                },
+                Settings = new List<string>()
+                {
+                    "read",
+                    "manage"
+                }
+            };
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateRoleAsync(role);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/spaces/666/roles/{id}", url);
+            Assert.Contains(@"""name"":""Rolemodel""", contentSet);
+            Assert.Contains(@"""description"":""Merry christmas!""", contentSet);
+            Assert.Contains(@"""ContentModel"":""all""", contentSet);
+            Assert.Contains(@"""ContentDelivery"":[""read"",""delete""]", contentSet);
+            Assert.Contains(@"""Settings"":[""read"",""manage""]", contentSet);
+        }
+
+        [Theory]
+        [InlineData("09hfdh4-34")]
+        [InlineData("643")]
+        [InlineData("fdgs34")]
+        public async Task DeletingRoleShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteRoleAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/roles/{id}", requestUrl);
         }
 
         [Fact]
@@ -1519,6 +1773,50 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("Seven Tips From Ernest Hemingway on How to Write Fiction", res.First().Fields["title"]["en-US"]);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetSnapshotShouldThrowForSnapshotIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSnapshot.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync(id, "something"));
+
+            //Assert
+            Assert.Equal("The id of the snapshot must be set.\r\nParameter name: snapshotId", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetSnapshotShouldThrowForEntryIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSnapshot.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
+
+            //Assert
+            Assert.Equal("The id of the entry must be set.\r\nParameter name: entryId", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetSnapshotShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSnapshot.json");
+            
+            //Act
+            var res = await _client.GetSnapshotForEntryAsync("123", "wed");
+
+            //Assert
+            Assert.Equal("Somethi", res.Fields["field1"]["en-US"]);
+            Assert.Equal("2ReMHJhXoAcy4AyamgsgwQ", res.Fields["field4"]["en-US"].sys.id.ToString());
         }
 
         [Fact]
@@ -1558,6 +1856,155 @@ namespace Contentful.Core.Tests
             Assert.True(res.Admin);
             Assert.Equal(3, res.Roles.Count);
             Assert.Equal("231", res.Roles[1]);
+        }
+
+        [Fact]
+        public async Task CreateSpaceMembershipShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+
+            var spaceMembership = new SpaceMembership();
+            spaceMembership.Admin = true;
+            spaceMembership.Roles = new List<string>()
+            {
+                "123",
+                "342"
+            };
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateSpaceMembershipAsync(spaceMembership);
+
+            //Assert
+            Assert.Equal(HttpMethod.Post, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/space_memberships", url);
+            Assert.Equal(@"{""admin"":true,""roles"":[{""type"":""Link"",""linkType"":""Role"",""id"":""123""},{""type"":""Link"",""linkType"":""Role"",""id"":""342""}]}", contentSet);
+
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task UpdateSpaceMembershipShouldThrowForEntryIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
+
+            //Assert
+            Assert.Equal("The id of the entry must be set.\r\nParameter name: entryId", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("afas23")]
+        [InlineData("234")]
+        [InlineData("bbs")]
+        public async Task UpdateSpaceMembershipShouldCallCorrectUrlWithData(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+
+            var spaceMembership = new SpaceMembership();
+            spaceMembership.SystemProperties = new SystemProperties();
+            spaceMembership.SystemProperties.Id = id;
+            spaceMembership.Admin = false;
+            spaceMembership.Roles = new List<string>()
+            {
+                "43",
+                "765"
+            };
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateSpaceMembershipAsync(spaceMembership);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/spaces/666/space_memberships/{id}", url);
+            Assert.Equal(@"{""admin"":false,""roles"":[{""type"":""Link"",""linkType"":""Role"",""id"":""43""},{""type"":""Link"",""linkType"":""Role"",""id"":""765""}]}", contentSet);
+        }
+
+        [Theory]
+        [InlineData("adf-2345")]
+        [InlineData("453")]
+        [InlineData("agf")]
+        public async Task DeletingSpaceMembershipShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteSpaceMembershipAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/space_memberships/{id}", requestUrl);
+        }
+
+        [Fact]
+        public async Task GetApiKeysShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\ApiKeysCollection.json");
+
+            //Act
+            var res = await _client.GetAllApiKeysAsync();
+
+            //Assert
+            Assert.Equal(2, res.Total);
+            Assert.Equal(2, res.Count());
+            Assert.Equal("123", res.First().AccessToken);
+        }
+
+        [Fact]
+        public async Task CreateApiKeyShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"JsonFiles\ApiKeysCollection.json");
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateApiKeyAsync("Key sharp!", "This is the desc");
+
+            //Assert
+            Assert.Equal(HttpMethod.Post, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/api_keys", url);
+            Assert.Equal(@"{""name"":""Key sharp!"",""description"":""This is the desc""}", contentSet);
+
         }
 
         private HttpResponseMessage GetResponseFromFile(string file)
