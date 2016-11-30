@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting assets into a simpler structure.
+    /// JsonConverter for converting Contentful assets into a simpler <see cref="Asset"/> structure.
     /// </summary>
     public class AssetJsonConverter : JsonConverter
     {
@@ -18,6 +18,11 @@ namespace Contentful.Core.Configuration
         /// </summary>
         /// <param name="objectType">The type to convert to.</param>
         public override bool CanConvert(Type objectType) => objectType == typeof(Asset);
+
+        /// <summary>
+        /// Gets a value indicating whether this JsonConverter can write JSON.
+        /// </summary>
+        public override bool CanWrite => false;
 
         /// <summary>
         /// Reads the JSON representation of the object.

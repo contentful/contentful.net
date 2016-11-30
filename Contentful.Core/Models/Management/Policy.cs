@@ -37,28 +37,55 @@ namespace Contentful.Core.Models.Management
 
     }
 
+    /// <summary>
+    /// Represents a list of constraints that evaluates if all its conditions are true.
+    /// </summary>
     public class AndConstraint : List<IConstraint>, IConstraint
     {
     }
 
+    /// <summary>
+    /// Represents a list of constraints that evaluates if one of its conditions are true.
+    /// </summary>
     public class OrConstraint : List<IConstraint>, IConstraint
     {
     }
 
+    /// <summary>
+    /// Represents a constraint that inverts the value of the constraint it encapsulates.
+    /// </summary>
     public class NotConstraint : IConstraint
     {
+        /// <summary>
+        /// The constraint to invert.
+        /// </summary>
         public IConstraint ConstraintToInvert { get; set; }
     }
 
+    /// <summary>
+    /// Represents a constraint that evaluates a property to equal a certain value.
+    /// </summary>
     public class EqualsConstraint : IConstraint
     {
+        /// <summary>
+        /// The property to evaluate.
+        /// </summary>
         public string Property { get; set; }
 
+        /// <summary>
+        /// The value to equal.
+        /// </summary>
         public string ValueToEqual { get; set; }
     }
 
+    /// <summary>
+    /// Represents a constraint that restricts what fields are allowed to be managed.
+    /// </summary>
     public class PathConstraint : IConstraint
     {
+        /// <summary>
+        /// The path expression for which fields to be allowed.
+        /// </summary>
         public string Fields { get; set; }
     }
 }

@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Contentful.Core.Models.Management
 {
+    /// <summary>
+    /// Represents a collection of permissions for different parts of the Contentful APIs.
+    /// </summary>
     public class ContentfulPermissions
     {
         [JsonProperty("ContentModel")]

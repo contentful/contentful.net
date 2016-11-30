@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Contentful.Core.Models.Management
 {
+    /// <summary>
+    /// Represents an asset in Contentfuls management API.
+    /// </summary>
     [JsonConverter(typeof(ManagementAssetJsonConverter))]
     public class ManagementAsset : IContentfulResource
     {

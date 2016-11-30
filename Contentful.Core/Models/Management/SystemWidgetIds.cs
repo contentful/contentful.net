@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Contentful.Core.Models.Management
 {
+    /// <summary>
+    /// Represents the id of all widgets available by default in the Contentful web app.
+    /// </summary>
     public class SystemWidgetIds
     {
         public const string AssetLinkEditor = "assetLinkEditor";
