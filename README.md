@@ -62,9 +62,9 @@ Pass this class to the `GetEntryAsync<>` method to serialize the response correc
 ```csharp
 var product = await client.GetEntryAsync<Product>("<entry_id>");
 
-Console.WriteLine(product.ProductName); // => How to manage content in a developer-friendly manner
-Console.WriteLine(product.Price); // => Contentful
-Console.WriteLine(product.Description); // => Make an API request, get JSON in return.
+Console.WriteLine(product.ProductName); // => Your product
+Console.WriteLine(product.Price); // => 12.38
+Console.WriteLine(product.Description); // => A fantastic product.
 ```
 
 You can combine the two approaches if you're interested in the system properties of the entry but still want to use your own class.
@@ -72,7 +72,7 @@ You can combine the two approaches if you're interested in the system properties
 ```csharp
 var productEntry = await client.GetEntryAsync<Entry<product>>("<entry_id>");
 
-Console.WriteLine(entry.Fields.Price); // => Contentful
+Console.WriteLine(entry.Fields.Price); // => 12.38
 Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
 ```
 
