@@ -91,10 +91,7 @@ namespace Contentful.Core
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -135,10 +132,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -154,10 +148,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{id}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -172,10 +163,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync(_baseUrl);
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -191,10 +179,7 @@ namespace Contentful.Core
         {
             var res = await DeleteAsync($"{_baseUrl}{id}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -206,10 +191,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -239,10 +221,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -266,10 +245,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var contentType = jsonObject.ToObject<ContentType>();
@@ -294,11 +270,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
-
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -322,10 +294,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var contentType = jsonObject.ToObject<ContentType>();
@@ -350,10 +319,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -365,10 +331,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -392,10 +355,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var editorInterface = jsonObject.ToObject<EditorInterface>();
@@ -427,10 +387,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var updatedEditorInterface = jsonObject.ToObject<EditorInterface>();
@@ -462,10 +419,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<T>>();
@@ -502,10 +456,7 @@ namespace Contentful.Core
             RemoveVersionHeader();
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
@@ -530,10 +481,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
         }
@@ -559,10 +507,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -587,10 +532,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
         }
@@ -617,10 +559,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
         }
@@ -647,11 +586,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
         }
@@ -678,10 +613,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
         }
@@ -696,10 +628,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>();
@@ -719,10 +648,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>();
@@ -749,10 +675,8 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<ManagementAsset>();
@@ -779,10 +703,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -807,10 +728,8 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<ManagementAsset>();
@@ -838,10 +757,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -872,10 +788,8 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<ManagementAsset>();
@@ -903,10 +817,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -937,10 +848,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -965,10 +873,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var updatedAsset = jsonObject.ToObject<ManagementAsset>();
@@ -986,10 +891,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<Locale>>();
@@ -1020,10 +922,7 @@ namespace Contentful.Core
                         optional = locale.Optional
                     }));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1047,10 +946,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1081,10 +977,7 @@ namespace Contentful.Core
                 optional = locale.Optional
             }));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1107,10 +1000,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -1123,10 +1013,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>();
@@ -1150,10 +1037,7 @@ namespace Contentful.Core
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1182,10 +1066,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1209,10 +1090,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1235,10 +1113,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -1258,10 +1133,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>();
@@ -1294,10 +1166,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1321,10 +1190,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var health = new WebHookHealthResponse()
@@ -1353,10 +1219,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1373,10 +1236,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<Role>>();
@@ -1400,10 +1260,7 @@ namespace Contentful.Core
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1432,10 +1289,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1458,11 +1312,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
-
+            await EnsureSuccessfulResultAsync(res);
         }
 
         public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntryAsync(string entryId, string spaceId = null)
@@ -1474,10 +1324,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>();
@@ -1501,10 +1348,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1515,10 +1359,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<SpaceMembership>>();
@@ -1539,10 +1380,7 @@ namespace Contentful.Core
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1566,10 +1404,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1593,10 +1428,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
@@ -1619,10 +1451,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
         }
 
         /// <summary>
@@ -1635,10 +1464,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys");
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
             var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>();
@@ -1665,10 +1491,8 @@ namespace Contentful.Core
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }));
 
-            if (!res.IsSuccessStatusCode)
-            {
-                await CreateExceptionForFailedRequestAsync(res);
-            }
+            await EnsureSuccessfulResultAsync(res);
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
 
             return jsonObject.ToObject<ApiKey>();

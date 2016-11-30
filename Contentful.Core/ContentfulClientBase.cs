@@ -56,5 +56,13 @@ namespace Contentful.Core
         {
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
         }
+
+        protected async Task EnsureSuccessfulResultAsync(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                await CreateExceptionForFailedRequestAsync(response);
+            }
+        }
     }
 }
