@@ -64,7 +64,9 @@ namespace Contentful.Core.Configuration
             {
                 var ratingSettings = new RatingEditorInterfaceControlSettings();
 
-                if (!int.TryParse(jsonObject["settings"]?["stars"]?.ToString(), out var stars))
+                var stars = 0;
+
+                if (!int.TryParse(jsonObject["settings"]?["stars"]?.ToString(), out stars))
                 {
                     stars = 5;
                 }

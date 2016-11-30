@@ -34,7 +34,9 @@ namespace Contentful.Core.Configuration
         {
             var jsonObject = JObject.Load(reader);
 
-            if (jsonObject.TryGetValue("size", out var jToken))
+            JToken jToken;
+
+            if (jsonObject.TryGetValue("size", out jToken))
             {
                 return new SizeValidator(
                     jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,
