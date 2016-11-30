@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Contentful.Core
 {
+    /// <summary>
+    /// Base class for Contentful clients.
+    /// </summary>
     public abstract class ContentfulClientBase
     {
         protected HttpClient _httpClient;

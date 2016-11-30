@@ -39,20 +39,24 @@ namespace Contentful.Core.Configuration
             var jsonObject = JObject.Load(reader);
             var settings = new EditorInterfaceControlSettings();
 
-            var editorInterfaceControl = new EditorInterfaceControl();
-            editorInterfaceControl.FieldId = jsonObject["fieldId"]?.ToString();
-            editorInterfaceControl.WidgetId = jsonObject["widgetId"]?.ToString();
+            var editorInterfaceControl = new EditorInterfaceControl()
+            {
+                FieldId = jsonObject["fieldId"]?.ToString(),
+                WidgetId = jsonObject["widgetId"]?.ToString()
+            };
 
-            if(jsonObject["settings"] == null)
+            if (jsonObject["settings"] == null)
             {
                 return editorInterfaceControl;
             }
 
             if (jsonObject["widgetId"]?.ToString() == "boolean")
             {
-                var boolSettings = new BooleanEditorInterfaceControlSettings();
-                boolSettings.FalseLabel = jsonObject["settings"]?["falseLabel"]?.ToString();
-                boolSettings.TrueLabel = jsonObject["settings"]?["trueLabel"]?.ToString();
+                var boolSettings = new BooleanEditorInterfaceControlSettings()
+                {
+                    FalseLabel = jsonObject["settings"]?["falseLabel"]?.ToString(),
+                    TrueLabel = jsonObject["settings"]?["trueLabel"]?.ToString()
+                };
                 settings = boolSettings;
             }
 
@@ -60,9 +64,7 @@ namespace Contentful.Core.Configuration
             {
                 var ratingSettings = new RatingEditorInterfaceControlSettings();
 
-                var stars = 0;
-
-                if(!int.TryParse(jsonObject["settings"]?["stars"]?.ToString(), out stars))
+                if (!int.TryParse(jsonObject["settings"]?["stars"]?.ToString(), out var stars))
                 {
                     stars = 5;
                 }
@@ -74,11 +76,11 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject["widgetId"]?.ToString() == "datePicker")
             {
-                var dateSettings = new DatePickerEditorInterfaceControlSettings();
-
-                dateSettings.ClockFormat = jsonObject["settings"]?["ampm"]?.ToString();
-                dateSettings.DateFormat = (EditorInterfaceDateFormat)Enum.Parse(typeof(EditorInterfaceDateFormat), jsonObject["settings"]?["format"]?.ToString(), true);
-
+                var dateSettings = new DatePickerEditorInterfaceControlSettings()
+                {
+                    ClockFormat = jsonObject["settings"]?["ampm"]?.ToString(),
+                    DateFormat = (EditorInterfaceDateFormat)Enum.Parse(typeof(EditorInterfaceDateFormat), jsonObject["settings"]?["format"]?.ToString(), true)
+                };
                 settings = dateSettings;
             }
 

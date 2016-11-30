@@ -33,9 +33,8 @@ namespace Contentful.Core.Configuration
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jsonObject = JObject.Load(reader);
-            JToken jToken;
 
-            if (jsonObject.TryGetValue("size", out jToken))
+            if (jsonObject.TryGetValue("size", out var jToken))
             {
                 return new SizeValidator(
                     jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,

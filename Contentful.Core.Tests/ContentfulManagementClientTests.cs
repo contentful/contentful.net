@@ -51,8 +51,10 @@ namespace Contentful.Core.Tests
             _handler.Response = new HttpResponseMessage() {
                 Content = new StringContent("{}")
             };
-            var contentType = new ContentType();
-            contentType.SystemProperties = new SystemProperties();
+            var contentType = new ContentType()
+            {
+                SystemProperties = new SystemProperties()
+            };
             contentType.SystemProperties.Id = "123";
             contentType.Name = "Name";
             contentType.Fields = new List<Field>()
@@ -218,8 +220,10 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateContentTypeShouldThrowIfNoIdSet()
         {
             //Arrange
-            var contentType = new ContentType();
-            contentType.Name = "Barbossa";
+            var contentType = new ContentType()
+            {
+                Name = "Barbossa"
+            };
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentTypeAsync(contentType));
 
@@ -231,9 +235,11 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateContentTypeShouldCreateCorrectObject()
         {
             //Arrange
-            var contentType = new ContentType();
-            contentType.Name = "Barbossa";
-            contentType.SystemProperties = new SystemProperties();
+            var contentType = new ContentType()
+            {
+                Name = "Barbossa",
+                SystemProperties = new SystemProperties()
+            };
             contentType.SystemProperties.Id = "323";
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
 
@@ -455,8 +461,9 @@ namespace Contentful.Core.Tests
         public async Task UpdateEditorInterfaceShouldCallCorrectUrl()
         {
             //Arrange
-            var editorInterface = new EditorInterface();
-            editorInterface.Controls = new List<EditorInterfaceControl>()
+            var editorInterface = new EditorInterface()
+            {
+                Controls = new List<EditorInterfaceControl>()
             {
                 new EditorInterfaceControl()
                 {
@@ -474,6 +481,7 @@ namespace Contentful.Core.Tests
                         FalseLabel = "Falsy"
                     }
                 }
+            }
             };
             var versionHeader = "";
             var contentSet = "";
@@ -502,8 +510,9 @@ namespace Contentful.Core.Tests
         public async Task EditorInterfaceShouldSerializeCorrectly()
         {
             //Arrange
-            var editorInterface = new EditorInterface();
-            editorInterface.Controls = new List<EditorInterfaceControl>()
+            var editorInterface = new EditorInterface()
+            {
+                Controls = new List<EditorInterfaceControl>()
             {
                 new EditorInterfaceControl()
                 {
@@ -521,6 +530,7 @@ namespace Contentful.Core.Tests
                         FalseLabel = "Falsy"
                     }
                 }
+            }
             };
             _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
 
@@ -555,8 +565,10 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateEntryShouldThrowIfIdIsNotSet()
         {
             //Arrange
-            var entry = new Entry<dynamic>();
-            entry.SystemProperties = new SystemProperties();
+            var entry = new Entry<dynamic>()
+            {
+                SystemProperties = new SystemProperties()
+            };
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateEntryAsync(entry, contentTypeId: "Hwoarang"));
             //Assert
@@ -567,8 +579,10 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateEntryShouldAddCorrectContentTypeHeader()
         {
             //Arrange
-            var entry = new Entry<dynamic>();
-            entry.SystemProperties = new SystemProperties();
+            var entry = new Entry<dynamic>()
+            {
+                SystemProperties = new SystemProperties()
+            };
             entry.SystemProperties.Id = "123";
             var contentTypeHeader = "";
             _handler.VerificationBeforeSend = () =>
@@ -587,8 +601,10 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateEntryShouldNotAddContentTypeHeaderIfNotSet()
         {
             //Arrange
-            var entry = new Entry<dynamic>();
-            entry.SystemProperties = new SystemProperties();
+            var entry = new Entry<dynamic>()
+            {
+                SystemProperties = new SystemProperties()
+            };
             entry.SystemProperties.Id = "123";
             IEnumerable<string> contentTypeHeader = new List<string>();
             _handler.VerificationBeforeSend = () =>
@@ -606,10 +622,14 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateEntryShouldCallCorrectUrlWithData()
         {
             //Arrange
-            var entry = new Entry<dynamic>();
-            entry.SystemProperties = new SystemProperties();
+            var entry = new Entry<dynamic>()
+            {
+                SystemProperties = new SystemProperties()
+            };
             entry.SystemProperties.Id = "532";
+#pragma warning disable IDE0017 // Object initialization can be simplified
             entry.Fields = new ExpandoObject();
+#pragma warning restore IDE0017 // Object initialization can be simplified
             entry.Fields.field34 = new Dictionary<string, string>()
             {
                 { "en-US", "banana" }
@@ -839,8 +859,10 @@ namespace Contentful.Core.Tests
         public async Task CreateAssetShouldThrowIfIdNotSet()
         {
             //Arrange
-            var asset = new ManagementAsset();
-            asset.Title = new Dictionary<string, string>();
+            var asset = new ManagementAsset()
+            {
+                Title = new Dictionary<string, string>()
+            };
             asset.Title["en-US"] = "Burton Green";
 
             //Act
@@ -853,11 +875,15 @@ namespace Contentful.Core.Tests
         public async Task CreateAssetShouldCallCorrectUrlWithCorrectData()
         {
             //Arrange
-            var asset = new ManagementAsset();
-            asset.Title = new Dictionary<string, string>();
+            var asset = new ManagementAsset()
+            {
+                Title = new Dictionary<string, string>()
+            };
             asset.Title["en-US"] = "Burton Green";
-            asset.SystemProperties = new SystemProperties();
-            asset.SystemProperties.Id = "424";
+            asset.SystemProperties = new SystemProperties()
+            {
+                Id = "424"
+            };
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
             var requestUrl = "";
             var contentSet = "";
@@ -881,11 +907,15 @@ namespace Contentful.Core.Tests
         public async Task CreateAssetShouldSetVersionHeaderCorrectly()
         {
             //Arrange
-            var asset = new ManagementAsset();
-            asset.Title = new Dictionary<string, string>();
+            var asset = new ManagementAsset()
+            {
+                Title = new Dictionary<string, string>()
+            };
             asset.Title["en-US"] = "Burton Green";
-            asset.SystemProperties = new SystemProperties();
-            asset.SystemProperties.Id = "424";
+            asset.SystemProperties = new SystemProperties()
+            {
+                Id = "424"
+            };
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
             var versionHeader = "";
             _handler.VerificationBeforeSend = () =>
@@ -1147,11 +1177,13 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
-            var locale = new Locale();
-            locale.Name = "Unintelligible English";
-            locale.FallbackCode = "sv-SE";
-            locale.Optional = true;
-            locale.Code = "en-UI";
+            var locale = new Locale()
+            {
+                Name = "Unintelligible English",
+                FallbackCode = "sv-SE",
+                Optional = true,
+                Code = "en-UI"
+            };
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
@@ -1241,15 +1273,17 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
 
-            var webhook = new WebHook();
-            webhook.Name = "Some hook";
-            webhook.Url = "https://www.cracked.com/";
-            webhook.HttpBasicPassword = "Tepes";
-            webhook.HttpBasicUsername = "Vlad";
-            webhook.Topics = new List<string>()
+            var webhook = new WebHook()
+            {
+                Name = "Some hook",
+                Url = "https://www.cracked.com/",
+                HttpBasicPassword = "Tepes",
+                HttpBasicUsername = "Vlad",
+                Topics = new List<string>()
             {
                 "Entry.create",
                 "Asset.publish"
+            }
             };
             var contentSet = "";
             var url = "";
@@ -1281,8 +1315,10 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateWebHookShouldThrowIfNoIdSet(string id)
         {
             //Arrange
-            var webHook = new WebHook();
-            webHook.SystemProperties = new SystemProperties();
+            var webHook = new WebHook()
+            {
+                SystemProperties = new SystemProperties()
+            };
             webHook.SystemProperties.Id = id;
 
             //Act
@@ -1301,8 +1337,10 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
 
-            var webhook = new WebHook();
-            webhook.SystemProperties = new SystemProperties();
+            var webhook = new WebHook()
+            {
+                SystemProperties = new SystemProperties()
+            };
             webhook.SystemProperties.Id = id;
             webhook.Name = "Bingo";
             webhook.Url = "http://www.imdb.com/name/nm0001159/";
@@ -1504,14 +1542,15 @@ namespace Contentful.Core.Tests
         public void ConstraintsShouldSerializeCorrectly()
         {
             //Arrange
-            var policy = new Policy();
-            policy.Effect = "allow";
-            policy.Actions = new List<string>()
+            var policy = new Policy()
+            {
+                Effect = "allow",
+                Actions = new List<string>()
             {
                 "create",
                 "delete"
-            };
-            policy.Constraint =
+            },
+                Constraint =
                 new AndConstraint()
                 {
                     new EqualsConstraint()
@@ -1532,6 +1571,7 @@ namespace Contentful.Core.Tests
                             ValueToEqual = "123"
                         }
                     }
+            }
             };
 
             //Act
@@ -1569,10 +1609,12 @@ namespace Contentful.Core.Tests
 
             role.Name = "test";
             role.Description = "desc";
-            role.Permissions = new ContentfulPermissions();
-            role.Permissions.ContentDelivery = new List<string>() { "all" };
-            role.Permissions.ContentModel = new List<string>() { "read" };
-            role.Permissions.Settings = new List<string>() { "read", "manage" };
+            role.Permissions = new ContentfulPermissions()
+            {
+                ContentDelivery = new List<string>() { "all" },
+                ContentModel = new List<string>() { "read" },
+                Settings = new List<string>() { "read", "manage" }
+            };
             role.Policies = new List<Policy>();
             role.Policies.Add(new Policy()
             {
@@ -1625,23 +1667,25 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
 
-            var role = new Role();
-            role.Name = "Da role";
-            role.Description = "Descriptive stuff";
-            role.Permissions = new ContentfulPermissions()
+            var role = new Role()
             {
-                ContentDelivery = new List<string>()
+                Name = "Da role",
+                Description = "Descriptive stuff",
+                Permissions = new ContentfulPermissions()
+                {
+                    ContentDelivery = new List<string>()
                 {
                     "all"
                 },
-                ContentModel = new List<string>()
+                    ContentModel = new List<string>()
                 {
                     "read"
                 },
-                Settings = new List<string> ()
+                    Settings = new List<string>()
                 {
                     "read",
                     "manage"
+                }
                 }
             };
             var contentSet = "";
@@ -1674,8 +1718,10 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
-            var role = new Role();
-            role.SystemProperties = new SystemProperties();
+            var role = new Role()
+            {
+                SystemProperties = new SystemProperties()
+            };
             role.SystemProperties.Id = id;
             
             //Act
@@ -1694,25 +1740,29 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
 
-            var role = new Role();
-            role.SystemProperties = new SystemProperties();
-            role.SystemProperties.Id = id;
-            role.Name = "Rolemodel";
-            role.Description = "Merry christmas!";
-            role.Permissions = new ContentfulPermissions()
+            var role = new Role()
             {
-                ContentDelivery = new List<string>()
+                SystemProperties = new SystemProperties()
+                {
+                    Id = id
+                },
+                Name = "Rolemodel",
+                Description = "Merry christmas!",
+                Permissions = new ContentfulPermissions()
+                {
+                    ContentDelivery = new List<string>()
                 {
                     "read","delete"
                 },
-                ContentModel = new List<string>()
+                    ContentModel = new List<string>()
                 {
                     "all"
                 },
-                Settings = new List<string>()
+                    Settings = new List<string>()
                 {
                     "read",
                     "manage"
+                }
                 }
             };
             var contentSet = "";
@@ -1838,13 +1888,15 @@ namespace Contentful.Core.Tests
         public async Task SpaceMembershipShouldSerializeCorrectly()
         {
             //Arrange
-            var membership = new SpaceMembership();
-            membership.Admin = true;
-            membership.Roles = new List<string>()
+            var membership = new SpaceMembership()
+            {
+                Admin = true,
+                Roles = new List<string>()
             {
                 "123",
                 "231",
                 "12344"
+            }
             };
             var serializedMembership = JsonConvert.SerializeObject(membership);
             _handler.Response = new HttpResponseMessage() { Content = new StringContent(serializedMembership) };
@@ -1864,12 +1916,14 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
 
-            var spaceMembership = new SpaceMembership();
-            spaceMembership.Admin = true;
-            spaceMembership.Roles = new List<string>()
+            var spaceMembership = new SpaceMembership()
+            {
+                Admin = true,
+                Roles = new List<string>()
             {
                 "123",
                 "342"
+            }
             };
             var contentSet = "";
             var url = "";
@@ -1915,8 +1969,10 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
 
-            var spaceMembership = new SpaceMembership();
-            spaceMembership.SystemProperties = new SystemProperties();
+            var spaceMembership = new SpaceMembership()
+            {
+                SystemProperties = new SystemProperties()
+            };
             spaceMembership.SystemProperties.Id = id;
             spaceMembership.Admin = false;
             spaceMembership.Roles = new List<string>()
