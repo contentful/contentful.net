@@ -35,7 +35,7 @@ namespace Contentful.Core.Tests
         public async Task CreatingManagementClientAndMakingCallShouldSetHeadersCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var userAgent = "";
             var authHeader = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>
@@ -125,7 +125,7 @@ namespace Contentful.Core.Tests
         public async Task EditorInterfaceShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/EditorInterface.json");
 
             //Act
             var res = await _client.GetEditorInterfaceAsync("someid");
@@ -139,7 +139,7 @@ namespace Contentful.Core.Tests
         public async Task CreateSpaceShouldCreateCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpace.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpace.json");
             var headerSet = false;
             var contentSet = "";
             _handler.VerificationBeforeSend = () =>
@@ -164,7 +164,7 @@ namespace Contentful.Core.Tests
         public async Task UpdateSpaceShouldCreateCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpace.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpace.json");
             var headerSet = false;
             var contentSet = "";
             _handler.VerificationBeforeSend = () =>
@@ -213,7 +213,7 @@ namespace Contentful.Core.Tests
         public async Task GetContentTypesShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\ContenttypesCollectionManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/ContenttypesCollectionManagement.json");
             //Act
             var res = await _client.GetContentTypesAsync();
 
@@ -248,7 +248,7 @@ namespace Contentful.Core.Tests
                 SystemProperties = new SystemProperties()
             };
             contentType.SystemProperties.Id = "323";
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleContentType.json");
 
             var versionHeader = "";
             var contentSet = "";
@@ -273,7 +273,7 @@ namespace Contentful.Core.Tests
         public async Task GetContentTypeShouldSerializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleContentType.json");
 
             //Act
             var res = await _client.GetContentTypeAsync("someid");
@@ -292,7 +292,7 @@ namespace Contentful.Core.Tests
         public async Task GetContentTypeShouldThrowForEmptyId()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleContentType.json");
 
             //Act
             var res = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetContentTypeAsync(""));
@@ -341,7 +341,7 @@ namespace Contentful.Core.Tests
         public async Task ActivatingContentTypeShouldCallCorrectUrl()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleContentType.json");
 
             var versionHeader = "";
             var requestUrl = "";
@@ -381,7 +381,7 @@ namespace Contentful.Core.Tests
         public async Task DeactivatingContentTypeShouldCallCorrectUrl()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleContentType.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleContentType.json");
 
             var requestUrl = "";
             var requestMethod = HttpMethod.Trace;
@@ -404,7 +404,7 @@ namespace Contentful.Core.Tests
         public async Task GetActivatedContentTypesShouldSerializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\ContenttypesCollectionManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/ContenttypesCollectionManagement.json");
             var requestUrl = "";
 
             _handler.VerifyRequest = (HttpRequestMessage request) =>
@@ -438,7 +438,7 @@ namespace Contentful.Core.Tests
         public async Task GetEditorInterfaceShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/EditorInterface.json");
 
             //Act
             var res = await _client.GetEditorInterfaceAsync("23");
@@ -502,7 +502,7 @@ namespace Contentful.Core.Tests
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/EditorInterface.json");
 
             //Act
             var res = await _client.UpdateEditorInterfaceAsync(editorInterface, "123", 16);
@@ -539,7 +539,7 @@ namespace Contentful.Core.Tests
                 }
             }
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\EditorInterface.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/EditorInterface.json");
 
             //Act
             var res = await _client.UpdateEditorInterfaceAsync(editorInterface, "123", 1);
@@ -553,7 +553,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollection()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\EntriesCollectionManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollectionManagement.json");
 
             //Act
             var res = await _client.GetEntriesCollectionAsync<Entry<dynamic>>();
@@ -596,7 +596,7 @@ namespace Contentful.Core.Tests
             {
                 contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             var res = await _client.CreateOrUpdateEntryAsync(entry, contentTypeId: "Eddie Gordo");
@@ -618,7 +618,7 @@ namespace Contentful.Core.Tests
             {
                 _httpClient.DefaultRequestHeaders.TryGetValues("X-Contentful-Content-Type", out contentTypeHeader);
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
             //Act
             var res = await _client.CreateOrUpdateEntryAsync(entry, version: 7);
             //Assert
@@ -655,7 +655,7 @@ namespace Contentful.Core.Tests
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             var res = await _client.CreateOrUpdateEntryAsync(entry, contentTypeId: "Bryan Fury", version: 45);
@@ -681,7 +681,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntryShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             var res = await _client.GetEntryAsync("43");
@@ -740,7 +740,7 @@ namespace Contentful.Core.Tests
             {
                 versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             await _client.PublishEntryAsync(id, 23);
@@ -771,7 +771,7 @@ namespace Contentful.Core.Tests
             {
                 versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             await _client.PublishEntryAsync(id, 23);
@@ -802,7 +802,7 @@ namespace Contentful.Core.Tests
             {
                 versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             await _client.ArchiveEntryAsync(id, 78);
@@ -833,7 +833,7 @@ namespace Contentful.Core.Tests
             {
                 versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleEntryManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntryManagement.json");
 
             //Act
             await _client.UnarchiveEntryAsync(id, 67);
@@ -848,7 +848,7 @@ namespace Contentful.Core.Tests
         public async Task GetAllAssetsShouldReturnCorrectCollection()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\AssetsCollectionManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/AssetsCollectionManagement.json");
 
             //Act
             var res = await _client.GetAssetsCollectionAsync();
@@ -891,7 +891,7 @@ namespace Contentful.Core.Tests
             {
                 Id = "424"
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var requestUrl = "";
             var contentSet = "";
             var requestMethod = HttpMethod.Trace;
@@ -923,7 +923,7 @@ namespace Contentful.Core.Tests
             {
                 Id = "424"
             };
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var versionHeader = "";
             _handler.VerificationBeforeSend = () =>
             {
@@ -940,7 +940,7 @@ namespace Contentful.Core.Tests
         public async Task GetAllPublishedAssetsShouldReturnCorrectCollection()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\AssetsCollectionManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/AssetsCollectionManagement.json");
 
             //Act
             var res = await _client.GetPublishedAssetsCollectionAsync();
@@ -958,7 +958,7 @@ namespace Contentful.Core.Tests
         public async Task GetAssetShouldThrowIfNoIdSet()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAssetAsync(""));
@@ -971,7 +971,7 @@ namespace Contentful.Core.Tests
         public async Task GetAssetShouldReturnCorrectItem()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
 
             //Act
             var res = await _client.GetAssetAsync("234");
@@ -1048,7 +1048,7 @@ namespace Contentful.Core.Tests
         public async Task PublishingAnAssetShouldCallCorrectUrl(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var requestUrl = "";
             var versionHeader = "";
             var requestMethod = HttpMethod.Trace;
@@ -1078,7 +1078,7 @@ namespace Contentful.Core.Tests
         public async Task UnpublishingAnAssetShouldCallCorrectUrl(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var requestUrl = "";
             var versionHeader = "";
             var requestMethod = HttpMethod.Trace;
@@ -1108,7 +1108,7 @@ namespace Contentful.Core.Tests
         public async Task ArchivingAnAssetShouldCallCorrectUrl(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var requestUrl = "";
             var versionHeader = "";
             var requestMethod = HttpMethod.Trace;
@@ -1138,7 +1138,7 @@ namespace Contentful.Core.Tests
         public async Task UnarchivingAnAssetShouldCallCorrectUrl(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAssetManagement.json");
             var requestUrl = "";
             var versionHeader = "";
             var requestMethod = HttpMethod.Trace;
@@ -1165,7 +1165,7 @@ namespace Contentful.Core.Tests
         public async Task GetAllLocalesShouldReturnCorrectCollection()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\LocalesCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/LocalesCollection.json");
 
             //Act
             var res = await _client.GetLocalesCollectionAsync();
@@ -1183,7 +1183,7 @@ namespace Contentful.Core.Tests
         public async Task CreateLocaleShouldCreateCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleLocale.json");
             var locale = new Locale()
             {
                 Name = "Unintelligible English",
@@ -1210,7 +1210,7 @@ namespace Contentful.Core.Tests
         public async Task GetLocaleShouldThrowWhenIdIsNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleLocale.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetLocaleAsync(id));
@@ -1223,7 +1223,7 @@ namespace Contentful.Core.Tests
         public async Task GetLocaleShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleLocale.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleLocale.json");
 
             //Act
             var res = await _client.GetLocaleAsync("art");
@@ -1262,7 +1262,7 @@ namespace Contentful.Core.Tests
         public async Task GetAllWebHooksShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookCollection.json");
 
             //Act
             var res = await _client.GetWebHooksCollectionAsync();
@@ -1278,7 +1278,7 @@ namespace Contentful.Core.Tests
         public async Task CreateWebHookShouldCallCorrectUrlWithData()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleWebHook.json");
 
             var webhook = new WebHook()
             {
@@ -1342,7 +1342,7 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateWebHookShouldCallCorrectUrlWithData(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleWebHook.json");
 
             var webhook = new WebHook()
             {
@@ -1401,7 +1401,7 @@ namespace Contentful.Core.Tests
         public async Task GetWebHookShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleWebHook.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleWebHook.json");
 
             //Act
             var res = await _client.GetWebHookAsync("ertg");
@@ -1447,7 +1447,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailsShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetails.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookCallDetails.json");
             //Act
             var res = await _client.GetWebHookCallDetailsAsync("b", "s");
 
@@ -1462,7 +1462,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailShouldThrowForWebHookIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetails.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookCallDetails.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync("some", id));
@@ -1477,7 +1477,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetails.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookCallDetails.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync(id, "some"));
@@ -1492,7 +1492,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailsShouldThrowForIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetailsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookCallDetailsCollection.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsCollectionAsync(id));
@@ -1505,7 +1505,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailsCollectionShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookCallDetailsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookCallDetailsCollection.json");
 
             //Act
             var res = await _client.GetWebHookCallDetailsCollectionAsync("aaf");
@@ -1522,7 +1522,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookHealthShouldThrowForIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookHealth.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookHealth.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookHealthAsync(id));
@@ -1535,7 +1535,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookHealthShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\WebhookHealth.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/WebhookHealth.json");
 
             //Act
             var res = await _client.GetWebHookHealthAsync("aaf");
@@ -1595,7 +1595,7 @@ namespace Contentful.Core.Tests
         public async Task RoleShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleRole.json");
 
             //Act
             var res = await _client.GetRoleAsync("123");
@@ -1611,7 +1611,7 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             var role = new Role();
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleRole.json");
 
 
             role.Name = "test";
@@ -1655,7 +1655,7 @@ namespace Contentful.Core.Tests
         public async Task RolesCollectionShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRolesCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleRolesCollection.json");
 
             //Act
             var res = await _client.GetAllRolesAsync();
@@ -1672,7 +1672,7 @@ namespace Contentful.Core.Tests
         public async Task CreateRoleShouldCallCorrectUrlWithData()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleRole.json");
 
             var role = new Role()
             {
@@ -1724,7 +1724,7 @@ namespace Contentful.Core.Tests
         public async Task UpdateRoleShouldThrowForIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleRole.json");
             var role = new Role()
             {
                 SystemProperties = new SystemProperties()
@@ -1745,7 +1745,7 @@ namespace Contentful.Core.Tests
         public async Task UpdateRoleShouldCallCorrectUrlWithData(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleRole.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleRole.json");
 
             var role = new Role()
             {
@@ -1823,7 +1823,7 @@ namespace Contentful.Core.Tests
         public async Task SnapshotsShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SnapshotsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SnapshotsCollection.json");
 
             //Act
             var res = await _client.GetAllSnapshotsForEntryAsync("123");
@@ -1838,7 +1838,7 @@ namespace Contentful.Core.Tests
         public async Task GetSnapshotShouldThrowForSnapshotIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSnapshot.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSnapshot.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync(id, "something"));
@@ -1853,7 +1853,7 @@ namespace Contentful.Core.Tests
         public async Task GetSnapshotShouldThrowForEntryIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSnapshot.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSnapshot.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
@@ -1866,7 +1866,7 @@ namespace Contentful.Core.Tests
         public async Task GetSnapshotShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSnapshot.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSnapshot.json");
             
             //Act
             var res = await _client.GetSnapshotForEntryAsync("123", "wed");
@@ -1880,7 +1880,7 @@ namespace Contentful.Core.Tests
         public async Task SpaceMembershipsShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpaceMembershipsCollection.json");
 
             //Act
             var res = await _client.GetSpaceMembershipsAsync();
@@ -1921,7 +1921,7 @@ namespace Contentful.Core.Tests
         public async Task CreateSpaceMembershipShouldCallCorrectUrlWithData()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpaceMembershipsCollection.json");
 
             var spaceMembership = new SpaceMembership()
             {
@@ -1958,7 +1958,7 @@ namespace Contentful.Core.Tests
         public async Task UpdateSpaceMembershipShouldThrowForEntryIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpaceMembershipsCollection.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
@@ -1974,7 +1974,7 @@ namespace Contentful.Core.Tests
         public async Task UpdateSpaceMembershipShouldCallCorrectUrlWithData(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleSpaceMembershipsCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpaceMembershipsCollection.json");
 
             var spaceMembership = new SpaceMembership()
             {
@@ -2034,7 +2034,7 @@ namespace Contentful.Core.Tests
         public async Task GetApiKeysShouldReturnCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\ApiKeysCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/ApiKeysCollection.json");
 
             //Act
             var res = await _client.GetAllApiKeysAsync();
@@ -2049,7 +2049,7 @@ namespace Contentful.Core.Tests
         public async Task CreateApiKeyShouldCallCorrectUrlWithData()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles\ApiKeysCollection.json");
+            _handler.Response = GetResponseFromFile(@"JsonFiles/ApiKeysCollection.json");
             var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
