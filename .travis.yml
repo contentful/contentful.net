@@ -3,6 +3,9 @@ dist: trusty
 solution: Contentful.Net.sln
 mono: none
 dotnet: 1.0.0-preview2-003131
+install: 
+    - nuget install xunit.runners -Version 2.0.0 -OutputDirectory testrunner
 script:		 
     - dotnet restore **/project.json
     - dotnet build **/project.json
+    - - mono ./testrunner/xunit.runners.2.0.0/tools/xunit.console.clr4.exe ./Contentful.Core.Tests/bin/Release/Contentful.Core.Tests.dll
