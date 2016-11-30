@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -17,10 +18,12 @@ namespace Contentful.Core.Tests
 
         protected HttpResponseMessage GetResponseFromFile(string file)
         {
-            var assembly = typeof(ClientTestsBase).GetTypeInfo().Assembly;
+            var assembly = this.GetType().GetTypeInfo().Assembly;
             var response = new HttpResponseMessage();
+            var resources = assembly.GetManifestResourceNames();
+            var resourceName = resources.FirstOrDefault(f => f.Equals($"Contentful.Core.Tests.JsonFiles.{file}" , StringComparison.OrdinalIgnoreCase));
             string json = "";
-            using (Stream stream = assembly.GetManifestResourceStream("Contentful.Core.Tests.JsonFiles." + file))
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
                 json = reader.ReadToEnd();
