@@ -35,7 +35,7 @@ namespace Contentful.Core.Tests
             //Arrange
             var httpClient = new HttpClient(_handler);
             var client = new ContentfulClient(httpClient, "444", "435");
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAsset.json");
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
             var authHeader = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
@@ -55,7 +55,7 @@ namespace Contentful.Core.Tests
             //Arrange
             var httpClient = new HttpClient(_handler);
             var client = new ContentfulClient(httpClient, "123", "435");
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAsset.json");
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
             var userAgent = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
@@ -72,7 +72,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntryShouldSerializeResponseToArbitraryModelCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntry.json");
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
             
             //Act
             var res = await _client.GetEntryAsync<TestEntryModel>("12");
@@ -86,7 +86,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntryShouldSerializeResponseToArbitraryModelWithSystemPropertiesCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntry.json");
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
             var res = await _client.GetEntryAsync<TestEntryWithSysProperties>("12");
@@ -103,7 +103,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntryWithInvalidAccessTokenShouldSerializeErrorMessageCorrectlyAndThrowContentfulException()
         {
             //Arrange
-            var response = GetResponseFromFile(@"JsonFiles/ErrorInvalidToken.json");
+            var response = GetResponseFromFile(@"ErrorInvalidToken.json");
             response.StatusCode = HttpStatusCode.Unauthorized;
             _handler.Response = response;
             //Act
@@ -116,7 +116,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntryShouldSerializeResponseCorrectlyIntoAnEntryModel()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntry.json");
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
             var res = await _client.GetEntryAsync<Entry<TestEntryModel>>("12");
@@ -132,7 +132,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntryShouldThrowArgumentExceptionIfNoEntryIdIsProvided()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleEntry.json");
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
 
@@ -144,7 +144,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryType()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollection.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
             var res = await _client.GetEntriesAsync<TestEntryModel>();
@@ -158,7 +158,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithSystemProperties()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollection.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
             var res = await _client.GetEntriesAsync<TestEntryWithSysProperties>();
@@ -173,7 +173,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithIncludes()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollectionWithIncludes.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
 
             //Act
             var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
@@ -190,7 +190,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfEntry()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollection.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
             var res = await _client.GetEntriesAsync<Entry<TestEntryModel>>(queryBuilder:null);
@@ -204,7 +204,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesByTypeShouldAddCorrectFilter()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollection.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
             var builder = new QueryBuilder();
             //Act
             var res = await _client.GetEntriesByTypeAsync<TestEntryModel>("666", builder);
@@ -219,7 +219,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollection()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollection.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
             var res = await _client.GetEntriesCollectionAsync<Entry<TestEntryModel>>();
@@ -238,7 +238,7 @@ namespace Contentful.Core.Tests
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithIncludes()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/EntriesCollectionWithIncludes.json");
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
 
             //Act
             var res = await _client.GetEntriesCollectionAsync<Entry<TestModelWithIncludes>>();
@@ -253,7 +253,7 @@ namespace Contentful.Core.Tests
         public async Task GetAssetByIdShouldSerializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAsset.json");
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
 
             //Act
             var res = await _client.GetAssetAsync("12");
@@ -267,7 +267,7 @@ namespace Contentful.Core.Tests
         public async Task GetAssetByIdShouldThrowArgumentExceptionIfNoAssetIdIsProvided()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleAsset.json");
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
 
             //Act
 
@@ -279,7 +279,7 @@ namespace Contentful.Core.Tests
         public async Task GetAssetsShouldSerializeCorrectlyToAnEnumerableOfAsset()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/AssetsCollection.json");
+            _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
 
             //Act
             var res = await _client.GetAssetsAsync();
@@ -294,7 +294,7 @@ namespace Contentful.Core.Tests
         public async Task GetAssetsCollectionShouldSerializeIntoCorrectCollection()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/AssetsCollection.json");
+            _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
 
             //Act
             var res = await _client.GetAssetsCollectionAsync(queryBuilder:null);
@@ -314,7 +314,7 @@ namespace Contentful.Core.Tests
         public async Task GetSpaceShouldSerializeIntoCorrectObject()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleSpace.json");
+            _handler.Response = GetResponseFromFile(@"SampleSpace.json");
 
             //Act
             var res = await _client.GetSpaceAsync();
@@ -342,7 +342,7 @@ namespace Contentful.Core.Tests
         public async Task GetContentTypeShouldSerializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/SampleContentType.json");
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
 
             //Act
             var res = await _client.GetContentTypeAsync("someid");
@@ -361,7 +361,7 @@ namespace Contentful.Core.Tests
         public async Task GetContentTypesShouldSerializeIntoAnEnumerableOfContentType()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/ContentTypesCollection.json");
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollection.json");
 
             //Act
             var res = await _client.GetContentTypesAsync();
@@ -379,7 +379,7 @@ namespace Contentful.Core.Tests
         public async Task SyncInitialShouldSerializeIntoSyncResultCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/InitialSyncNoNextPage.json");
+            _handler.Response = GetResponseFromFile(@"InitialSyncNoNextPage.json");
 
             //Act
             var res = await _client.SyncInitialAsync();
@@ -400,7 +400,7 @@ namespace Contentful.Core.Tests
         public async Task SyncInitialDeletionsShouldSerializeIntoSyncResultCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/InitialSyncDeletionOnly.json");
+            _handler.Response = GetResponseFromFile(@"InitialSyncDeletionOnly.json");
 
             //Act
             var res = await _client.SyncInitialAsync(SyncType.Deletion);
@@ -419,7 +419,7 @@ namespace Contentful.Core.Tests
         public async Task SyncNextUrlShouldSerializeIntoSyncResultCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/NextSyncUrl.json");
+            _handler.Response = GetResponseFromFile(@"NextSyncUrl.json");
 
             //Act
             var res = await _client.SyncNextResultAsync("SomeSyncToken");
@@ -441,7 +441,7 @@ namespace Contentful.Core.Tests
         public async Task SyncNextUrlShouldThrowArgumentExceptionIfNoUrlIsProvided()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"JsonFiles/NextSyncUrl.json");
+            _handler.Response = GetResponseFromFile(@"NextSyncUrl.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResultAsync(""));
@@ -453,10 +453,10 @@ namespace Contentful.Core.Tests
         public async Task SyncInitialRecursiveShouldSyncAllPagesOfSyncIntoSingleSyncResult()
         {
             //Arrange
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNextPagePresent.json"));
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNextPagePresent.json"));
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNextPagePresent.json"));
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNoNextPage.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"InitialSyncNextPagePresent.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"InitialSyncNextPagePresent.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"InitialSyncNextPagePresent.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"InitialSyncNoNextPage.json"));
 
             //Act
             var res = await _client.SyncInitialRecursiveAsync();

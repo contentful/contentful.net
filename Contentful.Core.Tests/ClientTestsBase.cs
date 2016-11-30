@@ -17,11 +17,16 @@ namespace Contentful.Core.Tests
 
         protected HttpResponseMessage GetResponseFromFile(string file)
         {
-            //So, this is an ugly hack... Any better way to get the absolute path of the test project?
-            var projectPath = Directory.GetParent(typeof(Asset).GetTypeInfo().Assembly.Location).Parent.Parent.Parent.FullName;
+            var assembly = typeof(ClientTestsBase).GetTypeInfo().Assembly;
             var response = new HttpResponseMessage();
-            var fullPath = Path.Combine(projectPath, file);
-            response.Content = new StringContent(System.IO.File.ReadAllText(fullPath));
+            string json = "";
+            using (Stream stream = assembly.GetManifestResourceStream("Contentful.Core.Tests.JsonFiles." + file))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                json = reader.ReadToEnd();
+            }
+
+            response.Content = new StringContent(json);
             return response;
         }
     }

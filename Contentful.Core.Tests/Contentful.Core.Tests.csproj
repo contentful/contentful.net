@@ -9,38 +9,38 @@
     <EmbeddedResource Include="**\*.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="JsonFiles\ApiKeysCollection.json" />
-    <Content Include="JsonFiles\LocalesCollection.json" />
-    <Content Include="JsonFiles\AssetsCollectionManagement.json" />
-    <Content Include="JsonFiles\ContenttypesCollectionManagement.json" />
-    <Content Include="JsonFiles\EntriesCollectionManagement.json" />
-    <Content Include="JsonFiles\SampleLocale.json" />
-    <Content Include="JsonFiles\SampleAssetManagement.json" />
-    <Content Include="JsonFiles\SampleEntryManagement.json" />
-    <Content Include="JsonFiles\SampleWebHook.json" />
-    <Content Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
-    <Content Include="JsonFiles\SnapshotsCollection.json" />
-    <Content Include="JsonFiles\AssetsCollection.json" />
-    <Content Include="JsonFiles\ContenttypesCollection.json" />
-    <Content Include="JsonFiles\EditorInterface.json" />
-    <Content Include="JsonFiles\EntriesCollection.json" />
-    <Content Include="JsonFiles\EntriesCollectionWithIncludes.json" />
-    <Content Include="JsonFiles\ErrorInvalidToken.json" />
-    <Content Include="JsonFiles\InitialSyncDeletionOnly.json" />
-    <Content Include="JsonFiles\InitialSyncNextPagePresent.json" />
-    <Content Include="JsonFiles\InitialSyncNoNextPage.json" />
-    <Content Include="JsonFiles\NextSyncUrl.json" />
-    <Content Include="JsonFiles\SampleAsset.json" />
-    <Content Include="JsonFiles\SampleContentType.json" />
-    <Content Include="JsonFiles\SampleRole.json" />
-    <Content Include="JsonFiles\SampleEntry.json" />
-    <Content Include="JsonFiles\SampleRolesCollection.json" />
-    <Content Include="JsonFiles\SampleSpace.json" />
-    <Content Include="JsonFiles\WebhookCallDetailsCollection.json" />
-    <Content Include="JsonFiles\SampleSnapshot.json" />
-    <Content Include="JsonFiles\WebhookHealth.json" />
-    <Content Include="JsonFiles\WebhookCollection.json" />
-    <Content Include="JsonFiles\webhookcalldetails.json" />
+    <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
+    <EmbeddedResource Include="JsonFiles\LocalesCollection.json" />
+    <EmbeddedResource Include="JsonFiles\AssetsCollectionManagement.json" />
+    <EmbeddedResource Include="JsonFiles\ContenttypesCollectionManagement.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionManagement.json" />
+    <EmbeddedResource Include="JsonFiles\SampleLocale.json" />
+    <EmbeddedResource Include="JsonFiles\SampleAssetManagement.json" />
+    <EmbeddedResource Include="JsonFiles\SampleEntryManagement.json" />
+    <EmbeddedResource Include="JsonFiles\SampleWebHook.json" />
+    <EmbeddedResource Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
+    <EmbeddedResource Include="JsonFiles\SnapshotsCollection.json" />
+    <EmbeddedResource Include="JsonFiles\AssetsCollection.json" />
+    <EmbeddedResource Include="JsonFiles\ContenttypesCollection.json" />
+    <EmbeddedResource Include="JsonFiles\EditorInterface.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollection.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludes.json" />
+    <EmbeddedResource Include="JsonFiles\ErrorInvalidToken.json" />
+    <EmbeddedResource Include="JsonFiles\InitialSyncDeletionOnly.json" />
+    <EmbeddedResource Include="JsonFiles\InitialSyncNextPagePresent.json" />
+    <EmbeddedResource Include="JsonFiles\InitialSyncNoNextPage.json" />
+    <EmbeddedResource Include="JsonFiles\NextSyncUrl.json" />
+    <EmbeddedResource Include="JsonFiles\SampleAsset.json" />
+    <EmbeddedResource Include="JsonFiles\SampleContentType.json" />
+    <EmbeddedResource Include="JsonFiles\SampleRole.json" />
+    <EmbeddedResource Include="JsonFiles\SampleEntry.json" />
+    <EmbeddedResource Include="JsonFiles\SampleRolesCollection.json" />
+    <EmbeddedResource Include="JsonFiles\SampleSpace.json" />
+    <EmbeddedResource Include="JsonFiles\WebhookCallDetailsCollection.json" />
+    <EmbeddedResource Include="JsonFiles\SampleSnapshot.json" />
+    <EmbeddedResource Include="JsonFiles\WebhookHealth.json" />
+    <EmbeddedResource Include="JsonFiles\WebhookCollection.json" />
+    <EmbeddedResource Include="JsonFiles\webhookcalldetails.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App">
@@ -66,6 +66,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Contentful.Core\Contentful.Core.csproj" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
