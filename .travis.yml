@@ -6,3 +6,4 @@ dotnet: 1.0.0-preview2-003131
 script:		 
     - dotnet restore **/project.json
     - dotnet build **/project.json
+    - dotnet test Contentful.Core.Tests/project.json
