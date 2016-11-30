@@ -1,5 +1,5 @@
 language: csharp
+dist: trusty
 solution: Contentful.Net.sln
 mono: none
 dotnet: 1.0.0-preview2-003131
-os: osx
