@@ -1,7 +1,10 @@
 {
   "version": "1.0.0-*",
   "buildOptions": {
-    "debugType": "portable"
+    "debugType": "portable",
+    "embed": {
+      "include": "JsonFiles/*.json"
+    }
   },
   "dependencies": {
     "Contentful.Core": "*",
