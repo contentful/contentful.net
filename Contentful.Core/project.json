@@ -4,26 +4,16 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Contentful.Core": "*",
     "Microsoft.Net.Sdk": "1.0.0-alpha-20161104-2",
-    "Microsoft.Net.Test.Sdk": "15.0.0-preview-20161024-02",
-    "System.Runtime.Serialization.Primitives": "4.3.0",
-    "xunit": "2.1.0",
-    "dotnet-test-xunit": "1.0.0-rc2-192208-24"
+    "Microsoft.Extensions.Options":"1.1.0",
+    "NETStandard.Library": "1.6.1",
+    "Newtonsoft.Json": "9.0.1"
   },
-  "testRunner": "xunit",
   "frameworks": {
-    "netcoreapp1.1": {
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "type": "platform",
-          "version": "1.1.0"
+      "netstandard1.6": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
         }
-      },
-      "imports": [
-        "dotnet5.4",
-        "portable-net451+win8"
-      ]
+      }
     }
-  }
 }
