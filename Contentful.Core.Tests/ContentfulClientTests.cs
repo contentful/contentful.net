@@ -446,17 +446,17 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResultAsync(""));
             //Assert
-            Assert.Equal("nextPageUrl must be specified.\r\nParameter name: nextSyncOrPageUrl", ex.Message);
+            Assert.Equal($"nextPageUrl must be specified.{Environment.NewLine}Parameter name: nextSyncOrPageUrl", ex.Message);
         }
 
         [Fact]
         public async Task SyncInitialRecursiveShouldSyncAllPagesOfSyncIntoSingleSyncResult()
         {
             //Arrange
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles\InitialSyncNextPagePresent.json"));
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles\InitialSyncNextPagePresent.json"));
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles\InitialSyncNextPagePresent.json"));
-            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles\InitialSyncNoNextPage.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNextPagePresent.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNextPagePresent.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNextPagePresent.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"JsonFiles/InitialSyncNoNextPage.json"));
 
             //Act
             var res = await _client.SyncInitialRecursiveAsync();

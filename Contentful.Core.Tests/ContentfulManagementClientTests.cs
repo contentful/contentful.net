@@ -235,7 +235,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentTypeAsync(contentType));
 
             //Assert
-            Assert.Equal("The id of the content type must be set.\r\nParameter name: contentType", ex.Message);
+            Assert.Equal($"The id of the content type must be set.{Environment.NewLine}Parameter name: contentType", ex.Message);
         }
 
         [Fact]
@@ -1394,7 +1394,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookAsync(id));
 
             //Assert
-            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
@@ -1468,7 +1468,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync("some", id));
 
             //Assert
-            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Theory]
@@ -1483,7 +1483,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync(id, "some"));
 
             //Assert
-            Assert.Equal("The id of the webhook call must be set.\r\nParameter name: callId", ex.Message);
+            Assert.Equal($"The id of the webhook call must be set.{Environment.NewLine}Parameter name: callId", ex.Message);
         }
 
         [Theory]
@@ -1498,7 +1498,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsCollectionAsync(id));
 
             //Assert
-            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
@@ -1528,7 +1528,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookHealthAsync(id));
 
             //Assert
-            Assert.Equal("The id of the webhook must be set.\r\nParameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
@@ -1844,7 +1844,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync(id, "something"));
 
             //Assert
-            Assert.Equal("The id of the snapshot must be set.\r\nParameter name: snapshotId", ex.Message);
+            Assert.Equal($"The id of the snapshot must be set.{Environment.NewLine}Parameter name: snapshotId", ex.Message);
         }
 
         [Theory]
@@ -1859,7 +1859,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
 
             //Assert
-            Assert.Equal("The id of the entry must be set.\r\nParameter name: entryId", ex.Message);
+            Assert.Equal($"The id of the entry must be set.{Environment.NewLine}Parameter name: entryId", ex.Message);
         }
 
         [Fact]
@@ -1964,7 +1964,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
 
             //Assert
-            Assert.Equal("The id of the entry must be set.\r\nParameter name: entryId", ex.Message);
+            Assert.Equal($"The id of the entry must be set.{Environment.NewLine}Parameter name: entryId", ex.Message);
         }
 
         [Theory]
