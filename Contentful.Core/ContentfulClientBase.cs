@@ -31,9 +31,11 @@ namespace Contentful.Core
 
         protected async Task<HttpResponseMessage> SendHttpRequestAsync(string url, HttpMethod method, string authToken, HttpContent content = null)
         {
-            var httpRequestMessage = new HttpRequestMessage();
-            httpRequestMessage.RequestUri = new Uri(url);
-            httpRequestMessage.Method = method;
+            var httpRequestMessage = new HttpRequestMessage()
+            {
+                RequestUri = new Uri(url),
+                Method = method
+            };
             httpRequestMessage.Headers.Add("Authorization", $"Bearer {authToken}");
             httpRequestMessage.Content = content;
 
