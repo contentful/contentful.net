@@ -38,6 +38,8 @@ namespace Contentful.Core
                 Method = method
             };
             httpRequestMessage.Headers.Add("Authorization", $"Bearer {authToken}");
+            httpRequestMessage.Headers.Add("User-Agent", "Contentful-.NET-SDK");
+
             httpRequestMessage.Content = content;
 
             return await _httpClient.SendAsync(httpRequestMessage);

@@ -30,25 +30,42 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public void CreatingAContentfulClientShouldAddAuthHeader()
+        public async Task CreatingAContentfulClientAndMakingCallShouldAddAuthHeader()
         {
             //Arrange
             var httpClient = new HttpClient(_handler);
+            var client = new ContentfulClient(httpClient, "444", "435");
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAsset.json");
+            var authHeader = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                authHeader = request.Headers.GetValues("Authorization").First();
+            };
             //Act
-            var client = new ContentfulClient(httpClient, "123", "435");
+            await client.GetAssetAsync("564");
+
             //Assert
-            Assert.Equal("Contentful-.NET-SDK", httpClient.DefaultRequestHeaders.GetValues("User-Agent").First());
+            Assert.Equal("Bearer 444", authHeader);
         }
 
         [Fact]
-        public void CreatingAContentfulClientShouldAddUserAgentHeader()
+        public async Task CreatingAContentfulClientAndMakingCallShouldAddUserAgentHeader()
         {
+
             //Arrange
             var httpClient = new HttpClient(_handler);
-            //Act
             var client = new ContentfulClient(httpClient, "123", "435");
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAsset.json");
+            var userAgent = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                userAgent = request.Headers.UserAgent.First().Product.Name;
+            };
+            //Act
+            await client.GetAssetAsync("123");
+
             //Assert
-            Assert.Equal("Contentful-.NET-SDK", httpClient.DefaultRequestHeaders.UserAgent.First().Product.Name);
+            Assert.Equal("Contentful-.NET-SDK", userAgent);
         }
 
         [Fact]

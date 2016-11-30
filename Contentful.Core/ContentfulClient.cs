@@ -37,11 +37,6 @@ namespace Contentful.Core
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
 
-
-            if(!_httpClient.DefaultRequestHeaders.Contains("User-Agent")) {
-                _httpClient.DefaultRequestHeaders.Add("User-Agent", "Contentful-.NET-SDK");
-            }
-
             if (_options.UsePreviewApi)
             {
                 _baseUrl = _baseUrl.Replace("cdn", "preview");

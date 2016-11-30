@@ -32,13 +32,23 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public void CreatingManagementClientShouldSetHeadersCorrectly()
+        public async Task CreatingManagementClientAndMakingCallShouldSetHeadersCorrectly()
         {
             //Arrange
-            
+            _handler.Response = GetResponseFromFile(@"JsonFiles\SampleAssetManagement.json");
+            var userAgent = "";
+            var authHeader = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                userAgent = request.Headers.UserAgent.First().Product.Name;
+                authHeader = request.Headers.GetValues("Authorization").First();
+            };
             //Act
+            await _client.GetAssetAsync("sdf");
+
             //Assert
-            Assert.Equal("Contentful-.NET-SDK", _httpClient.DefaultRequestHeaders.GetValues("User-Agent").First());
+            Assert.Equal("Bearer 564", authHeader);
+            Assert.Equal("Contentful-.NET-SDK", userAgent);
         }
         
         [Fact]
