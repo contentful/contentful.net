@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Contentful.Core.Configuration;
-using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
