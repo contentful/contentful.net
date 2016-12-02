@@ -18,7 +18,7 @@ namespace Contentful.Core
 
         protected async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
         {
-            var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
             var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
             var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message").ToString())
@@ -42,7 +42,7 @@ namespace Contentful.Core
 
             httpRequestMessage.Content = content;
 
-            return await _httpClient.SendAsync(httpRequestMessage);
+            return await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
         }
 
         protected void AddVersionHeader(int? version)

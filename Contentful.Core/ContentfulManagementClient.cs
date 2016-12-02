@@ -80,13 +80,13 @@ namespace Contentful.Core
                 _httpClient.DefaultRequestHeaders.Add("X-Contentful-Organization", organisation);
             }
 
-            var res = await PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale }));
+            var res = await PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale })).ConfigureAwait(false);
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.ToObject<Space>();
         }
@@ -99,7 +99,7 @@ namespace Contentful.Core
         /// <returns>The updated <see cref="Space"/></returns>
         public async Task<Space> UpdateSpaceNameAsync(Space space, string organisation = null)
         {
-            return await UpdateSpaceNameAsync(space.SystemProperties.Id, space.Name, space.SystemProperties.Version ?? 1, organisation);
+            return await UpdateSpaceNameAsync(space.SystemProperties.Id, space.Name, space.SystemProperties.Version ?? 1, organisation).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -119,15 +119,15 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name = name }));
+            var res = await PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name = name })).ConfigureAwait(false);
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.ToObject<Space>();
         }
@@ -139,11 +139,11 @@ namespace Contentful.Core
         /// <returns>The <see cref="Space" /></returns>
         public async Task<Space> GetSpaceAsync(string id)
         {
-            var res = await GetAsync($"{_baseUrl}{id}");
+            var res = await GetAsync($"{_baseUrl}{id}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.ToObject<Space>();
         }
@@ -154,11 +154,11 @@ namespace Contentful.Core
         /// <returns></returns>
         public async Task<IEnumerable<Space>> GetSpacesAsync()
         {
-            var res = await GetAsync(_baseUrl);
+            var res = await GetAsync(_baseUrl).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.SelectTokens("$..items[*]").Select(t => t.ToObject<Space>());
         }
@@ -170,9 +170,9 @@ namespace Contentful.Core
         /// <returns></returns>
         public async Task DeleteSpaceAsync(string id)
         {
-            var res = await DeleteAsync($"{_baseUrl}{id}");
+            var res = await DeleteAsync($"{_baseUrl}{id}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -182,11 +182,11 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
         }
@@ -210,13 +210,13 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentType.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { name = contentType.Name, fields = contentType.Fields }));
+                ConvertObjectToJsonStringContent(new { name = contentType.Name, fields = contentType.Fields })).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.ToObject<ContentType>();
         }
@@ -236,11 +236,11 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>();
 
             return contentType;
@@ -261,9 +261,9 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -283,13 +283,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", null).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>();
 
             return contentType;
@@ -310,9 +310,9 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -322,11 +322,11 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetActivatedContentTypesAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
         }
@@ -346,11 +346,11 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var editorInterface = jsonObject.ToObject<EditorInterface>();
 
             return editorInterface;
@@ -376,13 +376,13 @@ namespace Contentful.Core
             AddVersionHeader(version);
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", 
-                ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls }));
+                ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls })).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedEditorInterface = jsonObject.ToObject<EditorInterface>();
 
             return updatedEditorInterface;
@@ -397,7 +397,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder queryBuilder) where T : IContentfulResource
         {
-            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build());
+            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -410,11 +410,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null) where T : IContentfulResource
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<T>>();
 
             return collection;
@@ -444,14 +444,14 @@ namespace Contentful.Core
             AddVersionHeader(version);
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entry.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { fields = entry.Fields }));
+                ConvertObjectToJsonStringContent(new { fields = entry.Fields })).ConfigureAwait(false);
 
             RemoveVersionHeader();
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
 
             return updatedEntry;
@@ -472,11 +472,11 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
         }
 
         /// <summary>
@@ -496,11 +496,11 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}").ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -521,13 +521,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published", null).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
         }
 
         /// <summary>
@@ -548,13 +548,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/published").ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
         }
 
         /// <summary>
@@ -575,13 +575,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived", null).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
         }
 
         /// <summary>
@@ -602,13 +602,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/archived").ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
         }
 
         /// <summary>
@@ -619,11 +619,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>();
             var assets = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementAsset>());
             collection.Items = assets;
@@ -639,11 +639,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ManagementAsset>> GetPublishedAssetsCollectionAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>();
             var assets = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementAsset>());
             collection.Items = assets;
@@ -666,11 +666,11 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ManagementAsset>();
         }
@@ -692,11 +692,11 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}").ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -717,13 +717,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published", null);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published", null).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ManagementAsset>();
         }
@@ -746,13 +746,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/published").ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ManagementAsset>();
         }
@@ -777,13 +777,13 @@ namespace Contentful.Core
 
             HttpResponseMessage res = null;
 
-            res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null);
+            res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived", null).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ManagementAsset>();
         }
@@ -806,13 +806,13 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/archived").ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ManagementAsset>();
         }
@@ -837,11 +837,11 @@ namespace Contentful.Core
 
             HttpResponseMessage res = null;
 
-            res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/files/{locale}/process", null);
+            res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}/files/{locale}/process", null).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -862,13 +862,13 @@ namespace Contentful.Core
             AddVersionHeader(version);
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{asset.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }));
+                ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } })).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedAsset = jsonObject.ToObject<ManagementAsset>();
 
             return updatedAsset;
@@ -882,11 +882,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Locale>> GetLocalesCollectionAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales").ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Locale>>();
             var locales = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Locale>());
             collection.Items = locales;
@@ -913,11 +913,11 @@ namespace Contentful.Core
                         fallbackCode = locale.FallbackCode,
                         name = locale.Name,
                         optional = locale.Optional
-                    }));
+                    })).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Locale>();
         }
@@ -937,11 +937,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The localeId must be set.");
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Locale>();
         }
@@ -968,11 +968,11 @@ namespace Contentful.Core
                 fallbackCode = locale.FallbackCode,
                 name = locale.Name,
                 optional = locale.Optional
-            }));
+            })).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Locale>();
         }
@@ -991,9 +991,9 @@ namespace Contentful.Core
                 throw new ArgumentException("The localeId must be set.");
             }
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1004,11 +1004,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<WebHook>> GetWebHooksCollectionAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>();
             var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHook>());
             collection.Items = hooks;
@@ -1028,11 +1028,11 @@ namespace Contentful.Core
             //Not allowed to post system properties
             webhook.SystemProperties = null;
 
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook)).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<WebHook>();
         }
@@ -1057,11 +1057,11 @@ namespace Contentful.Core
             //Not allowed to post system properties
             webhook.SystemProperties = null;
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook));
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook)).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<WebHook>();
         }
@@ -1081,11 +1081,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<WebHook>();
         }
@@ -1104,9 +1104,9 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set", nameof(webhookId));
             }
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1124,11 +1124,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>();
             var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHookCallDetails>());
             collection.Items = hooks;
@@ -1157,11 +1157,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<WebHookCallDetails>();
         }
@@ -1181,11 +1181,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the webhook must be set.", nameof(webhookId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var health = new WebHookHealthResponse()
             {
                 SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>(),
@@ -1210,11 +1210,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the role must be set", nameof(roleId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Role>();
         }
@@ -1227,11 +1227,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Role>> GetAllRolesAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Role>>();
             var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Role>());
             collection.Items = roles;
@@ -1251,11 +1251,11 @@ namespace Contentful.Core
             //Not allowed to post system properties
             role.SystemProperties = null;
 
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role)).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Role>();
         }
@@ -1280,11 +1280,11 @@ namespace Contentful.Core
             //Not allowed to post system properties
             role.SystemProperties = null;
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role));
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role)).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Role>();
         }
@@ -1303,9 +1303,9 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the role must be set", nameof(roleId));
             }
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntryAsync(string entryId, string spaceId = null)
@@ -1315,11 +1315,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the entry must be set", nameof(entryId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>();
             var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>());
             collection.Items = roles;
@@ -1339,22 +1339,22 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the entry must be set.", nameof(entryId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<Snapshot>();
         }
 
         public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMembershipsAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<SpaceMembership>>();
             var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SpaceMembership>());
             collection.Items = memberships;
@@ -1371,11 +1371,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SpaceMembership> CreateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null)
         {
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership)).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<SpaceMembership>();
         }
@@ -1395,11 +1395,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership must be set", nameof(spaceMembershipId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<SpaceMembership>();
         }
@@ -1419,11 +1419,11 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership id must be set", nameof(spaceMembership));
             }
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership));
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership)).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<SpaceMembership>();
         }
@@ -1442,9 +1442,9 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership must be set", nameof(spaceMembershipId));
             }
 
-            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}");
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1455,11 +1455,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ApiKey>> GetAllApiKeysAsync(string spaceId = null)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys");
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>();
             var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiKey>());
             collection.Items = keys;
@@ -1482,33 +1482,33 @@ namespace Contentful.Core
                 throw new ArgumentException("The name of the api key must be set.", nameof(name));
             }
 
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }));
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description })).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ApiKey>();
         }
 
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Post, _options.ManagementApiKey, content);
+            return await SendHttpRequestAsync(url, HttpMethod.Post, _options.ManagementApiKey, content).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Put, _options.ManagementApiKey, content);
+            return await SendHttpRequestAsync(url, HttpMethod.Put, _options.ManagementApiKey, content).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> DeleteAsync(string url)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Delete, _options.ManagementApiKey);
+            return await SendHttpRequestAsync(url, HttpMethod.Delete, _options.ManagementApiKey).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> GetAsync(string url)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.ManagementApiKey);
+            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.ManagementApiKey).ConfigureAwait(false);
         }
 
         private StringContent ConvertObjectToJsonStringContent(object ob)

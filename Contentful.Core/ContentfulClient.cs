@@ -95,19 +95,19 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var ob = default(T);
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync()).ToObject<T>();
+                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>();
             }
             else
             {
-                var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+                var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
                 //move the sys object beneath the fields to make serialization more logical for the end user.
                 var sys = json.SelectToken("$.sys");
@@ -133,7 +133,7 @@ namespace Contentful.Core
 
             builder.ContentTypeIs(contentTypeId);
 
-            return await GetEntriesAsync<T>(builder);
+            return await GetEntriesAsync<T>(builder).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<T>> GetEntriesAsync<T>(QueryBuilder queryBuilder)
         {
-            return await GetEntriesAsync<T>(queryBuilder?.Build());
+            return await GetEntriesAsync<T>(queryBuilder?.Build()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -160,12 +160,12 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<T>> GetEntriesAsync<T>(string queryString = null)
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             IEnumerable<T> entries;
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             var links = json.SelectTokens("$.items..fields..sys").ToList();
 
@@ -214,7 +214,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder queryBuilder) where T : IContentfulResource
         {
-            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build());
+            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -227,11 +227,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null) where T : IContentfulResource
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<T>>();
 
             collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>());
@@ -254,11 +254,11 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.ToObject<Asset>();
 
             return asset;
@@ -272,7 +272,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<Asset>> GetAssetsAsync(QueryBuilder queryBuilder)
         {
-            return await GetAssetsAsync(queryBuilder?.Build());
+            return await GetAssetsAsync(queryBuilder?.Build()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -284,11 +284,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<Asset>> GetAssetsAsync(string queryString = null)
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>());
 
             return asset;
@@ -302,7 +302,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(QueryBuilder queryBuilder)
         {
-            return await GetAssetsCollectionAsync(queryBuilder?.Build());
+            return await GetAssetsCollectionAsync(queryBuilder?.Build()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -314,11 +314,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(string queryString = null)
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}").ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>();
             var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>()); ;
             collection.Items = assets;
@@ -332,11 +332,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<Space> GetSpaceAsync()
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var space = jsonObject.ToObject<Space>();
 
             return space;
@@ -356,11 +356,11 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>();
 
             return contentType;
@@ -372,11 +372,11 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync()
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync());
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
 
             return contentTypes;
@@ -395,11 +395,11 @@ namespace Contentful.Core
         {
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync());
+            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return syncResult;
         }
@@ -423,11 +423,11 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken:syncToken);
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}");
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync());
+            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return syncResult;
         }
@@ -445,11 +445,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SyncResult> SyncInitialRecursiveAsync(SyncType syncType = SyncType.All, string contentTypeId = "")
         {
-            var syncResult = await SyncInitialAsync(syncType, contentTypeId);
+            var syncResult = await SyncInitialAsync(syncType, contentTypeId).ConfigureAwait(false);
 
             while (!string.IsNullOrEmpty(syncResult.NextPageUrl))
             {
-                var nextResult = await SyncNextResultAsync(syncResult.NextPageUrl);
+                var nextResult = await SyncNextResultAsync(syncResult.NextPageUrl).ConfigureAwait(false);
 
                 syncResult.Entries = syncResult.Entries.Concat(nextResult.Entries);
                 syncResult.Assets = syncResult.Assets.Concat(nextResult.Assets);
@@ -525,7 +525,7 @@ namespace Contentful.Core
 
         private async Task<HttpResponseMessage> GetAsync(string url)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.DeliveryApiKey);
+            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.DeliveryApiKey).ConfigureAwait(false);
         }
     }
 }
