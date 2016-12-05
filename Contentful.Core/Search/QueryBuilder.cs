@@ -14,6 +14,15 @@ namespace Contentful.Core.Search
         private readonly List<KeyValuePair<string, string>> _querystringValues = new List<KeyValuePair<string, string>>();
 
         /// <summary>
+        /// Creates a new instance of a querybuilder.
+        /// </summary>
+        /// <returns>The created <see cref="QueryBuilder"/>.</returns>
+        public static QueryBuilder New()
+        {
+            return new QueryBuilder();
+        }
+
+        /// <summary>
         /// Adds a search parameter to restrict the result by content type.
         /// </summary>
         /// <param name="contentTypeId">The ID of the content type to restrict by.</param>
