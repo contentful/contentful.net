@@ -9,6 +9,7 @@ namespace Contentful.Core.Images
     /// </summary>
     public enum ImageFormat
     {
+        Default,
         Jpg,
         Png,
         Webp

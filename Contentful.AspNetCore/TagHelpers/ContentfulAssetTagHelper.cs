@@ -24,9 +24,9 @@ namespace Contentful.AspNetCore.TagHelpers
         public ImageFormat Format { get; set; }
         public ImageResizeBehaviour ResizeBehaviour { get; set; }
         public ImageFocusArea FocusArea { get; set; }
-        public int JpgQuality { get; set; }
+        public int? JpgQuality { get; set; }
         public bool ProgressiveJpg { get; set; }
-        public int CornerRadius { get; set; }
+        public int? CornerRadius { get; set; }
         public string BackgroundColor { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -48,6 +48,30 @@ namespace Contentful.AspNetCore.TagHelpers
             if(Height > 0)
             {
                 queryBuilder.SetHeight(Height);
+            }
+
+            if (JpgQuality.HasValue)
+            {
+                queryBuilder.SetJpgQuality(JpgQuality.Value);
+            }
+
+            if (CornerRadius.HasValue)
+            {
+                queryBuilder.SetCornerRadius(CornerRadius.Value);
+            }
+
+            if (!string.IsNullOrEmpty(BackgroundColor))
+            {
+                queryBuilder.SetBackgroundColor(BackgroundColor);
+            }
+
+            queryBuilder.SetFocusArea(FocusArea);
+            queryBuilder.SetResizingBehaviour(ResizeBehaviour);
+            queryBuilder.SetFormat(Format);
+
+            if (ProgressiveJpg)
+            {
+                queryBuilder.UseProgressiveJpg();
             }
 
             output.TagName = "img";

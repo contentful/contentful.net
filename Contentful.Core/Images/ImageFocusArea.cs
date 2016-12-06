@@ -10,6 +10,10 @@ namespace Contentful.Core.Images
     public enum ImageFocusArea
     {
         /// <summary>
+        /// Center of image.
+        /// </summary>
+        Default,
+        /// <summary>
         /// Top of the image.
         /// </summary>
         Top,
