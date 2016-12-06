@@ -1,7 +1,20 @@
-﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
   <PropertyGroup>
+    <Description>Official .NET SDK for the Contentful Content Delivery and management API for ASP.NET core.</Description>
+    <PackageId>contentful.aspnetcore</PackageId>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <VersionPrefix>0.1.0.1-alpha</VersionPrefix>
     <TargetFramework>netstandard1.5</TargetFramework>
+    <Authors>Contentful</Authors>
+    <Copyright>Contentful Gmbh.</Copyright>
+    <AssemblyName>Contentful.AspNetCore</AssemblyName>
+    <PackageTags>contentful;CMS;aspnetcore</PackageTags>
+    <PackageIconUrl>https://github.com/contentful/contentful.net-docs/raw/master/images/favicon-contentful.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/contentful/contentful.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/contentful/contentful.net/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/contentful/contentful.net</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
