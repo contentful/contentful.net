@@ -31,17 +31,18 @@ namespace Contentful.Core.Tests.Images
         }
 
         [Theory]
-        [InlineData(ImageFormat.Jpg)]
-        [InlineData(ImageFormat.Png)]
-        [InlineData(ImageFormat.Webp)]
-        public void AddingImageFormatShouldSetCorrectQueryString(ImageFormat format)
+        [InlineData(ImageFormat.Jpg, "?fm=jpg")]
+        [InlineData(ImageFormat.Png, "?fm=png")]
+        [InlineData(ImageFormat.Webp, "?fm=webp")]
+        [InlineData(ImageFormat.Default, "")]
+        public void AddingImageFormatShouldSetCorrectQueryString(ImageFormat format, string expected)
         {
             //Arrange
             var builder = new ImageUrlBuilder();
             //Act
             var result = builder.SetFormat(format).Build();
             //Assert
-            Assert.Equal($"?fm={format.ToString().ToLower()}", result);
+            Assert.Equal(expected, result);
         }
 
         [Theory]
@@ -98,19 +99,20 @@ namespace Contentful.Core.Tests.Images
         }
 
         [Theory]
-        [InlineData(ImageResizeBehaviour.Crop)]
-        [InlineData(ImageResizeBehaviour.Fill)]
-        [InlineData(ImageResizeBehaviour.Thumb)]
-        [InlineData(ImageResizeBehaviour.Pad)]
-        [InlineData(ImageResizeBehaviour.Scale)]
-        public void AddingResizeBehaviourShouldAddCorrectQueryString(ImageResizeBehaviour behaviour)
+        [InlineData(ImageResizeBehaviour.Crop, "?fit=crop")]
+        [InlineData(ImageResizeBehaviour.Fill, "?fit=fill")]
+        [InlineData(ImageResizeBehaviour.Thumb, "?fit=thumb")]
+        [InlineData(ImageResizeBehaviour.Pad, "?fit=pad")]
+        [InlineData(ImageResizeBehaviour.Scale, "?fit=scale")]
+        [InlineData(ImageResizeBehaviour.Default, "")]
+        public void AddingResizeBehaviourShouldAddCorrectQueryString(ImageResizeBehaviour behaviour, string expected)
         {
             //Arrange
             var builder = new ImageUrlBuilder();
             //Act
             var result = builder.SetResizingBehaviour(behaviour).Build();
             //Assert
-            Assert.Equal($"?fit={behaviour.ToString().ToLower()}", result);
+            Assert.Equal(expected, result);
         }
 
         [Fact]

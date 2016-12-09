@@ -27,6 +27,11 @@ namespace Contentful.Core.Images
         /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
         public ImageUrlBuilder SetFormat(ImageFormat format)
         {
+            if(format == ImageFormat.Default)
+            {
+                return this;
+            }
+
             _querystringValues.Add(new KeyValuePair<string, string>("fm", format.ToString().ToLower()));
             return this;
         }
@@ -97,6 +102,11 @@ namespace Contentful.Core.Images
         /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
         public ImageUrlBuilder SetFocusArea(ImageFocusArea focusArea)
         {
+            if(focusArea == ImageFocusArea.Default)
+            {
+                return this;
+            }
+
             _querystringValues.Add(new KeyValuePair<string, string>("f", focusArea.ToString().ToLower()));
             return this;
         }
