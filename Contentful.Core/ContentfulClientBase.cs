@@ -21,7 +21,7 @@ namespace Contentful.Core
             var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
             var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
-            var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message")?.ToString())
+            var ex = new ContentfulException((int)res.StatusCode, jsonError.SelectToken("$.message")?.ToString() ?? "Something went wrong")
             {
                 RequestId = jsonError.SelectToken("$.requestId")?.ToString(),
                 ErrorDetails = errorDetails,
