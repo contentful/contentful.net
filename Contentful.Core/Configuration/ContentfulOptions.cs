@@ -32,5 +32,11 @@ namespace Contentful.Core.Configuration
         /// If this is set to true the preview API key needs to be used for <see cref="DeliveryApiKey"/>.
         /// </summary>
         public bool UsePreviewApi { get; set; }
+
+        /// <summary>
+        /// Sets the default number of times to retry after hitting a <see cref="ContentfulRateLimitException"/>.
+        /// 0 means that no retries will be made. Maxiumum is 10.
+        /// </summary>
+        public int MaxNumberOfRateLimitRetries { get; set; }
     }
 }

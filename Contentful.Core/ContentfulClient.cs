@@ -113,8 +113,6 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
-
             var ob = default(T);
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
@@ -177,8 +175,6 @@ namespace Contentful.Core
         public async Task<IEnumerable<T>> GetEntriesAsync<T>(string queryString = null)
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}").ConfigureAwait(false);
-
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             IEnumerable<T> entries;
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -245,8 +241,6 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
-
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<T>>();
 
@@ -271,8 +265,6 @@ namespace Contentful.Core
             }
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}").ConfigureAwait(false);
-
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.ToObject<Asset>();
@@ -302,8 +294,6 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
-
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>());
 
@@ -332,8 +322,6 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
-
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>();
             var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>()); ;
@@ -349,8 +337,6 @@ namespace Contentful.Core
         public async Task<Space> GetSpaceAsync()
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}").ConfigureAwait(false);
-
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var space = jsonObject.ToObject<Space>();
@@ -374,8 +360,6 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}").ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
-
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>();
 
@@ -389,8 +373,6 @@ namespace Contentful.Core
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync()
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/").ConfigureAwait(false);
-
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
@@ -412,8 +394,6 @@ namespace Contentful.Core
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}").ConfigureAwait(false);
-
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -440,8 +420,6 @@ namespace Contentful.Core
             var query = BuildSyncQuery(syncToken:syncToken);
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}").ConfigureAwait(false);
-
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 

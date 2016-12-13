@@ -127,6 +127,71 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task RateLimitWithRetryShouldCallSeveralTimes()
+        {
+            //Arrange
+            _handler = new FakeMessageHandler();
+            var httpClient = new HttpClient(_handler);
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "123",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                MaxNumberOfRateLimitRetries = 3
+            });
+
+            var response = GetResponseFromFile(@"ErrorRateLimit.json");
+            response.StatusCode = (HttpStatusCode)429;
+            response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+            
+            _handler.Response = response;
+            int numberOfTimesCalled = 0;
+            _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
+            _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg; };  
+            //Act
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+            //Assert
+            Assert.Equal(1, ex.SecondsUntilNextRequest);
+            //1 request + 3 retries
+            Assert.Equal(4, numberOfTimesCalled);
+        }
+
+        [Fact]
+        public async Task RateLimitWithRetryShouldStopCallingOnSuccess()
+        {
+            //Arrange
+            _handler = new FakeMessageHandler();
+            var httpClient = new HttpClient(_handler);
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "123",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                MaxNumberOfRateLimitRetries = 3
+            });
+
+            var response = GetResponseFromFile(@"ErrorRateLimit.json");
+            response.StatusCode = (HttpStatusCode)429;
+            response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+
+            _handler.Response = response;
+            int numberOfTimesCalled = 0;
+            _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
+            _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg; };
+
+            _handler.Responses.Enqueue(response);
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntry.json"));
+            //Act
+            var res = await _client.GetEntryAsync<TestEntryModel>("12");
+            //Assert
+            //1 request + 1 retries
+            Assert.Equal(2, numberOfTimesCalled);
+            Assert.Equal("SoSo Wall Clock", res.ProductName);
+        }
+
+        [Fact]
         public async Task GetEntryShouldSerializeResponseCorrectlyIntoAnEntryModel()
         {
             //Arrange
