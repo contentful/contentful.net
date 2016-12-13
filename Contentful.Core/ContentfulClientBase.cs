@@ -3,6 +3,8 @@ using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -28,6 +30,21 @@ namespace Contentful.Core
             if (string.IsNullOrEmpty(message))
             {
                 message = GetGenericErrorMessageForStatusCode(statusCode, sys.Id);
+            }
+
+            IEnumerable<string> headers = new List<string>();
+
+            if(statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out headers))
+            {
+                var rateLimitException = new ContentfulRateLimitException(message)
+                {
+                    RequestId = jsonError.SelectToken("$.requestId")?.ToString(),
+                    ErrorDetails = errorDetails,
+                    SystemProperties = sys,
+                    SecondsUntilNextRequest = headers.FirstOrDefault() == null ? 0 : int.Parse(headers.FirstOrDefault())
+                };
+
+                throw rateLimitException;
             }
 
             var ex = new ContentfulException(statusCode, message)

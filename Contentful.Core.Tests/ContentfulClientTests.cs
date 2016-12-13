@@ -113,6 +113,20 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task RateLimitExceptionShouldBeThrownCorrectly()
+        {
+            //Arrange
+            var response = GetResponseFromFile(@"ErrorRateLimit.json");
+            response.StatusCode = (HttpStatusCode)429;
+            response.Headers.Add("X-Contentful-RateLimit-Reset", "45");
+            _handler.Response = response;
+            //Act
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+            //Assert
+            Assert.Equal(45, ex.SecondsUntilNextRequest);
+        }
+
+        [Fact]
         public async Task GetEntryShouldSerializeResponseCorrectlyIntoAnEntryModel()
         {
             //Arrange
