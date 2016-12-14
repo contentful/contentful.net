@@ -1622,17 +1622,18 @@ namespace Contentful.Core.Tests
                 ContentModel = new List<string>() { "read" },
                 Settings = new List<string>() { "read", "manage" }
             };
-            role.Policies = new List<Policy>();
-            role.Policies.Add(new Policy()
+            role.Policies = new List<Policy>
             {
-                Effect = "allow",
-                Actions = new List<string>()
+                new Policy()
+                {
+                    Effect = "allow",
+                    Actions = new List<string>()
                 {
                     "read",
                     "create",
                     "update"
                 },
-                Constraint = new AndConstraint()
+                    Constraint = new AndConstraint()
                 {
                     new EqualsConstraint()
                     {
@@ -1640,7 +1641,8 @@ namespace Contentful.Core.Tests
                         ValueToEqual = "Entry"
                     }
                 }
-            });
+                }
+            };
 
             //Act
             var res = await _client.CreateRoleAsync(role);

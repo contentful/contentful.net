@@ -8,6 +8,7 @@ using System.Net;
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
+using System.Threading;
 
 namespace Contentful.Core.Tests
 {
@@ -550,6 +551,19 @@ namespace Contentful.Core.Tests
             Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Entries.First().SystemProperties.Id);
             Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
+        }
+
+        [Fact]
+        public void CancellingRequestShouldSuccesfulAbortRequest()
+        {
+            //Arrange
+            var source = new CancellationTokenSource(1500);
+            _handler.VerificationBeforeSend = async () => { await Task.Delay(3000); };
+            //Act
+            var ex = Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.GetEntryAsync<Entry<dynamic>>("123", "", source.Token));
+
+            //Assert
+            Assert.Equal(TaskStatus.Faulted,ex.Status);
         }
     }
 }

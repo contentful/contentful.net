@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Contentful.Core
@@ -117,7 +118,7 @@ namespace Contentful.Core
             return "An error occurred.";
         }
 
-        protected async Task<HttpResponseMessage> SendHttpRequestAsync(string url, HttpMethod method, string authToken, HttpContent content = null)
+        protected async Task<HttpResponseMessage> SendHttpRequestAsync(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -129,12 +130,12 @@ namespace Contentful.Core
 
             httpRequestMessage.Content = content;
 
-            return await SendHttpRequestAsync(httpRequestMessage).ConfigureAwait(false); ;
+            return await SendHttpRequestAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false); ;
         }
 
-        private async Task<HttpResponseMessage> SendHttpRequestAsync(HttpRequestMessage request)
+        private async Task<HttpResponseMessage> SendHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             response = await EnsureSuccessfulResultAsync(response);
 
@@ -176,7 +177,7 @@ namespace Contentful.Core
                             await Task.Delay(ex.SecondsUntilNextRequest * 1000).ConfigureAwait(false);
                         }
                        
-                        var clonedMessage = await CloneHttpRequest(response.RequestMessage);
+                        var clonedMessage = await CloneHttpRequestAsync(response.RequestMessage);
 
                         response = await _httpClient.SendAsync(clonedMessage).ConfigureAwait(false);
 
@@ -193,7 +194,7 @@ namespace Contentful.Core
             return response;
         }
 
-        private async Task<HttpRequestMessage> CloneHttpRequest(HttpRequestMessage message)
+        private async Task<HttpRequestMessage> CloneHttpRequestAsync(HttpRequestMessage message)
         {
             HttpRequestMessage clone = new HttpRequestMessage(message.Method, message.RequestUri);
 
