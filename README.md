@@ -2,7 +2,7 @@
 
 [https://www.contentful.com][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
-This is the .NET SDK for [Contentful's][1] Content Delivery API.
+This is the .NET SDK for [Contentful's][1] Content Delivery and Content Management APIs.
 
 ## Setup
 
@@ -14,7 +14,7 @@ Install-Package contentful.csharp -prerelease
 
 ## Usage
 
-The `ContentfulClient` handles all communication with the Contentful API.
+The `ContentfulClient` handles all communication with the Contentful Content Delivery API.
 
 To create a new client you need to pass an `HttpClient`, your delivery API key and any other configuration options:
 
@@ -74,6 +74,43 @@ var productEntry = await client.GetEntryAsync<Entry<product>>("<entry_id>");
 
 Console.WriteLine(entry.Fields.Price); // => 12.38
 Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
+```
+
+## Management API
+
+To edit, update and delete content you use the `ContentfulManagementClient` class which uses the same familiar pattern as the regular client.
+
+```csharp
+var httpClient = new HttpClient();
+var managementClient = new ContentfulManagementClient(httpClient, "<content_management_api_key>", "<space_id>");
+```
+
+You can then use the client to, for example, create a content type.
+
+```csharp
+var contentType = new ContentType();
+contentType.SystemProperties = new SystemProperties() {
+    Id = "new-content-type"
+};
+contentType.Name = "New contenttype";
+contentType.Fields = new List<Field>()
+{
+    new Field()
+    {
+        Name = "Field1",
+        Id = "field1",
+        Type = "Text"
+    },
+    new Field()
+    {
+        Name = "Field2",
+        Id = "field2",
+        Type = "Integer"
+    }
+};
+
+
+await managementClient.CreateOrUpdateContentTypeAsync(contentType);
 ```
 
 ## Further information
