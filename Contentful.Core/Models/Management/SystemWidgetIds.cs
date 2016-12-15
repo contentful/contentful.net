@@ -15,7 +15,7 @@ namespace Contentful.Core.Models.Management
         public const string Boolean = "boolean";
         public const string DatePicker = "datePicker";
         public const string EntryLinkEditor = "entryLinkEditor";
-        public const string entryMultipleLinksEditor = "entryLinksEditor";
+        public const string EntryMultipleLinksEditor = "entryLinksEditor";
         public const string EntryCardEditor = "entryCardEditor";
         public const string EntryMultipleCardsEditor = "entryCardsEditor";
         public const string NumberEditor = "numberEditor";
