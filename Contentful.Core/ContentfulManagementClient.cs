@@ -1571,6 +1571,52 @@ namespace Contentful.Core
             return jsonObject.ToObject<ApiKey>();
         }
 
+        /// <summary>
+        /// Gets a collection of all <see cref="User"/> in a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<User>> GetAllUsersAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/users", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<User>>();
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<User>());
+            collection.Items = keys;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a single <see cref="User"/> for a space.
+        /// </summary>
+        /// <param name="userId">The id of the user to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="User"/>.</returns>
+        /// <exception cref="ArgumentException">The <param name="spaceMembershipId">spaceMembershipId</param> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<User> GetUserAsync(string userId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentException("The id of the user must be set", nameof(userId));
+            }
+
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/users/{userId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<User>();
+        }
+
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken)
         {
             return await SendHttpRequestAsync(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content).ConfigureAwait(false);

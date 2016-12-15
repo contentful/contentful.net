@@ -15,5 +15,11 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         [JsonProperty("sys")]
         public SystemProperties SystemProperties { get; set; }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string AvatarUrl { get; set; }
+        public string Email { get; set; }
+        public bool Activated { get; set; }
     }
 }
