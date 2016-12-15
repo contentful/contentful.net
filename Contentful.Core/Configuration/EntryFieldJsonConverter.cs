@@ -49,6 +49,15 @@ namespace Contentful.Core.Configuration
             var jObject = JObject.Load(reader);
             var fields = jObject.SelectToken("$.fields");
 
+            if(fields == null)
+            {
+                //We're here because the consumer is probably trying to serialize directly int objectType, just deserialize the jObject.
+                _canRead = false;
+                var jObectSerialized = jObject.ToObject(objectType);
+                _canRead = true;
+                return jObectSerialized;
+            }
+
             //Important to set to false to make sure we don't try to use the JsonConverter again inside of ToObject
             _canRead = false;
             var returnObject = fields?.ToObject(objectType);

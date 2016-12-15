@@ -267,6 +267,20 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithIncludesForAuthor()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesAuthor.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<Author>();
+            var list = res.ToList();
+            //Assert
+            Assert.Equal(1, list.Count);
+            Assert.Equal("Lewis Carroll", list.Last().Name);
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfEntry()
         {
             //Arrange
