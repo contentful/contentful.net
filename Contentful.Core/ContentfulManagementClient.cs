@@ -19,7 +19,7 @@ namespace Contentful.Core
     public class ContentfulManagementClient : ContentfulClientBase, IContentfulManagementClient
     {
         private readonly string _baseUrl = "https://api.contentful.com/spaces/";
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulManagementClient"/> class. 
         /// The main class for interaction with the contentful deliver and preview APIs.
@@ -43,7 +43,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="options">The <see cref="ContentfulOptions"/> used for this client.</param>
-        public ContentfulManagementClient(HttpClient httpClient, ContentfulOptions options):
+        public ContentfulManagementClient(HttpClient httpClient, ContentfulOptions options) :
             this(httpClient, new OptionsWrapper<ContentfulOptions>(options))
         {
 
@@ -57,7 +57,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to fetch content from.</param>
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulManagementClient(HttpClient httpClient, string managementApiKey, string spaceId):
+        public ContentfulManagementClient(HttpClient httpClient, string managementApiKey, string spaceId) :
             this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
             {
                 ManagementApiKey = managementApiKey,
@@ -210,7 +210,7 @@ namespace Contentful.Core
         /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
         public async Task<ContentType> CreateOrUpdateContentTypeAsync(ContentType contentType, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if(contentType.SystemProperties?.Id == null)
+            if (contentType.SystemProperties?.Id == null)
             {
                 throw new ArgumentException("The id of the content type must be set.", nameof(contentType));
             }
@@ -391,7 +391,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", 
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface",
                 ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls }), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
@@ -1557,7 +1557,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ApiKey> CreateApiKeyAsync(string name, string description, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if(string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentException("The name of the api key must be set.", nameof(name));
             }
