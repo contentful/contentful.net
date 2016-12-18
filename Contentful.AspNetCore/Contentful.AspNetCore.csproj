@@ -4,7 +4,7 @@
     <Description>Official .NET SDK for the Contentful Content Delivery and Management API for ASP.NET core.</Description>
     <PackageId>contentful.aspnetcore</PackageId>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>0.1.1-alpha</VersionPrefix>
+    <VersionPrefix>0.2.1-alpha</VersionPrefix>
     <TargetFramework>netstandard1.5</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
@@ -22,8 +22,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="contentful.csharp">
-      <Version>0.7.0.5-alpha</Version>
+      <Version>0.7.11-alpha</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor">
       <Version>1.1.0</Version>
     </PackageReference>
