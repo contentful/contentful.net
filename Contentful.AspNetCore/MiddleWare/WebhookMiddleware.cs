@@ -111,14 +111,14 @@ namespace Contentful.AspNetCore.MiddleWare
 
     public interface IConsumerBuilder
     {
-        void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer);
+        void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null);
     }
 
     public class ConsumerBuilder : IConsumerBuilder
     {
         private readonly List<Tuple<Tuple<string, string, string>, Delegate>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate>>();
 
-        public void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer)
+        public void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null)
         {
             var tuple = Tuple.Create(name, topicType, topicAction);
             Delegate d = consumer;
