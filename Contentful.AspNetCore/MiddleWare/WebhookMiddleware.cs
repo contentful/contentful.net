@@ -17,11 +17,13 @@ namespace Contentful.AspNetCore.MiddleWare
     {
         private readonly RequestDelegate _next;
         private readonly ILookup<Tuple<string, string, string>, Delegate> _consumers;
+        private readonly Func<HttpContext, bool> _webhookAuthorization;
 
-        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers)
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers, Func<HttpContext, bool> webhookAuthorization = null)
         {
             _next = next;
             _consumers = consumers;
+            _webhookAuthorization = webhookAuthorization;
         }
 
         public async Task Invoke(HttpContext context)
@@ -32,6 +34,18 @@ namespace Contentful.AspNetCore.MiddleWare
             {
                 await _next(context);
                 return;
+            }
+
+            if(_webhookAuthorization != null)
+            {
+                if(_webhookAuthorization.Invoke(context) == false)
+                {
+                    //authorization failed.
+                    context.Response.StatusCode = 401;
+                    context.Response.ContentType = "text/plain";
+                    await context.Response.WriteAsync("Request failed configured authorization.");
+                    return;
+                }
             }
 
             var topic = "";
@@ -111,6 +125,7 @@ namespace Contentful.AspNetCore.MiddleWare
 
     public interface IConsumerBuilder
     {
+        Func<HttpContext, bool> WebhookAuthorization { get; set; }
         void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null);
     }
 
@@ -118,13 +133,15 @@ namespace Contentful.AspNetCore.MiddleWare
     {
         private readonly List<Tuple<Tuple<string, string, string>, Delegate>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate>>();
 
+        public Func<HttpContext, bool> WebhookAuthorization { get; set; }
+
         public void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null)
         {
             var tuple = Tuple.Create(name, topicType, topicAction);
             Delegate d = consumer;
             _consumers.Add(Tuple.Create(tuple, d));
         }
-
+        
         public ILookup<Tuple<string, string, string>, Delegate> Build()
         {
             return _consumers.ToLookup(x => x.Item1, x => x.Item2);
@@ -140,7 +157,7 @@ namespace Contentful.AspNetCore.MiddleWare
 
             configureConsumers(consumerBuilder);
 
-            return builder.UseMiddleware<WebhookMiddleware>(consumerBuilder.Build());
+            return builder.UseMiddleware<WebhookMiddleware>(consumerBuilder.Build(), consumerBuilder.WebhookAuthorization);
         }
 
         public static bool TopicMatches(this string topic, string topicType, string topicAction)
