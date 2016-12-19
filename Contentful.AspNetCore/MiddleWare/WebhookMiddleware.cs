@@ -28,104 +28,84 @@ namespace Contentful.AspNetCore.MiddleWare
         {
             var headers = context.Request.Headers;
 
-            if (headers.ContainsKey("X-Contentful-Topic") && context.Request.ContentType == "application/vnd.contentful.management.v1+json")
-            {
-                var topic = "";
-                var webhookName = "";
-
-                topic = headers.GetCommaSeparatedValues("X-Contentful-Topic")?.FirstOrDefault();
-                webhookName = headers.GetCommaSeparatedValues("X-Contentful-Webhook-Name")?.FirstOrDefault();
-
-                var foundConsumers = _consumers?.FirstOrDefault(c => (c.Key.Item1 == "*" || c.Key.Item1 == webhookName) &&
-                topic.TopicMatches(c.Key.Item2, c.Key.Item3));
-
-                if (foundConsumers != null && foundConsumers.Any())
-                {
-                    var responses = new List<object>();
-
-                    foreach (var consumer in foundConsumers.Select(c => c))
-                    {
-                        var methodInfo = consumer.GetType().GetMethod("Invoke");
-                        var param = methodInfo.GetParameters().First();
-                        var type = param.ParameterType;
-                        var body = context.Request.Body;
-
-                        using (var reader = new StreamReader(body))
-                        using (var jsonReader = new JsonTextReader(reader))
-                        {
-                            var ser = new JsonSerializer();
-                            var serializedObject = new object();
-                            var serializationSuccessful = false;
-                            try
-                            {
-                                serializedObject = ser.Deserialize(jsonReader, type);
-                                serializationSuccessful = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                //Add the exception to the responses sent back to Contentful.
-                                responses.Add(ex);
-                            }
-
-                            if (serializationSuccessful)
-                            {
-                                var returnedObject = new object();
-                                try
-                                {
-                                    returnedObject = consumer.DynamicInvoke(serializedObject);
-                                    responses.Add(returnedObject);
-                                }
-                                catch (Exception ex)
-                                {
-                                    //Add the exception to the responses sent back to Contentful.
-                                    responses.Add(ex);
-                                }
-                            }
-                        }
-                    }
-
-                    context.Response.StatusCode = 200;
-
-                    if(responses.Any(c => c is Exception)) {
-                        //we got one or more exceptions. Set status accordingly.
-                        context.Response.StatusCode = 500;
-                    }
-                    var serializedList = JsonConvert.SerializeObject(responses);
-
-                    await context.Response.WriteAsync(serializedList);
-                }
-                else
-                {
-                    //The webhook was called correctly, but no consumers were configured.
-                    // return 202 accepted
-                    context.Response.StatusCode = 202;
-                    context.Response.ContentType = "text/plain";
-                    await context.Response.WriteAsync("Request accepted but no consuming code configured for webhook.");
-                }
-            }
-            else
+            if (headers.ContainsKey("X-Contentful-Topic") == false || context.Request.ContentType != "application/vnd.contentful.management.v1+json")
             {
                 await _next(context);
+                return;
             }
-            
-        }
 
-        public object Kill(string s)
-        {
+            var topic = "";
+            var webhookName = "";
 
-            //IApplicationBuilder b = new AppBuilder();
-            //b.UseContentfulWebhooks(consumers =>
-            //{
-            //    consumers.AddConsumer<string>("","", "", Kill);
-            //    consumers.AddConsumer<string>("","", "", new AppBuilder().WhatEver);
-            //    consumers.AddConsumer<Entry<dynamic>>("","", "", s => new object() );
-            //    consumers.AddConsumer<int>("", "", "", s => {
-            //        //Do some coolness
-            //        return new object();
-            //    });
-            //});
+            topic = headers.GetCommaSeparatedValues("X-Contentful-Topic")?.FirstOrDefault();
+            webhookName = headers.GetCommaSeparatedValues("X-Contentful-Webhook-Name")?.FirstOrDefault();
 
-            return new object();
+            var foundConsumers = _consumers?.FirstOrDefault(c => (c.Key.Item1 == "*" || c.Key.Item1 == webhookName) &&
+            topic.TopicMatches(c.Key.Item2, c.Key.Item3));
+
+            if (foundConsumers == null || foundConsumers.Any() == false)
+            {
+                //The webhook was called correctly, but no consumers were configured.
+                //return 202 accepted
+                context.Response.StatusCode = 202;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync("Request accepted but no consuming code configured for webhook.");
+                return;
+            }
+
+            var responses = new List<object>();
+
+            foreach (var consumer in foundConsumers.Select(c => c))
+            {
+                var methodInfo = consumer.GetType().GetMethod("Invoke");
+                var param = methodInfo.GetParameters().First();
+                var type = param.ParameterType;
+                var body = context.Request.Body;
+
+                using (var reader = new StreamReader(body))
+                using (var jsonReader = new JsonTextReader(reader))
+                {
+                    var ser = new JsonSerializer();
+                    var serializedObject = new object();
+                    var serializationSuccessful = false;
+                    try
+                    {
+                        serializedObject = ser.Deserialize(jsonReader, type);
+                        serializationSuccessful = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Add the exception to the responses sent back to Contentful.
+                        responses.Add(ex);
+                    }
+
+                    if (serializationSuccessful)
+                    {
+                        var returnedObject = new object();
+                        try
+                        {
+                            returnedObject = consumer.DynamicInvoke(serializedObject);
+                            responses.Add(returnedObject);
+                        }
+                        catch (Exception ex)
+                        {
+                            //Add the exception to the responses sent back to Contentful.
+                            responses.Add(ex);
+                        }
+                    }
+                }
+            }
+
+            context.Response.StatusCode = 200;
+
+            if (responses.Any(c => c is Exception))
+            {
+                //we got one or more exceptions. Set status accordingly.
+                context.Response.StatusCode = 500;
+            }
+            var serializedList = JsonConvert.SerializeObject(responses);
+
+            await context.Response.WriteAsync(serializedList);
         }
     }
 
