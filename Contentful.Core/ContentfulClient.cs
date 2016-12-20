@@ -262,18 +262,33 @@ namespace Contentful.Core
         /// Gets a single <see cref="Asset"/> by the specified ID.
         /// </summary>
         /// <param name="assetId">The ID of the asset.</param>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
-        public async Task<Asset> GetAssetAsync(string assetId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Asset> GetAssetAsync(string assetId, QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await GetAssetAsync(assetId, queryBuilder?.Build(), cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets a single <see cref="Asset"/> by the specified ID.
+        /// </summary>
+        /// <param name="assetId">The ID of the asset.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
+        public async Task<Asset> GetAssetAsync(string assetId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.ToObject<Asset>();

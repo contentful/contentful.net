@@ -90,14 +90,28 @@ namespace Contentful.Core
         Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
             where T : IContentfulResource;
 
+
         /// <summary>
         /// Gets a single <see cref="Asset"/> by the specified ID.
         /// </summary>
         /// <param name="assetId">The ID of the asset.</param>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
-        Task<Asset> GetAssetAsync(string assetId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Asset> GetAssetAsync(string assetId, QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a single <see cref="Asset"/> by the specified ID.
+        /// </summary>
+        /// <param name="assetId">The ID of the asset.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
+        Task<Asset> GetAssetAsync(string assetId, string queryString, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder"/>.
