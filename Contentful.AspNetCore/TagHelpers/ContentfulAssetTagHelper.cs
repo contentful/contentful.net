@@ -1,4 +1,5 @@
 ﻿using Contentful.Core;
+using Contentful.Core.Search;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,14 @@ namespace Contentful.AspNetCore.TagHelpers
                 return;
             }
 
-            var asset = await _client.GetAssetAsync(AssetId, Locale);
+            var queryBuilder = QueryBuilder.New();
+
+            if (!string.IsNullOrEmpty(Locale))
+            {
+                queryBuilder = queryBuilder.LocaleIs(Locale);
+            }
+
+            var asset = await _client.GetAssetAsync(AssetId, queryBuilder);
 
             output.Attributes.RemoveAll("asset-id");
             output.Attributes.RemoveAll("locale");
