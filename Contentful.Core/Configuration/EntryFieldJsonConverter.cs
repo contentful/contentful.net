@@ -31,6 +31,8 @@ namespace Contentful.Core.Configuration
             }
         }
 
+        public override bool CanWrite => false;
+
         /// <summary>
         /// Reads the JSON representation of the object.
         /// </summary>
