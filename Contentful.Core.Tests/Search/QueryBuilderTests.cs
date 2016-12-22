@@ -218,15 +218,17 @@ namespace Contentful.Core.Tests.Search
             Assert.Equal("?someField[nin]=some,other,value", result);
         }
 
-        [Fact]
-        public void FieldExistsShouldAddCorrectQueryString()
+        [Theory]
+        [InlineData(true, "?fieldOfBeauty[exists]=true")]
+        [InlineData(false, "?fieldOfBeauty[exists]=false")]
+        public void FieldExistsShouldAddCorrectQueryString(bool mustExist, string expected)
         {
             //Arrange
             var builder = new QueryBuilder();
             //Act
-            var result = builder.FieldExists("fieldOfBeauty").Build();
+            var result = builder.FieldExists("fieldOfBeauty", mustExist).Build();
             //Assert
-            Assert.Equal("?fieldOfBeauty[exists]=true", result);
+            Assert.Equal(expected, result);
         }
 
         [Fact]

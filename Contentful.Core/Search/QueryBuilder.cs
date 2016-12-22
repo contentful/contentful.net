@@ -218,10 +218,11 @@ namespace Contentful.Core.Search
         /// Adds a restriction that a certain field must exist and not be null.
         /// </summary>
         /// <param name="field">The field that must exist and also not be null.</param>
+        /// <param name="mustExist">Whether or not the field must exist or not exist. A value of false means only include entries where the particular field does NOT exist.</param>
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
-        public QueryBuilder FieldExists(string field)
+        public QueryBuilder FieldExists(string field, bool mustExist = true)
         {
-            _querystringValues.Add(new KeyValuePair<string, string>($"{field}[exists]", "true"));
+            _querystringValues.Add(new KeyValuePair<string, string>($"{field}[exists]", mustExist.ToString().ToLower()));
             return this;
         }
 
