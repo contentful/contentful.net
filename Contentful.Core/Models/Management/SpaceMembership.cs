@@ -27,5 +27,10 @@ namespace Contentful.Core.Models.Management
         /// A list of id's of roles the user is member of for the current <see cref="Space"/>.
         /// </summary>
         public List<string> Roles { get; set; }
+
+        /// <summary>
+        /// The <see cref="User"/> that belongs to this membership.
+        /// </summary>
+        public User User { get; set; }
     }
 }
