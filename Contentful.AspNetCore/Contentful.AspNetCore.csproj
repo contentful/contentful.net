@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="contentful.csharp">
-      <Version>0.8.2-alpha</Version>
+      <Version>0.8.3-alpha</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor">

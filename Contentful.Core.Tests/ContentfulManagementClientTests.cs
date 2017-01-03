@@ -1582,7 +1582,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            string output = JsonConvert.SerializeObject(policy, new JsonSerializerSettings
+            var output = JsonConvert.SerializeObject(policy, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
