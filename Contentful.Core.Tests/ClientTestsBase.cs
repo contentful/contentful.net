@@ -84,6 +84,10 @@ namespace Contentful.Core.Tests
     [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Author
     {
+        public SystemProperties SystemProperties { get; set; }
         public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "long")]
+        public string LongThing { get; set; }
     }
 }
