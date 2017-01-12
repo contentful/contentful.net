@@ -301,7 +301,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
             var builder = new QueryBuilder();
             //Act
-            var res = await _client.GetEntriesByTypeAsync<TestEntryModel>("666", builder);
+            var res = await _client.GetEntriesByTypeAsync("666", QueryBuilder<TestEntryModel>.New);
 
             //Assert
             Assert.Equal(9, res.Count());
