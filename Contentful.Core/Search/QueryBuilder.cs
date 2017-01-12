@@ -74,7 +74,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> InProximityOf<U>(Expression<Func<T, U>> selector, string coordinate)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return InProximityOf(memberName, coordinate);
         }
@@ -107,7 +107,7 @@ namespace Contentful.Core.Search
         public QueryBuilder<T> WithinArea<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1,
             string latitude2, string longitude2)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return WithinArea(memberName, latitude1, longitude1,
             latitude2, longitude2);
@@ -137,7 +137,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> WithinRadius<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1, float radius)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return WithinRadius(memberName, latitude1, longitude1, radius);
         }
@@ -229,7 +229,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldEquals<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldEquals(memberName, value);
         }
@@ -253,7 +253,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldDoesNotEqual<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldDoesNotEqual(memberName, value);
         }
@@ -279,7 +279,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldEqualsAll<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldEqualsAll(memberName, values);
         }
@@ -303,7 +303,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldIncludes<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldIncludes(memberName, values);
         }
@@ -327,7 +327,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldExcludes<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldExcludes(memberName, values);
         }
@@ -352,7 +352,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldExists<U>(Expression<Func<T, U>> selector, bool mustExist = true)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldExists(memberName, mustExist);
         }
@@ -376,7 +376,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldLessThan<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldLessThan(memberName, value);
         }
@@ -400,7 +400,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldLessThanOrEqualTo<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldLessThanOrEqualTo(memberName, value);
         }
@@ -424,7 +424,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldGreaterThan<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldGreaterThan(memberName, value);
         }
@@ -448,7 +448,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldGreaterThanOrEqualTo<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldGreaterThanOrEqualTo(memberName, value);
         }
@@ -474,7 +474,7 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
         public QueryBuilder<T> FieldMatches<U>(Expression<Func<T, U>> selector, string value)
         {
-            var memberName = GetPropertyName(selector);
+            var memberName = FieldHelpers<T>.GetPropertyName(selector);
 
             return FieldMatches(memberName, value);
         }
@@ -506,63 +506,6 @@ namespace Contentful.Core.Search
             return sb.ToString();
         }
 
-        private string GetPropertyName<U>(Expression<Func<T, U>> selector)
-        {
-            var member = selector.Body as MemberExpression;
-
-            if(member == null)
-            {
-                throw new ArgumentException("Provided expression must be a member type");
-            }
-
-            var memberList = new List<string>();
-
-            while (member != null)
-            {
-                if (member.Type == typeof(SystemProperties))
-                {
-                    //filtering on sys field.
-                    memberList.Add("sys");
-                }
-                else
-                {
-                    if (member.Member.CustomAttributes.Any(c => c.AttributeType == typeof(JsonPropertyAttribute)))
-                    {
-                        var attributeData = member.Member.CustomAttributes.First(c => c.AttributeType == typeof(JsonPropertyAttribute));
-
-                        var propertyName = attributeData.ConstructorArguments.FirstOrDefault().Value?.ToString();
-
-                        if(propertyName == null)
-                        {
-                            propertyName = attributeData.NamedArguments.FirstOrDefault(c => c.MemberName == "PropertyName").TypedValue.Value?.ToString();
-                        }
-
-                        //Still null, just go with the default.
-                        if(propertyName == null)
-                        {
-                            propertyName = LowerCaseFirstLetterOfString(member.Member.Name);
-                        }
-
-                        memberList.Add(LowerCaseFirstLetterOfString(propertyName));
-                    }
-                    else
-                    {
-                        memberList.Add(LowerCaseFirstLetterOfString(member.Member.Name));
-                    }
-                }
-                member = member.Expression as MemberExpression;
-            }
-
-            if(memberList.LastOrDefault() != "fields" && memberList.LastOrDefault() != "sys") {
-                //We do not have a fields or sys object as root, probably filtering on custom type
-                memberList.Add("fields");
-            }
-            return string.Join(".", memberList.Reverse<string>());
-        }
-
-        private string LowerCaseFirstLetterOfString(string s)
-        {
-            return char.ToLowerInvariant(s[0]) + s.Substring(1);
-        }
+        
     }
 }

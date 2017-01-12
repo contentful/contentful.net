@@ -77,6 +77,17 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void InProximityOfGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.InProximityOf(c => c.Title, "45.45,-13").Build();
+            //Assert
+            Assert.Equal("?fields.title[near]=45.45,-13", result);
+        }
+
+        [Fact]
         public void WithinAreaShouldAddCorrectQueryString()
         {
             //Arrange
@@ -88,6 +99,17 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void WithinAreaGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.WithinArea(c => c.Title, "42", "32", "54", "-38").Build();
+            //Assert
+            Assert.Equal("?fields.title[within]=42,32,54,-38", result);
+        }
+
+        [Fact]
         public void WithinRadiusShouldAddCorrectQueryString()
         {
             //Arrange
@@ -96,6 +118,17 @@ namespace Contentful.Core.Tests.Search
             var result = builder.WithinRadius("locField", "13", "-44", 5).Build();
             //Assert
             Assert.Equal("?locField[within]=13,-44,5", result);
+        }
+
+        [Fact]
+        public void WithinRadiusGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.WithinRadius(c => c.Title, "42", "32", 5).Build();
+            //Assert
+            Assert.Equal("?fields.title[within]=42,32,5", result);
         }
 
         [Fact]
