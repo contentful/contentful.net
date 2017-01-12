@@ -390,6 +390,17 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldLessThanOrEqualToGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldLessThanOrEqualTo(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[lte]=23", result);
+        }
+
+        [Fact]
         public void FieldGreaterThanShouldAddCorrectQueryString()
         {
             //Arrange
@@ -398,6 +409,17 @@ namespace Contentful.Core.Tests.Search
             var result = builder.FieldGreaterThan("fieldOfBeauty", "23").Build();
             //Assert
             Assert.Equal("?fieldOfBeauty[gt]=23", result);
+        }
+
+        [Fact]
+        public void FieldGreaterThanGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldGreaterThan(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[gt]=23", result);
         }
 
         [Fact]
@@ -412,7 +434,18 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
-        public void FieldMatchesToShouldAddCorrectQueryString()
+        public void FieldGreaterThanOrEqualToGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldGreaterThanOrEqualTo(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[gte]=23", result);
+        }
+
+        [Fact]
+        public void FieldMatchesShouldAddCorrectQueryString()
         {
             //Arrange
             var builder = new QueryBuilder();
@@ -420,6 +453,17 @@ namespace Contentful.Core.Tests.Search
             var result = builder.FieldMatches("fieldOfBeauty", "matchMe!").Build();
             //Assert
             Assert.Equal("?fieldOfBeauty[match]=matchMe!", result);
+        }
+
+        [Fact]
+        public void FieldMatchesGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldMatches(c => c.Title, "matchMe").Build();
+            //Assert
+            Assert.Equal("?fields.title[match]=matchMe", result);
         }
     }
 }

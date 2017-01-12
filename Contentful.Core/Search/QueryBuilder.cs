@@ -67,6 +67,19 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
+        /// Adds a search parameter on proximity of a coordinate of a location field.
+        /// </summary>
+        /// <param name="selector">The expression of a location field to check proximity for.</param>
+        /// <param name="coordinate">The coordinate.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder<T> InProximityOf<U>(Expression<Func<T, U>> selector, string coordinate)
+        {
+            var memberName = GetPropertyName(selector);
+
+            return InProximityOf(memberName, coordinate);
+        }
+
+        /// <summary>
         /// Adds a restriction parameter to only return resources with a location field within the specified area.
         /// </summary>
         /// <param name="field">The location field to check if it is within the bounding box.</param>
@@ -83,9 +96,27 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
+        /// Adds a restriction parameter to only return resources with a location field within the specified area.
+        /// </summary>
+        /// <param name="field">The location field to check if it is within the bounding box.</param>
+        /// <param name="latitude1">The latitude of the bottom left corner of the rectangle.</param>
+        /// <param name="longitude1">The longitude of the bottom left corner of the rectangle.</param>
+        /// <param name="latitude2">The latitude of the top right corner of the rectangle.</param>
+        /// <param name="longitude2">The longitude of the top right corner of the rectangle.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder<T> WithinArea<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1,
+            string latitude2, string longitude2)
+        {
+            var memberName = GetPropertyName(selector);
+
+            return WithinArea(memberName, latitude1, longitude1,
+            latitude2, longitude2);
+        }
+
+        /// <summary>
         /// Adds a restriction parameter to only return resources with a location field within a certain radius of a coordinate.
         /// </summary>
-        /// <param name="field">The location field to check if it is within the raidus.</param>
+        /// <param name="field">The location field to check if it is within the radius.</param>
         /// <param name="latitude">The latitude of the centre of the bounding circle.</param>
         /// <param name="longitude">The longitude of the centre of the bounding circle.</param>
         /// <param name="radius">The radius in kilometers of the bounding circle.</param>
@@ -94,6 +125,21 @@ namespace Contentful.Core.Search
         {
             _querystringValues.Add(new KeyValuePair<string, string>($"{field}[within]", $"{latitude},{longitude},{radius}"));
             return this;
+        }
+
+        /// <summary>
+        /// Adds a restriction parameter to only return resources with a location field within a certain radius of a coordinate.
+        /// </summary>
+        /// <param name="selector">The expression of the location field to check if it is within the radius.</param>
+        /// <param name="latitude">The latitude of the centre of the bounding circle.</param>
+        /// <param name="longitude">The longitude of the centre of the bounding circle.</param>
+        /// <param name="radius">The radius in kilometers of the bounding circle.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder<T> WithinRadius<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1, float radius)
+        {
+            var memberName = GetPropertyName(selector);
+
+            return WithinRadius(memberName, latitude1, longitude1, radius);
         }
 
         /// <summary>
@@ -185,9 +231,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            AddFieldRestriction(memberName, value, "");
-
-            return this;
+            return FieldEquals(memberName, value);
         }
 
         /// <summary>
@@ -211,9 +255,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            AddFieldRestriction(memberName, value, "[ne]");
-
-            return this;
+            return FieldDoesNotEqual(memberName, value);
         }
 
         /// <summary>
@@ -239,9 +281,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            AddFieldRestriction(memberName, string.Join(",", values), "[all]");
-
-            return this;
+            return FieldEqualsAll(memberName, values);
         }
 
         /// <summary>
@@ -265,7 +305,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            return AddFieldRestriction(memberName, string.Join(",", values), "[in]");
+            return FieldIncludes(memberName, values);
         }
 
         /// <summary>
@@ -289,7 +329,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            return AddFieldRestriction(memberName, string.Join(",", values), "[nin]");
+            return FieldExcludes(memberName, values);
         }
 
         /// <summary>
@@ -314,8 +354,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            _querystringValues.Add(new KeyValuePair<string, string>($"{memberName}[exists]", mustExist.ToString().ToLower()));
-            return this;
+            return FieldExists(memberName, mustExist);
         }
 
         /// <summary>
@@ -339,9 +378,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            AddFieldRestriction(memberName, value, "[lt]");
-
-            return this;
+            return FieldLessThan(memberName, value);
         }
 
         /// <summary>
@@ -365,9 +402,7 @@ namespace Contentful.Core.Search
         {
             var memberName = GetPropertyName(selector);
 
-            AddFieldRestriction(memberName, value, "[lte]");
-
-            return this;
+            return FieldLessThanOrEqualTo(memberName, value);
         }
 
         /// <summary>
@@ -382,6 +417,19 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
+        /// Adds a restriction that a certain field must be greater than the specified value.
+        /// </summary>
+        /// <param name="selector">The expression of the field to compare against.</param>
+        /// <param name="value">The value the field must be greater than.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder<T> FieldGreaterThan<U>(Expression<Func<T, U>> selector, string value)
+        {
+            var memberName = GetPropertyName(selector);
+
+            return FieldGreaterThan(memberName, value);
+        }
+
+        /// <summary>
         /// Adds a restriction that a certain field must be greater than or equal to the specified value.
         /// </summary>
         /// <param name="field">The field to compare against.</param>
@@ -390,6 +438,19 @@ namespace Contentful.Core.Search
         public QueryBuilder<T> FieldGreaterThanOrEqualTo(string field, string value)
         {
             return AddFieldRestriction(field, value, "[gte]");
+        }
+
+        /// <summary>
+        /// Adds a restriction that a certain field must be greater than the specified value.
+        /// </summary>
+        /// <param name="selector">The expression of the field to compare against.</param>
+        /// <param name="value">The value the field must be greater than.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder<T> FieldGreaterThanOrEqualTo<U>(Expression<Func<T, U>> selector, string value)
+        {
+            var memberName = GetPropertyName(selector);
+
+            return FieldGreaterThanOrEqualTo(memberName, value);
         }
 
         /// <summary>
@@ -404,15 +465,19 @@ namespace Contentful.Core.Search
             return AddFieldRestriction(field, value, "[match]");
         }
 
-        
+        /// <summary>
+        /// Adds a search parameter to search in a specific field for a match for a value. 
+        /// Not to be confused with the <see cref="FullTextSearch"/> method that searches across all fields.
+        /// </summary>
+        /// <param name="selector">The expression of the field to search for matches.</param>
+        /// <param name="value">The value the field must match.</param>
+        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        public QueryBuilder<T> FieldMatches<U>(Expression<Func<T, U>> selector, string value)
+        {
+            var memberName = GetPropertyName(selector);
 
-       
-
-        
-
-        
-
-        
+            return FieldMatches(memberName, value);
+        }
 
         protected QueryBuilder<T> AddFieldRestriction(string field, string value, string @operator)
         {
