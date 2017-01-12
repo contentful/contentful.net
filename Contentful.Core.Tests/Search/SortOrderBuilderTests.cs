@@ -13,7 +13,7 @@ namespace Contentful.Core.Tests.Search
         public void CreatedSortOrderBuilderShouldHoldOnlyOneSortExpressionWithDefaultSorting()
         {
             //Arrange
-            var builder = SortOrderBuilder.New("sys.created");
+            var builder = SortOrderBuilder<object>.New("sys.created");
             //Act
             var res = builder.Build();
             //Assert
@@ -35,7 +35,7 @@ namespace Contentful.Core.Tests.Search
         public void CreatedSortOrderBuilderWithReversedOrderShouldHoldOnlyOneSortExpressionWithReversedSorting()
         {
             //Arrange
-            var builder = SortOrderBuilder.New("sys.created", SortOrder.Reversed);
+            var builder = SortOrderBuilder<object>.New("sys.created", SortOrder.Reversed);
             //Act
             var res = builder.Build();
             //Assert
@@ -58,7 +58,7 @@ namespace Contentful.Core.Tests.Search
         {
             //Arrange
             var builder =
-                SortOrderBuilder.New("sys.created", SortOrder.Reversed).ThenBy("field.name")
+                SortOrderBuilder<object>.New("sys.created", SortOrder.Reversed).ThenBy("field.name")
                     .ThenBy("field.date", SortOrder.Reversed);
             //Act
             var res = builder.Build();

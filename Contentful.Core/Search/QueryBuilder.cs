@@ -13,11 +13,6 @@ namespace Contentful.Core.Search
     /// <summary>
     /// Utility builder class to construct a correct search query for the Contentful API.
     /// </summary>
-    public class QueryBuilder: QueryBuilder<object>
-    {
-        
-    }
-
     public class QueryBuilder<T>
     {
         protected readonly List<KeyValuePair<string, string>> _querystringValues = new List<KeyValuePair<string, string>>();

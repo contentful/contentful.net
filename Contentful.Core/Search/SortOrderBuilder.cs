@@ -5,27 +5,10 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Contentful.Core.Search
-{
+{   
     /// <summary>
     /// Utility class to construct a valid sort order parameter for a query to the Contentful API.
     /// </summary>
-    public class SortOrderBuilder : SortOrderBuilder<object>
-    {
-        /// <summary>
-        /// Initializes a new instance of <see cref="SortOrderBuilder"/>
-        /// </summary>
-        /// <param name="field">The field to sort by.</param>
-        /// <param name="order">The order of the sorting. Default is <see cref="SortOrder.Normal"/>.</param>
-        private SortOrderBuilder(string field, SortOrder order = SortOrder.Normal) : base(field, order)
-        {
-        }
-
-        public static SortOrderBuilder<object> New(string field, SortOrder order = SortOrder.Normal)
-        {
-            return new SortOrderBuilder(field, order);
-        }
-    }
-
     public class SortOrderBuilder<T>
     {
         private readonly List<string> _orderList = new List<string>();
@@ -40,6 +23,10 @@ namespace Contentful.Core.Search
             _orderList.Add($"{(order == SortOrder.Reversed ? "-" : "")}{field}");
         }
 
+        public static SortOrderBuilder<T> New(string field, SortOrder order = SortOrder.Normal)
+        {
+            return new SortOrderBuilder<T>(field, order);
+        }
 
         public static SortOrderBuilder<T> New<U>(Expression<Func<T, U>> selector, SortOrder order = SortOrder.Normal)
         {
