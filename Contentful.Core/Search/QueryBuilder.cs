@@ -500,7 +500,5 @@ namespace Contentful.Core.Search
 
             return sb.ToString();
         }
-
-        
     }
 }
