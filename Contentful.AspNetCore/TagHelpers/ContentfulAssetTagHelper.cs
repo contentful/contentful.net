@@ -1,4 +1,5 @@
 ﻿using Contentful.Core;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
@@ -29,7 +30,7 @@ namespace Contentful.AspNetCore.TagHelpers
                 return;
             }
 
-            var queryBuilder = QueryBuilder.New();
+            var queryBuilder = QueryBuilder<Asset>.New;
 
             if (!string.IsNullOrEmpty(Locale))
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Contentful.Core.Search;
 using Xunit;
+using Contentful.Core.Models;
 
 namespace Contentful.Core.Tests.Search
 {
@@ -13,7 +14,7 @@ namespace Contentful.Core.Tests.Search
         public void NewUnusedQueryBuilderShouldReturnEmptyString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.Build();
             //Assert
@@ -24,7 +25,7 @@ namespace Contentful.Core.Tests.Search
         public void AddingMultipleQueryParametersShouldCorrectlyAddQueryStringValues()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.ContentTypeIs("123").Include(5).Limit(6).Build();
             //Assert
@@ -35,7 +36,7 @@ namespace Contentful.Core.Tests.Search
         public void ContentTypeRestrictionShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.ContentTypeIs("123").Build();
             //Assert
@@ -46,7 +47,7 @@ namespace Contentful.Core.Tests.Search
         public void FullTextSearchShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FullTextSearch("something").Build();
             //Assert
@@ -57,7 +58,7 @@ namespace Contentful.Core.Tests.Search
         public void FullTextSearchShouldNotAddQueryStringForShortQuery()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FullTextSearch("s").Build();
             //Assert
@@ -68,7 +69,7 @@ namespace Contentful.Core.Tests.Search
         public void InProximityOfShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.InProximityOf("locField", "12,-13").Build();
             //Assert
@@ -76,10 +77,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void InProximityOfGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.InProximityOf(c => c.Title, "45.45,-13").Build();
+            //Assert
+            Assert.Equal("?fields.title[near]=45.45,-13", result);
+        }
+
+        [Fact]
         public void WithinAreaShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.WithinArea("locField", "42", "32","54","-38").Build();
             //Assert
@@ -87,10 +99,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void WithinAreaGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.WithinArea(c => c.Title, "42", "32", "54", "-38").Build();
+            //Assert
+            Assert.Equal("?fields.title[within]=42,32,54,-38", result);
+        }
+
+        [Fact]
         public void WithinRadiusShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.WithinRadius("locField", "13", "-44", 5).Build();
             //Assert
@@ -98,10 +121,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void WithinRadiusGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.WithinRadius(c => c.Title, "42", "32", 5).Build();
+            //Assert
+            Assert.Equal("?fields.title[within]=42,32,5", result);
+        }
+
+        [Fact]
         public void OrderByShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.OrderBy("somesortexpression").Build();
             //Assert
@@ -112,7 +146,7 @@ namespace Contentful.Core.Tests.Search
         public void LimitShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.Limit(5).Build();
             //Assert
@@ -123,7 +157,7 @@ namespace Contentful.Core.Tests.Search
         public void SkipShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.Skip(3).Build();
             //Assert
@@ -134,7 +168,7 @@ namespace Contentful.Core.Tests.Search
         public void IncludeShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.Include(3).Build();
             //Assert
@@ -145,7 +179,7 @@ namespace Contentful.Core.Tests.Search
         public void LocaleIsShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.LocaleIs("en-US").Build();
             //Assert
@@ -156,7 +190,7 @@ namespace Contentful.Core.Tests.Search
         public void MimeTypeIsShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.MimeTypeIs(MimeTypeRestriction.Archive).Build();
             //Assert
@@ -167,7 +201,7 @@ namespace Contentful.Core.Tests.Search
         public void FieldEqualsShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldEquals("someField", "whatever").Build();
             //Assert
@@ -175,10 +209,75 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldEqualsGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.Name, "whatever").Build();
+
+            //Assert
+            Assert.Equal("?fields.name=whatever", result);
+        }
+
+        [Fact]
+        public void FieldEqualsGenericShouldAddCorrectQueryStringForSysProperty()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.SystemProperties.Id, "123").Build();
+
+            //Assert
+            Assert.Equal("?sys.id=123", result);
+        }
+
+        [Fact]
+        public void FieldEqualsGenericShouldAddCorrectQueryStringForPropertyWithAttribute()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.LongThing, "bob").Build();
+
+            //Assert
+            Assert.Equal("?fields.long=bob", result);
+        }
+
+        [Fact]
+        public void FieldEqualsGenericShouldAddCorrectQueryStringForNestedSysProperty()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.SystemProperties.ContentType.SystemProperties.Id, "123").Build();
+
+            //Assert
+            Assert.Equal("?sys.contentType.sys.id=123", result);
+        }
+
+        [Fact]
+        public void FieldEqualsGenericShouldAddCorrectQueryStringForEntryFieldProperty()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Entry<Author>>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.Fields.Name, "bob").Build();
+
+            //Assert
+            Assert.Equal("?fields.name=bob", result);
+        }
+
+        [Fact]
         public void FieldDoesNotEqualShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldDoesNotEqual("someField", "whatever").Build();
             //Assert
@@ -186,10 +285,23 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldDoesNotEqualGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldDoesNotEqual(c => c.Name, "whatever").Build();
+
+            //Assert
+            Assert.Equal("?fields.name[ne]=whatever", result);
+        }
+
+        [Fact]
         public void FieldEqualsAllShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldEqualsAll("someField", new []{"value1", "value2", "andSoOnAndSoForth"}).Build();
             //Assert
@@ -197,10 +309,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldEqualsAllGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldEqualsAll(c => c.Title, new[] { "value1", "value2", "andSoOnAndSoForth" }).Build();
+            //Assert
+            Assert.Equal("?fields.title[all]=value1,value2,andSoOnAndSoForth", result);
+        }
+
+        [Fact]
         public void FieldIncludesShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldIncludes("someField", new[] { "some", "other", "value" }).Build();
             //Assert
@@ -208,14 +331,36 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldIncludesGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldIncludes(c => c.Title, new[] { "value1", "value2", "andSoOnAndSoForth" }).Build();
+            //Assert
+            Assert.Equal("?fields.title[in]=value1,value2,andSoOnAndSoForth", result);
+        }
+
+        [Fact]
         public void FieldExcludesShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldExcludes("someField", new[] { "some", "other", "value" }).Build();
             //Assert
             Assert.Equal("?someField[nin]=some,other,value", result);
+        }
+
+        [Fact]
+        public void FieldExcludesGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldExcludes(c => c.Title, new[] { "value1", "value2", "andSoOnAndSoForth" }).Build();
+            //Assert
+            Assert.Equal("?fields.title[nin]=value1,value2,andSoOnAndSoForth", result);
         }
 
         [Theory]
@@ -224,9 +369,22 @@ namespace Contentful.Core.Tests.Search
         public void FieldExistsShouldAddCorrectQueryString(bool mustExist, string expected)
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldExists("fieldOfBeauty", mustExist).Build();
+            //Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData(true, "?fields.title[exists]=true")]
+        [InlineData(false, "?fields.title[exists]=false")]
+        public void FieldExistsGenericShouldAddCorrectQueryString(bool mustExist, string expected)
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldExists(c => c.Title, mustExist).Build();
             //Assert
             Assert.Equal(expected, result);
         }
@@ -235,7 +393,7 @@ namespace Contentful.Core.Tests.Search
         public void FieldLessThanShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldLessThan("fieldOfBeauty", "23").Build();
             //Assert
@@ -243,10 +401,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldLessThanGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldLessThan(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[lt]=23", result);
+        }
+
+        [Fact]
         public void FieldLessThanOrEqualToShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldLessThanOrEqualTo("fieldOfBeauty", "23").Build();
             //Assert
@@ -254,10 +423,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldLessThanOrEqualToGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldLessThanOrEqualTo(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[lte]=23", result);
+        }
+
+        [Fact]
         public void FieldGreaterThanShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldGreaterThan("fieldOfBeauty", "23").Build();
             //Assert
@@ -265,10 +445,21 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void FieldGreaterThanGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldGreaterThan(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[gt]=23", result);
+        }
+
+        [Fact]
         public void FieldGreaterThanOrEqualToShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldGreaterThanOrEqualTo("fieldOfBeauty", "23").Build();
             //Assert
@@ -276,14 +467,36 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
-        public void FieldMatchesToShouldAddCorrectQueryString()
+        public void FieldGreaterThanOrEqualToGenericShouldAddCorrectQueryString()
         {
             //Arrange
-            var builder = new QueryBuilder();
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldGreaterThanOrEqualTo(c => c.Title, "23").Build();
+            //Assert
+            Assert.Equal("?fields.title[gte]=23", result);
+        }
+
+        [Fact]
+        public void FieldMatchesShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
             //Act
             var result = builder.FieldMatches("fieldOfBeauty", "matchMe!").Build();
             //Assert
             Assert.Equal("?fieldOfBeauty[match]=matchMe!", result);
+        }
+
+        [Fact]
+        public void FieldMatchesGenericShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestModelWithIncludes>();
+            //Act
+            var result = builder.FieldMatches(c => c.Title, "matchMe").Build();
+            //Assert
+            Assert.Equal("?fields.title[match]=matchMe", result);
         }
     }
 }

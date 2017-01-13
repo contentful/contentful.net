@@ -24,7 +24,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
-        Task<T> GetEntryAsync<T>(string entryId, QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<T> GetEntryAsync<T>(string entryId, QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a single entry by the specified ID.
@@ -47,7 +47,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder"/>.
@@ -57,7 +57,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<T>> GetEntriesAsync<T>(QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<T>> GetEntriesAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
@@ -77,7 +77,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
             where T : IContentfulResource;
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
@@ -100,7 +100,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
-        Task<Asset> GetAssetAsync(string assetId, QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Asset> GetAssetAsync(string assetId, QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a single <see cref="Asset"/> by the specified ID.
@@ -119,7 +119,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<Asset>> GetAssetsAsync(QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<Asset>> GetAssetsAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional querystring. A simpler approach than 
@@ -136,7 +136,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder"/> to add additional filtering to the query.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(QueryBuilder queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional queryString. A simpler approach than 

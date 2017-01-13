@@ -1,16 +1,16 @@
-﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
   <PropertyGroup>
     <Description>Official .NET SDK for the Contentful Content Delivery and Management API for ASP.NET core.</Description>
     <PackageId>contentful.aspnetcore</PackageId>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>0.2.5-alpha</VersionPrefix>
+    <VersionPrefix>0.3.1-alpha</VersionPrefix>
     <TargetFramework>netstandard1.5</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
     <AssemblyName>Contentful.AspNetCore</AssemblyName>
     <PackageTags>contentful;CMS;aspnetcore</PackageTags>
-    <PackageIconUrl>https://github.com/contentful/contentful.net-docs/raw/master/images/favicon-contentful.png</PackageIconUrl>
+    <PackageIconUrl>https://d21buns5ku92am.cloudfront.net/41748/images/210510-contentful_85x85@2x-550fdb-large-1464181794.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/contentful/contentful.net</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/contentful/contentful.net/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="contentful.csharp">
-      <Version>0.8.3-alpha</Version>
+      <Version>0.9.1-alpha</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor">

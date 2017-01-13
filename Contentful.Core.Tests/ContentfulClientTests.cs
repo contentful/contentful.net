@@ -299,9 +299,9 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
-            var builder = new QueryBuilder();
+            var builder = QueryBuilder<TestEntryModel>.New;
             //Act
-            var res = await _client.GetEntriesByTypeAsync<TestEntryModel>("666", builder);
+            var res = await _client.GetEntriesByTypeAsync("666", builder);
 
             //Assert
             Assert.Equal(9, res.Count());
