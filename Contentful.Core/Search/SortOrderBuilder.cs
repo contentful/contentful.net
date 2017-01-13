@@ -14,7 +14,7 @@ namespace Contentful.Core.Search
         private readonly List<string> _orderList = new List<string>();
 
         /// <summary>
-        /// Initializes a new instance of <see cref="SortOrderBuilder"/>
+        /// Initializes a new instance of <see cref="SortOrderBuilder{T}"/>
         /// </summary>
         /// <param name="field">The field to sort by.</param>
         /// <param name="order">The order of the sorting. Default is <see cref="SortOrder.Normal"/>.</param>
@@ -23,11 +23,23 @@ namespace Contentful.Core.Search
             _orderList.Add($"{(order == SortOrder.Reversed ? "-" : "")}{field}");
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="SortOrderBuilder{T}"/>
+        /// </summary>
+        /// <param name="field">The field to sort by.</param>
+        /// <param name="order">The order of the sorting. Default is <see cref="SortOrder.Normal"/>.</param>
+        /// <returns>A new <see cref="SortOrderBuilder{T}"/> instance.</returns>
         public static SortOrderBuilder<T> New(string field, SortOrder order = SortOrder.Normal)
         {
             return new SortOrderBuilder<T>(field, order);
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="SortOrderBuilder{T}"/>
+        /// </summary>
+        /// <param name="selector">The expression of the field to sort by.</param>
+        /// <param name="order">The order of the sorting. Default is <see cref="SortOrder.Normal"/>.</param>
+        /// <returns>A new <see cref="SortOrderBuilder{T}"/> instance.</returns>
         public static SortOrderBuilder<T> New<U>(Expression<Func<T, U>> selector, SortOrder order = SortOrder.Normal)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -36,17 +48,23 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
-        /// Adds another field to sort by to the current <see cref="SortOrderBuilder"/>.
+        /// Adds another field to sort by to the current <see cref="SortOrderBuilder{T}"/>.
         /// </summary>
         /// <param name="field">The field to sort by.</param>
         /// <param name="order">The order of the sorting. Default is <see cref="SortOrder.Normal"/>.</param>
-        /// <returns>The <see cref="SortOrderBuilder"/> instance.</returns>
+        /// <returns>The <see cref="SortOrderBuilder{T}"/> instance.</returns>
         public SortOrderBuilder<T> ThenBy(string field, SortOrder order = SortOrder.Normal)
         {
             _orderList.Add($",{(order == SortOrder.Reversed ? "-" : "")}{field}");
             return this;
         }
 
+        /// <summary>
+        /// Adds another field to sort by to the current <see cref="SortOrderBuilder{T}"/>.
+        /// </summary>
+        /// <param name="selector">The expression of the field to sort by.</param>
+        /// <param name="order">The order of the sorting. Default is <see cref="SortOrder.Normal"/>.</param>
+        /// <returns>The <see cref="SortOrderBuilder{T}"/> instance.</returns>
         public SortOrderBuilder<T> ThenBy<U>(Expression<Func<T, U>> selector, SortOrder order = SortOrder.Normal)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -54,6 +72,10 @@ namespace Contentful.Core.Search
             return ThenBy(memberName, order);
         }
 
+        /// <summary>
+        /// Builds this sortorderbuilder and returns the produced querystring.
+        /// </summary>
+        /// <returns>The built querystring.</returns>
         public string Build()
         {
             return string.Join("", _orderList);

@@ -19,7 +19,7 @@ namespace Contentful.Core.Models.Management
         public SystemProperties SystemProperties { get; set; }
 
         /// <summary>
-        /// The fields of the <see cref="Entry"/> in all languages.
+        /// The fields of the <see cref="Entry{T}"/> in all languages.
         /// </summary>
         public Dictionary<string, Dictionary<string, dynamic>> Fields { get; set; }
     }

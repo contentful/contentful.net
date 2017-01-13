@@ -9,7 +9,7 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="IFieldValidator"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.IFieldValidator"/>.
     /// </summary>
     public class ValidationsJsonConverter : JsonConverter
     {

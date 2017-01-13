@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Contentful.Core.Errors;
 
 namespace Contentful.Core.Configuration
 {
@@ -34,8 +35,8 @@ namespace Contentful.Core.Configuration
         public bool UsePreviewApi { get; set; }
 
         /// <summary>
-        /// Sets the default number of times to retry after hitting a <see cref="ContentfulRateLimitException"/>.
-        /// 0 means that no retries will be made. Maxiumum is 10.
+        /// Sets the default number of times to retry after hitting a <see cref="Contentful.Core.Errors.ContentfulRateLimitException"/>.
+        /// 0 means that no retries will be made. Maximum is 10.
         /// </summary>
         public int MaxNumberOfRateLimitRetries { get; set; }
     }

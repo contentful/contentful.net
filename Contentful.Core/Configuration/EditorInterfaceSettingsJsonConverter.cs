@@ -8,7 +8,7 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="EditorInterface"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.EditorInterface"/>.
     /// </summary>
     public class EditorInterfaceControlJsonConverter : JsonConverter
     {

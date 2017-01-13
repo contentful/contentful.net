@@ -9,7 +9,7 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="Snapshot"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.Snapshot"/>.
     /// </summary>
     public class SnapshotJsonConverter : JsonConverter
     {

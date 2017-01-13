@@ -9,7 +9,7 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="IConstraint"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.IConstraint"/>.
     /// </summary>
     public class ConstraintJsonConverter : JsonConverter
     {

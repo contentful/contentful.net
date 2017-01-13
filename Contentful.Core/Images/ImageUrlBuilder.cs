@@ -12,9 +12,9 @@ namespace Contentful.Core.Images
         private readonly List<KeyValuePair<string, string>> _querystringValues = new List<KeyValuePair<string, string>>();
 
         /// <summary>
-        /// Creates a new instance of a querybuilder.
+        /// Creates a new instance of an ImageUrlBuilder.
         /// </summary>
-        /// <returns>The created <see cref="QueryBuilder"/>.</returns>
+        /// <returns>The created <see cref="ImageUrlBuilder"/>.</returns>
         public static ImageUrlBuilder New()
         {
             return new ImageUrlBuilder();

@@ -10,7 +10,7 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="SpaceMembership"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.
     /// </summary>
     public class SpaceMembershipJsonConverter : JsonConverter
     {

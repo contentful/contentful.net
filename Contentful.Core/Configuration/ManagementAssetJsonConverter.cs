@@ -9,7 +9,7 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="ManagementAsset"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.
     /// </summary>
     public class ManagementAssetJsonConverter : JsonConverter
     {

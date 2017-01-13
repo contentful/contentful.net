@@ -20,14 +20,14 @@ namespace Contentful.Core.Search
         /// <summary>
         /// Creates a new instance of a querybuilder.
         /// </summary>
-        /// <returns>The created <see cref="QueryBuilder"/>.</returns>
+        /// <returns>The created <see cref="QueryBuilder{T}"/>.</returns>
         public static QueryBuilder<T> New => new QueryBuilder<T>();
 
         /// <summary>
         /// Adds a search parameter to restrict the result by content type.
         /// </summary>
         /// <param name="contentTypeId">The ID of the content type to restrict by.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> ContentTypeIs(string contentTypeId)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("content_type", contentTypeId));
@@ -38,7 +38,7 @@ namespace Contentful.Core.Search
         /// Adds a search parameter to search across all text and symbol fields.
         /// </summary>
         /// <param name="query">The case insensitive query to search for. Has to be at least 2 characters long to be applied.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FullTextSearch(string query)
         {
             if (!string.IsNullOrEmpty(query) && query.Length >= 2)
@@ -54,7 +54,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The location field to check proximity for.</param>
         /// <param name="coordinate">The coordinate.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> InProximityOf(string field, string coordinate)
         {
             _querystringValues.Add(new KeyValuePair<string, string>($"{field}[near]", coordinate));
@@ -66,7 +66,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of a location field to check proximity for.</param>
         /// <param name="coordinate">The coordinate.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> InProximityOf<U>(Expression<Func<T, U>> selector, string coordinate)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -82,7 +82,7 @@ namespace Contentful.Core.Search
         /// <param name="longitude1">The longitude of the bottom left corner of the rectangle.</param>
         /// <param name="latitude2">The latitude of the top right corner of the rectangle.</param>
         /// <param name="longitude2">The longitude of the top right corner of the rectangle.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> WithinArea(string field, string latitude1, string longitude1,
             string latitude2, string longitude2)
         {
@@ -98,7 +98,7 @@ namespace Contentful.Core.Search
         /// <param name="longitude1">The longitude of the bottom left corner of the rectangle.</param>
         /// <param name="latitude2">The latitude of the top right corner of the rectangle.</param>
         /// <param name="longitude2">The longitude of the top right corner of the rectangle.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> WithinArea<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1,
             string latitude2, string longitude2)
         {
@@ -115,7 +115,7 @@ namespace Contentful.Core.Search
         /// <param name="latitude">The latitude of the centre of the bounding circle.</param>
         /// <param name="longitude">The longitude of the centre of the bounding circle.</param>
         /// <param name="radius">The radius in kilometers of the bounding circle.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> WithinRadius(string field, string latitude, string longitude, float radius)
         {
             _querystringValues.Add(new KeyValuePair<string, string>($"{field}[within]", $"{latitude},{longitude},{radius}"));
@@ -129,7 +129,7 @@ namespace Contentful.Core.Search
         /// <param name="latitude">The latitude of the centre of the bounding circle.</param>
         /// <param name="longitude">The longitude of the centre of the bounding circle.</param>
         /// <param name="radius">The radius in kilometers of the bounding circle.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> WithinRadius<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1, float radius)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -138,10 +138,10 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
-        /// Adds an order expression to the query. An order expression is most simply created using the <see cref="SortOrderBuilder"/> class.
+        /// Adds an order expression to the query. An order expression is most simply created using the <see cref="SortOrderBuilder{T}"/> class.
         /// </summary>
         /// <param name="order">The order expression.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> OrderBy(string order)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("order", order));
@@ -152,7 +152,7 @@ namespace Contentful.Core.Search
         /// Adds a limit to the number of results returned for the query.
         /// </summary>
         /// <param name="limit">The maximum number of hits returned.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> Limit(int limit)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("limit", limit.ToString()));
@@ -164,7 +164,7 @@ namespace Contentful.Core.Search
         /// Use in conjunction with <see cref="OrderBy"/> and <see cref="Limit"/> to effectively page through content.
         /// </summary>
         /// <param name="skip">The number of items skipped.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> Skip(int skip)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("skip", skip.ToString()));
@@ -176,7 +176,7 @@ namespace Contentful.Core.Search
         /// The default is 1 if this querystring parameter is omitted.
         /// </summary>
         /// <param name="levels">The number of levels of referenced content to include.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> Include(int levels)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("include", levels.ToString()));
@@ -187,7 +187,7 @@ namespace Contentful.Core.Search
         /// Filters the returned resources by the specified locale.
         /// </summary>
         /// <param name="locale">The locale to filter by.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> LocaleIs(string locale)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("locale", locale));
@@ -198,7 +198,7 @@ namespace Contentful.Core.Search
         /// Adds a restriction parameter for what mimetypes should be returned by the query.
         /// </summary>
         /// <param name="mimetype">The mimetype to filter by.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> MimeTypeIs(MimeTypeRestriction mimetype)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("mimetype_group", $"{mimetype.ToString().ToLower()}"));
@@ -210,7 +210,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field that must match the value.</param>
         /// <param name="value">The value that the field must exactly match.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldEquals(string field, string value)
         {
             return AddFieldRestriction(field, value, string.Empty);
@@ -221,7 +221,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field that must match the value.</param>
         /// <param name="value">The value that the field must exactly match.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldEquals<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -234,7 +234,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field that must not match the value.</param>
         /// <param name="value">The value that the field must not match.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldDoesNotEqual(string field, string value)
         {
             return AddFieldRestriction(field, value, "[ne]");
@@ -245,7 +245,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field that must not match the value.</param>
         /// <param name="value">The value that the field must not match.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldDoesNotEqual<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -259,7 +259,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field that must exactly match all the values.</param>
         /// <param name="value">The values that the field must inlcude all of.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldEqualsAll(string field, IEnumerable<string> values)
         {
             return AddFieldRestriction(field, string.Join(",", values), "[all]");
@@ -271,7 +271,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field that must exactly match all the values.</param>
         /// <param name="value">The values that the field must inlcude all of.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldEqualsAll<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -284,7 +284,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field that must exactly match at least one of the specified values.</param>
         /// <param name="value">The values that the field must include at least one of.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldIncludes(string field, IEnumerable<string> values)
         {
             return AddFieldRestriction(field, string.Join(",", values), "[in]");
@@ -295,7 +295,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The expression of the field that must exactly match at least one of the specified values.</param>
         /// <param name="value">The values that the field must include at least one of.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldIncludes<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -308,7 +308,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field that must not contain any of the specified values.</param>
         /// <param name="value">The values that the field must not include any of.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldExcludes(string field, IEnumerable<string> values)
         {
             return AddFieldRestriction(field, string.Join(",", values), "[nin]");
@@ -319,7 +319,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field that must not contain any of the specified values.</param>
         /// <param name="value">The values that the field must not include any of.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldExcludes<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -332,7 +332,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field that must exist and also not be null.</param>
         /// <param name="mustExist">Whether or not the field must exist or not exist. A value of false means only include entries where the particular field does NOT exist.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldExists(string field, bool mustExist = true)
         {
             _querystringValues.Add(new KeyValuePair<string, string>($"{field}[exists]", mustExist.ToString().ToLower()));
@@ -344,7 +344,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field that must exist and also not be null.</param>
         /// <param name="mustExist">Whether or not the field must exist or not exist. A value of false means only include entries where the particular field does NOT exist.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldExists<U>(Expression<Func<T, U>> selector, bool mustExist = true)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -357,7 +357,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field to compare against.</param>
         /// <param name="value">The value the field must be less than.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldLessThan(string field, string value)
         {
             return AddFieldRestriction(field, value, "[lt]");
@@ -368,7 +368,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field to compare against.</param>
         /// <param name="value">The value the field must be less than.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldLessThan<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -381,7 +381,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field to compare against.</param>
         /// <param name="value">The value the field must be less than or equal to.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldLessThanOrEqualTo(string field, string value)
         {
             return AddFieldRestriction(field, value, "[lte]");
@@ -392,7 +392,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field to compare against.</param>
         /// <param name="value">The value the field must be less than.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldLessThanOrEqualTo<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -405,7 +405,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field to compare against.</param>
         /// <param name="value">The value the field must be greater than.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldGreaterThan(string field, string value)
         {
             return AddFieldRestriction(field, value, "[gt]");
@@ -416,7 +416,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field to compare against.</param>
         /// <param name="value">The value the field must be greater than.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldGreaterThan<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -429,7 +429,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field to compare against.</param>
         /// <param name="value">The value the field must be greater than or equal to.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldGreaterThanOrEqualTo(string field, string value)
         {
             return AddFieldRestriction(field, value, "[gte]");
@@ -440,7 +440,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field to compare against.</param>
         /// <param name="value">The value the field must be greater than.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldGreaterThanOrEqualTo<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);
@@ -454,7 +454,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="field">The field to search for matches.</param>
         /// <param name="value">The value the field must match.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldMatches(string field, string value)
         {
             return AddFieldRestriction(field, value, "[match]");
@@ -466,7 +466,7 @@ namespace Contentful.Core.Search
         /// </summary>
         /// <param name="selector">The expression of the field to search for matches.</param>
         /// <param name="value">The value the field must match.</param>
-        /// <returns>The <see cref="QueryBuilder"/> instance.</returns>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldMatches<U>(Expression<Func<T, U>> selector, string value)
         {
             var memberName = FieldHelpers<T>.GetPropertyName(selector);

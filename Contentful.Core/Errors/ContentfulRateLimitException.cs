@@ -10,7 +10,7 @@ namespace Contentful.Core.Errors
     public class ContentfulRateLimitException : ContentfulException
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="ContentulRateLimitException"/>.
+        /// Initializes a new instance of <see cref="Contentful.Core.Errors.ContentfulRateLimitException"/>.
         /// </summary>
         /// <param name="message">The message of the exception.</param>
         public ContentfulRateLimitException(string message) : base(429, message)

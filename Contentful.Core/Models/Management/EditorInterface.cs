@@ -17,7 +17,7 @@ namespace Contentful.Core.Models.Management
         public SystemProperties SystemProperties { get; set; }
 
         /// <summary>
-        /// List of <see cref="EditorInterfaceControl"/> representing the type of editor interface for each field of a <see cref="ContenType"/>.
+        /// List of <see cref="EditorInterfaceControl"/> representing the type of editor interface for each field of a <see cref="ContentType"/>.
         /// </summary>
         public List<EditorInterfaceControl> Controls { get; set; }
     }
