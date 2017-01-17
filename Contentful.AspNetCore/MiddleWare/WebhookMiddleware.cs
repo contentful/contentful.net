@@ -163,7 +163,7 @@ namespace Contentful.AspNetCore.MiddleWare
 
             if(consumerBuilder.WebhookAuthorization == null)
             {
-                return builder.UseMiddleware<WebhookMiddleware>(consumerBuilder.Build());
+                consumerBuilder.WebhookAuthorization = s => true;
             }
 
             return builder.UseMiddleware<WebhookMiddleware>(consumerBuilder.Build(), consumerBuilder.WebhookAuthorization);
