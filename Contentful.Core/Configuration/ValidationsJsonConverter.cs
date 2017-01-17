@@ -78,7 +78,7 @@ namespace Contentful.Core.Configuration
                 return new UniqueValidator();
             }
 
-            return null;
+            return Activator.CreateInstance(objectType);
         }
 
         /// <summary>
