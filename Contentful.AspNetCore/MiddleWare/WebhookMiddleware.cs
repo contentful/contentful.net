@@ -19,7 +19,11 @@ namespace Contentful.AspNetCore.MiddleWare
         private readonly ILookup<Tuple<string, string, string>, Delegate> _consumers;
         private readonly Func<HttpContext, bool> _webhookAuthorization;
 
-        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers, Func<HttpContext, bool> webhookAuthorization = null)
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers): this(next, consumers, null)
+        {
+        }
+
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers, Func<HttpContext, bool> webhookAuthorization)
         {
             _next = next;
             _consumers = consumers;
