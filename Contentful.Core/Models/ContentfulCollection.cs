@@ -46,7 +46,7 @@ namespace Contentful.Core.Models
         public IEnumerable<Entry<dynamic>> IncludedEntries { get; set; }
 
         /// <summary>
-        /// The <see cref="IEnumerable{ManagementAsset}" /> of included referenced assets
+        /// The <see cref="IEnumerable{Asset}" /> of included referenced assets
         /// </summary>
         public IEnumerable<Asset> IncludedAssets { get; set; }
 
