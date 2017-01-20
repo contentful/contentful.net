@@ -523,7 +523,8 @@
         },
         "fields": {
           "title": {
-            "en-US": "Alice in Wonderland"
+            "en-US": "Alice in Wonderland",
+            "sv-SE": "Alice i underlandet"
           },
           "file": {
             "en-US": {

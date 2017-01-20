@@ -356,6 +356,7 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(2, res.Count());
             Assert.Equal("Alice in Wonderland", res.IncludedAssets.Single(c => c.SystemProperties.Id == "AssetId4").TitleLocalized["en-US"]);
+            Assert.Equal("Alice i underlandet", res.IncludedAssets.Single(c => c.SystemProperties.Id == "AssetId4").TitleLocalized["sv-SE"]);
             Assert.Equal("Lewis Carroll", res.IncludedEntries.Single(c => c.SystemProperties.Id == "EntryId66").Fields.name["en-US"].ToString());
         }
 
