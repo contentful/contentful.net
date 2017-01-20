@@ -33,5 +33,21 @@ namespace Contentful.Core.Models
         /// Encapsulates information about the binary file of the asset.
         /// </summary>
         public File File { get; set; }
+
+        /// <summary>
+        /// The titles of the asset per locale.
+        /// </summary>
+        public Dictionary<string, string> TitleLocalized { get; set; }
+
+        /// <summary>
+        /// The descriptions of the asset per locale.
+        /// </summary>
+        public Dictionary<string, string> DescriptionLocalized { get; set; }
+
+        /// <summary>
+        /// Information about the file in respective language.
+        /// </summary>
+        [JsonProperty("file")]
+        public Dictionary<string, File> FilesLocalized { get; set; }
     }
 }

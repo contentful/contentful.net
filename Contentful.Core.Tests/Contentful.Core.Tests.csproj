@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAndLocales.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAuthor.json" />
     <EmbeddedResource Include="JsonFiles\ErrorRateLimit.json" />
     <EmbeddedResource Include="JsonFiles\LocalesCollection.json" />
