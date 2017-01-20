@@ -42,10 +42,26 @@ namespace Contentful.Core.Configuration
 
             var jObject = JObject.Load(reader);
 
-            asset.Title = jObject.SelectToken("$.fields.title")?.ToString();
-            asset.Description = jObject.SelectToken("$.fields.description")?.ToString();
-            asset.File = jObject.SelectToken("$.fields.file")?.ToObject<File>();
             asset.SystemProperties = jObject.SelectToken("$.sys")?.ToObject<SystemProperties>();
+
+            if (!string.IsNullOrEmpty(asset.SystemProperties.Locale))
+            {
+                asset.Title = jObject.SelectToken("$.fields.title")?.ToString();
+                asset.TitleLocalized = new Dictionary<string, string>();
+                asset.TitleLocalized.Add(asset.SystemProperties.Locale, asset.Title);
+                asset.Description = jObject.SelectToken("$.fields.description")?.ToString();
+                asset.DescriptionLocalized = new Dictionary<string, string>();
+                asset.DescriptionLocalized.Add(asset.SystemProperties.Locale, asset.Description);
+                asset.File = jObject.SelectToken("$.fields.file")?.ToObject<File>();
+                asset.FilesLocalized = new Dictionary<string, File>();
+                asset.FilesLocalized.Add(asset.SystemProperties.Locale, asset.File);
+            }
+            else
+            {
+                asset.TitleLocalized = jObject.SelectToken("$.fields.title")?.ToObject<Dictionary<string, string>>();
+                asset.DescriptionLocalized = jObject.SelectToken("$.fields.description")?.ToObject<Dictionary<string, string>>();
+                asset.FilesLocalized = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
+            }
 
             return asset;
         }
