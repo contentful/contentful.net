@@ -80,7 +80,7 @@ namespace Contentful.AspNetCore.MiddleWare
                 var type = param.ParameterType;
                 var body = context.Request.Body;
 
-                if ((bool)consumer.Item2.DynamicInvoke() == false)
+                if ((bool)consumer.Item2.DynamicInvoke(context) == false)
                 {
                     responses.Add(new { HttpStatus = 401, HttpResponse = "Request failed pre-request authorization." });
                     continue;
