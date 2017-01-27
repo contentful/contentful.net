@@ -16,14 +16,14 @@ namespace Contentful.AspNetCore.MiddleWare
     public class WebhookMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILookup<Tuple<string, string, string>, Tuple<Delegate, Delegate>> _consumers;
+        private readonly ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> _consumers;
         private readonly Func<HttpContext, bool> _webhookAuthorization;
 
-        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Delegate>> consumers): this(next, consumers, null)
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> consumers): this(next, consumers, null)
         {
         }
 
-        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Delegate>> consumers, Func<HttpContext, bool> webhookAuthorization)
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> consumers, Func<HttpContext, bool> webhookAuthorization)
         {
             _next = next;
             _consumers = consumers;
@@ -75,12 +75,12 @@ namespace Contentful.AspNetCore.MiddleWare
 
             foreach (var consumer in foundConsumers.Select(c => c))
             {
-                var methodInfo = consumer.GetType().GetMethod("Invoke");
+                var methodInfo = consumer.Item1.GetType().GetMethod("Invoke");
                 var param = methodInfo.GetParameters().First();
                 var type = param.ParameterType;
                 var body = context.Request.Body;
 
-                if ((bool)consumer.Item2.DynamicInvoke(context) == false)
+                if (consumer.Item2 != null && consumer.Item2.Invoke(context) == false)
                 {
                     responses.Add(new { HttpStatus = 401, HttpResponse = "Request failed pre-request authorization." });
                     continue;
@@ -141,7 +141,7 @@ namespace Contentful.AspNetCore.MiddleWare
 
     public class ConsumerBuilder : IConsumerBuilder
     {
-        private readonly List<Tuple<Tuple<string, string, string>, Delegate, Delegate>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate, Delegate>>();
+        private readonly List<Tuple<Tuple<string, string, string>, Delegate, Func<HttpContext, bool>>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate, Func<HttpContext, bool>>>();
 
         public Func<HttpContext, bool> WebhookAuthorization { get; set; }
 
@@ -149,11 +149,10 @@ namespace Contentful.AspNetCore.MiddleWare
         {
             var tuple = Tuple.Create(name, topicType, topicAction);
             Delegate consumerDelegate = consumer;
-            Delegate preReqDelegate = preRequestVerification ?? ((s) => true);
-            _consumers.Add(Tuple.Create(tuple, consumerDelegate, preReqDelegate));
+            _consumers.Add(Tuple.Create(tuple, consumerDelegate, preRequestVerification));
         }
         
-        public ILookup<Tuple<string, string, string>, Tuple<Delegate,Delegate>> Build()
+        public ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> Build()
         {
             return _consumers.ToLookup(x => x.Item1, x => Tuple.Create(x.Item2, x.Item3));
         }
