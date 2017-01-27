@@ -16,14 +16,14 @@ namespace Contentful.AspNetCore.MiddleWare
     public class WebhookMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILookup<Tuple<string, string, string>, Delegate> _consumers;
+        private readonly ILookup<Tuple<string, string, string>, Tuple<Delegate, Delegate>> _consumers;
         private readonly Func<HttpContext, bool> _webhookAuthorization;
 
-        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers): this(next, consumers, null)
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Delegate>> consumers): this(next, consumers, null)
         {
         }
 
-        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Delegate> consumers, Func<HttpContext, bool> webhookAuthorization)
+        public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Delegate>> consumers, Func<HttpContext, bool> webhookAuthorization)
         {
             _next = next;
             _consumers = consumers;
@@ -80,6 +80,12 @@ namespace Contentful.AspNetCore.MiddleWare
                 var type = param.ParameterType;
                 var body = context.Request.Body;
 
+                if ((bool)consumer.Item2.DynamicInvoke() == false)
+                {
+                    responses.Add(new { HttpStatus = 401, HttpResponse = "Request failed pre-request authorization." });
+                    continue;
+                }
+
                 using (var reader = new StreamReader(body))
                 using (var jsonReader = new JsonTextReader(reader))
                 {
@@ -102,7 +108,7 @@ namespace Contentful.AspNetCore.MiddleWare
                         var returnedObject = new object();
                         try
                         {
-                            returnedObject = consumer.DynamicInvoke(serializedObject);
+                            returnedObject = consumer.Item1.DynamicInvoke(serializedObject);
                             responses.Add(returnedObject);
                         }
                         catch (Exception ex)
@@ -135,20 +141,21 @@ namespace Contentful.AspNetCore.MiddleWare
 
     public class ConsumerBuilder : IConsumerBuilder
     {
-        private readonly List<Tuple<Tuple<string, string, string>, Delegate>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate>>();
+        private readonly List<Tuple<Tuple<string, string, string>, Delegate, Delegate>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate, Delegate>>();
 
         public Func<HttpContext, bool> WebhookAuthorization { get; set; }
 
         public void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null)
         {
             var tuple = Tuple.Create(name, topicType, topicAction);
-            Delegate d = consumer;
-            _consumers.Add(Tuple.Create(tuple, d));
+            Delegate consumerDelegate = consumer;
+            Delegate preReqDelegate = preRequestVerification ?? ((s) => true);
+            _consumers.Add(Tuple.Create(tuple, consumerDelegate, preReqDelegate));
         }
         
-        public ILookup<Tuple<string, string, string>, Delegate> Build()
+        public ILookup<Tuple<string, string, string>, Tuple<Delegate,Delegate>> Build()
         {
-            return _consumers.ToLookup(x => x.Item1, x => x.Item2);
+            return _consumers.ToLookup(x => x.Item1, x => Tuple.Create(x.Item2, x.Item3));
         }
     }
 
