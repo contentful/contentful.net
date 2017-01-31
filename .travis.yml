@@ -25,5 +25,7 @@ install:
 script:
   - dotnet --version
   - dotnet restore
-  - dotnet build
+  - dotnet build Contentful.Core/Contentful.Core.csproj
+  - dotnet build Contentful.Core.Tests/Contentful.Core.Tests.csproj
+  - dotnet build Contentful.AspNetCore/Contentful.AspNetCore.csproj
   - dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj
