@@ -1,13 +1,8 @@
-﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+﻿<Project Sdk="Microsoft.NET.SDK">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="**\*.cs" />
-    <EmbeddedResource Include="**\*.resx" />
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAndLocales.json" />
@@ -46,13 +41,6 @@
     <EmbeddedResource Include="JsonFiles\webhookcalldetails.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.App">
-      <Version>1.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Sdk">
-      <Version>1.0.0-alpha-20161104-2</Version>
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk">
       <Version>15.0.0-preview-20161024-02</Version>
     </PackageReference>
@@ -69,7 +57,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Contentful.Core\Contentful.Core.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
       <UserProperties />
