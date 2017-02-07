@@ -185,16 +185,17 @@ namespace Contentful.Core
             IEnumerable<T> entries;
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            var links = json.SelectTokens("$.items..fields..sys").ToList();
-
-            for (var i = links.Count-1; i >=0; i--)
+            var includedLinks = json.SelectTokens("$.items..fields..sys").ToList();
+            includedLinks.AddRange(json.SelectTokens("$.includes.Entry..fields..sys"));
+            //Walk through and add any included entries as direct links.
+            for (var i = includedLinks.Count - 1; i >= 0; i--)
             {
-                var linkToken = links[i];
-                if(!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
+                var linkToken = includedLinks[i];
+                if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
                 {
                     var replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
 
-                    if(replacementToken != null)
+                    if (replacementToken != null)
                     {
                         var grandParent = linkToken.Parent.Parent;
                         grandParent.RemoveAll();
@@ -206,7 +207,7 @@ namespace Contentful.Core
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 entries = json.SelectTokens("$..items[*]")
-                        .Select(t => t.ToObject<T>()); ;
+                        .Select(t => t.ToObject<T>());
             }
             else
             {

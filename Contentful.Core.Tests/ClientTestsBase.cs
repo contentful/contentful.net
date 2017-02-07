@@ -89,5 +89,7 @@ namespace Contentful.Core.Tests
 
         [JsonProperty(PropertyName = "long")]
         public string LongThing { get; set; }
+
+        public Asset ProfilePhoto { get; set; }
     }
 }

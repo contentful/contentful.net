@@ -264,6 +264,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("Alice in Wonderland", list.Last().FeaturedImage.Title);
             Assert.Equal("Mike Springer", list.First().Author.First().Name);
             Assert.Equal("Lewis Carroll", list.Last().Author.First().Name);
+            Assert.Equal("Mike Springer", list.First().Author.First().ProfilePhoto.Title);
         }
 
         [Fact]
