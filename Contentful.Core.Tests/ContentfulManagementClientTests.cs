@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -2069,6 +2070,36 @@ namespace Contentful.Core.Tests
             Assert.Equal(HttpMethod.Post, method);
             Assert.Equal("https://api.contentful.com/spaces/666/api_keys", url);
             Assert.Equal(@"{""name"":""Key sharp!"",""description"":""This is the desc""}", contentSet);
+        }
+
+        [Fact]
+        public async Task UploadingFileShouldYieldCorrectResult()
+        {
+            //Arrange
+            var fileBytes = new byte[] { 12, 43, 43, 54 };
+            _handler.Response = GetResponseFromFile(@"UploadResult.json");
+
+            //Act
+            var res = await _client.UploadFile(fileBytes);
+
+            //Assert
+            Assert.IsType<SystemProperties>(res);
+            Assert.NotNull(res.Id);
+            Assert.Equal("666", res.Id);
+        }
+
+        [Fact]
+        public async Task GettingUploadedFileShouldYieldCorrectResult()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"UploadResult.json");
+
+            //Act
+            var res = await _client.GetUpload("5wAqke81S2C1o32RvTODCl");
+
+            Assert.IsType<SystemProperties>(res);
+            Assert.NotNull(res.Id);
+            Assert.Equal("666", res.Id);
         }
     }
 }

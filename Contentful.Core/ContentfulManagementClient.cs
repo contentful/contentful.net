@@ -19,6 +19,7 @@ namespace Contentful.Core
     public class ContentfulManagementClient : ContentfulClientBase, IContentfulManagementClient
     {
         private readonly string _baseUrl = "https://api.contentful.com/spaces/";
+        private readonly string _baseUploadUrl = "https://upload.contentful.com/spaces/";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulManagementClient"/> class. 
@@ -1613,6 +1614,75 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<User>();
+        }
+
+        /// <summary>
+        /// Gets an upload <see cref="SystemProperties"/> by the specified id.
+        /// </summary>
+        /// <param name="uploadId">The id of the uploaded file.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
+        public async Task<SystemProperties> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject["sys"].ToObject<SystemProperties>();
+        }
+
+        /// <summary>
+        /// Uploads the specified bytes to Contentful.
+        /// </summary>
+        /// <param name="bytes">The bytes to upload.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
+        public async Task<SystemProperties> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", new ByteArrayContent(bytes), cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject["sys"].ToObject<SystemProperties>();
+        }
+
+        /// <summary>
+        /// Gets an upload <see cref="SystemProperties"/> by the specified id.
+        /// </summary>
+        /// <param name="uploadId">The id of the uploaded file.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
+        public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await DeleteAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+        }
+
+        public async Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var upload = await UploadFile(bytes, spaceId, cancellationToken);
+
+            foreach (var file in asset.Files)
+            {
+                file.Value.UploadReference = upload;
+            }
+
+            var createdAsset = await CreateOrUpdateAssetAsync(asset);
+
+            foreach (var file in createdAsset.Files) {
+
+                await ProcessAssetAsync(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, createdAsset.SystemProperties.Locale);
+            }
+
+            return createdAsset;
         }
 
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken)

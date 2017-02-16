@@ -1,5 +1,4 @@
 ﻿using Contentful.Core.Models;
-using Contentful.Core.Models.Management;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -9,15 +8,15 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.File"/>.
     /// </summary>
-    public class ManagementAssetJsonConverter : JsonConverter
+    public class FileJsonConverter : JsonConverter
     {
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
         /// </summary>
         /// <param name="objectType">The type to convert to.</param>
-        public override bool CanConvert(Type objectType) => objectType == typeof(ManagementAsset);
+        public override bool CanConvert(Type objectType) => objectType == typeof(File);
 
         /// <summary>
         /// Reads the JSON representation of the object.
@@ -34,16 +33,27 @@ namespace Contentful.Core.Configuration
                 return null;
             }
 
-            var asset = new ManagementAsset();
-
             var jObject = JObject.Load(reader);
 
-            asset.Title = jObject.SelectToken("$.fields.title")?.ToObject<Dictionary<string, string>>();
-            asset.Description = jObject.SelectToken("$.fields.description")?.ToObject<Dictionary<string, string>>();
-            asset.Files = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
-            asset.SystemProperties = jObject.SelectToken("$.sys")?.ToObject<SystemProperties>();
+            var file = new File();
+            file.Details = jObject["details"]?.ToObject<FileDetails>();
+            file.ContentType = jObject["contentType"]?.ToString();
+            file.FileName = jObject["fileName"]?.ToString();
+            file.Url = jObject["url"]?.ToString();
 
-            return asset;
+            if (jObject["upload"] != null)
+            {
+                if (jObject["upload"].Type == JTokenType.Object)
+                {
+                    file.UploadReference = jObject["upload"].ToObject<SystemProperties>();
+                }
+                else
+                {
+                    file.UploadUrl = jObject["upload"].ToString();
+                }
+            }
+
+            return file;
         }
 
         /// <summary>
@@ -57,10 +67,16 @@ namespace Contentful.Core.Configuration
             if (value == null)
                 return;
 
-            var asset = value as ManagementAsset;
+            var file = value as File;
 
-            serializer.Serialize(writer, new { sys = asset.SystemProperties,
-                fields = new { title = asset.Title, description = asset.Description, file = asset.Files } });
+            serializer.Serialize(writer, new
+            {
+                file.Details, 
+                file.ContentType,
+                file.FileName,
+                file.Url,
+                Upload = file.UploadReference
+            });
         }
     }
 }
