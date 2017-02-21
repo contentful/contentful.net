@@ -1666,6 +1666,14 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Uploads an array of bytes and creates an asset in Contentful as well as processing that asset.
+        /// </summary>
+        /// <param name="asset">The asset to create</param>
+        /// <param name="bytes">The bytes to upload.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="ManagementAsset"/>.</returns>
         public async Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var upload = await UploadFile(bytes, spaceId, cancellationToken);

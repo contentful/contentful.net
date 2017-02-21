@@ -73,5 +73,6 @@ namespace Contentful.Core
         Task<SystemProperties> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
         Task<SystemProperties> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
