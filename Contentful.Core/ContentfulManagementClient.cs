@@ -217,7 +217,7 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentType.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { name = contentType.Name, fields = contentType.Fields }), cancellationToken).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new { name = contentType.Name, displayField = contentType.DisplayField, fields = contentType.Fields }), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
