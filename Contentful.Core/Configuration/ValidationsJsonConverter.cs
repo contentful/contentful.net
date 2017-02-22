@@ -54,7 +54,7 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject.TryGetValue("in", out jToken))
             {
-                return new InValuesValidator(jToken.Value<List<string>>(), jsonObject["message"]?.ToString());
+                return new InValuesValidator(jToken.Values<string>(), jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("linkMimetypeGroup", out jToken))
@@ -65,7 +65,7 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject.TryGetValue("linkContentType", out jToken))
             {
-                return new LinkContentTypeValidator(jToken.Value<List<string>>(), jsonObject["message"]?.ToString());
+                return new LinkContentTypeValidator(jToken.Values<string>(), jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("regexp", out jToken))

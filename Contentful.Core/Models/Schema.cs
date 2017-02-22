@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contentful.Core.Models.Management;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,5 +20,10 @@ namespace Contentful.Core.Models
         /// Specifies what type of links are allowed in the array.
         /// </summary>
         public string LinkType { get; set; }
+
+        /// <summary>
+        /// The validations that should be applied to the items in the array.
+        /// </summary>
+        public List<IFieldValidator> Validations { get; set; }
     }
 }
