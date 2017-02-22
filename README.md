@@ -1,3 +1,5 @@
+![build status](https://travis-ci.com/contentful/contentful.net.svg?token=Pyo2hEQ4sLp3x19cTNf6&branch=master)
+
 # contentful.net
 
 [https://www.contentful.com][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
