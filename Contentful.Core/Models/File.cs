@@ -10,7 +10,6 @@ namespace Contentful.Core.Models
     /// <summary>
     /// Represents information about the actual binary file of an <see cref="Asset"/>.
     /// </summary>
-    [JsonConverter(typeof(FileJsonConverter))]
     public class File
     {
         /// <summary>
@@ -28,10 +27,12 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The url to upload this file from.
         /// </summary>
+        [JsonProperty("upload")]
         public string UploadUrl { get; set; }
         /// <summary>
         /// A reference to a SystemProperties metadata object with a type of upload.
         /// </summary>
+        [JsonProperty("uploadFrom")]
         public SystemProperties UploadReference { get; set; }
         /// <summary>
         /// Detailed information about the file stored by Contentful.
