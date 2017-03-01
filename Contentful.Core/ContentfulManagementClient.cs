@@ -1643,7 +1643,10 @@ namespace Contentful.Core
         /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
         public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", new ByteArrayContent(bytes), cancellationToken).ConfigureAwait(false);
+            var byteArrayContent = new ByteArrayContent(bytes);
+            byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+
+            var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", byteArrayContent, cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
