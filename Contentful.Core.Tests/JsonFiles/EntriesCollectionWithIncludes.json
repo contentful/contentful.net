@@ -177,7 +177,14 @@
                 "id": "EntryId1"
               }
             }
-          ]
+          ],
+          "test": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "Entry47"
+            }
+          }
         }
       },
       {
@@ -269,6 +276,44 @@
               "id": "SpaceId"
             }
           },
+          "id": "Entry47",
+          "type": "Entry",
+          "createdAt": "2017-02-10T12:34:15.614Z",
+          "updatedAt": "2017-02-10T12:34:15.614Z",
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "testagain"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "field1": "bdbd",
+          "field2": {
+            "lon": 15.5126953125,
+            "lat": 49.56886849239747
+          },
+          "field4": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "Asset47"
+            }
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "SpaceId"
+            }
+          },
           "id": "EntryId4",
           "type": "Entry",
           "createdAt": "2016-11-15T07:35:13.197Z",
@@ -327,6 +372,38 @@
             },
             "fileName": "lewis-carroll-1.jpg",
             "contentType": "image/jpeg"
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "SpaceId"
+            }
+          },
+          "id": "Asset47",
+          "type": "Asset",
+          "createdAt": "2017-02-10T12:34:00.053Z",
+          "updatedAt": "2017-02-10T12:34:00.053Z",
+          "revision": 1,
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "contentful wyam logo",
+          "file": {
+            "url": "//images.contentful.com/SpaceId/123/342/contentful_wyam_logo.png",
+            "details": {
+              "size": 13573,
+              "image": {
+                "width": 142,
+                "height": 142
+              }
+            },
+            "fileName": "contentful_wyam_logo.png",
+            "contentType": "image/png"
           }
         }
       },

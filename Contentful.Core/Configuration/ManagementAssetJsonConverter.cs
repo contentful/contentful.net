@@ -59,7 +59,8 @@ namespace Contentful.Core.Configuration
 
             var asset = value as ManagementAsset;
 
-            serializer.Serialize(writer, new { sys = asset.SystemProperties, fields = new { title = asset.Title, description = asset.Description, file = asset.Files } });
+            serializer.Serialize(writer, new { sys = asset.SystemProperties,
+                fields = new { title = asset.Title, description = asset.Description, file = asset.Files } });
         }
     }
 }

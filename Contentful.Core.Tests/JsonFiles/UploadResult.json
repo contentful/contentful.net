@@ -1,0 +1,22 @@
+﻿{
+  "sys": {
+    "type": "Upload",
+    "createdAt": "2017-01-03",
+    "expiresAt": "2017-01-04",
+    "id": "666",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "space-id"
+      },
+      "createdBy": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "some-fool"
+        }
+      }
+    }
+  }
+}

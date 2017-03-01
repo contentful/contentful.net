@@ -183,6 +183,7 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             IEnumerable<T> entries;
+            
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             var includedLinks = json.SelectTokens("$.items..fields..sys").ToList();
@@ -195,6 +196,12 @@ namespace Contentful.Core
                 {
                     var replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
 
+                    if(replacementToken == null)
+                    {
+                        //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
+                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+                    }
+
                     if (replacementToken != null)
                     {
                         var grandParent = linkToken.Parent.Parent;
@@ -203,6 +210,7 @@ namespace Contentful.Core
                     }
                 }
             }
+
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {

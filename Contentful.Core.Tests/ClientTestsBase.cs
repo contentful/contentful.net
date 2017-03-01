@@ -71,6 +71,7 @@ namespace Contentful.Core.Tests
         public SystemProperties Sys { get; set; }
     }
 
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class TestModelWithIncludes
     {
         public string Title { get; set; }
@@ -91,5 +92,14 @@ namespace Contentful.Core.Tests
         public string LongThing { get; set; }
 
         public Asset ProfilePhoto { get; set; }
+        public List<TestModelWithIncludes> CreatedEntries { get; set; }
+        public TestNested Test { get; set; }
+    }
+
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class TestNested
+    {
+        public string Field1 { get; set; }
+        public Asset Field4 { get; set; }
     }
 }

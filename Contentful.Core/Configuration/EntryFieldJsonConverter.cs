@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 using Contentful.Core.Models;
+using System.Linq;
 
 namespace Contentful.Core.Configuration
 {
@@ -50,8 +51,9 @@ namespace Contentful.Core.Configuration
 
             var jObject = JObject.Load(reader);
             var fields = jObject.SelectToken("$.fields");
+            
 
-            if(fields == null)
+            if (fields == null)
             {
                 //We're here because the consumer is probably trying to serialize directly int objectType, just deserialize the jObject.
                 _canRead = false;
