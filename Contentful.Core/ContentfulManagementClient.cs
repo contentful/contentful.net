@@ -1677,7 +1677,10 @@ namespace Contentful.Core
         public async Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var upload = await UploadFile(bytes, spaceId, cancellationToken);
-
+            upload.SystemProperties.CreatedAt = null;
+            upload.SystemProperties.CreatedBy = null;
+            upload.SystemProperties.Space = null;
+            upload.SystemProperties.LinkType = "Upload";
             foreach (var file in asset.Files)
             {
                 file.Value.UploadReference = upload;
