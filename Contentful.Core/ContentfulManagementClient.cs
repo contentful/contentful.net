@@ -1693,7 +1693,7 @@ namespace Contentful.Core
 
             foreach (var file in createdAsset.Files) {
 
-                await ProcessAssetAsync(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, createdAsset.SystemProperties.Locale);
+                await ProcessAssetAsync(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, file.Key);
             }
 
             return createdAsset;
