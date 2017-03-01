@@ -2080,7 +2080,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
 
             //Act
-            var res = await _client.UploadFile(fileBytes);
+            var res = await _client.UploadFileAsync(fileBytes);
 
             //Assert
             Assert.IsType<UploadReference>(res);
@@ -2095,7 +2095,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
 
             //Act
-            var res = await _client.GetUpload("5wAqke81S2C1o32RvTODCl");
+            var res = await _client.GetUploadAsync("5wAqke81S2C1o32RvTODCl");
 
             Assert.IsType<UploadReference>(res);
             Assert.NotNull(res.SystemProperties.Id);
