@@ -1,4 +1,5 @@
 ﻿using Contentful.Core.Configuration;
+using Contentful.Core.Models.Management;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Contentful.Core.Models
         /// A reference to a SystemProperties metadata object with a type of upload.
         /// </summary>
         [JsonProperty("uploadFrom")]
-        public SystemProperties UploadReference { get; set; }
+        public UploadReference UploadReference { get; set; }
         /// <summary>
         /// Detailed information about the file stored by Contentful.
         /// </summary>

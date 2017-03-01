@@ -70,8 +70,8 @@ namespace Contentful.Core
         Task<SpaceMembership> UpdateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
         Task<Space> UpdateSpaceNameAsync(Space space, string organisation = null, CancellationToken cancellationToken = default(CancellationToken));
         Task<Space> UpdateSpaceNameAsync(string id, string name, int version, string organisation = null, CancellationToken cancellationToken = default(CancellationToken));
-        Task<SystemProperties> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
-        Task<SystemProperties> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
         Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
     }

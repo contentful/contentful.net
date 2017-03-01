@@ -2083,9 +2083,9 @@ namespace Contentful.Core.Tests
             var res = await _client.UploadFile(fileBytes);
 
             //Assert
-            Assert.IsType<SystemProperties>(res);
-            Assert.NotNull(res.Id);
-            Assert.Equal("666", res.Id);
+            Assert.IsType<UploadReference>(res);
+            Assert.NotNull(res.SystemProperties.Id);
+            Assert.Equal("666", res.SystemProperties.Id);
         }
 
         [Fact]
@@ -2097,9 +2097,9 @@ namespace Contentful.Core.Tests
             //Act
             var res = await _client.GetUpload("5wAqke81S2C1o32RvTODCl");
 
-            Assert.IsType<SystemProperties>(res);
-            Assert.NotNull(res.Id);
-            Assert.Equal("666", res.Id);
+            Assert.IsType<UploadReference>(res);
+            Assert.NotNull(res.SystemProperties.Id);
+            Assert.Equal("666", res.SystemProperties.Id);
         }
     }
 }

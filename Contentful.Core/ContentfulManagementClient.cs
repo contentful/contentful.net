@@ -1623,7 +1623,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task<SystemProperties> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
@@ -1631,7 +1631,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject["sys"].ToObject<SystemProperties>();
+            return jsonObject.ToObject<UploadReference>();
         }
 
         /// <summary>
@@ -1641,7 +1641,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
-        public async Task<SystemProperties> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", new ByteArrayContent(bytes), cancellationToken).ConfigureAwait(false);
 
@@ -1649,7 +1649,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject["sys"].ToObject<SystemProperties>();
+            return jsonObject.ToObject<UploadReference>();
         }
 
         /// <summary>
