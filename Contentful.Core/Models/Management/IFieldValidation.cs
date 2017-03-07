@@ -241,7 +241,7 @@ namespace Contentful.Core.Models.Management
         /// <returns>The object to serialize.</returns>
         public object CreateValidator()
         {
-            return new { size = new { min = Min, max = Max }, message = Message };
+            return new { range = new { min = Min, max = Max }, message = Message };
         }
     }
 
