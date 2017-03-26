@@ -34,6 +34,11 @@ namespace Contentful.Core
                 message = GetGenericErrorMessageForStatusCode(statusCode, sys.Id);
             }
 
+            if(errorDetails != null)
+            {
+                message += errorDetails.Errors.ToString();
+            }
+
             IEnumerable<string> headers = new List<string>();
 
             if(statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out headers))
