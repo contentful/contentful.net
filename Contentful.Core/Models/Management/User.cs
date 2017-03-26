@@ -16,10 +16,29 @@ namespace Contentful.Core.Models.Management
         [JsonProperty("sys")]
         public SystemProperties SystemProperties { get; set; }
 
+        /// <summary>
+        /// The first name of the user.
+        /// </summary>
         public string FirstName { get; set; }
+
+        /// <summary>
+        /// The last name of the user.
+        /// </summary>
         public string LastName { get; set; }
+
+        /// <summary>
+        /// The url of the users avatar.
+        /// </summary>
         public string AvatarUrl { get; set; }
+
+        /// <summary>
+        /// The email address of the user.
+        /// </summary>
         public string Email { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is activated.
+        /// </summary>
         public bool Activated { get; set; }
     }
 }

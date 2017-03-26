@@ -1,4 +1,5 @@
-﻿using Contentful.Core.Models.Management;
+﻿using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

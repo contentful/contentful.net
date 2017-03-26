@@ -17,9 +17,21 @@ namespace Contentful.Core
     /// </summary>
     public abstract class ContentfulClientBase
     {
+        /// <summary>
+        /// The HttpClient used for API calls.
+        /// </summary>
         protected HttpClient _httpClient;
+
+        /// <summary>
+        /// The <see cref="ContentfulOptions"/> for this ContentfulClient.
+        /// </summary>
         protected ContentfulOptions _options;
 
+        /// <summary>
+        /// Creates an exception for a failed API request.
+        /// </summary>
+        /// <param name="res">The HttpResonseMessage.</param>
+        /// <returns></returns>
         protected async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
         {
             var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -123,6 +135,15 @@ namespace Contentful.Core
             return "An error occurred.";
         }
 
+        /// <summary>
+        /// Sends an Http request.
+        /// </summary>
+        /// <param name="url">The url to send to.</param>
+        /// <param name="method">The HTTP method to use.</param>
+        /// <param name="authToken">The authorization token.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="content">The HTTP content.</param>
+        /// <returns></returns>
         protected async Task<HttpResponseMessage> SendHttpRequestAsync(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null)
         {
             var httpRequestMessage = new HttpRequestMessage()
@@ -147,6 +168,10 @@ namespace Contentful.Core
             return response;
         }
 
+        /// <summary>
+        /// Adds a Contentful version header to the request.
+        /// </summary>
+        /// <param name="version"></param>
         protected void AddVersionHeader(int? version)
         {
             if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
@@ -159,11 +184,19 @@ namespace Contentful.Core
             }
         }
 
+        /// <summary>
+        /// Removes a Contentful version header from the request.
+        /// </summary>
         protected void RemoveVersionHeader()
         {
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
         }
 
+        /// <summary>
+        /// Ensures an HttpResponse is successful.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
         protected async Task<HttpResponseMessage> EnsureSuccessfulResultAsync(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)

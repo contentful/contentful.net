@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using Contentful.Core.Search;
 using System.Threading;
+using Contentful.Core.Errors;
 
 namespace Contentful.Core
 {
@@ -27,7 +28,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="options">The options object used to retrieve the <see cref="ContentfulOptions"/> for this client.</param>
-        /// <exception cref="ArgumentException">The <param name="options">options</param> parameter was null or empty</exception>
+        /// <exception cref="ArgumentException">The <see name="options">options</see> parameter was null or empty</exception>
         public ContentfulClient(HttpClient httpClient, IOptions<ContentfulOptions> options)
         {
             _httpClient = httpClient;
@@ -90,7 +91,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
         public async Task<T> GetEntryAsync<T>(string entryId, QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await GetEntryAsync<T>(entryId, queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
@@ -106,7 +107,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        /// <exception cref="ArgumentException">The <param name="entryId">entryId</param> parameter was null or empty.</exception>
+        /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
         public async Task<T> GetEntryAsync<T>(string entryId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
@@ -277,7 +278,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
+        /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
         public async Task<Asset> GetAssetAsync(string assetId, QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await GetAssetAsync(assetId, queryBuilder?.Build(), cancellationToken);
@@ -291,7 +292,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        /// <exception cref="ArgumentException">The <param name="assetId">assetId</param> parameter was null or emtpy.</exception>
+        /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
         public async Task<Asset> GetAssetAsync(string assetId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
@@ -391,7 +392,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        /// <exception cref="ArgumentException">The <param name="contentTypeId">contentTypeId</param> parameter was null or empty</exception>
+        /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
         public async Task<ContentType> GetContentTypeAsync(string contentTypeId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
@@ -450,7 +451,7 @@ namespace Contentful.Core
         /// you can either pass the entire URL or only the syncToken query string parameter.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
-        /// <exception cref="ArgumentException">The <param name="nextSyncOrPageUrl">nextSyncOrPageUrl</param> parameter was null or empty</exception>
+        /// <exception cref="ArgumentException">The <see name="nextSyncOrPageUrl">nextSyncOrPageUrl</see> parameter was null or empty</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SyncResult> SyncNextResultAsync(string nextSyncOrPageUrl, CancellationToken cancellationToken = default(CancellationToken))
         {

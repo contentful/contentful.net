@@ -10,8 +10,17 @@ using Contentful.Core;
 
 namespace Contentful.AspNetCore
 {
+    /// <summary>
+    /// Extension methods for IServiceCollection.
+    /// </summary>
     public static class IServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds Contentful services to the IServiceCollection.
+        /// </summary>
+        /// <param name="services">The IServiceCollection.</param>
+        /// <param name="configuration">The IConfigurationRoot used to retrieve configuration from.</param>
+        /// <returns>The IServiceCollection.</returns>
         public static IServiceCollection AddContentful(this IServiceCollection services, IConfigurationRoot configuration)
         {
             services.AddOptions();

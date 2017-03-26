@@ -9,9 +9,21 @@ namespace Contentful.Core.Images
     /// </summary>
     public enum ImageFormat
     {
+        /// <summary>
+        /// Keeps the original image format.
+        /// </summary>
         Default,
+        /// <summary>
+        /// Turns the image into a JPG.
+        /// </summary>
         Jpg,
+        /// <summary>
+        /// Turns the image into a PNG.
+        /// </summary>
         Png,
+        /// <summary>
+        /// Turns the image into a WEBP.
+        /// </summary>
         Webp
     }
 }

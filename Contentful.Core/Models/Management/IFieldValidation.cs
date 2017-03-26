@@ -50,7 +50,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Initializes a new instance of <see cref="LinkContentTypeValidator"/>.
         /// </summary>
-        /// <param name="contentTypeIds">The content types to restrict to.</param>
+        /// <param name="contentTypes">The content types to restrict to.</param>
         /// <param name="message">The custom error message for this validation.</param>
         public LinkContentTypeValidator(IEnumerable<ContentType> contentTypes, string message = null) : this(contentTypes.Select(c => c.SystemProperties.Id), message)
         {

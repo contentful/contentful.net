@@ -41,7 +41,7 @@ namespace Contentful.Core.Models
         public IEnumerable<T> Items { get; set; }
 
         /// <summary>
-        /// The <see cref="IEnumerable{Entry{dynamic}}" /> of included referenced entries
+        /// The <see cref="IEnumerable{Entry}" /> of included referenced entries
         /// </summary>
         public IEnumerable<Entry<dynamic>> IncludedEntries { get; set; }
 

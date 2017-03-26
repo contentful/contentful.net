@@ -8,8 +8,18 @@ using System.Text;
 
 namespace Contentful.Core.Search
 {
+    /// <summary>
+    /// Helper methods to get strong typing for querybuilders.
+    /// </summary>
+    /// <typeparam name="T">The type to get strong typing for.</typeparam>
     public static class FieldHelpers<T>
     {
+        /// <summary>
+        /// Gets the name of the provided property expression.
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="selector">The selector expression.</param>
+        /// <returns>The name of the property in lower casing.</returns>
         public static string GetPropertyName<U>(Expression<Func<T, U>> selector)
         {
             var member = selector.Body as MemberExpression;

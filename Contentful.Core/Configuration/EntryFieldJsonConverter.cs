@@ -32,6 +32,9 @@ namespace Contentful.Core.Configuration
             }
         }
 
+        /// <summary>
+        /// Whether or not this JsonConverter can write.
+        /// </summary>
         public override bool CanWrite => false;
 
         /// <summary>

@@ -13,16 +13,30 @@ using Newtonsoft.Json;
 
 namespace Contentful.AspNetCore.MiddleWare
 {
+    /// <summary>
+    /// Middleware to handle Contentful webhooks.
+    /// </summary>
     public class WebhookMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> _consumers;
         private readonly Func<HttpContext, bool> _webhookAuthorization;
 
+        /// <summary>
+        /// Creates a new instance of WebhookMiddleware.
+        /// </summary>
+        /// <param name="next">The next delegate to be called in the middleware pipeline.</param>
+        /// <param name="consumers">The webhook consumers to be configured.</param>
         public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> consumers): this(next, consumers, null)
         {
         }
 
+        /// <summary>
+        /// Creates a new instance of WebhookMiddleware.
+        /// </summary>
+        /// <param name="next">The next delegate to be called in the middleware pipeline.</param>
+        /// <param name="consumers">The webhook consumers to be configured.</param>
+        /// <param name="webhookAuthorization">The authorization to use for the webhooks.</param>
         public WebhookMiddleware(RequestDelegate next, ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> consumers, Func<HttpContext, bool> webhookAuthorization)
         {
             _next = next;
@@ -30,6 +44,11 @@ namespace Contentful.AspNetCore.MiddleWare
             _webhookAuthorization = webhookAuthorization;
         }
 
+        /// <summary>
+        /// Invokes the middleware.
+        /// </summary>
+        /// <param name="context">The HttpContext in which the middleware is called.</param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
             var headers = context.Request.Headers;
@@ -133,18 +152,49 @@ namespace Contentful.AspNetCore.MiddleWare
         }
     }
 
+    /// <summary>
+    /// Interface for building a number of webhook consumers.
+    /// </summary>
     public interface IConsumerBuilder
     {
+        /// <summary>
+        /// The authorization for the middleware. Will be called before any consumer is executed.
+        /// </summary>
         Func<HttpContext, bool> WebhookAuthorization { get; set; }
+
+        /// <summary>
+        /// Adds a consumer to the middleware pipeline.
+        /// </summary>
+        /// <typeparam name="T">The type the consumer expects.</typeparam>
+        /// <param name="name">The name of the webhook. * can be used as a wildcard.</param>
+        /// <param name="topicType">The type of topics to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="topicAction">The actions to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="consumer">The consumer that will be called if the name, action and topic matches.</param>
+        /// <param name="preRequestVerification">Consumer specific verification of the request.</param>
         void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null);
     }
 
+    /// <summary>
+    /// Builds a number of consumers for the webhook middleware.
+    /// </summary>
     public class ConsumerBuilder : IConsumerBuilder
     {
         private readonly List<Tuple<Tuple<string, string, string>, Delegate, Func<HttpContext, bool>>> _consumers = new List<Tuple<Tuple<string, string, string>, Delegate, Func<HttpContext, bool>>>();
 
+        /// <summary>
+        /// The authorization for the middleware. Will be called before any consumer is executed.
+        /// </summary>
         public Func<HttpContext, bool> WebhookAuthorization { get; set; }
 
+        /// <summary>
+        /// Adds a consumer to the middleware pipeline.
+        /// </summary>
+        /// <typeparam name="T">The type the consumer expects.</typeparam>
+        /// <param name="name">The name of the webhook. * can be used as a wildcard.</param>
+        /// <param name="topicType">The type of topics to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="topicAction">The actions to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="consumer">The consumer that will be called if the name, action and topic matches.</param>
+        /// <param name="preRequestVerification">Consumer specific verification of the request.</param>
         public void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null)
         {
             var tuple = Tuple.Create(name, topicType, topicAction);
@@ -152,14 +202,27 @@ namespace Contentful.AspNetCore.MiddleWare
             _consumers.Add(Tuple.Create(tuple, consumerDelegate, preRequestVerification));
         }
         
+        /// <summary>
+        /// Helper method to turn the list of consumers into a lookup.
+        /// </summary>
+        /// <returns>The lookup.</returns>
         public ILookup<Tuple<string, string, string>, Tuple<Delegate, Func<HttpContext, bool>>> Build()
         {
             return _consumers.ToLookup(x => x.Item1, x => Tuple.Create(x.Item2, x.Item3));
         }
     }
 
+    /// <summary>
+    /// Extensions for the <see cref="WebhookMiddleware"/>.
+    /// </summary>
     public static class WebhookMiddlewareExtensions
     {
+        /// <summary>
+        /// Adds the Contentful webhook middleware to the middleware pipeline.
+        /// </summary>
+        /// <param name="builder">The IApplicationBuilder.</param>
+        /// <param name="configureConsumers">The consumers that will consume incoming webhook calls.</param>
+        /// <returns>The IApplicationBuilder.</returns>
         public static IApplicationBuilder UseContentfulWebhooks(this IApplicationBuilder builder,
             Action<IConsumerBuilder> configureConsumers)
         {
@@ -175,6 +238,13 @@ namespace Contentful.AspNetCore.MiddleWare
             return builder.UseMiddleware<WebhookMiddleware>(consumerBuilder.Build(), consumerBuilder.WebhookAuthorization);
         }
 
+        /// <summary>
+        /// Helper method to verify wether a type and action matches a specific topic.
+        /// </summary>
+        /// <param name="topic">The topic to match.</param>
+        /// <param name="topicType">The type to match to the topic.</param>
+        /// <param name="topicAction">The action to match to the topic.</param>
+        /// <returns>Wether the topic matches or not.</returns>
         public static bool TopicMatches(this string topic, string topicType, string topicAction)
         {
             if(topic == null)

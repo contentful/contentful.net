@@ -15,6 +15,9 @@ namespace Contentful.Core.Search
     /// </summary>
     public class QueryBuilder<T>
     {
+        /// <summary>
+        /// The querystring values.
+        /// </summary>
         protected readonly List<KeyValuePair<string, string>> _querystringValues = new List<KeyValuePair<string, string>>();
 
         /// <summary>
@@ -93,7 +96,7 @@ namespace Contentful.Core.Search
         /// <summary>
         /// Adds a restriction parameter to only return resources with a location field within the specified area.
         /// </summary>
-        /// <param name="field">The location field to check if it is within the bounding box.</param>
+        /// <param name="selector">The location field to check if it is within the bounding box.</param>
         /// <param name="latitude1">The latitude of the bottom left corner of the rectangle.</param>
         /// <param name="longitude1">The longitude of the bottom left corner of the rectangle.</param>
         /// <param name="latitude2">The latitude of the top right corner of the rectangle.</param>
@@ -126,8 +129,8 @@ namespace Contentful.Core.Search
         /// Adds a restriction parameter to only return resources with a location field within a certain radius of a coordinate.
         /// </summary>
         /// <param name="selector">The expression of the location field to check if it is within the radius.</param>
-        /// <param name="latitude">The latitude of the centre of the bounding circle.</param>
-        /// <param name="longitude">The longitude of the centre of the bounding circle.</param>
+        /// <param name="latitude1">The latitude of the centre of the bounding circle.</param>
+        /// <param name="longitude1">The longitude of the centre of the bounding circle.</param>
         /// <param name="radius">The radius in kilometers of the bounding circle.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> WithinRadius<U>(Expression<Func<T, U>> selector, string latitude1, string longitude1, float radius)
@@ -258,7 +261,7 @@ namespace Contentful.Core.Search
         /// Only applicable for array fields.
         /// </summary>
         /// <param name="field">The field that must exactly match all the values.</param>
-        /// <param name="value">The values that the field must inlcude all of.</param>
+        /// <param name="values">The values that the field must inlcude all of.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldEqualsAll(string field, IEnumerable<string> values)
         {
@@ -270,7 +273,7 @@ namespace Contentful.Core.Search
         /// Only applicable for array fields.
         /// </summary>
         /// <param name="selector">The expression of the field that must exactly match all the values.</param>
-        /// <param name="value">The values that the field must inlcude all of.</param>
+        /// <param name="values">The values that the field must inlcude all of.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldEqualsAll<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
@@ -283,7 +286,7 @@ namespace Contentful.Core.Search
         /// Adds a restriction that a certain field must include at least one of the specified values. 
         /// </summary>
         /// <param name="field">The field that must exactly match at least one of the specified values.</param>
-        /// <param name="value">The values that the field must include at least one of.</param>
+        /// <param name="values">The values that the field must include at least one of.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldIncludes(string field, IEnumerable<string> values)
         {
@@ -293,8 +296,8 @@ namespace Contentful.Core.Search
         /// <summary>
         /// Adds a restriction that a certain field must include at least one of the specified values. 
         /// </summary>
-        /// <param name="field">The expression of the field that must exactly match at least one of the specified values.</param>
-        /// <param name="value">The values that the field must include at least one of.</param>
+        /// <param name="selector">The expression of the field that must exactly match at least one of the specified values.</param>
+        /// <param name="values">The values that the field must include at least one of.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldIncludes<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
@@ -307,7 +310,7 @@ namespace Contentful.Core.Search
         /// Adds a restriction that a certain field must not include any of the specified values. 
         /// </summary>
         /// <param name="field">The field that must not contain any of the specified values.</param>
-        /// <param name="value">The values that the field must not include any of.</param>
+        /// <param name="values">The values that the field must not include any of.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldExcludes(string field, IEnumerable<string> values)
         {
@@ -318,7 +321,7 @@ namespace Contentful.Core.Search
         /// Adds a restriction that a certain field must not include any of the specified values. 
         /// </summary>
         /// <param name="selector">The expression of the field that must not contain any of the specified values.</param>
-        /// <param name="value">The values that the field must not include any of.</param>
+        /// <param name="values">The values that the field must not include any of.</param>
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> FieldExcludes<U>(Expression<Func<T, U>> selector, IEnumerable<string> values)
         {
@@ -474,6 +477,13 @@ namespace Contentful.Core.Search
             return FieldMatches(memberName, value);
         }
 
+        /// <summary>
+        /// Adds the restriction for a specific field, value and operator.
+        /// </summary>
+        /// <param name="field">The field to restrict.</param>
+        /// <param name="value">The value to restrict by.</param>
+        /// <param name="operator">The operator to apply restriction with.</param>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         protected QueryBuilder<T> AddFieldRestriction(string field, string value, string @operator)
         {
             _querystringValues.Add(new KeyValuePair<string, string>($"{field}{@operator}", value));

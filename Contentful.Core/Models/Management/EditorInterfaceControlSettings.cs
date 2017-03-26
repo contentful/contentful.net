@@ -59,10 +59,22 @@ namespace Contentful.Core.Models.Management
         public string ClockFormat { get; set; }
     }
 
+    /// <summary>
+    /// Enumeration of available formats for a datetime editorinterface.
+    /// </summary>
     public enum EditorInterfaceDateFormat
     {
+        /// <summary>
+        /// Time and date.
+        /// </summary>
         timeZ,
+        /// <summary>
+        /// Time only.
+        /// </summary>
         time,
+        /// <summary>
+        /// Date only.
+        /// </summary>
         dateonly
     }
 
