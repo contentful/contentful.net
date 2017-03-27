@@ -2114,7 +2114,112 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(1, res.Total);
             Assert.Equal(1, res.Count());
-            Assert.Equal("Trul", res.First().Name);
+            Assert.Equal("trul", res.First().Name);
+        }
+
+        [Fact]
+        public async Task GetExtensionShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+
+            //Act
+            var res = await _client.GetExtensionAsync("B");
+
+            //Assert
+            Assert.Equal("trul", res.Name);
+            Assert.Equal(2, res.FieldTypes.Count);
+            Assert.Collection(res.FieldTypes,
+               (t) => Assert.Equal("Symbol", t),
+               (t) => Assert.Equal("Text", t));
+            Assert.Equal("https://robertlinde.se", res.Src);
+        }
+
+        [Fact]
+        public async Task CreateExtensionShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var ext = new UiExtension()
+            {
+                Name = "trul"
+            };
+
+            //Act
+            var res = await _client.CreateExtensionAsync(ext);
+
+            //Assert
+            Assert.Equal("trul", res.Name);
+            Assert.Equal(2, res.FieldTypes.Count);
+            Assert.Collection(res.FieldTypes,
+               (t) => Assert.Equal("Symbol", t),
+               (t) => Assert.Equal("Text", t));
+            Assert.Equal("https://robertlinde.se", res.Src);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateExtensionShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var ext = new UiExtension()
+            {
+                SystemProperties = new SystemProperties
+                {
+                    Id = "bob"
+                },
+                Name = "trul"
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateExtensionAsync(ext);
+
+            //Assert
+            Assert.Equal("trul", res.Name);
+            Assert.Equal(2, res.FieldTypes.Count);
+            Assert.Collection(res.FieldTypes,
+               (t) => Assert.Equal("Symbol", t),
+               (t) => Assert.Equal("Text", t));
+            Assert.Equal("https://robertlinde.se", res.Src);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateExtensionShouldThrowIfNoIdSet()
+        {
+            //Arrange
+            var ext = new UiExtension()
+            {
+                Name = "trul"
+            };
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateExtensionAsync(ext));
+
+            //Assert
+            Assert.Equal($"The id of the extension must be set.{Environment.NewLine}Parameter name: extension", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("552")]
+        [InlineData("wer324")]
+        [InlineData("xn3315af")]
+        public async Task DeletingExtensionShouldCallCorrectUrl(string id)
+        {
+            //Arrange
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteExtensionAsync(id);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/extensions/{id}", requestUrl);
         }
     }
 }

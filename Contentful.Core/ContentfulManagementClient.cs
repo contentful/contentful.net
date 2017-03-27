@@ -1742,7 +1742,7 @@ namespace Contentful.Core
                     {
                         src = extension.Src,
                         name = extension.Name,
-                        fieldTypes = extension.FieldTypes.Select(c => new { type = c }),
+                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
                         srcDoc = extension.SrcDoc,
                         sidebar = extension.Sidebar
                     }
@@ -1782,7 +1782,7 @@ namespace Contentful.Core
                     {
                         src = extension.Src,
                         name = extension.Name,
-                        fieldTypes = extension.FieldTypes.Select(c => new { type = c }),
+                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
                         srcDoc = extension.SrcDoc,
                         sidebar = extension.Sidebar
                     }
