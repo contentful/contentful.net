@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Contentful.Core.Configuration
@@ -48,7 +49,7 @@ namespace Contentful.Core.Configuration
             extension.Src = extensionProperties["src"]?.ToString();
             extension.Name = extensionProperties["name"]?.ToString();
             extension.Sidebar = extensionProperties["sidebar"]?.Value<bool>() ?? false;
-            extension.FieldTypes = extensionProperties["fieldTypes"]?.Value<List<string>>();
+            extension.FieldTypes = extensionProperties["fieldTypes"]?.Value<List<dynamic>>()?.Select(c => c.type.ToString())?.Cast<string>().ToList();
             extension.SrcDoc = extensionProperties["srcDoc"]?.ToString();
 
             return extension;
