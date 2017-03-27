@@ -2101,5 +2101,20 @@ namespace Contentful.Core.Tests
             Assert.NotNull(res.SystemProperties.Id);
             Assert.Equal("666", res.SystemProperties.Id);
         }
+
+        [Fact]
+        public async Task GetExtensionsShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtensionsCollection.json");
+
+            //Act
+            var res = await _client.GetAllExtensionsAsync();
+
+            //Assert
+            Assert.Equal(1, res.Total);
+            Assert.Equal(1, res.Count());
+            Assert.Equal("Trul", res.First().Name);
+        }
     }
 }
