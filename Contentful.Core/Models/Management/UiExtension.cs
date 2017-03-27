@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Contentful.Core.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Encapsulates information about a Contentful Ui Extension
     /// </summary>
+    [JsonConverter(typeof(ExtensionJsonConverter))]
     public class UiExtension : IContentfulResource
     {
         /// <summary>
