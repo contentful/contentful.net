@@ -1735,7 +1735,18 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<UiExtension> CreateExtensionAsync(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions", ConvertObjectToJsonStringContent(extension), cancellationToken).ConfigureAwait(false);
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions",
+                ConvertObjectToJsonStringContent(new
+                {
+                    extension = new
+                    {
+                        src = extension.Src,
+                        name = extension.Name,
+                        fieldTypes = extension.FieldTypes,
+                        srcDoc = extension.SrcDoc,
+                        sidebar = extension.Sidebar
+                    }
+                }), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
@@ -1765,7 +1776,17 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions/{extension.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(extension), cancellationToken).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new
+                {
+                    extension = new
+                    {
+                        src = extension.Src,
+                        name = extension.Name,
+                        fieldTypes = extension.FieldTypes,
+                        srcDoc = extension.SrcDoc,
+                        sidebar = extension.Sidebar
+                    }
+                }), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
