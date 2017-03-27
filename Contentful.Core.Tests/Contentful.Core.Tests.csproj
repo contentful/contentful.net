@@ -7,6 +7,8 @@
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAndLocales.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAuthor.json" />
+    <EmbeddedResource Include="JsonFiles\SampleExtension.json" />
+    <EmbeddedResource Include="JsonFiles\SampleExtensionsCollection.json" />
     <EmbeddedResource Include="JsonFiles\UploadResult.json" />
     <EmbeddedResource Include="JsonFiles\ErrorRateLimit.json" />
     <EmbeddedResource Include="JsonFiles\LocalesCollection.json" />

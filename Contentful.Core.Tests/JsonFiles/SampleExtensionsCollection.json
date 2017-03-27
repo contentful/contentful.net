@@ -1,0 +1,54 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 0,
+  "items": [
+    {
+      "extension": {
+        "src": "https://robertlinde.se",
+        "name": "trul",
+        "fieldTypes": [
+          {
+            "type": "Symbol"
+          },
+          {
+            "type": "Text"
+          }
+        ],
+        "srcDoc": null,
+        "sidebar": false
+      },
+      "sys": {
+        "id": "14wQugcvz8Y2I8ISaggWSO",
+        "type": "Extension",
+        "version": 1,
+        "createdAt": "2017-03-27T11:56:19.830Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "gw484zixu8ng"
+          }
+        },
+        "updatedAt": "2017-03-27T11:56:19.831Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0w7AzFDgzUA8MWo79R1Qf7"
+          }
+        }
+      }
+    }
+  ]
+}

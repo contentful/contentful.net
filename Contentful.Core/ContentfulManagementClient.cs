@@ -1704,6 +1704,144 @@ namespace Contentful.Core
             return createdAsset;
         }
 
+        /// <summary>
+        /// Gets a collection of all <see cref="UiExtension"/> for a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<UiExtension>> GetAllExtensionsAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<UiExtension>>();
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<UiExtension>());
+            collection.Items = keys;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates a UiExtension in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="extension">The UI extension to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<UiExtension> CreateExtensionAsync(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions",
+                ConvertObjectToJsonStringContent(new
+                {
+                    extension = new
+                    {
+                        src = extension.Src,
+                        name = extension.Name,
+                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
+                        srcDoc = extension.SrcDoc,
+                        sidebar = extension.Sidebar
+                    }
+                }), cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<UiExtension>();
+        }
+
+        /// <summary>
+        /// Creates or updates a UI extension. Updates if an extension with the same id already exists.
+        /// </summary>
+        /// <param name="extension">The <see cref="UiExtension"/> to create or update. **Remember to set the id property.**</param>
+        /// <param name="spaceId">The id of the space to create the content type in. Will default to the one set when creating the client.</param>
+        /// <param name="version">The last version known of the extension. Must be set for existing extensions. Should be null if one is created.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="UiExtension"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<UiExtension> CreateOrUpdateExtensionAsync(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (extension.SystemProperties?.Id == null)
+            {
+                throw new ArgumentException("The id of the extension must be set.", nameof(extension));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await PutAsync(
+                $"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions/{extension.SystemProperties.Id}",
+                ConvertObjectToJsonStringContent(new
+                {
+                    extension = new
+                    {
+                        src = extension.Src,
+                        name = extension.Name,
+                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
+                        srcDoc = extension.SrcDoc,
+                        sidebar = extension.Sidebar
+                    }
+                }), cancellationToken).ConfigureAwait(false);
+
+            RemoveVersionHeader();
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return json.ToObject<UiExtension>();
+        }
+
+        /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.UiExtension"/> for a space.
+        /// </summary>
+        /// <param name="extensionId">The id of the extension to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="extensionId">extensionId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<UiExtension> GetExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(extensionId))
+            {
+                throw new ArgumentException("The id of the extension must be set", nameof(extensionId));
+            }
+
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions/{extensionId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<UiExtension>();
+        }
+
+        /// <summary>
+        /// Deletes a <see cref="UiExtension"/> by the specified id.
+        /// </summary>
+        /// <param name="extensionId">The id of the extension.</param>
+        /// <param name="spaceId">The id of the space to delete the extension in. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
+        public async Task DeleteExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(extensionId))
+            {
+                throw new ArgumentException(nameof(extensionId));
+            }
+
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions/{extensionId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+        }
+
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken)
         {
             return await SendHttpRequestAsync(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content).ConfigureAwait(false);
