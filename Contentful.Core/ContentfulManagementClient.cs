@@ -443,6 +443,37 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Creates an <see cref="Entry{T}"/>.
+        /// </summary>
+        /// <param name="entry">The entry to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Entry{T}"/>.</returns>
+        public async Task<Entry<dynamic>> CreateEntryAsync(Entry<dynamic> entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException("The content type id must be set.", nameof(contentTypeId));
+            }
+
+            _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
+            _httpClient.DefaultRequestHeaders.Add("X-Contentful-Content-Type", contentTypeId);
+
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries",
+                ConvertObjectToJsonStringContent(new { fields = entry.Fields }), cancellationToken).ConfigureAwait(false);
+
+            _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
+
+            return updatedEntry;
+        }
+
+        /// <summary>
         /// Creates or updates an <see cref="Entry{T}"/>. Updates if an entry with the same id already exists.
         /// </summary>
         /// <param name="entry">The entry to create or update.</param>
@@ -450,7 +481,7 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry. Need only be set if you are creating a new entry.</param>
         /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns></returns>
+        /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
         public async Task<Entry<dynamic>> CreateOrUpdateEntryAsync(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entry.SystemProperties?.Id))
