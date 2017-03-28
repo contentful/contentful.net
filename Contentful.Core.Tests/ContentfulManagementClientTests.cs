@@ -668,6 +668,53 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task CreateEntryShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            var entry = new Entry<dynamic>();
+
+#pragma warning disable IDE0017 // Object initialization can be simplified
+            entry.Fields = new ExpandoObject();
+#pragma warning restore IDE0017 // Object initialization can be simplified
+            entry.Fields.field34 = new Dictionary<string, string>()
+            {
+                { "en-US", "bapple" }
+            };
+            var contentTypeHeader = "";
+            var contentSet = "";
+            var requestUrl = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            var res = await _client.CreateEntryAsync(entry, contentTypeId: "Ling Xiaoyu");
+            //Assert
+            Assert.Equal("Ling Xiaoyu", contentTypeHeader);
+            Assert.Equal("https://api.contentful.com/spaces/666/entries", requestUrl);
+            Assert.Contains(@"""field34"":{""en-US"":""bapple""}", contentSet);
+        }
+
+        [Fact]
+        public async Task CreateEntryShouldThrowIfContentTypeIsNotSet()
+        {
+            //Arrange
+            var entry = new Entry<dynamic>();
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEntryAsync(entry, contentTypeId: ""));
+            //Assert
+            Assert.Equal("The content type id must be set.\r\nParameter name: contentTypeId", ex.Message);
+        }
+
+        [Fact]
         public async Task GetEntryShouldThrowIfIdIsNotSet()
         {
             //Arrange
