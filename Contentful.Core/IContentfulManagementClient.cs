@@ -611,11 +611,11 @@ namespace Contentful.Core
         /// <param name="bytes">The bytes to upload.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created <see cref="ManagementAsset"/>.</returns>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         Task<ManagementAsset> UploadFileAndCreateAssetAsync(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Gets a collection of all <see cref="UiExtension"/> for a space.
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.UiExtension"/> for a space.
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
@@ -634,11 +634,11 @@ namespace Contentful.Core
         /// <summary>
         /// Creates or updates a UI extension. Updates if an extension with the same id already exists.
         /// </summary>
-        /// <param name="extension">The <see cref="UiExtension"/> to create or update. **Remember to set the id property.**</param>
+        /// <param name="extension">The <see cref="Contentful.Core.Models.Management.UiExtension"/> to create or update. **Remember to set the id property.**</param>
         /// <param name="spaceId">The id of the space to create the content type in. Will default to the one set when creating the client.</param>
         /// <param name="version">The last version known of the extension. Must be set for existing extensions. Should be null if one is created.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created or updated <see cref="UiExtension"/>.</returns>
+        /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         Task<UiExtension> CreateOrUpdateExtensionAsync(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
@@ -651,7 +651,7 @@ namespace Contentful.Core
         Task<UiExtension> GetExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Deletes a <see cref="UiExtension"/> by the specified id.
+        /// Deletes a <see cref="Contentful.Core.Models.Management.UiExtension"/> by the specified id.
         /// </summary>
         /// <param name="extensionId">The id of the extension.</param>
         /// <param name="spaceId">The id of the space to delete the extension in. Will default to the one set when creating the client.</param>
