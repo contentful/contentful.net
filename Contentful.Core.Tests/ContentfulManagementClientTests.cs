@@ -711,7 +711,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEntryAsync(entry, contentTypeId: ""));
             //Assert
-            Assert.Equal("The content type id must be set.\r\nParameter name: contentTypeId", ex.Message);
+            Assert.Equal($"The content type id must be set.{Environment.NewLine}Parameter name: contentTypeId", ex.Message);
         }
 
         [Fact]
