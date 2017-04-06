@@ -5,8 +5,12 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
+    <EmbeddedResource Include="JsonFiles\TokensCollection.json" />
+    <EmbeddedResource Include="JsonFiles\RevokedToken.json" />
+    <EmbeddedResource Include="JsonFiles\GetToken.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAndLocales.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAuthor.json" />
+    <EmbeddedResource Include="JsonFiles\CreatedToken.json" />
     <EmbeddedResource Include="JsonFiles\SampleExtension.json" />
     <EmbeddedResource Include="JsonFiles\SampleExtensionsCollection.json" />
     <EmbeddedResource Include="JsonFiles\UploadResult.json" />

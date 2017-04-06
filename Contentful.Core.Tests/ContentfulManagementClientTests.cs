@@ -2268,5 +2268,79 @@ namespace Contentful.Core.Tests
             Assert.Equal(HttpMethod.Delete, requestMethod);
             Assert.Equal($"https://api.contentful.com/spaces/666/extensions/{id}", requestUrl);
         }
+
+        [Fact]
+        public async Task CreatingATokenShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"CreatedToken.json");
+            var token = new ManagementToken()
+            {
+                Name = "Brandao",
+                Scopes = new List<string>
+                {
+                    "content_management_manage"
+                }
+            };
+
+            //Act
+            var res = await _client.CreateManagementTokenAsync(token);
+
+            //Assert
+            Assert.Equal("My Token", res.Name);
+            Assert.Collection(res.Scopes, (c) => { Assert.Equal("content_management_manage", c); });
+            Assert.Equal("46d42a80f96db00393ffa867a753de126e658484dd8a20d209bcb7efcf3761b9", res.Token);
+        }
+
+        [Fact]
+        public async Task GettingATokenShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"GetToken.json");
+
+            //Act
+            var res = await _client.GetManagementTokenAsync("pop");
+
+            //Assert
+            Assert.Equal("My Token", res.Name);
+            Assert.Collection(res.Scopes, (c) => { Assert.Equal("content_management_read", c); });
+            Assert.Null(res.Token);
+            Assert.Null(res.RevokedAt);
+        }
+
+        [Fact]
+        public async Task GetTokensShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"TokensCollection.json");
+
+            //Act
+            var res = await _client.GetAllManagementTokensAsync();
+
+            //Assert
+            
+            Assert.Collection(res, (c) => {
+                Assert.Equal("content_management_manage", c.Scopes.First());
+                Assert.Equal(1, c.Scopes.Count);
+                Assert.Null(c.Token);
+                Assert.Equal("My Token", c.Name);
+            });
+        }
+
+        [Fact]
+        public async Task RevokingATokenShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"RevokedToken.json");
+
+            //Act
+            var res = await _client.RevokeManagementTokenAsync("pop");
+
+            //Assert
+            Assert.Equal("My Token", res.Name);
+            Assert.Collection(res.Scopes, (c) => { Assert.Equal("content_management_manage", c); });
+            Assert.Null(res.Token);
+            Assert.NotNull(res.RevokedAt);
+        }
     }
 }

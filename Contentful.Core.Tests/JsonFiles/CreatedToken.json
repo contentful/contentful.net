@@ -1,0 +1,14 @@
+﻿{
+  "sys": {
+    "type": "PersonalAccessToken",
+    "id": "exampletokenid",
+    "createdAt": "2015-05-18T11:29:46.809Z",
+    "updatedAt": "2015-05-18T11:29:46.809Z"
+  },
+  "name": "My Token",
+  "revokedAt": null,
+  "scopes": [
+    "content_management_manage"
+  ],
+  "token": "46d42a80f96db00393ffa867a753de126e658484dd8a20d209bcb7efcf3761b9"
+}
