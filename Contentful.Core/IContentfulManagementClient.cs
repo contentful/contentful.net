@@ -657,5 +657,38 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to delete the extension in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         Task DeleteExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Creates a CMA management token that can be used to access the Contentful Management API.
+        /// </summary>
+        /// <param name="token">The token to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
+        Task<ManagementToken> CreateManagementTokenAsync(ManagementToken token, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.ManagementToken"/> for a user. **Note that the actual token will not be part of the response. 
+        /// It is only available directly after creation of a token for security reasons.**
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
+        Task<ContentfulCollection<ManagementToken>> GetAllManagementTokensAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.ManagementToken"/> for a user. **Note that the actual token will not be part of the response. 
+        /// It is only available directly after creation of a token for security reasons.**
+        /// </summary>
+        /// <param name="managementTokenId">The id of the management token to get.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
+        Task<ManagementToken> GetManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Revokes a single <see cref="Contentful.Core.Models.Management.ManagementToken"/> for a user.
+        /// </summary>
+        /// <param name="managementTokenId">The id of the management token to revoke.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The revoked <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
+        Task<ManagementToken> RevokeManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

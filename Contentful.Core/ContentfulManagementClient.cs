@@ -1834,7 +1834,7 @@ namespace Contentful.Core
         /// <param name="extensionId">The id of the extension to get.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="extensionId">extensionId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<UiExtension> GetExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
@@ -1872,6 +1872,100 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
         }
+
+
+        /// <summary>
+        /// Creates a CMA management token that can be used to access the Contentful Management API.
+        /// </summary>
+        /// <param name="token">The token to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementToken> CreateManagementTokenAsync(ManagementToken token, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await PostAsync($"{_baseUrl}users/me/access_tokens",
+                ConvertObjectToJsonStringContent(new
+                {
+                    name = token.Name,
+                    scopes = token.Scopes
+                }), cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ManagementToken>();
+        }
+
+        /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.ManagementToken"/> for a user. **Note that the actual token will not be part of the response. 
+        /// It is only available directly after creation of a token for security reasons.**
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokensAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await GetAsync($"{_baseUrl}users/me/access_tokens", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<ManagementToken>>();
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementToken>());
+            collection.Items = keys;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.ManagementToken"/> for a user.
+        /// </summary>
+        /// <param name="managementTokenId">The id of the management token to get.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="managementTokenId">managementTokenId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementToken> GetManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(managementTokenId))
+            {
+                throw new ArgumentException("The id of the token must be set", nameof(managementTokenId));
+            }
+
+            var res = await GetAsync($"{_baseUrl}users/me/access_tokens/{managementTokenId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ManagementToken>();
+        }
+
+        /// <summary>
+        /// Revokes a single <see cref="Contentful.Core.Models.Management.ManagementToken"/> for a user.
+        /// </summary>
+        /// <param name="managementTokenId">The id of the management token to revoke.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The revoked <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="managementTokenId">managementTokenId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementToken> RevokeManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(managementTokenId))
+            {
+                throw new ArgumentException("The id of the token must be set", nameof(managementTokenId));
+            }
+
+            var res = await PutAsync($"{_baseUrl}users/me/access_tokens/{managementTokenId}", null, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ManagementToken>();
+        }
+
 
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken)
         {
