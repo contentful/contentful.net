@@ -12,7 +12,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Allows read only access to the management API.
         /// </summary>
-        public const string Read = "content_management_read ";
+        public const string Read = "content_management_read";
 
         /// <summary>
         /// Allows full access to the management API.

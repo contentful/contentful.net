@@ -2288,7 +2288,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("My Token", res.Name);
-            Assert.Collection(res.Scopes, (c) => { Assert.Equal("content_management_manage", c); });
+            Assert.Collection(res.Scopes, (c) => { Assert.Equal(SystemManagementScopes.Manage, c); });
             Assert.Equal("46d42a80f96db00393ffa867a753de126e658484dd8a20d209bcb7efcf3761b9", res.Token);
         }
 
@@ -2303,7 +2303,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("My Token", res.Name);
-            Assert.Collection(res.Scopes, (c) => { Assert.Equal("content_management_read", c); });
+            Assert.Collection(res.Scopes, (c) => { Assert.Equal(SystemManagementScopes.Read, c); });
             Assert.Null(res.Token);
             Assert.Null(res.RevokedAt);
         }
@@ -2320,7 +2320,7 @@ namespace Contentful.Core.Tests
             //Assert
             
             Assert.Collection(res, (c) => {
-                Assert.Equal("content_management_manage", c.Scopes.First());
+                Assert.Equal(SystemManagementScopes.Manage, c.Scopes.First());
                 Assert.Equal(1, c.Scopes.Count);
                 Assert.Null(c.Token);
                 Assert.Equal("My Token", c.Name);
@@ -2338,7 +2338,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("My Token", res.Name);
-            Assert.Collection(res.Scopes, (c) => { Assert.Equal("content_management_manage", c); });
+            Assert.Collection(res.Scopes, (c) => { Assert.Equal(SystemManagementScopes.Manage, c); });
             Assert.Null(res.Token);
             Assert.NotNull(res.RevokedAt);
         }
