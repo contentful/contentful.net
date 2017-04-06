@@ -22,6 +22,7 @@ namespace Contentful.Core
     /// </summary>
     public class ContentfulManagementClient : ContentfulClientBase, IContentfulManagementClient
     {
+        private readonly string _directApiUrl = "https://api.contentful.com/";
         private readonly string _baseUrl = "https://api.contentful.com/spaces/";
         private readonly string _baseUploadUrl = "https://upload.contentful.com/spaces/";
 
@@ -1883,7 +1884,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ManagementToken> CreateManagementTokenAsync(ManagementToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await PostAsync($"{_baseUrl}users/me/access_tokens",
+            var res = await PostAsync($"{_directApiUrl}users/me/access_tokens",
                 ConvertObjectToJsonStringContent(new
                 {
                     name = token.Name,
@@ -1906,7 +1907,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokensAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await GetAsync($"{_baseUrl}users/me/access_tokens", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_directApiUrl}users/me/access_tokens", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
@@ -1933,7 +1934,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the token must be set", nameof(managementTokenId));
             }
 
-            var res = await GetAsync($"{_baseUrl}users/me/access_tokens/{managementTokenId}", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_directApiUrl}users/me/access_tokens/{managementTokenId}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
@@ -1957,7 +1958,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the token must be set", nameof(managementTokenId));
             }
 
-            var res = await PutAsync($"{_baseUrl}users/me/access_tokens/{managementTokenId}", null, cancellationToken).ConfigureAwait(false);
+            var res = await PutAsync($"{_directApiUrl}users/me/access_tokens/{managementTokenId}", null, cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
