@@ -1,0 +1,23 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 0,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "type": "PersonalAccessToken",
+        "id": "exampletokenid",
+        "createdAt": "2015-05-18T11:29:46.809Z",
+        "updatedAt": "2015-05-18T11:29:46.809Z"
+      },
+      "name": "My Token",
+      "revokedAt": null,
+      "scopes": [
+        "content_management_manage"
+      ]
+    }
+  ]
+}
