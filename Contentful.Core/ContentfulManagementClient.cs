@@ -1958,7 +1958,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the token must be set", nameof(managementTokenId));
             }
 
-            var res = await PutAsync($"{_directApiUrl}users/me/access_tokens/{managementTokenId}", null, cancellationToken).ConfigureAwait(false);
+            var res = await PutAsync($"{_directApiUrl}users/me/access_tokens/{managementTokenId}/revoked", null, cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
