@@ -1495,7 +1495,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailsShouldDeserializeCorrectly()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"webhookcalldetails.json");
+            _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
             //Act
             var res = await _client.GetWebHookCallDetailsAsync("b", "s");
 
@@ -1510,7 +1510,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailShouldThrowForWebHookIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"webhookcalldetails.json");
+            _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync("some", id));
@@ -1525,7 +1525,7 @@ namespace Contentful.Core.Tests
         public async Task WebHookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"webhookcalldetails.json");
+            _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
 
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync(id, "some"));

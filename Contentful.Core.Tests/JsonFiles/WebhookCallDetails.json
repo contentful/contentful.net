@@ -46,7 +46,7 @@
       "server": "cloudflare-nginx",
       "cf-ray": "306d4ff4a81f239c-IAD"
     },
-    "url": "https://robertlinde.se/"
+    "url": "https://robertlinde.se"
   },
   "statusCode": 403,
   "responseAt": "2016-11-24T13:47:21.715Z",

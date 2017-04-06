@@ -45,7 +45,7 @@
     <EmbeddedResource Include="JsonFiles\SampleSnapshot.json" />
     <EmbeddedResource Include="JsonFiles\WebhookHealth.json" />
     <EmbeddedResource Include="JsonFiles\WebhookCollection.json" />
-    <EmbeddedResource Include="JsonFiles\webhookcalldetails.json" />
+    <EmbeddedResource Include="JsonFiles\WebhookCallDetails.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk">
