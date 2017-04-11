@@ -270,6 +270,21 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithNestedAsset()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"NestedAsset.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<MainContainer>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.NotEqual(null, list[0].Items[0].Items[0].Media.File);
+            Assert.Equal(1, list.Count());
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithIncludesForAuthor()
         {
             //Arrange
