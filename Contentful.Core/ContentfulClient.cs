@@ -53,7 +53,7 @@ namespace Contentful.Core
         public ContentfulClient(HttpClient httpClient, ContentfulOptions options):
             this(httpClient, new OptionsWrapper<ContentfulOptions>(options))
         {
-            
+
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Contentful.Core
                 UsePreviewApi = usePreviewApi
             }))
         {
-            
+
         }
 
         /// <summary>
@@ -184,43 +184,23 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             IEnumerable<T> entries;
-            
+
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            var includedLinks = json.SelectTokens("$.items..fields..sys").ToList();
-            includedLinks.AddRange(json.SelectTokens("$.includes.Entry..fields..sys"));
-            //Walk through and add any included entries as direct links.
-            for (var i = includedLinks.Count - 1; i >= 0; i--)
+            HashSet<string> processedIds = new HashSet<string>();
+            foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
-                var linkToken = includedLinks[i];
-                if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
-                {
-                    var replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
-
-                    if(replacementToken == null)
-                    {
-                        //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
-                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
-                    }
-
-                    if (replacementToken != null)
-                    {
-                        var grandParent = linkToken.Parent.Parent;
-                        grandParent.RemoveAll();
-                        grandParent.Add(replacementToken.Children());
-                    }
-                }
+                ResolveLinks(json, item, processedIds);
             }
-
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                entries = json.SelectTokens("$..items[*]")
-                        .Select(t => t.ToObject<T>());
+                entries = json.SelectTokens("$.items[*]")
+                    .Select(t => t.ToObject<T>());
             }
             else
             {
-                var entryTokens = json.SelectTokens("$..items[*].fields");
+                var entryTokens = json.SelectTokens("$.items[*].fields");
 
                 //Move sys properties into the fields object to make serialization more logical on client
                 foreach (var token in entryTokens)
@@ -231,6 +211,48 @@ namespace Contentful.Core
                 entries = entryTokens.Select(t => t.ToObject<T>());
             }
             return entries;
+        }
+
+        private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds)
+        {
+            var id = ((JValue) entryToken.SelectToken("$.sys.id")).Value.ToString();
+            entryToken.Add("$id", new JValue(id));
+            processedIds.Add(id);
+            var links = entryToken.SelectTokens("$.fields..sys").ToList();
+
+            //Walk through and add any included entries as direct links.
+            for (var i = links.Count - 1; i >= 0; i--)
+            {
+                var linkToken = links[i];
+                var linkId = ((JValue)linkToken["id"]).Value.ToString();
+                JToken replacementToken = null;
+                if (processedIds.Contains(linkId))
+                {
+                    replacementToken = new JObject();
+                    replacementToken["$ref"] = linkId;
+                }
+                else if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
+                {
+                    replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+
+                    if (replacementToken == null)
+                    {
+                        //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
+                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+                    }
+                }
+                if (replacementToken != null)
+                {
+                    var grandParent = (JObject)linkToken.Parent.Parent;
+                    grandParent.RemoveAll();
+                    grandParent.Add(replacementToken.Children());
+
+                    if (!processedIds.Contains(linkId))
+                    {
+                        ResolveLinks(json, grandParent, processedIds);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -264,7 +286,7 @@ namespace Contentful.Core
 
 
             collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>());
-            
+
             collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>());
 
             return collection;
