@@ -102,4 +102,23 @@ namespace Contentful.Core.Tests
         public string Field1 { get; set; }
         public Asset Field4 { get; set; }
     }
+
+
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class MainContainer
+    {
+        public List<Container> Items { get; set; }
+    }
+
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class Container
+    {
+        public List<Item> Items { get; set; }
+    }
+
+    [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class Item
+    {
+        public Asset Media { get; set; }
+    }
 }
