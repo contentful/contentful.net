@@ -12,10 +12,10 @@
           "sys": {
             "type": "Link",
             "linkType": "Space",
-            "id": "0123456789"
+            "id": "0123spaceid"
           }
         },
-        "id": "a123456789",
+        "id": "0123pageid",
         "type": "Entry",
         "createdAt": "2017-04-07T16:53:11.441Z",
         "updatedAt": "2017-04-10T14:13:48.816Z",
@@ -36,14 +36,7 @@
             "sys": {
               "type": "Link",
               "linkType": "Entry",
-              "id": "f123456789"
-            }
-          },
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Entry",
-              "id": "b123456789"
+              "id": "0123containerid"
             }
           }
         ]
@@ -58,10 +51,10 @@
             "sys": {
               "type": "Link",
               "linkType": "Space",
-              "id": "0123456789"
+              "id": "0123spaceid"
             }
           },
-          "id": "h123456789",
+          "id": "0123itemid",
           "type": "Entry",
           "createdAt": "2017-04-10T09:08:31.345Z",
           "updatedAt": "2017-04-10T09:08:31.345Z",
@@ -77,13 +70,11 @@
         },
         "fields": {
           "key": "test.container.item1",
-          "header": "Header 1",
-          "text": "Item1",
           "media": {
             "sys": {
               "type": "Link",
               "linkType": "Asset",
-              "id": "e123456789"
+              "id": "0123assetid"
             }
           }
         }
@@ -94,46 +85,10 @@
             "sys": {
               "type": "Link",
               "linkType": "Space",
-              "id": "0123456789"
+              "id": "0123spaceid"
             }
           },
-          "id": "d123456789",
-          "type": "Entry",
-          "createdAt": "2017-04-10T09:49:52.783Z",
-          "updatedAt": "2017-04-10T09:49:52.783Z",
-          "revision": 1,
-          "contentType": {
-            "sys": {
-              "type": "Link",
-              "linkType": "ContentType",
-              "id": "itemModule"
-            }
-          },
-          "locale": "de-DE"
-        },
-        "fields": {
-          "key": "test.container.item3",
-          "header": "Header 3",
-          "text": "Test",
-          "media": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "g123456789"
-            }
-          }
-        }
-      },
-      {
-        "sys": {
-          "space": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Space",
-              "id": "0123456789"
-            }
-          },
-          "id": "f123456789",
+          "id": "0123containerid",
           "type": "Entry",
           "createdAt": "2017-04-08T12:54:32.715Z",
           "updatedAt": "2017-04-10T14:14:38.539Z",
@@ -154,87 +109,10 @@
               "sys": {
                 "type": "Link",
                 "linkType": "Entry",
-                "id": "h123456789"
-              }
-            },
-            {
-              "sys": {
-                "type": "Link",
-                "linkType": "Entry",
-                "id": "c123456789"
-              }
-            },
-            {
-              "sys": {
-                "type": "Link",
-                "linkType": "Entry",
-                "id": "d123456789"
+                "id": "0123itemid"
               }
             }
           ]
-        }
-      },
-      {
-        "sys": {
-          "space": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Space",
-              "id": "0123456789"
-            }
-          },
-          "id": "b123456789",
-          "type": "Entry",
-          "createdAt": "2017-04-07T16:53:04.226Z",
-          "updatedAt": "2017-04-07T16:53:04.226Z",
-          "revision": 1,
-          "contentType": {
-            "sys": {
-              "type": "Link",
-              "linkType": "ContentType",
-              "id": "container"
-            }
-          },
-          "locale": "de-DE"
-        },
-        "fields": {
-          "key": "test.container2"
-        }
-      },
-      {
-        "sys": {
-          "space": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Space",
-              "id": "0123456789"
-            }
-          },
-          "id": "c123456789",
-          "type": "Entry",
-          "createdAt": "2017-04-10T09:49:34.873Z",
-          "updatedAt": "2017-04-10T09:49:34.873Z",
-          "revision": 1,
-          "contentType": {
-            "sys": {
-              "type": "Link",
-              "linkType": "ContentType",
-              "id": "itemModule"
-            }
-          },
-          "locale": "de-DE"
-        },
-        "fields": {
-          "key": "test.container.item2",
-          "header": "Header 2",
-          "text": "Item 2",
-          "media": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "i123456789"
-            }
-          }
         }
       }
     ],
@@ -245,74 +123,10 @@
             "sys": {
               "type": "Link",
               "linkType": "Space",
-              "id": "0123456789"
+              "id": "0123spaceid"
             }
           },
-          "id": "g123456789",
-          "type": "Asset",
-          "createdAt": "2017-04-10T09:49:40.195Z",
-          "updatedAt": "2017-04-10T09:49:40.195Z",
-          "revision": 1,
-          "locale": "de-DE"
-        },
-        "fields": {
-          "title": "test.container.item3.media",
-          "file": {
-            "url": "//images.contentful.com/0123456789/g123456789/9f03494a7718ea944516ae6b8d0c05e6/item3.jpg",
-            "details": {
-              "size": 455252,
-              "image": {
-                "width": 1024,
-                "height": 682
-              }
-            },
-            "fileName": "item3.jpg",
-            "contentType": "image/jpeg"
-          }
-        }
-      },
-      {
-        "sys": {
-          "space": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Space",
-              "id": "0123456789"
-            }
-          },
-          "id": "i123456789",
-          "type": "Asset",
-          "createdAt": "2017-04-10T09:49:44.693Z",
-          "updatedAt": "2017-04-10T09:49:44.693Z",
-          "revision": 1,
-          "locale": "de-DE"
-        },
-        "fields": {
-          "title": "test.container.item2.media",
-          "file": {
-            "url": "//images.contentful.com/0123456789/i123456789/59acbf925e52988138146f33b720e63a/item2.jpg",
-            "details": {
-              "size": 352678,
-              "image": {
-                "width": 2000,
-                "height": 1000
-              }
-            },
-            "fileName": "item2.jpg",
-            "contentType": "image/jpeg"
-          }
-        }
-      },
-      {
-        "sys": {
-          "space": {
-            "sys": {
-              "type": "Link",
-              "linkType": "Space",
-              "id": "0123456789"
-            }
-          },
-          "id": "e123456789",
+          "id": "0123assetid",
           "type": "Asset",
           "createdAt": "2017-04-10T09:08:27.006Z",
           "updatedAt": "2017-04-10T09:08:27.006Z",
@@ -322,7 +136,7 @@
         "fields": {
           "title": "test.container.item1.media",
           "file": {
-            "url": "//images.contentful.com/0123456789/e123456789/18fde955122f8983eb50ed63f1b0ab3e/item1.jpg",
+            "url": "//images.contentful.com/0123spaceid/0123assetid/18fde955122f8983eb50ed63f1b0ab3e/item1.jpg",
             "details": {
               "size": 104302,
               "image": {
