@@ -292,7 +292,7 @@
           "required": false,
           "validations": [
             {
-              "linkMimetypeGroup": "image"
+              "linkMimetypeGroup": [ "image" ]
             }
           ],
           "disabled": false,
@@ -439,7 +439,7 @@
           "required": false,
           "validations": [
             {
-              "linkMimetypeGroup": "image"
+              "linkMimetypeGroup": [ "image" ]
             }
           ],
           "disabled": false,

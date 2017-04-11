@@ -130,9 +130,9 @@ namespace Contentful.Core.Models.Management
     public class MimeTypeValidator : IFieldValidator
     {
         /// <summary>
-        /// The mime type group to validate against.
+        /// The mime type groups to validate against.
         /// </summary>
-        public MimeTypeRestriction MimeType { get; set; }
+        public List<MimeTypeRestriction> MimeTypes { get; set; }
 
         /// <summary>
         /// The custom error message that should be displayed.
@@ -142,11 +142,11 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Initializes a new instance of <see cref="MimeTypeValidator"/>.
         /// </summary>
-        /// <param name="mimeType">The mime type group to validate against.</param>
+        /// <param name="mimeTypes">The mime type groups to validate against.</param>
         /// <param name="message">The custom error message for this validation.</param>
-        public MimeTypeValidator(MimeTypeRestriction mimeType, string message = null)
+        public MimeTypeValidator(IEnumerable<MimeTypeRestriction> mimeTypes, string message = null)
         {
-            MimeType = mimeType;
+            MimeTypes = mimeTypes?.ToList();
             Message = message;
         }
 
@@ -156,7 +156,7 @@ namespace Contentful.Core.Models.Management
         /// <returns>The object to serialize.</returns>
         public object CreateValidator()
         {
-            return new { linkMimetypeGroup = MimeType.ToString(), message = Message };
+            return new { linkMimetypeGroup = MimeTypes.Select(c => c.ToString()), message = Message };
         }
     }
 

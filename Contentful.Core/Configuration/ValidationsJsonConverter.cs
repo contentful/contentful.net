@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Contentful.Core.Configuration
@@ -60,7 +61,17 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject.TryGetValue("linkMimetypeGroup", out jToken))
             {
-                return new MimeTypeValidator((MimeTypeRestriction)Enum.Parse(typeof(MimeTypeRestriction),jToken.Value<string>(), true),
+                if(jToken is JValue)
+                {
+                    //single string value returned for mime type field. This seems to be an inconsistency in the API that needs to be handled.
+
+                    var type = jToken.Value<string>();
+                    return new MimeTypeValidator(new[] { (MimeTypeRestriction)Enum.Parse(typeof(MimeTypeRestriction), type, true) },
+                    jsonObject["message"]?.ToString());
+                }
+
+                var types = jToken.Values<string>();
+                return new MimeTypeValidator(types.Select(c => (MimeTypeRestriction)Enum.Parse(typeof(MimeTypeRestriction), c, true)),
                     jsonObject["message"]?.ToString());
             }
 

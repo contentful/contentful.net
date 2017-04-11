@@ -421,7 +421,6 @@ namespace Contentful.Core.Tests
             Assert.Equal($"https://api.contentful.com/spaces/666/public/content_types", requestUrl);
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
-
         }
 
         [Fact]
