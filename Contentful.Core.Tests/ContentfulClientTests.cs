@@ -147,7 +147,7 @@ namespace Contentful.Core.Tests
             response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
             
             _handler.Response = response;
-            int numberOfTimesCalled = 0;
+            var numberOfTimesCalled = 0;
             _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
             _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg; };  
             //Act
@@ -178,7 +178,7 @@ namespace Contentful.Core.Tests
             response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
 
             _handler.Response = response;
-            int numberOfTimesCalled = 0;
+            var numberOfTimesCalled = 0;
             _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
             _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg; };
 
@@ -267,6 +267,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("Mike Springer", list.First().Author.First().ProfilePhoto.Title);
             Assert.Equal(1, list.First().Author.First().CreatedEntries.Count);
             Assert.Equal("contentful wyam logo", list.First().Author.First().Test.Field4.Title);
+            Assert.Equal("Literature", list.Last().Category.First().Title);
         }
 
         [Fact]
@@ -280,7 +281,8 @@ namespace Contentful.Core.Tests
             var list = res.ToList();
 
             //Assert
-            Assert.NotEqual(null, list[0].Items[0].Items[0].Media.File);
+            Assert.NotNull(list[0].Items[0].Items[0].Media.File);
+            Assert.Equal("test.container.item1.media", list[0].Items[0].Items[0].Media.Title);
             Assert.Equal(1, list.Count());
         }
 

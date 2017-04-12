@@ -12,6 +12,7 @@ using System.Text;
 using Contentful.Core.Search;
 using System.Threading;
 using Contentful.Core.Errors;
+using Newtonsoft.Json;
 
 namespace Contentful.Core
 {
@@ -187,7 +188,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            HashSet<string> processedIds = new HashSet<string>();
+            var processedIds = new HashSet<string>();
             foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
                 ResolveLinks(json, item, processedIds);
@@ -200,15 +201,23 @@ namespace Contentful.Core
             }
             else
             {
-                var entryTokens = json.SelectTokens("$.items[*].fields");
+                var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
 
-                //Move sys properties into the fields object to make serialization more logical on client
-                foreach (var token in entryTokens)
+                for (var i = entryTokens.Count - 1; i >= 0; i--)
                 {
-                    var sys = token.Parent.Parent["sys"];
-                    token["sys"] = sys;
+                    var token = entryTokens[i];
+                    var grandParent = token.Parent.Parent;
+
+                    if(grandParent["sys"]["type"]?.ToString() != "Entry")
+                    {
+                        continue;
+                    }
+                    //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
+                    token.Parent.Remove();
+                    grandParent.Add(token.Children());
                 }
-                entries = entryTokens.Select(t => t.ToObject<T>());
+
+                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>();
             }
             return entries;
         }
@@ -216,7 +225,7 @@ namespace Contentful.Core
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds)
         {
             var id = ((JValue) entryToken.SelectToken("$.sys.id")).Value.ToString();
-            entryToken.Add("$id", new JValue(id));
+            entryToken.AddFirst(new JProperty( "$id", new JValue(id)));
             processedIds.Add(id);
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
 
@@ -228,8 +237,10 @@ namespace Contentful.Core
                 JToken replacementToken = null;
                 if (processedIds.Contains(linkId))
                 {
-                    replacementToken = new JObject();
-                    replacementToken["$ref"] = linkId;
+                    replacementToken = new JObject
+                    {
+                        ["$ref"] = linkId
+                    };
                 }
                 else if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
                 {
