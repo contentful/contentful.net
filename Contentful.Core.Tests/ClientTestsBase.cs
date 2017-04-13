@@ -71,7 +71,6 @@ namespace Contentful.Core.Tests
         public SystemProperties Sys { get; set; }
     }
 
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class TestModelWithIncludes
     {
         public string Title { get; set; }
@@ -80,9 +79,9 @@ namespace Contentful.Core.Tests
 
         public Asset FeaturedImage { get; set; }
         public List<Author> Author { get; set; }
+        public List<Category> Category { get; set; }
     }
 
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
     public class Author
     {
         public SystemProperties SystemProperties { get; set; }
@@ -96,10 +95,32 @@ namespace Contentful.Core.Tests
         public TestNested Test { get; set; }
     }
 
-    [JsonConverter(typeof(EntryFieldJsonConverter))]
+    public class Category
+    {
+        public string Title { get; set; }
+        public string ShortDescription { get; set; }
+        public Asset Icon { get; set; }
+    }
+
     public class TestNested
     {
         public string Field1 { get; set; }
         public Asset Field4 { get; set; }
+    }
+
+
+    public class MainContainer
+    {
+        public List<Container> Items { get; set; }
+    }
+
+    public class Container
+    {
+        public List<Item> Items { get; set; }
+    }
+
+    public class Item
+    {
+        public Asset Media { get; set; }
     }
 }

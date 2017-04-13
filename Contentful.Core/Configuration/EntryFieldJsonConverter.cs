@@ -12,6 +12,7 @@ namespace Contentful.Core.Configuration
     /// <summary>
     /// JsonConverter for converting entry fields into a cutomst object.
     /// </summary>
+    [Obsolete("The EntryFieldJsonConverter no longer needs to be used and can be safely removed", true)]
     public class EntryFieldJsonConverter : JsonConverter
     {
         /// <summary>

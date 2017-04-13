@@ -1,0 +1,154 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "0123spaceid"
+          }
+        },
+        "id": "0123pageid",
+        "type": "Entry",
+        "createdAt": "2017-04-07T16:53:11.441Z",
+        "updatedAt": "2017-04-10T14:13:48.816Z",
+        "revision": 4,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "page"
+          }
+        },
+        "locale": "de-DE"
+      },
+      "fields": {
+        "key": "test",
+        "items": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "0123containerid"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "0123spaceid"
+            }
+          },
+          "id": "0123itemid",
+          "type": "Entry",
+          "createdAt": "2017-04-10T09:08:31.345Z",
+          "updatedAt": "2017-04-10T09:08:31.345Z",
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "itemModule"
+            }
+          },
+          "locale": "de-DE"
+        },
+        "fields": {
+          "key": "test.container.item1",
+          "media": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "0123assetid"
+            }
+          }
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "0123spaceid"
+            }
+          },
+          "id": "0123containerid",
+          "type": "Entry",
+          "createdAt": "2017-04-08T12:54:32.715Z",
+          "updatedAt": "2017-04-10T14:14:38.539Z",
+          "revision": 5,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "container"
+            }
+          },
+          "locale": "de-DE"
+        },
+        "fields": {
+          "key": "test.container",
+          "items": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "0123itemid"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "0123spaceid"
+            }
+          },
+          "id": "0123assetid",
+          "type": "Asset",
+          "createdAt": "2017-04-10T09:08:27.006Z",
+          "updatedAt": "2017-04-10T09:08:27.006Z",
+          "revision": 1,
+          "locale": "de-DE"
+        },
+        "fields": {
+          "title": "test.container.item1.media",
+          "file": {
+            "url": "//images.contentful.com/0123spaceid/0123assetid/18fde955122f8983eb50ed63f1b0ab3e/item1.jpg",
+            "details": {
+              "size": 104302,
+              "image": {
+                "width": 378,
+                "height": 200
+              }
+            },
+            "fileName": "item1.jpg",
+            "contentType": "image/jpeg"
+          }
+        }
+      }
+    ]
+  }
+}
