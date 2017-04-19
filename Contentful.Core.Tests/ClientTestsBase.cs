@@ -118,8 +118,6 @@ namespace Contentful.Core.Tests
 
     public class MainContainer
     {
-        public Item Header { get; set; }
-        
         public List<Container> Items { get; set; }
     }
 
