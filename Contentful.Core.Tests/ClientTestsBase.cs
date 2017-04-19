@@ -58,6 +58,13 @@ namespace Contentful.Core.Tests
         public Queue<HttpResponseMessage> Responses { get; set; }
         public HttpResponseMessage Response { get; set; }
     }
+    
+    public class TwoAssets
+    {
+        public Asset First { get; set; }
+
+        public Asset Second { get; set; }
+    }
 
     public class TestEntryModel
     {
@@ -111,6 +118,8 @@ namespace Contentful.Core.Tests
 
     public class MainContainer
     {
+        public Item Header { get; set; }
+        
         public List<Container> Items { get; set; }
     }
 

@@ -287,6 +287,21 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithSameAssetLinkedMultipleTimes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"MultipleLinksSameAsset.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<TwoAssets>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.Equal(1, list.Count);
+            Assert.Equal(list[0].First, list[0].Second);
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithIncludesForAuthor()
         {
             //Arrange
