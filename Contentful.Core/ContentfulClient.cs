@@ -230,9 +230,8 @@ namespace Contentful.Core
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
 
             //Walk through and add any included entries as direct links.
-            for (var i = links.Count - 1; i >= 0; i--)
+            foreach (var linkToken in links)
             {
-                var linkToken = links[i];
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;
                 if (processedIds.Contains(linkId))

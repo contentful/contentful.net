@@ -41,6 +41,11 @@ namespace Contentful.Core.Configuration
             var asset = new Asset();
 
             var jObject = JObject.Load(reader);
+            JToken refId;
+            if (jObject.TryGetValue("$ref", out refId))
+            {
+                return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue) refId).Value.ToString());
+            }
 
             asset.SystemProperties = jObject.SelectToken("$.sys")?.ToObject<SystemProperties>();
 
@@ -63,6 +68,7 @@ namespace Contentful.Core.Configuration
                 asset.FilesLocalized = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
             }
 
+            serializer.ReferenceResolver.AddReference(serializer, asset.SystemProperties.Id, asset);
             return asset;
         }
 
