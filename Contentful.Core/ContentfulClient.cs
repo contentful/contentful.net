@@ -44,6 +44,8 @@ namespace Contentful.Core
             {
                 _baseUrl = _baseUrl.Replace("cdn", "preview");
             }
+
+            SerializerSettings.Converters.Add(new AssetJsonConverter());
         }
 
         /// <summary>

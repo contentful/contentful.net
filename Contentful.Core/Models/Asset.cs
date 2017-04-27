@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Contentful.Core.Configuration;
 
 namespace Contentful.Core.Models
 {
     /// <summary>
     /// Represents a single asset of a <see cref="Space"/>.
     /// </summary>
-    [JsonConverter(typeof(AssetJsonConverter))]
     public class Asset : IContentfulResource
     {
         /// <summary>
