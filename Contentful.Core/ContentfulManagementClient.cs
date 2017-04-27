@@ -673,15 +673,28 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// </summary>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(QueryBuilder<Asset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await GetAssetsCollectionAsync(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Gets all assets in the space.
         /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 

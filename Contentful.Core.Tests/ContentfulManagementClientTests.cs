@@ -909,6 +909,34 @@ namespace Contentful.Core.Tests
             Assert.Equal("Alice in Wonderland", res.Last().Title["en-US"]);
         }
 
+        [Theory]
+        [InlineData("?fields.title=bam")]
+        [InlineData("?fields.description[exists]=false")]
+        [InlineData("?order=sys.createdAt")]
+        public async Task GetAllAssetsWithQueryShouldCallCorrectUrl(string query)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"AssetsCollectionManagement.json");
+
+            var requestUrl = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.GetAssetsCollectionAsync(query);
+
+            //Assert
+            Assert.Equal(7, res.Count());
+            Assert.Equal(7, res.Total);
+            Assert.Equal("Ernest Hemingway (1950)", res.First().Title["en-US"]);
+            Assert.Equal(2290561, res.First().Files["en-US"].Details.Size);
+            Assert.Equal(2940, res.First().Files["en-US"].Details.Image.Width);
+            Assert.Equal("Alice in Wonderland", res.Last().Title["en-US"]);
+            Assert.Equal($"https://api.contentful.com/spaces/666/assets/{query}", requestUrl);
+        }
+
         [Fact]
         public async Task CreateAssetShouldThrowIfIdNotSet()
         {
