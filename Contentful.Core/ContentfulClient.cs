@@ -44,6 +44,7 @@ namespace Contentful.Core
             {
                 _baseUrl = _baseUrl.Replace("cdn", "preview");
             }
+            SerializerSettings.Converters.Add(new AssetJsonConverter());
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace Contentful.Core
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>();
+                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>(Serializer);
             }
             else
             {
@@ -132,7 +133,7 @@ namespace Contentful.Core
                 var sys = json.SelectToken("$.sys");
                 var fields = json.SelectToken("$.fields");
                 fields["sys"] = sys;
-                ob = fields.ToObject<T>();
+                ob = fields.ToObject<T>(Serializer);
             }
             return ob;
         }
@@ -197,7 +198,7 @@ namespace Contentful.Core
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 entries = json.SelectTokens("$.items[*]")
-                    .Select(t => t.ToObject<T>());
+                    .Select(t => t.ToObject<T>(Serializer));
             }
             else
             {
@@ -217,7 +218,7 @@ namespace Contentful.Core
                     grandParent.Add(token.Children());
                 }
 
-                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>();
+                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
             }
             return entries;
         }
@@ -292,12 +293,12 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<T>>();
+            var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
 
 
-            collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>());
+            collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>(Serializer));
 
-            collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>());
+            collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>(Serializer));
 
             return collection;
         }
@@ -335,7 +336,7 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var asset = jsonObject.ToObject<Asset>();
+            var asset = jsonObject.ToObject<Asset>(Serializer);
 
             return asset;
         }
@@ -365,7 +366,7 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>());
+            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>(Serializer));
 
             return asset;
         }
@@ -395,8 +396,8 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<Asset>>();
-            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>()); ;
+            var collection = jsonObject.ToObject<ContentfulCollection<Asset>>(Serializer);
+            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>(Serializer)); ;
             collection.Items = assets;
             return collection;
         }
@@ -412,7 +413,7 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var space = jsonObject.ToObject<Space>();
+            var space = jsonObject.ToObject<Space>(Serializer);
 
             return space;
         }
@@ -435,7 +436,7 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentType = jsonObject.ToObject<ContentType>();
+            var contentType = jsonObject.ToObject<ContentType>(Serializer);
 
             return contentType;
         }
@@ -450,7 +451,7 @@ namespace Contentful.Core
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
+            var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
 
             return contentTypes;
         }
@@ -539,13 +540,13 @@ namespace Contentful.Core
         private SyncResult ParseSyncResultAsync(string content)
         {
             var jsonObject = JObject.Parse(content);
-            var syncResult = jsonObject.ToObject<SyncResult>();
+            var syncResult = jsonObject.ToObject<SyncResult>(Serializer);
             var entries =
-                jsonObject.SelectTokens("$.items[?(@.sys.type=='Entry')]").Select(c => c.ToObject<Entry<dynamic>>());
+                jsonObject.SelectTokens("$.items[?(@.sys.type=='Entry')]").Select(c => c.ToObject<Entry<dynamic>>(Serializer));
             var assets =
-                jsonObject.SelectTokens("$.items[?(@.sys.type=='Asset')]").Select(c => c.ToObject<SyncedAsset>());
-            var deletedEntries = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedEntry')].sys").Select(c => c.ToObject<SystemProperties>());
-            var deletedAssets = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedAsset')].sys").Select(c => c.ToObject<SystemProperties>());
+                jsonObject.SelectTokens("$.items[?(@.sys.type=='Asset')]").Select(c => c.ToObject<SyncedAsset>(Serializer));
+            var deletedEntries = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedEntry')].sys").Select(c => c.ToObject<SystemProperties>(Serializer));
+            var deletedAssets = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedAsset')].sys").Select(c => c.ToObject<SystemProperties>(Serializer));
 
             syncResult.Assets = assets;
             syncResult.DeletedAssets = deletedAssets;

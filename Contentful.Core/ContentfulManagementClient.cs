@@ -94,7 +94,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.ToObject<Space>();
+            return json.ToObject<Space>(Serializer);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.ToObject<Space>();
+            return json.ToObject<Space>(Serializer);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.ToObject<Space>();
+            return json.ToObject<Space>(Serializer);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<Space>());
+            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<Space>(Serializer));
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
+            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.ToObject<ContentType>();
+            return json.ToObject<ContentType>(Serializer);
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentType = jsonObject.ToObject<ContentType>();
+            var contentType = jsonObject.ToObject<ContentType>(Serializer);
 
             return contentType;
         }
@@ -307,7 +307,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentType = jsonObject.ToObject<ContentType>();
+            var contentType = jsonObject.ToObject<ContentType>(Serializer);
 
             return contentType;
         }
@@ -347,7 +347,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>());
+            return json.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var editorInterface = jsonObject.ToObject<EditorInterface>();
+            var editorInterface = jsonObject.ToObject<EditorInterface>(Serializer);
 
             return editorInterface;
         }
@@ -404,7 +404,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var updatedEditorInterface = jsonObject.ToObject<EditorInterface>();
+            var updatedEditorInterface = jsonObject.ToObject<EditorInterface>(Serializer);
 
             return updatedEditorInterface;
         }
@@ -438,7 +438,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<T>>();
+            var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
 
             return collection;
         }
@@ -469,7 +469,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
+            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>(Serializer);
 
             return updatedEntry;
         }
@@ -507,7 +507,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>();
+            var updatedEntry = jsonObject.ToObject<Entry<dynamic>>(Serializer);
 
             return updatedEntry;
         }
@@ -532,7 +532,7 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
 
         /// <summary>
@@ -613,7 +613,7 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
 
         /// <summary>
@@ -669,7 +669,7 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>();
+            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
 
         /// <summary>
@@ -700,8 +700,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>();
-            var assets = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementAsset>());
+            var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>(Serializer);
+            var assets = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementAsset>(Serializer));
             collection.Items = assets;
 
             return collection;
@@ -721,8 +721,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>();
-            var assets = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementAsset>());
+            var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>(Serializer);
+            var assets = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementAsset>(Serializer));
             collection.Items = assets;
 
             return collection;
@@ -750,7 +750,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementAsset>();
+            return jsonObject.ToObject<ManagementAsset>(Serializer);
         }
 
         /// <summary>
@@ -805,7 +805,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementAsset>();
+            return jsonObject.ToObject<ManagementAsset>(Serializer);
         }
 
         /// <summary>
@@ -835,7 +835,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementAsset>();
+            return jsonObject.ToObject<ManagementAsset>(Serializer);
         }
 
         /// <summary>
@@ -867,7 +867,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementAsset>();
+            return jsonObject.ToObject<ManagementAsset>(Serializer);
         }
 
         /// <summary>
@@ -897,7 +897,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementAsset>();
+            return jsonObject.ToObject<ManagementAsset>(Serializer);
         }
 
         /// <summary>
@@ -954,7 +954,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var updatedAsset = jsonObject.ToObject<ManagementAsset>();
+            var updatedAsset = jsonObject.ToObject<ManagementAsset>(Serializer);
 
             return updatedAsset;
         }
@@ -973,8 +973,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<Locale>>();
-            var locales = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Locale>());
+            var collection = jsonObject.ToObject<ContentfulCollection<Locale>>(Serializer);
+            var locales = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Locale>(Serializer));
             collection.Items = locales;
 
             return collection;
@@ -1006,7 +1006,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Locale>();
+            return jsonObject.ToObject<Locale>(Serializer);
         }
 
         /// <summary>
@@ -1031,7 +1031,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Locale>();
+            return jsonObject.ToObject<Locale>(Serializer);
         }
 
         /// <summary>
@@ -1063,7 +1063,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Locale>();
+            return jsonObject.ToObject<Locale>(Serializer);
         }
 
         /// <summary>
@@ -1100,8 +1100,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>();
-            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHook>());
+            var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>(Serializer);
+            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHook>(Serializer));
             collection.Items = hooks;
 
             return collection;
@@ -1126,7 +1126,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHook>();
+            return jsonObject.ToObject<WebHook>(Serializer);
         }
 
         /// <summary>
@@ -1156,7 +1156,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHook>();
+            return jsonObject.ToObject<WebHook>(Serializer);
         }
 
         /// <summary>
@@ -1181,7 +1181,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHook>();
+            return jsonObject.ToObject<WebHook>(Serializer);
         }
 
         /// <summary>
@@ -1225,8 +1225,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>();
-            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHookCallDetails>());
+            var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>(Serializer);
+            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHookCallDetails>(Serializer));
             collection.Items = hooks;
 
             return collection;
@@ -1260,7 +1260,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHookCallDetails>();
+            return jsonObject.ToObject<WebHookCallDetails>(Serializer);
         }
 
         /// <summary>
@@ -1286,7 +1286,7 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var health = new WebHookHealthResponse()
             {
-                SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>(),
+                SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>(Serializer),
                 TotalCalls = jsonObject["calls"]["total"].Value<int>(),
                 TotalHealthy = jsonObject["calls"]["healthy"].Value<int>()
             };
@@ -1315,7 +1315,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Role>();
+            return jsonObject.ToObject<Role>(Serializer);
         }
 
         /// <summary>
@@ -1332,8 +1332,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<Role>>();
-            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Role>());
+            var collection = jsonObject.ToObject<ContentfulCollection<Role>>(Serializer);
+            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Role>(Serializer));
             collection.Items = roles;
 
             return collection;
@@ -1358,7 +1358,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Role>();
+            return jsonObject.ToObject<Role>(Serializer);
         }
 
         /// <summary>
@@ -1388,7 +1388,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Role>();
+            return jsonObject.ToObject<Role>(Serializer);
         }
 
         /// <summary>
@@ -1430,8 +1430,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>();
-            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>());
+            var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>(Serializer);
+            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>(Serializer));
             collection.Items = roles;
 
             return collection;
@@ -1463,7 +1463,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<Snapshot>();
+            return jsonObject.ToObject<Snapshot>(Serializer);
         }
 
         /// <summary>
@@ -1479,8 +1479,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<SpaceMembership>>();
-            var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SpaceMembership>());
+            var collection = jsonObject.ToObject<ContentfulCollection<SpaceMembership>>(Serializer);
+            var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SpaceMembership>(Serializer));
             collection.Items = memberships;
 
             return collection;
@@ -1502,7 +1502,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<SpaceMembership>();
+            return jsonObject.ToObject<SpaceMembership>(Serializer);
         }
 
         /// <summary>
@@ -1527,7 +1527,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<SpaceMembership>();
+            return jsonObject.ToObject<SpaceMembership>(Serializer);
         }
 
         /// <summary>
@@ -1552,7 +1552,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<SpaceMembership>();
+            return jsonObject.ToObject<SpaceMembership>(Serializer);
         }
 
         /// <summary>
@@ -1589,8 +1589,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>();
-            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiKey>());
+            var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>(Serializer);
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiKey>(Serializer));
             collection.Items = keys;
 
             return collection;
@@ -1618,7 +1618,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ApiKey>();
+            return jsonObject.ToObject<ApiKey>(Serializer);
         }
 
         /// <summary>
@@ -1635,8 +1635,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<User>>();
-            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<User>());
+            var collection = jsonObject.ToObject<ContentfulCollection<User>>(Serializer);
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<User>(Serializer));
             collection.Items = keys;
 
             return collection;
@@ -1664,7 +1664,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<User>();
+            return jsonObject.ToObject<User>(Serializer);
         }
 
         /// <summary>
@@ -1682,7 +1682,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<UploadReference>();
+            return jsonObject.ToObject<UploadReference>(Serializer);
         }
 
         /// <summary>
@@ -1703,7 +1703,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<UploadReference>();
+            return jsonObject.ToObject<UploadReference>(Serializer);
         }
 
         /// <summary>
@@ -1764,8 +1764,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<UiExtension>>();
-            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<UiExtension>());
+            var collection = jsonObject.ToObject<ContentfulCollection<UiExtension>>(Serializer);
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<UiExtension>(Serializer));
             collection.Items = keys;
 
             return collection;
@@ -1798,7 +1798,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<UiExtension>();
+            return jsonObject.ToObject<UiExtension>(Serializer);
         }
 
         /// <summary>
@@ -1840,7 +1840,7 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return json.ToObject<UiExtension>();
+            return json.ToObject<UiExtension>(Serializer);
         }
 
         /// <summary>
@@ -1865,7 +1865,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<UiExtension>();
+            return jsonObject.ToObject<UiExtension>(Serializer);
         }
 
         /// <summary>
@@ -1909,7 +1909,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementToken>();
+            return jsonObject.ToObject<ManagementToken>(Serializer);
         }
 
         /// <summary>
@@ -1926,8 +1926,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<ManagementToken>>();
-            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementToken>());
+            var collection = jsonObject.ToObject<ContentfulCollection<ManagementToken>>(Serializer);
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ManagementToken>(Serializer));
             collection.Items = keys;
 
             return collection;
@@ -1954,7 +1954,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementToken>();
+            return jsonObject.ToObject<ManagementToken>(Serializer);
         }
 
         /// <summary>
@@ -1978,7 +1978,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<ManagementToken>();
+            return jsonObject.ToObject<ManagementToken>(Serializer);
         }
 
 

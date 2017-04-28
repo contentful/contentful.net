@@ -1,6 +1,7 @@
 ﻿using Contentful.Core.Configuration;
 using Contentful.Core.Errors;
 using Contentful.Core.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,13 @@ namespace Contentful.Core
         /// The <see cref="ContentfulOptions"/> for this ContentfulClient.
         /// </summary>
         protected ContentfulOptions _options;
+
+        internal JsonSerializer Serializer  =>  JsonSerializer.Create(SerializerSettings);
+
+        /// <summary>
+        /// Gets or sets the settings that should be used for deserialization
+        /// </summary>
+        public JsonSerializerSettings SerializerSettings { get; set; } = new JsonSerializerSettings();
 
         /// <summary>
         /// Creates an exception for a failed API request.
