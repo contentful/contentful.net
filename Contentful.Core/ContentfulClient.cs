@@ -44,7 +44,6 @@ namespace Contentful.Core
             {
                 _baseUrl = _baseUrl.Replace("cdn", "preview");
             }
-
             SerializerSettings.Converters.Add(new AssetJsonConverter());
         }
 
@@ -85,11 +84,6 @@ namespace Contentful.Core
         public bool IsPreviewClient => _options?.UsePreviewApi ?? false;
 
         /// <summary>
-        /// Gets or sets the settings that should be used for deserialization
-        /// </summary>
-        public JsonSerializerSettings SerializerSettings { get; set; } = new JsonSerializerSettings();
-
-        /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
@@ -123,15 +117,13 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}{queryString}", cancellationToken).ConfigureAwait(false);
 
             var ob = default(T);
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>(jsonSerializer);
+                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>(Serializer);
             }
             else
             {
@@ -141,7 +133,7 @@ namespace Contentful.Core
                 var sys = json.SelectToken("$.sys");
                 var fields = json.SelectToken("$.fields");
                 fields["sys"] = sys;
-                ob = fields.ToObject<T>(jsonSerializer);
+                ob = fields.ToObject<T>(Serializer);
             }
             return ob;
         }
@@ -193,8 +185,6 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             IEnumerable<T> entries;
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -208,7 +198,7 @@ namespace Contentful.Core
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
                 entries = json.SelectTokens("$.items[*]")
-                    .Select(t => t.ToObject<T>(jsonSerializer));
+                    .Select(t => t.ToObject<T>(Serializer));
             }
             else
             {
@@ -228,7 +218,7 @@ namespace Contentful.Core
                     grandParent.Add(token.Children());
                 }
 
-                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(jsonSerializer);
+                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
             }
             return entries;
         }
@@ -300,17 +290,15 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
         {
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<T>>(jsonSerializer);
+            var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
 
 
-            collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>(jsonSerializer));
+            collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>(Serializer));
 
-            collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>(jsonSerializer));
+            collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>(Serializer));
 
             return collection;
         }
@@ -345,12 +333,10 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var asset = jsonObject.ToObject<Asset>(jsonSerializer);
+            var asset = jsonObject.ToObject<Asset>(Serializer);
 
             return asset;
         }
@@ -377,12 +363,10 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<IEnumerable<Asset>> GetAssetsAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>(jsonSerializer));
+            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>(Serializer));
 
             return asset;
         }
@@ -409,13 +393,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<Asset>>(jsonSerializer);
-            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>(jsonSerializer)); ;
+            var collection = jsonObject.ToObject<ContentfulCollection<Asset>>(Serializer);
+            var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>(Serializer)); ;
             collection.Items = assets;
             return collection;
         }
@@ -428,12 +410,10 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<Space> GetSpaceAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var space = jsonObject.ToObject<Space>(jsonSerializer);
+            var space = jsonObject.ToObject<Space>(Serializer);
 
             return space;
         }
@@ -453,12 +433,10 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentType = jsonObject.ToObject<ContentType>(jsonSerializer);
+            var contentType = jsonObject.ToObject<ContentType>(Serializer);
 
             return contentType;
         }
@@ -470,12 +448,10 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(jsonSerializer));
+            var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
 
             return contentTypes;
         }
@@ -492,13 +468,11 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SyncResult> SyncInitialAsync(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default(CancellationToken))
         {
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
 
-            var syncResult = ParseSyncResultAsync(jsonSerializer, await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return syncResult;
         }
@@ -519,15 +493,13 @@ namespace Contentful.Core
                 throw new ArgumentException("nextPageUrl must be specified.", nameof(nextSyncOrPageUrl));
             }
 
-            var jsonSerializer = JsonSerializer.Create(SerializerSettings);
-
             var syncToken = nextSyncOrPageUrl.Substring(nextSyncOrPageUrl.LastIndexOf('=') + 1);
 
             var query = BuildSyncQuery(syncToken:syncToken);
 
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
 
-            var syncResult = ParseSyncResultAsync(jsonSerializer, await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return syncResult;
         }
@@ -565,16 +537,16 @@ namespace Contentful.Core
             return syncResult;
         }
 
-        private SyncResult ParseSyncResultAsync(JsonSerializer serializer, string content)
+        private SyncResult ParseSyncResultAsync(string content)
         {
             var jsonObject = JObject.Parse(content);
-            var syncResult = jsonObject.ToObject<SyncResult>(serializer);
+            var syncResult = jsonObject.ToObject<SyncResult>(Serializer);
             var entries =
-                jsonObject.SelectTokens("$.items[?(@.sys.type=='Entry')]").Select(c => c.ToObject<Entry<dynamic>>(serializer));
+                jsonObject.SelectTokens("$.items[?(@.sys.type=='Entry')]").Select(c => c.ToObject<Entry<dynamic>>(Serializer));
             var assets =
-                jsonObject.SelectTokens("$.items[?(@.sys.type=='Asset')]").Select(c => c.ToObject<SyncedAsset>(serializer));
-            var deletedEntries = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedEntry')].sys").Select(c => c.ToObject<SystemProperties>(serializer));
-            var deletedAssets = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedAsset')].sys").Select(c => c.ToObject<SystemProperties>(serializer));
+                jsonObject.SelectTokens("$.items[?(@.sys.type=='Asset')]").Select(c => c.ToObject<SyncedAsset>(Serializer));
+            var deletedEntries = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedEntry')].sys").Select(c => c.ToObject<SystemProperties>(Serializer));
+            var deletedAssets = jsonObject.SelectTokens("$.items[?(@.sys.type=='DeletedAsset')].sys").Select(c => c.ToObject<SystemProperties>(Serializer));
 
             syncResult.Assets = assets;
             syncResult.DeletedAssets = deletedAssets;
