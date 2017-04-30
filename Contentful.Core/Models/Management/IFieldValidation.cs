@@ -156,7 +156,7 @@ namespace Contentful.Core.Models.Management
         /// <returns>The object to serialize.</returns>
         public object CreateValidator()
         {
-            return new { linkMimetypeGroup = MimeTypes.Select(c => c.ToString()), message = Message };
+            return new { linkMimetypeGroup = MimeTypes.Select(c => c.ToString()?.ToLower()), message = Message };
         }
     }
 
