@@ -84,6 +84,11 @@ namespace Contentful.Core
         public bool IsPreviewClient => _options?.UsePreviewApi ?? false;
 
         /// <summary>
+        /// Gets or sets the resolver used when resolving entries to typed objects.
+        /// </summary>
+        public IContentTypeResolver ContentTypeResolver { get; set; }
+
+        /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
