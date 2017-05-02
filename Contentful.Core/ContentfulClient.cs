@@ -218,6 +218,19 @@ namespace Contentful.Core
                     {
                         continue;
                     }
+
+                    if(ContentTypeResolver != null)
+                    {
+                        var contentType = grandParent["sys"]["contentType"]["sys"]["id"]?.ToString();
+
+                        var type = ContentTypeResolver.Resolve(contentType);
+
+                        if(type != null)
+                        {
+                            grandParent.AddFirst(new JProperty("$type", type.AssemblyQualifiedName));
+                        }
+                    }
+
                     //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
                     token.Parent.Remove();
                     grandParent.Add(token.Children());

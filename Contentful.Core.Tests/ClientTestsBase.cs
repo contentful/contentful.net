@@ -66,11 +66,21 @@ namespace Contentful.Core.Tests
         public Asset Second { get; set; }
     }
 
-    public class TestEntryModel
+    public class TestEntryModel : IMarker
     {
         public string ProductName { get; set; }
         public string Slug { get; set; }
         public string Title { get; set; }
+    }
+
+    public class TestCategory : IMarker
+    {
+        public string Title { get; set; }
+    }
+
+    public class TestCompany : IMarker
+    {
+        public string CompanyDescription { get; set; }
     }
 
     public class TestEntryWithSysProperties : TestEntryModel
@@ -129,5 +139,28 @@ namespace Contentful.Core.Tests
     public class Item
     {
         public Asset Media { get; set; }
+    }
+
+    public interface IMarker
+    {
+
+    }
+
+    public class TestResolver : IContentTypeResolver
+    {
+        public Type Resolve(string contentTypeId)
+        {
+            switch (contentTypeId)
+            {
+                case "6XwpTaSiiI2Ak2Ww0oi6qa":
+                    return typeof(TestCategory);
+                case "2PqfXUJwE8qSYKuM0U6w8M":
+                    return typeof(TestEntryModel);
+                case "sFzTZbSuM8coEwygeUYes":
+                    return typeof(TestCompany);
+                default:
+                    return null;
+            }
+        }
     }
 }

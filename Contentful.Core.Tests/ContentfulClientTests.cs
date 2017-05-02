@@ -631,5 +631,20 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(TaskStatus.Faulted,ex.Status);
         }
+
+        [Fact]
+        public async Task UsingAContentTypeResolverShouldYieldCorrectTypesInCollection()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
+            _client.ContentTypeResolver = new TestResolver();
+            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+            //Act
+            var res = await _client.GetEntriesAsync<IMarker>();
+
+            //Assert
+            Assert.Equal(9, res.Count());
+            Assert.IsType<TestCategory>(res.First());
+        }
     }
 }
