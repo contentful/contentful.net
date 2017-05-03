@@ -349,7 +349,7 @@ namespace Contentful.Core.Models.Management
 
 
 		/// <summary>
-		/// Initializes a new instance of <see cref="T:Contentful.Essential.Models.Management.DateRangeValidator" />.
+		/// Initializes a new instance of <see cref="DateRangeValidator"/>.
 		/// </summary>
 		/// <param name="minWidth">The minimum date of the range.</param>
 		/// <param name="maxWidth">The maximum date of the range.</param>
@@ -388,7 +388,7 @@ namespace Contentful.Core.Models.Management
 		public string Message { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of <see cref="T:Contentful.Essential.Models.Management.FileSizeValidator" />.
+		/// Initializes a new instance of <see cref="FileSizeValidator" />.
 		/// </summary>
 		/// <param name="min">The minimum size of the file.</param>
 		/// <param name="max">The maximum size of the file.</param>
