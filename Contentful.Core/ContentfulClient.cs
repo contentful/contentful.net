@@ -84,6 +84,11 @@ namespace Contentful.Core
         public bool IsPreviewClient => _options?.UsePreviewApi ?? false;
 
         /// <summary>
+        /// Gets or sets the resolver used when resolving entries to typed objects.
+        /// </summary>
+        public IContentTypeResolver ContentTypeResolver { get; set; }
+
+        /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
@@ -213,6 +218,19 @@ namespace Contentful.Core
                     {
                         continue;
                     }
+
+                    if(ContentTypeResolver != null)
+                    {
+                        var contentType = grandParent["sys"]["contentType"]["sys"]["id"]?.ToString();
+
+                        var type = ContentTypeResolver.Resolve(contentType);
+
+                        if(type != null)
+                        {
+                            grandParent.AddFirst(new JProperty("$type", type.AssemblyQualifiedName));
+                        }
+                    }
+
                     //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
                     token.Parent.Remove();
                     grandParent.Add(token.Children());

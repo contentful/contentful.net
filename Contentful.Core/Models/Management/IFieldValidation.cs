@@ -308,7 +308,7 @@ namespace Contentful.Core.Models.Management
     /// </summary>  
     public class DateRangeValidator : IFieldValidator
 	{
-		protected string _min;
+		private string _min;
 
 		/// <summary>
 		/// The minimum allowed date.
@@ -317,15 +317,14 @@ namespace Contentful.Core.Models.Management
 		{
 			get
 			{
-                DateTime parsed;
-                if (DateTime.TryParse(_min, out parsed))
+                if (DateTime.TryParse(_min, out DateTime parsed))
                     return (DateTime?)parsed;
 
                 return null;
 			}
 		}
 
-		protected string _max;
+		private string _max;
 
 		/// <summary>
 		/// The maximum allowed date.
@@ -334,8 +333,7 @@ namespace Contentful.Core.Models.Management
 		{
 			get
 			{
-				 DateTime parsed;
-                if (DateTime.TryParse(_max, out parsed))
+                if (DateTime.TryParse(_max, out DateTime parsed))
                     return (DateTime?)parsed;
 
                 return null;
@@ -348,21 +346,26 @@ namespace Contentful.Core.Models.Management
 		public string Message { get; set; }
 
 
-		/// <summary>
-		/// Initializes a new instance of <see cref="DateRangeValidator"/>.
-		/// </summary>
-		/// <param name="minWidth">The minimum date of the range.</param>
-		/// <param name="maxWidth">The maximum date of the range.</param>
-		/// <param name="message">The custom error message for this validation.</param>
-		public DateRangeValidator(string min, string max, string message = null)
+        /// <summary>
+        /// Initializes a new instance of <see cref="DateRangeValidator"/>.
+        /// </summary>
+        /// <param name="min">The minimum date of the range.</param>
+        /// <param name="max">The maximum date of the range.</param>
+        /// <param name="message">The custom error message for this validation.</param>
+        public DateRangeValidator(string min, string max, string message = null)
 		{
 			_min = min;
 			_max = max;
-			this.Message = message;
+            Message = message;
 		}
+
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
 		public object CreateValidator()
 		{
-			return new { dateRange = new { min = _min, max = _max }, message = this.Message };
+			return new { dateRange = new { min = _min, max = _max }, message = Message };
 		}
 	}
 
@@ -371,8 +374,8 @@ namespace Contentful.Core.Models.Management
     /// </summary>      
     public class FileSizeValidator : IFieldValidator
 	{
-		protected const int BYTES_IN_KB = 1024;
-		protected const int BYTES_IN_MB = 1048576;
+		private const int BYTES_IN_KB = 1024;
+		private const int BYTES_IN_MB = 1048576;
 		/// <summary>
 		/// The minimum allowed size of the file.
 		/// </summary>
@@ -397,16 +400,22 @@ namespace Contentful.Core.Models.Management
 		/// <param name="message">The custom error message for this validation.</param>
 		public FileSizeValidator(int? min, int? max, string minUnit = SystemFileSizeUnits.Bytes, string maxUnit = SystemFileSizeUnits.Bytes, string message = null)
 		{
-			this.Min = GetCalculatedByteSize(min, minUnit);
-			this.Max = GetCalculatedByteSize(max, maxUnit);
-			this.Message = message;
-		}
-		public object CreateValidator()
-		{
-			return new { assetFileSize = new { min = this.Min, max = this.Max }, message = this.Message };
+            Min = GetCalculatedByteSize(min, minUnit);
+            Max = GetCalculatedByteSize(max, maxUnit);
+            Message = message;
 		}
 
-		protected virtual int? GetCalculatedByteSize(int? value, string unit)
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
+		public object CreateValidator()
+		{
+			return new { assetFileSize = new { min = Min, max = Max }, message = Message };
+		}
+
+
+		private int? GetCalculatedByteSize(int? value, string unit)
 		{
 			if (value != null)
 			{
@@ -459,16 +468,20 @@ namespace Contentful.Core.Models.Management
 		/// <param name="message">The custom error message for this validation.</param>
 		public ImageSizeValidator(int? minWidth, int? maxWidth, int? minHeight, int? maxHeight, string message = null)
 		{
-			this.MinWidth = minWidth;
-			this.MaxWidth = maxWidth;
-			this.MinHeight = minHeight;
-			this.MaxHeight = maxHeight;
-			this.Message = message;
+            MinWidth = minWidth;
+            MaxWidth = maxWidth;
+            MinHeight = minHeight;
+            MaxHeight = maxHeight;
+            Message = message;
 		}
 
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
 		public object CreateValidator()
 		{
-			return new { assetImageDimensions = new { width = new { min = this.MinWidth, max = this.MaxWidth }, height = new { min = this.MinHeight, max = this.MaxHeight } }, message = this.Message };
+			return new { assetImageDimensions = new { width = new { min = MinWidth, max = MaxWidth }, height = new { min = MinHeight, max = MaxHeight } }, message = Message };
 		}
 	}
 }
