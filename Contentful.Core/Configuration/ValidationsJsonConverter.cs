@@ -89,6 +89,13 @@ namespace Contentful.Core.Configuration
             {
                 return new UniqueValidator();
             }
+            if (_currentObject.TryGetValue("dateRange", out jToken))
+			{
+				return new DateRangeValidator(
+					jToken["min"] != null && jToken["min"].Type != JTokenType.Null ? jToken["min"].ToString() : null,
+					jToken["max"] != null && jToken["max"].Type != JTokenType.Null ? jToken["max"].ToString() : null,
+					_currentObject["message"]?.ToString());
+			}
 
             return Activator.CreateInstance(objectType);
         }
