@@ -1,4 +1,5 @@
-﻿using Contentful.Core.Models;
+﻿using Contentful.Core.Extensions;
+using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
@@ -36,21 +37,19 @@ namespace Contentful.Core.Configuration
         {
             var jsonObject = JObject.Load(reader);
 
-            JToken jToken;
-
-            if (jsonObject.TryGetValue("size", out jToken))
+            if (jsonObject.TryGetValue("size", out JToken jToken))
             {
                 return new SizeValidator(
-                    jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,
-                    jToken["max"] != null ? new int?(int.Parse(jToken["max"].ToString())) : null,
+                    jToken["min"].ToNullableInt(),
+                    jToken["max"].ToNullableInt(),
                     jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("range", out jToken))
             {
                 return new RangeValidator(
-                    jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,
-                    jToken["max"] != null ? new int?(int.Parse(jToken["max"].ToString())) : null,
+                    jToken["min"].ToNullableInt(),
+                    jToken["max"].ToNullableInt(),
                     jsonObject["message"]?.ToString());
             }
 
@@ -82,13 +81,52 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject.TryGetValue("regexp", out jToken))
             {
-                return new RegexValidator(jToken["pattern"].ToString(), jToken["flags"].ToString(), jsonObject["message"]?.ToString());
+                return new RegexValidator(jToken["pattern"]?.ToString(), jToken["flags"]?.ToString(), jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("unique", out jToken))
             {
                 return new UniqueValidator();
             }
+
+            if (jsonObject.TryGetValue("dateRange", out jToken))
+			{
+				return new DateRangeValidator(
+					jToken["min"]?.ToString(),
+					jToken["max"]?.ToString(),
+					jsonObject["message"]?.ToString());
+			}
+
+            if (jsonObject.TryGetValue("assetFileSize", out jToken))
+			{
+				return new FileSizeValidator(
+					jToken["min"].ToNullableInt(),
+					jToken["max"].ToNullableInt(),
+					SystemFileSizeUnits.Bytes,
+					SystemFileSizeUnits.Bytes,
+					jsonObject["message"]?.ToString());
+			}
+
+            if (jsonObject.TryGetValue("assetImageDimensions", out jToken))
+			{
+				int? minWidth = null;
+				int? maxWidth = null;
+				int? minHeight = null;
+				int? maxHeight = null;
+				if (jToken["width"] != null)
+				{
+					var width = jToken["width"];
+					minWidth = width["min"].ToNullableInt();
+					maxWidth = width["max"].ToNullableInt();
+				}
+				if (jToken["height"] != null)
+				{
+					var height = jToken["height"];
+					minHeight = height["min"].ToNullableInt();
+					maxHeight = height["max"].ToNullableInt();
+				}
+				return new ImageSizeValidator(minWidth, maxWidth, minHeight, maxHeight, jsonObject["message"]?.ToString());
+			}
 
             return Activator.CreateInstance(objectType);
         }
