@@ -302,5 +302,66 @@ namespace Contentful.Core.Models.Management
             return new { unique = true };
         }
     }
+    /// <summary>
+    /// Represents a validator that ensures that the field value is within a certain date range.
+    /// </summary>  
+    public class DateRangeValidator : IFieldValidator
+	{
+		protected string _min;
 
+		/// <summary>
+		/// The minimum allowed date.
+		/// </summary>
+		public DateTime? Min
+		{
+			get
+			{
+                DateTime parsed;
+                if (DateTime.TryParse(_min, out parsed))
+                    return (DateTime?)parsed;
+
+                return null;
+			}
+		}
+
+		protected string _max;
+
+		/// <summary>
+		/// The maximum allowed date.
+		/// </summary>
+		public DateTime? Max
+		{
+			get
+			{
+				 DateTime parsed;
+                if (DateTime.TryParse(_max, out parsed))
+                    return (DateTime?)parsed;
+
+                return null;
+			}
+		}
+
+		/// <summary>
+		/// The custom error message that should be displayed.
+		/// </summary>
+		public string Message { get; set; }
+
+
+		/// <summary>
+		/// Initializes a new instance of <see cref="T:Contentful.Essential.Models.Management.DateRangeValidator" />.
+		/// </summary>
+		/// <param name="minWidth">The minimum date of the range.</param>
+		/// <param name="maxWidth">The maximum date of the range.</param>
+		/// <param name="message">The custom error message for this validation.</param>
+		public DateRangeValidator(string min, string max, string message = null)
+		{
+			_min = min;
+			_max = max;
+			this.Message = message;
+		}
+		public object CreateValidator()
+		{
+			return new { dateRange = new { min = _min, max = _max }, message = this.Message };
+		}
+	}
 }
