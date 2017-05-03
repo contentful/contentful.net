@@ -41,16 +41,16 @@ namespace Contentful.Core.Configuration
             if (jsonObject.TryGetValue("size", out jToken))
             {
                 return new SizeValidator(
-                    jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,
-                    jToken["max"] != null ? new int?(int.Parse(jToken["max"].ToString())) : null,
+                    jToken["min"] != null && jToken["min"].Type != JTokenType.Null  ? new int?(int.Parse(jToken["min"].ToString())) : null,
+                    jToken["max"] != null && jToken["max"].Type != JTokenType.Null ? new int?(int.Parse(jToken["max"].ToString())) : null,
                     jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("range", out jToken))
             {
                 return new RangeValidator(
-                    jToken["min"] != null ? new int?(int.Parse(jToken["min"].ToString())) : null,
-                    jToken["max"] != null ? new int?(int.Parse(jToken["max"].ToString())) : null,
+                    jToken["min"] != null && jToken["min"].Type != JTokenType.Null ? new int?(int.Parse(jToken["min"].ToString())) : null,
+                    jToken["max"] != null && jToken["max"].Type != JTokenType.Null ? new int?(int.Parse(jToken["max"].ToString())) : null,
                     jsonObject["message"]?.ToString());
             }
 
