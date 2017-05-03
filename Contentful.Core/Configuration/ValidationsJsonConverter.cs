@@ -81,7 +81,7 @@ namespace Contentful.Core.Configuration
 
             if (jsonObject.TryGetValue("regexp", out jToken))
             {
-                return new RegexValidator(jToken["pattern"].ToString(), jToken["flags"].ToString(), jsonObject["message"]?.ToString());
+                return new RegexValidator(jToken["pattern"]?.ToString(), jToken["flags"]?.ToString(), jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("unique", out jToken))
