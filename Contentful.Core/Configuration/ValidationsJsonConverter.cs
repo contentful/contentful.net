@@ -90,22 +90,43 @@ namespace Contentful.Core.Configuration
                 return new UniqueValidator();
             }
 
-            if (_currentObject.TryGetValue("dateRange", out jToken))
+            if (jsonObject.TryGetValue("dateRange", out jToken))
 			{
 				return new DateRangeValidator(
 					jToken["min"] != null && jToken["min"].Type != JTokenType.Null ? jToken["min"].ToString() : null,
 					jToken["max"] != null && jToken["max"].Type != JTokenType.Null ? jToken["max"].ToString() : null,
-					_currentObject["message"]?.ToString());
+					jsonObject["message"]?.ToString());
 			}
 
-            if (_currentObject.TryGetValue("assetFileSize", out jToken))
+            if (jsonObject.TryGetValue("assetFileSize", out jToken))
 			{
 				return new FileSizeValidator(
 					jToken["min"] != null && jToken["min"].Type != JTokenType.Null ? new int?(int.Parse(jToken["min"].ToString())) : null,
 					jToken["max"] != null && jToken["max"].Type != JTokenType.Null ? new int?(int.Parse(jToken["max"].ToString())) : null,
-					FileSizeUnit.Byte,
-					FileSizeUnit.Byte,
-					_currentObject["message"]?.ToString());
+					SystemFileSizeUnits.Bytes,
+					SystemFileSizeUnits.Bytes,
+					jsonObject["message"]?.ToString());
+			}
+
+            if (jsonObject.TryGetValue("assetImageDimensions", out jToken))
+			{
+				int? minWidth = null;
+				int? maxWidth = null;
+				int? minHeight = null;
+				int? maxHeight = null;
+				if (jToken["width"] != null)
+				{
+					JToken width = jToken["width"];
+					minWidth = width["min"] != null && width["min"].Type != JTokenType.Null ? new int?(int.Parse(width["min"].ToString())) : null;
+					maxWidth = width["max"] != null && width["max"].Type != JTokenType.Null ? new int?(int.Parse(width["max"].ToString())) : null;
+				}
+				if (jToken["height"] != null)
+				{
+					JToken height = jToken["height"];
+					minHeight = height["min"] != null && height["min"].Type != JTokenType.Null ? new int?(int.Parse(height["min"].ToString())) : null;
+					maxHeight = height["max"] != null && height["max"].Type != JTokenType.Null ? new int?(int.Parse(height["max"].ToString())) : null;
+				}
+				return new ImageSizeValidator(minWidth, maxWidth, minHeight, maxHeight, jsonObject["message"]?.ToString());
 			}
 
             return Activator.CreateInstance(objectType);
