@@ -317,8 +317,7 @@ namespace Contentful.Core.Models.Management
 		{
 			get
 			{
-                DateTime parsed;
-                if (DateTime.TryParse(_min, out parsed))
+                if (DateTime.TryParse(_min, out DateTime parsed))
                     return (DateTime?)parsed;
 
                 return null;
@@ -334,8 +333,7 @@ namespace Contentful.Core.Models.Management
 		{
 			get
 			{
-				 DateTime parsed;
-                if (DateTime.TryParse(_max, out parsed))
+                if (DateTime.TryParse(_max, out DateTime parsed))
                     return (DateTime?)parsed;
 
                 return null;
@@ -358,11 +356,11 @@ namespace Contentful.Core.Models.Management
 		{
 			_min = min;
 			_max = max;
-			this.Message = message;
+            Message = message;
 		}
 		public object CreateValidator()
 		{
-			return new { dateRange = new { min = _min, max = _max }, message = this.Message };
+			return new { dateRange = new { min = _min, max = _max }, message = Message };
 		}
 	}
 
@@ -397,13 +395,13 @@ namespace Contentful.Core.Models.Management
 		/// <param name="message">The custom error message for this validation.</param>
 		public FileSizeValidator(int? min, int? max, string minUnit = SystemFileSizeUnits.Bytes, string maxUnit = SystemFileSizeUnits.Bytes, string message = null)
 		{
-			this.Min = GetCalculatedByteSize(min, minUnit);
-			this.Max = GetCalculatedByteSize(max, maxUnit);
-			this.Message = message;
+            Min = GetCalculatedByteSize(min, minUnit);
+            Max = GetCalculatedByteSize(max, maxUnit);
+            Message = message;
 		}
 		public object CreateValidator()
 		{
-			return new { assetFileSize = new { min = this.Min, max = this.Max }, message = this.Message };
+			return new { assetFileSize = new { min = Min, max = Max }, message = Message };
 		}
 
 		protected virtual int? GetCalculatedByteSize(int? value, string unit)
@@ -459,16 +457,16 @@ namespace Contentful.Core.Models.Management
 		/// <param name="message">The custom error message for this validation.</param>
 		public ImageSizeValidator(int? minWidth, int? maxWidth, int? minHeight, int? maxHeight, string message = null)
 		{
-			this.MinWidth = minWidth;
-			this.MaxWidth = maxWidth;
-			this.MinHeight = minHeight;
-			this.MaxHeight = maxHeight;
-			this.Message = message;
+            MinWidth = minWidth;
+            MaxWidth = maxWidth;
+            MinHeight = minHeight;
+            MaxHeight = maxHeight;
+            Message = message;
 		}
 
 		public object CreateValidator()
 		{
-			return new { assetImageDimensions = new { width = new { min = this.MinWidth, max = this.MaxWidth }, height = new { min = this.MinHeight, max = this.MaxHeight } }, message = this.Message };
+			return new { assetImageDimensions = new { width = new { min = MinWidth, max = MaxWidth }, height = new { min = MinHeight, max = MaxHeight } }, message = Message };
 		}
 	}
 }
