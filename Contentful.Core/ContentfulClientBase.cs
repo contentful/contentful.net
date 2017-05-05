@@ -31,7 +31,7 @@ namespace Contentful.Core
         internal JsonSerializer Serializer  =>  JsonSerializer.Create(SerializerSettings);
 
         /// <summary>
-        /// Gets or sets the settings that should be used for deserialization
+        /// Gets or sets the settings that should be used for deserialization.
         /// </summary>
         public JsonSerializerSettings SerializerSettings { get; set; } = new JsonSerializerSettings();
 

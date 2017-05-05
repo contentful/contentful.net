@@ -16,7 +16,7 @@ namespace Contentful.Core
     public interface IContentfulClient
     {
         /// <summary>
-        /// Gets or sets the settings that should be used for deserialization
+        /// Gets or sets the settings that should be used for deserialization.
         /// </summary>
         JsonSerializerSettings SerializerSettings { get; set; }
 
