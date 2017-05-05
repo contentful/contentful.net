@@ -57,7 +57,7 @@ namespace Contentful.Core.Search
                             propertyName = LowerCaseFirstLetterOfString(member.Member.Name);
                         }
 
-                        memberList.Add(LowerCaseFirstLetterOfString(propertyName));
+                        memberList.Add(propertyName);
                     }
                     else
                     {

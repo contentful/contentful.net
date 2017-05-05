@@ -105,6 +105,12 @@ namespace Contentful.Core.Tests
  
         public string Name { get; set; }
 
+        [JsonProperty(PropertyName = "NotCamelISay")]
+        public string NotCamel { get; set; }
+
+        [JsonProperty(PropertyName = "NoCamelHere")]
+        public string NotACamelEither { get; set; }
+
         [JsonProperty(PropertyName = "long")]
         public string LongThing { get; set; }
 
