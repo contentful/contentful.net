@@ -102,6 +102,7 @@ namespace Contentful.Core.Tests
     public class Author
     {
         public SystemProperties SystemProperties { get; set; }
+ 
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "long")]
@@ -148,19 +149,16 @@ namespace Contentful.Core.Tests
 
     public class TestResolver : IContentTypeResolver
     {
+        public Dictionary<string, Type> _types = new Dictionary<string, Type>()
+        {
+            { "6XwpTaSiiI2Ak2Ww0oi6qa", typeof(TestCategory) },
+            { "2PqfXUJwE8qSYKuM0U6w8M", typeof(TestEntryModel) },
+            { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) }
+        };
+
         public Type Resolve(string contentTypeId)
         {
-            switch (contentTypeId)
-            {
-                case "6XwpTaSiiI2Ak2Ww0oi6qa":
-                    return typeof(TestCategory);
-                case "2PqfXUJwE8qSYKuM0U6w8M":
-                    return typeof(TestEntryModel);
-                case "sFzTZbSuM8coEwygeUYes":
-                    return typeof(TestCompany);
-                default:
-                    return null;
-            }
+            return _types.TryGetValue(contentTypeId, out var type) ? type : null;
         }
     }
 }
