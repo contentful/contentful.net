@@ -6,6 +6,7 @@ using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace Contentful.Core
 {
@@ -14,6 +15,11 @@ namespace Contentful.Core
     /// </summary>
     public interface IContentfulClient
     {
+        /// <summary>
+        /// Gets or sets the settings that should be used for deserialization
+        /// </summary>
+        JsonSerializerSettings SerializerSettings { get; set; }
+
         /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
