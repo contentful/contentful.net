@@ -498,5 +498,31 @@ namespace Contentful.Core.Tests.Search
             //Assert
             Assert.Equal("?fields.title[match]=matchMe", result);
         }
+
+        [Fact]
+        public void FieldEqualsForJsonHandledPropertyShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.NotCamel, "whatever").Build();
+
+            //Assert
+            Assert.Equal("?fields.NotCamelISay=whatever", result);
+        }
+
+        [Fact]
+        public void FieldEqualsForJsonHandledPropertyByNameShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.NotACamelEither, "whatever").Build();
+
+            //Assert
+            Assert.Equal("?fields.NoCamelHere=whatever", result);
+        }
     }
 }
