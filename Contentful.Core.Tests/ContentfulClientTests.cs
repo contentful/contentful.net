@@ -297,8 +297,25 @@ namespace Contentful.Core.Tests
             var list = res.ToList();
 
             //Assert
-            Assert.Equal(1, list.Count);
+            Assert.Equal(2, list.Count);
             Assert.Equal(list[0].First, list[0].Second);
+            Assert.Equal(list[0].First, list[1].Second);
+        }
+
+        [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithSameAssetLinkedMultipleTimesForEntryObjects()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"MultipleLinksSameAsset.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<Entry<TwoAssets>>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.Equal(2, list.Count);
+            Assert.Equal(list[0].Fields.First, list[0].Fields.Second);
+            Assert.Equal(list[0].Fields.First, list[1].Fields.Second);
         }
 
         [Fact]
