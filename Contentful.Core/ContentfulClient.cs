@@ -202,8 +202,7 @@ namespace Contentful.Core
 
             if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
             {
-                entries = json.SelectTokens("$.items[*]")
-                    .Select(t => t.ToObject<T>(Serializer));
+                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
             }
             else
             {

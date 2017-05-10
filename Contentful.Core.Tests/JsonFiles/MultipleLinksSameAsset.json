@@ -45,6 +45,46 @@
           }
         }
       }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "space_id"
+          }
+        },
+        "id": "main_id2",
+        "type": "Entry",
+        "createdAt": "2017-04-07T16:53:11.441Z",
+        "updatedAt": "2017-04-18T16:49:02.840Z",
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "mainContainer"
+          }
+        },
+        "locale": "de-DE"
+      },
+      "fields": {
+        "first": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "asset_id"
+          }
+        },
+        "second": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "asset_id"
+          }
+        }
+      }
     }
   ],
   "includes": {

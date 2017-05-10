@@ -297,8 +297,9 @@ namespace Contentful.Core.Tests
             var list = res.ToList();
 
             //Assert
-            Assert.Equal(1, list.Count);
+            Assert.Equal(2, list.Count);
             Assert.Equal(list[0].First, list[0].Second);
+            Assert.Equal(list[0].First, list[1].Second);
         }
 
         [Fact]
