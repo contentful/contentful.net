@@ -420,9 +420,9 @@ namespace Contentful.Core.Models.Management
 			if (value != null)
 			{
 				if (unit == SystemFileSizeUnits.KB)
-					value = value * 1000;
+					value = value * BYTES_IN_KB;
 				if (unit == SystemFileSizeUnits.MB)
-					value = value * 1048576;
+					value = value * BYTES_IN_MB;
 			}
 			return value;
 		}
