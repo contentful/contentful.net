@@ -40,5 +40,15 @@ namespace Contentful.Core.Models.Management
         /// Whether or not the user is activated.
         /// </summary>
         public bool Activated { get; set; }
+
+        /// <summary>
+        /// The number of times the user has signed in.
+        /// </summary>
+        public int SignInCount { get; set; }
+
+        /// <summary>
+        /// Whether or not the user is confirmed.
+        /// </summary>
+        public bool Confirmed { get; set; }
     }
 }

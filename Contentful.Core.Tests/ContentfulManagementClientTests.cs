@@ -2369,5 +2369,17 @@ namespace Contentful.Core.Tests
             Assert.Null(res.Token);
             Assert.NotNull(res.RevokedAt);
         }
+
+        [Fact]
+        public async Task GettingTheCurrentUserShouldReturnCorrectResult()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleUser.json");
+            //Act
+            var res = await _client.GetCurrentUserAsync();
+
+            //Assert
+            Assert.Equal("https://images.contentful.com/abcd1234", res.AvatarUrl);
+        }
     }
 }

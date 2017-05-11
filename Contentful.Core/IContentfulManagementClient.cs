@@ -702,5 +702,12 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The revoked <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         Task<ManagementToken> RevokeManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.User"/> for the currently logged in user.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
+        Task<User> GetCurrentUserAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

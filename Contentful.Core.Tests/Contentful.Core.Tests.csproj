@@ -4,9 +4,13 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="JsonFiles\SampleUser.json" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
+    <EmbeddedResource Include="JsonFiles\SampleUser.json" />
     <EmbeddedResource Include="JsonFiles\TokensCollection.json" />
     <EmbeddedResource Include="JsonFiles\RevokedToken.json" />
     <EmbeddedResource Include="JsonFiles\GetToken.json" />
