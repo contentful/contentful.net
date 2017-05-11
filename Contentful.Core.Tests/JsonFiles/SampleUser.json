@@ -1,0 +1,16 @@
+﻿{
+  "sys": {
+    "type": "User",
+    "id": "exampleuserid",
+    "version": 1,
+    "createdAt": "2015-05-18T11:29:46.809Z",
+    "updatedAt": "2015-05-18T11:29:46.809Z"
+  },
+  "firstName": "Dwight",
+  "lastName": "Schrute",
+  "avatarUrl": "https://images.contentful.com/abcd1234",
+  "email": "dwight@dundermifflin.com",
+  "activated": true,
+  "signInCount": 1,
+  "confirmed": true
+}

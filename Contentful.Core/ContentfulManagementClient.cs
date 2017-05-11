@@ -1668,6 +1668,23 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.User"/> for the currently logged in user.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<User> GetCurrentUserAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await GetAsync($"{_directApiUrl}users/me", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<User>(Serializer);
+        }
+
+        /// <summary>
         /// Gets an upload <see cref="SystemProperties"/> by the specified id.
         /// </summary>
         /// <param name="uploadId">The id of the uploaded file.</param>
