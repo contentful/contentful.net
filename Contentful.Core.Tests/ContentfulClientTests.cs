@@ -9,6 +9,7 @@ using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Search;
 using System.Threading;
+using System.Reflection;
 
 namespace Contentful.Core.Tests
 {
@@ -60,13 +61,16 @@ namespace Contentful.Core.Tests
             var userAgent = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                userAgent = request.Headers.UserAgent.First().Product.Name;
+                userAgent = request.Headers.GetValues("X-Contentful-User-Agent").First();
             };
+            var version = typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
+
             //Act
             await client.GetAssetAsync("123");
 
             //Assert
-            Assert.Equal("Contentful-.NET-SDK", userAgent);
+            Assert.StartsWith($"sdk contentful.csharp/{version}", userAgent);
         }
 
         [Fact]
