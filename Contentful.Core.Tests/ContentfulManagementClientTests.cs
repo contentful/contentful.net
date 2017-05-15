@@ -634,9 +634,7 @@ namespace Contentful.Core.Tests
                 SystemProperties = new SystemProperties()
             };
             entry.SystemProperties.Id = "532";
-#pragma warning disable IDE0017 // Object initialization can be simplified
             entry.Fields = new ExpandoObject();
-#pragma warning restore IDE0017 // Object initialization can be simplified
             entry.Fields.field34 = new Dictionary<string, string>()
             {
                 { "en-US", "banana" }
@@ -2380,6 +2378,22 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("https://images.contentful.com/abcd1234", res.AvatarUrl);
+        }
+
+        [Fact]
+        public async Task GettingOrganizationShouldReturnCorrectResult()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"OrganizationsCollection.json");
+            //Act
+            var res = await _client.GetOrganizationsAsync();
+
+            //Assert
+            Assert.Collection(res,
+                (s) => { Assert.Equal("Silvertip", s.Name); },
+                (s) => { Assert.Equal("CompanyBob", s.Name); },
+                (s) => { Assert.Equal("CompanyAlice", s.Name); }
+                );
         }
     }
 }
