@@ -42,7 +42,7 @@ namespace Contentful.Core
         public string Version => typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             .InformationalVersion;
 
-        private string Os => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "MacOsx" : "Linux";
+        private string Os => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "macOS" : "Linux";
 
         private string Platform => ".net";
 
