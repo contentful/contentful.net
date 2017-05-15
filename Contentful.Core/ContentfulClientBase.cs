@@ -42,20 +42,9 @@ namespace Contentful.Core
         public string Version => typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             .InformationalVersion;
 
-        private string Os => FormatVersionString(RuntimeInformation.OSDescription?.TrimEnd());
+        private string Os => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "MacOsx" : "Linux";
 
-        private string Platform => FormatVersionString(RuntimeInformation.FrameworkDescription);
-
-        private string FormatVersionString(string description)
-        {
-            var sb = new StringBuilder(description);
-            var index = Regex.Match(description, "([ ]\\d)").Index;
-            if (index >= 0)
-            {
-                sb[index] = '/';
-            }
-            return sb.ToString();
-        }
+        private string Platform => ".net";
 
         /// <summary>
         /// Creates an exception for a failed API request.
