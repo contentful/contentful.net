@@ -8,6 +8,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,12 +32,22 @@ namespace Contentful.Core
         /// </summary>
         protected ContentfulOptions _options;
 
-        internal JsonSerializer Serializer  =>  JsonSerializer.Create(SerializerSettings);
+        internal JsonSerializer Serializer => JsonSerializer.Create(SerializerSettings);
 
         /// <summary>
         /// Gets or sets the settings that should be used for deserialization.
         /// </summary>
         public JsonSerializerSettings SerializerSettings { get; set; } = new JsonSerializerSettings();
+
+        /// <summary>
+        /// Returns the current version of the package.
+        /// </summary>
+        public string Version => typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
+
+        private string Os => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "macOS" : "Linux";
+
+        private string Platform => ".net";
 
         /// <summary>
         /// Creates an exception for a failed API request.
@@ -45,7 +59,6 @@ namespace Contentful.Core
             var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
             var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
-
             var message = jsonError.SelectToken("$.message")?.ToString();
             var statusCode = (int)res.StatusCode;
 
@@ -160,7 +173,8 @@ namespace Contentful.Core
                 Method = method
             };
             httpRequestMessage.Headers.Add("Authorization", $"Bearer {authToken}");
-            httpRequestMessage.Headers.Add("User-Agent", "Contentful-.NET-SDK");
+            
+            httpRequestMessage.Headers.Add("X-Contentful-User-Agent", $"sdk contentful.csharp/{Version}; platform {Platform}; os {Os};");
 
             httpRequestMessage.Content = content;
 
