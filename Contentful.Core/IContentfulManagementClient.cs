@@ -709,5 +709,12 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
         Task<User> GetCurrentUserAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.Organization"/> for a user.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
+        Task<ContentfulCollection<Organization>> GetOrganizationsAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

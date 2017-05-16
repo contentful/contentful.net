@@ -1934,7 +1934,7 @@ namespace Contentful.Core
         /// It is only available directly after creation of a token for security reasons.**
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokensAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -1996,6 +1996,26 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ManagementToken>(Serializer);
+        }
+
+        /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.Organization"/> for a user.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<Organization>> GetOrganizationsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await GetAsync($"{_directApiUrl}organizations", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<Organization>>(Serializer);
+            var orgs = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Organization>(Serializer));
+            collection.Items = orgs;
+
+            return collection;
         }
 
 

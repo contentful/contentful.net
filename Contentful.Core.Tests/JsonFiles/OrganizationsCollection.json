@@ -1,0 +1,40 @@
+{
+  "total": 3,
+  "limit": 25,
+  "skip": 0,
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "name": "Silvertip",
+      "sys": {
+        "type": "Organization",
+        "id": "abcv234",
+        "version": 54,
+        "createdAt": "2013-05-06T07:53:34Z",
+        "updatedAt": "2016-06-28T08:58:32Z"
+      }
+    },
+    {
+      "name": "CompanyBob",
+      "sys": {
+        "type": "Organization",
+        "id": "23545f",
+        "version": 0,
+        "createdAt": "2016-11-03T10:49:06Z",
+        "updatedAt": "2016-11-03T10:49:06Z"
+      }
+    },
+    {
+      "name": "CompanyAlice",
+      "sys": {
+        "type": "Organization",
+        "id": "ge545r",
+        "version": 1,
+        "createdAt": "2017-01-09T09:20:00Z",
+        "updatedAt": "2017-01-09T10:21:02Z"
+      }
+    }
+  ]
+}

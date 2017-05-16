@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
+    <EmbeddedResource Include="JsonFiles\OrganizationsCollection.json" />
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
     <EmbeddedResource Include="JsonFiles\SampleUser.json" />
