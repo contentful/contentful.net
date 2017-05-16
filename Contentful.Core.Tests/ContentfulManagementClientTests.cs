@@ -9,6 +9,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -41,15 +42,18 @@ namespace Contentful.Core.Tests
             var authHeader = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                userAgent = request.Headers.UserAgent.First().Product.Name;
+                userAgent = request.Headers.GetValues("X-Contentful-User-Agent").First();
                 authHeader = request.Headers.GetValues("Authorization").First();
             };
+            var version = typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
+
             //Act
             await _client.GetAssetAsync("sdf");
 
             //Assert
             Assert.Equal("Bearer 564", authHeader);
-            Assert.Equal("Contentful-.NET-SDK", userAgent);
+            Assert.StartsWith($"sdk contentful.csharp/{version}", userAgent);
         }
         
         [Fact]
