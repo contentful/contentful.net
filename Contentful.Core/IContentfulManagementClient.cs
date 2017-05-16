@@ -715,7 +715,6 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<ContentfulCollection<Organization>> GetOrganizationsAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }
