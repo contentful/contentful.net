@@ -39,6 +39,9 @@ namespace Contentful.Core
         /// </summary>
         public JsonSerializerSettings SerializerSettings { get; set; } = new JsonSerializerSettings();
 
+        /// <summary>
+        /// Returns the current version of the package.
+        /// </summary>
         public string Version => typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             .InformationalVersion;
 
