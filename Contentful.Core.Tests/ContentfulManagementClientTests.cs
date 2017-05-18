@@ -2399,5 +2399,32 @@ namespace Contentful.Core.Tests
                 (s) => { Assert.Equal("CompanyAlice", s.Name); }
                 );
         }
+
+        [Fact]
+        public async Task SerializedObjectShouldBeProperlyCapitalized()
+        {
+            //Arrange
+            var fields = new CamelTest();
+            fields.NotCamel = "Not a camel";
+            fields.NotACamelEither = "Neither is this!";
+            fields.LongThing = "This is though, a pure camel!";
+
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var entry = new Entry<dynamic>();
+            entry.Fields = fields;
+            var contentSet = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateEntryAsync(entry, "bluemoon");
+
+            //Assert
+            Assert.Contains("NotCamelISay", contentSet);
+            Assert.Contains("NoCamelHere", contentSet);
+            Assert.Contains("long", contentSet);
+        }
     }
 }
