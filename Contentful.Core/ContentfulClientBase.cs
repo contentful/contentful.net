@@ -69,7 +69,7 @@ namespace Contentful.Core
 
             if(errorDetails != null)
             {
-                message += errorDetails.Errors.ToString();
+                message += errorDetails.Errors?.ToString();
             }
 
             IEnumerable<string> headers = new List<string>();

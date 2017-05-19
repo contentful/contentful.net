@@ -667,5 +667,18 @@ namespace Contentful.Core.Tests
             Assert.Equal(9, res.Count());
             Assert.IsType<TestCategory>(res.First());
         }
+
+        [Fact]
+        public async Task GetEntryWithInvalidSpaceShouldSerializeErrorMessageCorrectlyAndThrowContentfulException()
+        {
+            //Arrange
+            var response = GetResponseFromFile(@"ErrorSpaceNotFound.json");
+            response.StatusCode = HttpStatusCode.Unauthorized;
+            _handler.Response = response;
+            //Act
+
+            //Assert
+            await Assert.ThrowsAsync<ContentfulException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+        }
     }
 }
