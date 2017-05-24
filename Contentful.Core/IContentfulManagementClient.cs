@@ -385,6 +385,25 @@ namespace Contentful.Core
         Task<Snapshot> GetSnapshotForEntryAsync(string snapshotId, string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Gets all snapshots for a <see cref="ContentType"/>.
+        /// </summary>
+        /// <param name="contentTypeId">The id of the content type to get snapshots for.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A collection of <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
+        Task<ContentfulCollection<SnapshotContentType>> GetAllSnapshotsForContentTypeAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets a single snapshot for a <see cref="ContentType"/>
+        /// </summary>
+        /// <param name="snapshotId">The id of the snapshot to get.</param>
+        /// <param name="contentTypeId">The id of content type the snapshot belongs to.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
+        Task<SnapshotContentType> GetSnapshotForContentTypeAsync(string snapshotId, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Gets a space in Contentful.
         /// </summary>
         /// <param name="id">The id of the space to get.</param>

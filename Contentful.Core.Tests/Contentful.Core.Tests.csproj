@@ -8,10 +8,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
+    <EmbeddedResource Include="JsonFiles\ContentTypeSnapshotsCollection.json" />
     <EmbeddedResource Include="JsonFiles\ErrorSpaceNotFound.json" />
     <EmbeddedResource Include="JsonFiles\OrganizationsCollection.json" />
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
+    <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
     <EmbeddedResource Include="JsonFiles\SampleUser.json" />
     <EmbeddedResource Include="JsonFiles\TokensCollection.json" />
     <EmbeddedResource Include="JsonFiles\RevokedToken.json" />
