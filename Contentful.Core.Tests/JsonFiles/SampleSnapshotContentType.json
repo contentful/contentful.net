@@ -1,0 +1,240 @@
+{
+  "sys": {
+    "type": "Snapshot",
+    "snapshotType": "publish",
+    "snapshotEntityType": "ContentType",
+    "id": "2pQBFoHZk5rMfGK1lSADTT",
+    "createdAt": "2017-05-24T07:06:13.788Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "updatedAt": "2017-05-24T07:06:13.788Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "n9r7gd2bwvqt"
+      }
+    }
+  },
+  "snapshot": {
+    "name": "Product",
+    "fields": [
+      {
+        "id": "productName",
+        "name": "Product name",
+        "type": "Text",
+        "localized": true,
+        "required": true,
+        "validations": [],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "slug",
+        "name": "Slug",
+        "type": "Symbol",
+        "localized": false,
+        "required": false,
+        "validations": [
+          {
+            "unique": true
+          }
+        ],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "productDescription",
+        "name": "Description",
+        "type": "Text",
+        "localized": true,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "sizetypecolor",
+        "name": "Size/Type/Color",
+        "type": "Symbol",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "image",
+        "name": "Image",
+        "type": "Array",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false,
+        "items": {
+          "type": "Link",
+          "validations": [],
+          "linkType": "Asset"
+        }
+      },
+      {
+        "id": "tags",
+        "name": "Tags",
+        "type": "Array",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false,
+        "items": {
+          "type": "Symbol",
+          "validations": []
+        }
+      },
+      {
+        "id": "categories",
+        "name": "Categories",
+        "type": "Array",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false,
+        "items": {
+          "type": "Link",
+          "validations": [
+            {
+              "linkContentType": [
+                "6XwpTaSiiI2Ak2Ww0oi6qa"
+              ]
+            }
+          ],
+          "linkType": "Entry"
+        }
+      },
+      {
+        "id": "price",
+        "name": "Price",
+        "type": "Number",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "brand",
+        "name": "Brand",
+        "type": "Link",
+        "localized": false,
+        "required": false,
+        "validations": [
+          {
+            "linkContentType": [
+              "sFzTZbSuM8coEwygeUYes"
+            ]
+          }
+        ],
+        "disabled": false,
+        "omitted": false,
+        "linkType": "Entry"
+      },
+      {
+        "id": "quantity",
+        "name": "Quantity",
+        "type": "Integer",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "sku",
+        "name": "SKU",
+        "type": "Symbol",
+        "localized": false,
+        "required": false,
+        "validations": [],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "id": "website",
+        "name": "Available at",
+        "type": "Symbol",
+        "localized": false,
+        "required": false,
+        "validations": [
+          {
+            "regexp": {
+              "pattern": "\\b((?:[a-z][\\w-]+:(?:\\/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}\\/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))",
+              "flags": "i"
+            }
+          }
+        ],
+        "disabled": false,
+        "omitted": false
+      },
+      {
+        "name": "test",
+        "id": "test",
+        "type": "Symbol",
+        "omitted": true
+      }
+    ],
+    "sys": {
+      "id": "2PqfXUJwE8qSYKuM0U6w8M",
+      "type": "ContentType",
+      "createdAt": "2016-11-03T10:49:51.964Z",
+      "createdBy": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "0w7AzFDgzUA8MWo79R1Qf7"
+        }
+      },
+      "space": {
+        "sys": {
+          "type": "Link",
+          "linkType": "Space",
+          "id": "n9r7gd2bwvqt"
+        }
+      },
+      "version": 12,
+      "updatedAt": "2017-05-24T07:06:13.558Z",
+      "updatedBy": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "0w7AzFDgzUA8MWo79R1Qf7"
+        }
+      },
+      "firstPublishedAt": "2016-11-03T10:49:52.264Z",
+      "publishedCounter": 6,
+      "publishedAt": "2017-05-24T07:06:13.558Z",
+      "publishedBy": {
+        "sys": {
+          "type": "Link",
+          "linkType": "User",
+          "id": "0w7AzFDgzUA8MWo79R1Qf7"
+        }
+      },
+      "publishedVersion": 11
+    },
+    "displayField": "productName"
+  }
+}

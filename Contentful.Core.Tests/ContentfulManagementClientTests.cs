@@ -1956,6 +1956,72 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetSnapshotsForContentTypeShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContentTypeSnapshotsCollection.json");
+
+            //Act
+            var res = await _client.GetAllSnapshotsForContentTypeAsync("123");
+            var list = res.ToList();
+
+            //Assert
+            Assert.Equal(3, list.Count);
+            Assert.Equal(12, list.First().Snapshot.Fields.Count);
+            Assert.Equal(13, list[1].Snapshot.Fields.Count);
+            Assert.False(list[0].Snapshot.Fields.Any(c => c.Name == "test"));
+            Assert.True(list[1].Snapshot.Fields.Any(c => c.Name == "test" && c.Omitted == true));
+            Assert.True(list[2].Snapshot.Fields.Any(c => c.Name == "test" && c.Omitted == false));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetSnapshotsForContentTypeShouldThrowForIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContentTypeSnapshotsCollection.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAllSnapshotsForContentTypeAsync(id));
+
+            //Assert
+            Assert.Equal($"The id of the content type must be set.{Environment.NewLine}Parameter name: contentTypeId", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("", "snap")]
+        [InlineData(null, "snap")]
+        [InlineData("cat", "")]
+        [InlineData("dog", null)]
+        public async Task GetSnapshotForContentTypeShouldThrowForIdNotSet(string id, string snapId)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleSnapshotContentType.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForContentTypeAsync(snapId, id));
+
+            //Assert
+            Assert.Contains($"The id of the ", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetSnapshotForContentTypeShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleSnapshotContentType.json");
+
+            //Act
+            var res = await _client.GetSnapshotForContentTypeAsync("123", "wed");
+
+            //Assert
+            Assert.Equal("Product", res.Snapshot.Name);
+            Assert.Equal("productName", res.Snapshot.DisplayField);
+            Assert.Equal(13, res.Snapshot.Fields.Count);
+        }
+
+        [Fact]
         public async Task SpaceMembershipsShouldDeserializeCorrectly()
         {
             //Arrange

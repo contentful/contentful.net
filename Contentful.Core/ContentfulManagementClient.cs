@@ -1412,7 +1412,7 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// Gets all snapsohts for an <see cref="Entry{T}"/>.
+        /// Gets all snapshots for an <see cref="Entry{T}"/>.
         /// </summary>
         /// <param name="entryId">The id of the entry to get snapshots for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
@@ -1431,8 +1431,8 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>(Serializer);
-            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>(Serializer));
-            collection.Items = roles;
+            var snapshots = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>(Serializer));
+            collection.Items = snapshots;
 
             return collection;
         }
@@ -1465,6 +1465,62 @@ namespace Contentful.Core
 
             return jsonObject.ToObject<Snapshot>(Serializer);
         }
+
+        /// <summary>
+        /// Gets all snapshots for a <see cref="ContentType"/>.
+        /// </summary>
+        /// <param name="contentTypeId">The id of the content type to get snapshots for.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A collection of <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
+        public async Task<ContentfulCollection<SnapshotContentType>> GetAllSnapshotsForContentTypeAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException("The id of the content type must be set.", nameof(contentTypeId));
+            }
+
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/snapshots", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<SnapshotContentType>>(Serializer);
+            var snapshots = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SnapshotContentType>(Serializer));
+            collection.Items = snapshots;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a single snapshot for a <see cref="ContentType"/>
+        /// </summary>
+        /// <param name="snapshotId">The id of the snapshot to get.</param>
+        /// <param name="contentTypeId">The id of content type the snapshot belongs to.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
+        public async Task<SnapshotContentType> GetSnapshotForContentTypeAsync(string snapshotId, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(snapshotId))
+            {
+                throw new ArgumentException("The id of the snapshot must be set.", nameof(snapshotId));
+            }
+
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException("The id of the content type must be set.", nameof(contentTypeId));
+            }
+
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/snapshots/{snapshotId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<SnapshotContentType>(Serializer);
+        }
+
 
         /// <summary>
         /// Gets a collection of <see cref="Contentful.Core.Models.Management.SpaceMembership"/> for the user.
