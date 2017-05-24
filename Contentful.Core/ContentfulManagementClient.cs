@@ -1431,8 +1431,8 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>(Serializer);
-            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>(Serializer));
-            collection.Items = roles;
+            var snapshots = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Snapshot>(Serializer));
+            collection.Items = snapshots;
 
             return collection;
         }
@@ -1486,8 +1486,8 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<SnapshotContentType>>(Serializer);
-            var roles = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SnapshotContentType>(Serializer));
-            collection.Items = roles;
+            var snapshots = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<SnapshotContentType>(Serializer));
+            collection.Items = snapshots;
 
             return collection;
         }
