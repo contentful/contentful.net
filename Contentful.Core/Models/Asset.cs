@@ -45,7 +45,6 @@ namespace Contentful.Core.Models
         /// <summary>
         /// Information about the file in respective language.
         /// </summary>
-        [JsonProperty("file")]
         public Dictionary<string, File> FilesLocalized { get; set; }
     }
 }
