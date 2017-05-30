@@ -428,6 +428,7 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal("ihavenoidea", res.Title);
             Assert.Null(res.Description);
+            Assert.NotNull(res.File);
         }
 
         [Fact]
