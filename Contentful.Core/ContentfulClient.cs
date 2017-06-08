@@ -13,6 +13,7 @@ using Contentful.Core.Search;
 using System.Threading;
 using Contentful.Core.Errors;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace Contentful.Core
 {
@@ -193,14 +194,21 @@ namespace Contentful.Core
             IEnumerable<T> entries;
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-
+            var isContentfulResource = typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
             var processedIds = new HashSet<string>();
             foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
-                ResolveLinks(json, item, processedIds);
+                if (isContentfulResource)
+                {
+                    ResolveLinks(json, item, processedIds, typeof(T).GetRuntimeProperty("Fields").PropertyType);
+                }
+                else
+                {
+                    ResolveLinks(json, item, processedIds, typeof(T));
+                }
             }
 
-            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+            if (isContentfulResource)
             {
                 entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
             }
@@ -240,7 +248,7 @@ namespace Contentful.Core
             return entries;
         }
 
-        private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds)
+        private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
             var id = ((JValue) entryToken.SelectToken("$.sys.id")).Value.ToString();
             entryToken.AddFirst(new JProperty( "$id", new JValue(id)));
@@ -250,6 +258,8 @@ namespace Contentful.Core
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {
+                var propName = (linkToken.Parent.Parent.Ancestors().FirstOrDefault(a => a is JProperty) as JProperty)?.Name;
+
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;
                 if (processedIds.Contains(linkId))
@@ -268,6 +278,8 @@ namespace Contentful.Core
                         //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
                         replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
                     }
+
+                    
                 }
                 if (replacementToken != null)
                 {
@@ -275,9 +287,24 @@ namespace Contentful.Core
                     grandParent.RemoveAll();
                     grandParent.Add(replacementToken.Children());
 
+                    var prop = type.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
+                    p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
+                    if (prop == null)
+                    {
+                        //the property does not exist in the entry. Skip it in resolving references.
+                        continue;
+                    }
+
                     if (!processedIds.Contains(linkId))
                     {
-                        ResolveLinks(json, grandParent, processedIds);
+                        var propType = prop.PropertyType;
+
+                        if (typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
+                        {
+                            propType = propType.GetTypeInfo().GenericTypeArguments[0];
+                        }
+
+                        ResolveLinks(json, grandParent, processedIds, propType);
                     }
                 }
             }

@@ -681,5 +681,25 @@ namespace Contentful.Core.Tests
             //Assert
             await Assert.ThrowsAsync<ContentfulException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
         }
+
+        [Fact]
+        public async Task AllAssetsInACollectionShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntryCollectionLoopedReferences.json");
+
+            //Act
+            var entries = await _client.GetEntriesAsync<ContentfulEvent>();
+            var nulls = entries.Where(c => c.Image == null).ToList();
+
+            //Assert
+            Assert.Equal(4, entries.Count());
+            Assert.Collection(entries, 
+                c => { Assert.NotNull(c.Image); },
+                c => { Assert.NotNull(c.Image); },
+                c => { Assert.NotNull(c.Image); },
+                c => { Assert.NotNull(c.Image); }
+                );
+        }
     }
 }

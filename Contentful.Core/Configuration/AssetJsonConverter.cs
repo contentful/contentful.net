@@ -67,8 +67,10 @@ namespace Contentful.Core.Configuration
                 asset.DescriptionLocalized = jObject.SelectToken("$.fields.description")?.ToObject<Dictionary<string, string>>();
                 asset.FilesLocalized = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
             }
-
-            serializer.ReferenceResolver.AddReference(serializer, asset.SystemProperties.Id, asset);
+            if (!serializer.ReferenceResolver.IsReferenced(serializer, asset))
+            {
+                serializer.ReferenceResolver.AddReference(serializer, asset.SystemProperties.Id, asset);
+            }
             return asset;
         }
 
