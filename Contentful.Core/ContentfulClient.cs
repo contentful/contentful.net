@@ -90,9 +90,9 @@ namespace Contentful.Core
         public IContentTypeResolver ContentTypeResolver { get; set; }
 
         /// <summary>
-        /// If set, the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
+        /// If set the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
         /// </summary>
-        public bool ResolveEntriesSelectively { get; set; }
+        public bool ResolveEntriesSelectively => _options?.ResolveEntriesSelectively ?? false;
 
         /// <summary>
         /// Get a single entry by the specified ID.

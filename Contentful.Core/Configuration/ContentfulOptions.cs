@@ -35,6 +35,11 @@ namespace Contentful.Core.Configuration
         public bool UsePreviewApi { get; set; }
 
         /// <summary>
+        /// If set the client will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
+        /// </summary>
+        public bool ResolveEntriesSelectively { get; set; }
+
+        /// <summary>
         /// Sets the default number of times to retry after hitting a <see cref="Contentful.Core.Errors.ContentfulRateLimitException"/>.
         /// 0 means that no retries will be made. Maximum is 10.
         /// </summary>
