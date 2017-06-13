@@ -90,6 +90,11 @@ namespace Contentful.Core
         public IContentTypeResolver ContentTypeResolver { get; set; }
 
         /// <summary>
+        /// If set, the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
+        /// </summary>
+        public bool ResolveEntriesSelectively { get; set; }
+
+        /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
@@ -286,22 +291,31 @@ namespace Contentful.Core
                     var grandParent = (JObject)linkToken.Parent.Parent;
                     grandParent.RemoveAll();
                     grandParent.Add(replacementToken.Children());
+                    PropertyInfo prop = null;
 
-                    var prop = type.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
-                    p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
-                    if (prop == null)
+                    if (ResolveEntriesSelectively)
                     {
-                        //the property does not exist in the entry. Skip it in resolving references.
-                        continue;
+                        prop = type?.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
+                        p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
+                        if (prop == null)
+                        {
+                            //the property does not exist in the entry. Skip it in resolving references.
+                            continue;
+                        }
                     }
 
                     if (!processedIds.Contains(linkId))
                     {
-                        var propType = prop.PropertyType;
+                        Type propType = null;
 
-                        if (typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
+                        if (ResolveEntriesSelectively)
                         {
-                            propType = propType.GetTypeInfo().GenericTypeArguments[0];
+                            propType = prop?.PropertyType;
+
+                            if (propType != null && typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
+                            {
+                                propType = propType.GetTypeInfo().GenericTypeArguments[0];
+                            }
                         }
 
                         ResolveLinks(json, grandParent, processedIds, propType);

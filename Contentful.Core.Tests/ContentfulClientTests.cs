@@ -689,7 +689,9 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntryCollectionLoopedReferences.json");
 
             //Act
+            _client.ResolveEntriesSelectively = true;
             var entries = await _client.GetEntriesAsync<ContentfulEvent>();
+            _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => c.Image == null).ToList();
 
             //Assert
