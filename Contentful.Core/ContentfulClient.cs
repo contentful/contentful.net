@@ -45,6 +45,7 @@ namespace Contentful.Core
             {
                 _baseUrl = _baseUrl.Replace("cdn", "preview");
             }
+            ResolveEntriesSelectively = _options.ResolveEntriesSelectively;
             SerializerSettings.Converters.Add(new AssetJsonConverter());
         }
 
@@ -92,7 +93,7 @@ namespace Contentful.Core
         /// <summary>
         /// If set the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
         /// </summary>
-        public bool ResolveEntriesSelectively => _options?.ResolveEntriesSelectively ?? false;
+        public bool ResolveEntriesSelectively { get; set; }
 
         /// <summary>
         /// Get a single entry by the specified ID.

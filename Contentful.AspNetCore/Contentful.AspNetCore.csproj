@@ -14,13 +14,14 @@
     <PackageLicenseUrl>https://github.com/contentful/contentful.net/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/contentful/contentful.net</RepositoryUrl>
+    <Version>0.6.9-beta</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.5\Contentful.AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="contentful.csharp">
-      <Version>0.13.8-beta</Version>
+      <Version>0.13.9-beta</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Razor">
