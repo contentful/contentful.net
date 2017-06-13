@@ -7,6 +7,7 @@
     <None Remove="JsonFiles\SampleUser.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="JsonFiles\EntryCollectionLoopedReferences.json" />
     <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
     <EmbeddedResource Include="JsonFiles\ContentTypeSnapshotsCollection.json" />
     <EmbeddedResource Include="JsonFiles\ErrorSpaceNotFound.json" />

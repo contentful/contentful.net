@@ -148,6 +148,16 @@ namespace Contentful.Core.Tests
         public Asset Field4 { get; set; }
     }
 
+    public class ContentfulEvent
+    {
+        public string Title { get; set; }
+        public Asset Image { get; set; } = new Asset { File = new Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    }
+
+    public class Group
+    {
+        public Asset Image { get; set; } = new Asset { File = new Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+    }
 
     public class MainContainer
     {
