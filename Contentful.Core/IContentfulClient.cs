@@ -21,6 +21,11 @@ namespace Contentful.Core
         JsonSerializerSettings SerializerSettings { get; set; }
 
         /// <summary>
+        /// If set the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
+        /// </summary>
+        bool ResolveEntriesSelectively { get; set; }
+
+        /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
