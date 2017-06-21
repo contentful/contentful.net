@@ -285,11 +285,13 @@ namespace Contentful.Core
                         replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
                     }
 
-                    
+
                 }
+
+                var grandParent = (JObject)linkToken.Parent.Parent;
+
                 if (replacementToken != null)
                 {
-                    var grandParent = (JObject)linkToken.Parent.Parent;
                     grandParent.RemoveAll();
                     grandParent.Add(replacementToken.Children());
                     PropertyInfo prop = null;
@@ -321,6 +323,12 @@ namespace Contentful.Core
 
                         ResolveLinks(json, grandParent, processedIds, propType);
                     }
+                }
+                else
+                {
+                    // The include is missing (possibly it was removed in contentful), we skip it
+                    var itemToSkip = grandParent.Parent is JProperty ? grandParent.Parent : grandParent;
+                    itemToSkip.Remove();
                 }
             }
         }
