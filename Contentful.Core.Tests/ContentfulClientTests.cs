@@ -372,7 +372,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<TestEntryModel>>();
+            var res = await _client.GetEntriesAsync<Entry<TestEntryModel>>();
 
             //Assert
             Assert.Equal(9, res.Total);
@@ -391,7 +391,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<TestModelWithIncludes>>();
+            var res = await _client.GetEntriesAsync<Entry<TestModelWithIncludes>>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -407,7 +407,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesAndLocales.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<dynamic>>();
+            var res = await _client.GetEntriesAsync<Entry<dynamic>>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -465,7 +465,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
 
             //Act
-            var res = await _client.GetAssetsCollectionAsync(queryBuilder:null);
+            var res = await _client.GetAssetsAsync(queryBuilder:null);
 
             //Assert
             Assert.Equal(12, res.Total);
