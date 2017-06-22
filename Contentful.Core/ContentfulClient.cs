@@ -285,12 +285,12 @@ namespace Contentful.Core
                 }
                 else if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
                 {
-                    replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+                    replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkId}')]").FirstOrDefault();
 
                     if (replacementToken == null)
                     {
                         //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
-                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkId}')]").FirstOrDefault();
                     }
 
 
@@ -334,9 +334,14 @@ namespace Contentful.Core
                 }
                 else
                 {
-                    // The include is missing (possibly it was removed in contentful), we skip it
-                    var itemToSkip = grandParent.Parent is JProperty ? grandParent.Parent : grandParent;
-                    itemToSkip.Remove();
+                    var errorToken = json.SelectTokens($"$.errors.[?(@.details.id=='{linkId}')]").FirstOrDefault();
+
+                    // The include is missing and present in the errors (possibly it was removed in contentful), we skip it to make sure it deserializes to null
+                    if (errorToken != null)
+                    {
+                        var itemToSkip = grandParent.Parent is JProperty ? grandParent.Parent : grandParent;
+                        itemToSkip.Remove();
+                    }
                 }
             }
         }

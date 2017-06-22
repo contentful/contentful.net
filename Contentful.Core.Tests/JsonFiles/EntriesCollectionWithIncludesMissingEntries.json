@@ -133,6 +133,30 @@
       }
     }
   ],
+  "errors": [
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Asset",
+        "id": "AssetId4"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "EntryId2"
+      }
+    }
+  ],
   "includes": {
     "Entry": [
     ],

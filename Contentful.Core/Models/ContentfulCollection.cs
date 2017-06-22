@@ -51,6 +51,11 @@ namespace Contentful.Core.Models
         public IEnumerable<Asset> IncludedAssets { get; set; }
 
         /// <summary>
+        /// An enumerable of errors while deserializing. Will be null if no errors are present.
+        /// </summary>
+        public IEnumerable<ContentfulError> Errors { get; set; }
+
+        /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Items"/> collection
         /// </summary>
         public IEnumerator<T> GetEnumerator()
