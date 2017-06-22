@@ -275,6 +275,27 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSkipMissingIncludes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesMissingEntries.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.Equal(2, list.Count);
+            Assert.Equal(0, list.First().Author.Count);
+            Assert.Equal(0, list.First().Category.Count);
+
+            Assert.Equal(0, list.Last().Author.Count);
+            Assert.Equal(0, list.Last().Category.Count);
+
+            Assert.Null(list.Last().FeaturedImage);
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyWithNestedAsset()
         {
             //Arrange
