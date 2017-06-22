@@ -158,9 +158,9 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The ID of the content type to get entries for.</param>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<IEnumerable<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var builder = queryBuilder ?? new QueryBuilder<T>();
 
@@ -176,9 +176,9 @@ namespace Contentful.Core
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<IEnumerable<T>> GetEntriesAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await GetEntriesAsync<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
@@ -191,9 +191,9 @@ namespace Contentful.Core
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<IEnumerable<T>> GetEntriesAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
@@ -251,7 +251,15 @@ namespace Contentful.Core
 
                 entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
             }
-            return entries;
+
+            var collection = json.ToObject<ContentfulCollection<T>>(Serializer);
+            collection.Items = entries;
+
+            collection.IncludedAssets = json.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>(Serializer));
+
+            collection.IncludedEntries = json.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>(Serializer));
+
+            return collection;
         }
 
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
@@ -277,19 +285,21 @@ namespace Contentful.Core
                 }
                 else if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
                 {
-                    replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+                    replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkId}')]").FirstOrDefault();
 
                     if (replacementToken == null)
                     {
                         //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
-                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkToken["id"]}')]").FirstOrDefault();
+                        replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkId}')]").FirstOrDefault();
                     }
 
-                    
+
                 }
+
+                var grandParent = (JObject)linkToken.Parent.Parent;
+
                 if (replacementToken != null)
                 {
-                    var grandParent = (JObject)linkToken.Parent.Parent;
                     grandParent.RemoveAll();
                     grandParent.Add(replacementToken.Children());
                     PropertyInfo prop = null;
@@ -322,44 +332,18 @@ namespace Contentful.Core
                         ResolveLinks(json, grandParent, processedIds, propType);
                     }
                 }
+                else
+                {
+                    var errorToken = json.SelectTokens($"$.errors.[?(@.details.id=='{linkId}')]").FirstOrDefault();
+
+                    // The include is missing and present in the errors (possibly it was removed in contentful), we skip it to make sure it deserializes to null
+                    if (errorToken != null)
+                    {
+                        var itemToSkip = grandParent.Parent is JProperty ? grandParent.Parent : grandParent;
+                        itemToSkip.Remove();
+                    }
+                }
             }
-        }
-
-        /// <summary>
-        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
-        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
-        {
-            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
-        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
-        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
-        {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
-
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
-
-
-            collection.IncludedAssets = jsonObject.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>(Serializer));
-
-            collection.IncludedEntries = jsonObject.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>(Serializer));
-
-            return collection;
         }
 
         /// <summary>
@@ -400,35 +384,6 @@ namespace Contentful.Core
             return asset;
         }
 
-        /// <summary>
-        /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
-        /// </summary>
-        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Asset"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<IEnumerable<Asset>> GetAssetsAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await GetAssetsAsync(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Gets all assets of a space, filtered by an optional querystring. A simpler approach than 
-        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
-        /// </summary>
-        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Asset"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<IEnumerable<Asset>> GetAssetsAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
-
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var asset = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Asset>(Serializer));
-
-            return asset;
-        }
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
@@ -437,9 +392,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Asset>> GetAssetsAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetAssetsCollectionAsync(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return await GetAssetsAsync(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -450,7 +405,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Asset>> GetAssetsAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 

@@ -275,6 +275,31 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSkipMissingIncludes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesMissingEntries.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.Equal(2, list.Count);
+            Assert.Equal(0, list.First().Author.Count);
+            Assert.Equal(1, list.First().Category.Count);
+
+            Assert.Equal(1, list.Last().Author.Count);
+            Assert.Equal(2, list.Last().Category.Count);
+
+            Assert.Null(list.Last().FeaturedImage);
+
+            Assert.Collection(res.Errors, 
+                (e) => { Assert.Equal("AssetId4", e.Details.Id); }, 
+                (e) => { Assert.Equal("EntryId2", e.Details.Id); });
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyWithNestedAsset()
         {
             //Arrange
@@ -372,7 +397,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<TestEntryModel>>();
+            var res = await _client.GetEntriesAsync<Entry<TestEntryModel>>();
 
             //Assert
             Assert.Equal(9, res.Total);
@@ -391,7 +416,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<TestModelWithIncludes>>();
+            var res = await _client.GetEntriesAsync<Entry<TestModelWithIncludes>>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -407,7 +432,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesAndLocales.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<dynamic>>();
+            var res = await _client.GetEntriesAsync<Entry<dynamic>>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -465,7 +490,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
 
             //Act
-            var res = await _client.GetAssetsCollectionAsync(queryBuilder:null);
+            var res = await _client.GetAssetsAsync(queryBuilder:null);
 
             //Assert
             Assert.Equal(12, res.Total);

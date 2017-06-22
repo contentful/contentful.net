@@ -59,9 +59,9 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The ID of the content type to get entries for.</param>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContentfulCollection<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
@@ -70,9 +70,9 @@ namespace Contentful.Core
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<T>> GetEntriesAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContentfulCollection<T>> GetEntriesAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
@@ -82,32 +82,9 @@ namespace Contentful.Core
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of objects seralized from the API response.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<T>> GetEntriesAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
-        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
-            where T : IContentfulResource;
-        /// <summary>
-        /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
-        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
-        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
-            where T : IContentfulResource;
-
+        Task<ContentfulCollection<T>> GetEntriesAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a single <see cref="Asset"/> by the specified ID.
@@ -138,7 +115,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<Asset>> GetAssetsAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContentfulCollection<Asset>> GetAssetsAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional querystring. A simpler approach than 
@@ -148,26 +125,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<IEnumerable<Asset>> GetAssetsAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
-        /// </summary>
-        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Gets all assets of a space, filtered by an optional queryString. A simpler approach than 
-        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
-        /// </summary>
-        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulCollection<Asset>> GetAssetsCollectionAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContentfulCollection<Asset>> GetAssetsAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the <see cref="Space"/> for this client.

@@ -10,9 +10,9 @@ namespace Contentful.Core.Models
     /// <summary>
     /// Represents a collection of contentful resources with additional medadata regarding, skip, limit and total amount of items.
     /// </summary>
-    /// <typeparam name="T">The type to serialize the items array from the API response into. Must be of type <seealso cref="IContentfulResource"/>.</typeparam>
+    /// <typeparam name="T">The type to serialize the items array from the API response into.</typeparam>
     [JsonObject]
-    public class ContentfulCollection<T> : IEnumerable<T> where T : IContentfulResource
+    public class ContentfulCollection<T> : IEnumerable<T>
     {
         /// <summary>
         /// Common system managed metadata properties.
@@ -49,6 +49,11 @@ namespace Contentful.Core.Models
         /// The <see cref="IEnumerable{Asset}" /> of included referenced assets
         /// </summary>
         public IEnumerable<Asset> IncludedAssets { get; set; }
+
+        /// <summary>
+        /// An enumerable of errors while deserializing. Will be null if no errors are present.
+        /// </summary>
+        public IEnumerable<ContentfulError> Errors { get; set; }
 
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Items"/> collection
