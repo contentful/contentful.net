@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace Contentful.AspNetCore.TagHelpers
 {
+    /// <summary>
+    /// Base class for image taghelpers.
+    /// </summary>
     public abstract class ImageTagHelperBase : TagHelper {
 
+        /// <summary>
+        /// The IContentfulClient that fetches assets from Contentful.
+        /// </summary>
         protected IContentfulClient _client;
 
         /// <summary>
@@ -71,7 +77,7 @@ namespace Contentful.AspNetCore.TagHelpers
         /// Builds a url to a contentful image using the specified properties.
         /// </summary>
         /// <returns>The url.</returns>
-        public async Task<string> BuildQuery()
+        public async Task<string> BuildUrl()
         {
             if (string.IsNullOrEmpty(Url))
             {
@@ -142,7 +148,7 @@ namespace Contentful.AspNetCore.TagHelpers
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "img";
-            output.Attributes.Add("src", await BuildQuery());
+            output.Attributes.Add("src", await BuildUrl());
         }
     }
 }

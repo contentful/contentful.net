@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace Contentful.AspNetCore.TagHelpers
 {
-    [RestrictChildren("source")]
+    /// <summary>
+    /// Taghelper that allows rendering img tags with source sets.
+    /// </summary>
+    [RestrictChildren("contentful-source")]
     public class ContentfulSourceSetsTagHelper : TagHelper
     {
         /// <summary>
@@ -19,18 +22,21 @@ namespace Contentful.AspNetCore.TagHelpers
         /// <param name="output"></param>
         /// <returns></returns>
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {
-            var sourceSets = new List<string>();
-            context.Items["sources"] = sourceSets;
-
+            var sourceContext = new ImageSourcesContext();
+            context.Items.Add("sources", sourceContext);
             await output.GetChildContentAsync();
 
             output.TagName = "img";
 
-            output.Attributes.Add("srcset", string.Join(", ", sourceSets));
-            output.Attributes.Add("src", context.Items["DefaultUrl"]);
+            output.Attributes.Add("src", sourceContext.DefaultUrl);
+
+            output.Attributes.Add("srcset", string.Join(", ", sourceContext.Sources));
         }
     }
 
+    /// <summary>
+    /// Taghelper that represents a single source in a source set.
+    /// </summary>
     [HtmlTargetElement(ParentTag = "contentful-source-sets")]
     public class ContentfulSource : ImageTagHelperBase
     {
@@ -61,16 +67,27 @@ namespace Contentful.AspNetCore.TagHelpers
         /// <returns></returns>
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var list = context.Items["sources"] as List<string>;
-            var query = await BuildQuery();
-            list.Add($"{await BuildQuery()} {Size}");
+            var sourcesContext = context.Items["sources"] as ImageSourcesContext;
+            var url = await BuildUrl();
+            sourcesContext.Sources.Add($"{url} {Size}");
 
             if (IsDefault)
             {
-                context.Items["DefaultUrl"] = await BuildQuery();
+                sourcesContext.DefaultUrl = url;
             }
 
             output.SuppressOutput();
         }
+    }
+
+    internal class ImageSourcesContext
+    {
+        public ImageSourcesContext()
+        {
+            Sources = new List<string>();
+        }
+
+        public List<string> Sources { get; set; }
+        public string DefaultUrl { get; set; }
     }
 }
