@@ -8,21 +8,9 @@ using System.Threading.Tasks;
 
 namespace Contentful.AspNetCore.TagHelpers
 {
-    /// <summary>
-    /// TagHelper to create an img tag for a Contentful asset.
-    /// </summary>
-    public class ContentfulImageTagHelper : TagHelper
-    {
-        private readonly IContentfulClient _client;
+    public abstract class ImageTagHelperBase : TagHelper {
 
-        /// <summary>
-        /// Creates a new instance of ContentfulImageTagHelper.
-        /// </summary>
-        /// <param name="client">The IContentfulClient used to retrieve the asset.</param>
-        public ContentfulImageTagHelper(IContentfulClient client)
-        {
-            _client = client;
-        }
+        protected IContentfulClient _client;
 
         /// <summary>
         /// The id of the asset.
@@ -80,14 +68,11 @@ namespace Contentful.AspNetCore.TagHelpers
         public string BackgroundColor { get; set; }
 
         /// <summary>
-        /// Executes the taghelper.
+        /// Builds a url to a contentful image using the specified properties.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
-        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        /// <returns>The url.</returns>
+        public async Task<string> BuildQuery()
         {
-
             if (string.IsNullOrEmpty(Url))
             {
                 var asset = await _client.GetAssetAsync(AssetId, "");
@@ -96,12 +81,12 @@ namespace Contentful.AspNetCore.TagHelpers
 
             var queryBuilder = new ImageUrlBuilder();
 
-            if(Width > 0)
+            if (Width > 0)
             {
                 queryBuilder.SetWidth(Width);
             }
 
-            if(Height > 0)
+            if (Height > 0)
             {
                 queryBuilder.SetHeight(Height);
             }
@@ -130,8 +115,34 @@ namespace Contentful.AspNetCore.TagHelpers
                 queryBuilder.UseProgressiveJpg();
             }
 
+            return $"{Url}{queryBuilder.Build()}";
+        }
+    }
+
+    /// <summary>
+    /// TagHelper to create an img tag for a Contentful asset.
+    /// </summary>
+    public class ContentfulImageTagHelper : ImageTagHelperBase
+    {
+        /// <summary>
+        /// Creates a new instance of ContentfulImageTagHelper.
+        /// </summary>
+        /// <param name="client">The IContentfulClient used to retrieve the asset.</param>
+        public ContentfulImageTagHelper(IContentfulClient client)
+        {
+            _client = client;
+        }
+
+        /// <summary>
+        /// Executes the taghelper.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        {
             output.TagName = "img";
-            output.Attributes.Add("src", Url + queryBuilder.Build());
+            output.Attributes.Add("src", await BuildQuery());
         }
     }
 }
