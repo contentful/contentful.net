@@ -6,6 +6,7 @@ using Contentful.Core;
 using Contentful.Core.Images;
 using System.Threading.Tasks;
 using System.Linq;
+using Contentful.Core.Models;
 
 namespace Contentful.AspNetCore.TagHelpers
 {
@@ -18,6 +19,8 @@ namespace Contentful.AspNetCore.TagHelpers
         /// The IContentfulClient that fetches assets from Contentful.
         /// </summary>
         protected IContentfulClient _client;
+
+        public Asset Asset { get; set; }
 
         /// <summary>
         /// The id of the asset.
