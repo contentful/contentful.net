@@ -197,6 +197,13 @@ namespace Contentful.AspNetCore.TagHelpers
             SetDefaults(defaults);
             var sources = context.Items["sources"] as List<string>;
             var url = await BuildUrl();
+
+            if (string.IsNullOrEmpty(Size) && (Width > 0 || Height > 0))
+            {
+                var defaultSize = Width > 0 ? Width : Height;
+                Size = $"{Width}w";
+            }
+
             sources.Add($"{url} {Size}");
 
             output.SuppressOutput();
