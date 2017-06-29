@@ -5,24 +5,25 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Contentful.Core;
 using Contentful.Core.Images;
 using System.Threading.Tasks;
+using System.Linq;
+using Contentful.Core.Models;
 
 namespace Contentful.AspNetCore.TagHelpers
 {
     /// <summary>
-    /// TagHelper to create an img tag for a Contentful asset.
+    /// Base class for image taghelpers.
     /// </summary>
-    public class ContentfulImageTagHelper : TagHelper
-    {
-        private readonly IContentfulClient _client;
+    public abstract class ImageTagHelperBase : TagHelper {
 
         /// <summary>
-        /// Creates a new instance of ContentfulImageTagHelper.
+        /// The IContentfulClient that fetches assets from Contentful.
         /// </summary>
-        /// <param name="client">The IContentfulClient used to retrieve the asset.</param>
-        public ContentfulImageTagHelper(IContentfulClient client)
-        {
-            _client = client;
-        }
+        protected IContentfulClient _client;
+
+        /// <summary>
+        /// The asset to display information about. If set takes precedence over the AssetId and Url properties.
+        /// </summary>
+        public Asset Asset { get; set; }
 
         /// <summary>
         /// The id of the asset.
@@ -80,13 +81,19 @@ namespace Contentful.AspNetCore.TagHelpers
         public string BackgroundColor { get; set; }
 
         /// <summary>
-        /// Executes the taghelper.
+        /// Builds a url to a contentful image using the specified properties.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="output"></param>
-        /// <returns></returns>
-        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        /// <returns>The url.</returns>
+        public async Task<string> BuildUrl()
         {
+            if(Asset != null)
+            {
+                Url = Asset.File?.Url;
+                if (string.IsNullOrEmpty(Url))
+                {
+                    AssetId = Asset.SystemProperties?.Id;
+                }
+            }
 
             if (string.IsNullOrEmpty(Url))
             {
@@ -96,12 +103,12 @@ namespace Contentful.AspNetCore.TagHelpers
 
             var queryBuilder = new ImageUrlBuilder();
 
-            if(Width > 0)
+            if (Width > 0)
             {
                 queryBuilder.SetWidth(Width);
             }
 
-            if(Height > 0)
+            if (Height > 0)
             {
                 queryBuilder.SetHeight(Height);
             }
@@ -130,8 +137,111 @@ namespace Contentful.AspNetCore.TagHelpers
                 queryBuilder.UseProgressiveJpg();
             }
 
+            return $"{Url}{queryBuilder.Build()}";
+        }
+    }
+
+    /// <summary>
+    /// TagHelper to create an img tag for a Contentful asset.
+    /// </summary>
+    [RestrictChildren("contentful-source")]
+    public class ContentfulImageTagHelper : ImageTagHelperBase
+    {
+        /// <summary>
+        /// Creates a new instance of ContentfulImageTagHelper.
+        /// </summary>
+        /// <param name="client">The IContentfulClient used to retrieve the asset.</param>
+        public ContentfulImageTagHelper(IContentfulClient client)
+        {
+            _client = client;
+        }
+
+        /// <summary>
+        /// Executes the taghelper.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        {
+            var sources = new List<string>();
+            context.Items.Add("sources", sources);
+            context.Items.Add("defaults", this);
+
+            await output.GetChildContentAsync();
+
             output.TagName = "img";
-            output.Attributes.Add("src", Url + queryBuilder.Build());
+            output.Attributes.Add("src", await BuildUrl());
+
+            if (!context.AllAttributes.ContainsName("alt"))
+            {
+                output.Attributes.Add("alt", Asset?.Description);
+            }
+
+            if (sources.Any())
+            {
+                output.Attributes.Add("srcset", string.Join(", ", sources));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Taghelper that represents a single source in a source set.
+    /// </summary>
+    [HtmlTargetElement(ParentTag = "contentful-image")]
+    public class ContentfulSource : ImageTagHelperBase
+    {
+        /// <summary>
+        /// The size specification for this source.
+        /// </summary>
+        public string Size { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of ContentfulSource.
+        /// </summary>
+        /// <param name="client">The IContentfulClient used to retrieve the asset.</param>
+        public ContentfulSource(IContentfulClient client)
+        {
+            _client = client;
+        }
+
+        /// <summary>
+        /// Executes the taghelper.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="output"></param>
+        /// <returns></returns>
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        {
+            var defaults = context.Items["defaults"] as ContentfulImageTagHelper;
+            SetDefaults(defaults);
+            var sources = context.Items["sources"] as List<string>;
+            var url = await BuildUrl();
+
+            if (string.IsNullOrEmpty(Size) && Width > 0)
+            {
+                Size = $"{Width}w";
+            }
+
+            sources.Add($"{url} {Size}");
+
+            output.SuppressOutput();
+        }
+
+        private void SetDefaults(ContentfulImageTagHelper defaults)
+        {
+            ProgressiveJpg = defaults.ProgressiveJpg || ProgressiveJpg;
+            ResizeBehaviour = ResizeBehaviour != ImageResizeBehaviour.Default ? ResizeBehaviour : defaults.ResizeBehaviour;
+            FocusArea = FocusArea != ImageFocusArea.Default ? FocusArea : defaults.FocusArea;
+            Format = Format != ImageFormat.Default ? Format : defaults.Format;
+            Width = Width > 0 ? Width : defaults.Width;
+            Height = Height > 0 ? Height : defaults.Height;
+            JpgQuality = JpgQuality.HasValue ? JpgQuality : defaults.JpgQuality;
+            CornerRadius = CornerRadius.HasValue ? CornerRadius : defaults.CornerRadius;
+            BackgroundColor = string.IsNullOrEmpty(BackgroundColor) ? defaults.BackgroundColor : BackgroundColor;
+            Url = string.IsNullOrEmpty(Url) ? defaults.Url : Url;
+            AssetId = string.IsNullOrEmpty(AssetId) ? defaults.AssetId : AssetId;
+            Asset = Asset ?? defaults.Asset;
         }
     }
 }
