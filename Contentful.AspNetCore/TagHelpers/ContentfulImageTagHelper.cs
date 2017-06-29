@@ -173,8 +173,6 @@ namespace Contentful.AspNetCore.TagHelpers
             output.TagName = "img";
             output.Attributes.Add("src", await BuildUrl());
 
-            
-
             if (!context.AllAttributes.ContainsName("alt"))
             {
                 output.Attributes.Add("alt", Asset?.Description);
@@ -220,10 +218,9 @@ namespace Contentful.AspNetCore.TagHelpers
             var sources = context.Items["sources"] as List<string>;
             var url = await BuildUrl();
 
-            if (string.IsNullOrEmpty(Size) && (Width > 0 || Height > 0))
+            if (string.IsNullOrEmpty(Size) && Width > 0)
             {
-                var defaultSize = Width > 0 ? Width : Height;
-                Size = $"{defaultSize}w";
+                Size = $"{Width}w";
             }
 
             sources.Add($"{url} {Size}");
