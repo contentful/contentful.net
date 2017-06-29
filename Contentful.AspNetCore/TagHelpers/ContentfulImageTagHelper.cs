@@ -20,6 +20,9 @@ namespace Contentful.AspNetCore.TagHelpers
         /// </summary>
         protected IContentfulClient _client;
 
+        /// <summary>
+        /// The asset to display information about. If set takes precedence over the AssetId and Url properties.
+        /// </summary>
         public Asset Asset { get; set; }
 
         /// <summary>
@@ -83,6 +86,15 @@ namespace Contentful.AspNetCore.TagHelpers
         /// <returns>The url.</returns>
         public async Task<string> BuildUrl()
         {
+            if(Asset != null)
+            {
+                Url = Asset.File?.Url;
+                if (string.IsNullOrEmpty(Url))
+                {
+                    AssetId = Asset.SystemProperties?.Id;
+                }
+            }
+
             if (string.IsNullOrEmpty(Url))
             {
                 var asset = await _client.GetAssetAsync(AssetId, "");
@@ -225,6 +237,7 @@ namespace Contentful.AspNetCore.TagHelpers
             BackgroundColor = string.IsNullOrEmpty(BackgroundColor) ? defaults.BackgroundColor : BackgroundColor;
             Url = string.IsNullOrEmpty(Url) ? defaults.Url : Url;
             AssetId = string.IsNullOrEmpty(AssetId) ? defaults.AssetId : AssetId;
+            Asset = Asset ?? defaults.Asset;
         }
     }
 }
