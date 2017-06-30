@@ -728,5 +728,19 @@ namespace Contentful.Core.Tests
                 c => { Assert.NotNull(c.Image); }
                 );
         }
+
+        [Fact]
+        public async Task GetEntriesWithSelectShouldYieldCorrectResult()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithoutSys.json");
+            var builder = QueryBuilder<TestWithTags>.New;
+            //Act
+            var res = await _client.GetEntriesByTypeAsync("666", builder);
+
+            //Assert
+            Assert.Equal(4, res.Count());
+            Assert.Equal("kitchen", res.First().Tags.First());
+        }
     }
 }

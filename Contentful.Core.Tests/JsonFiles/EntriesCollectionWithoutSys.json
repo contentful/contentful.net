@@ -1,0 +1,52 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 4,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "fields": {
+        "tags": [
+          "kitchen",
+          "accessories",
+          "whisk",
+          "scandinavia",
+          "design"
+        ]
+      }
+    },
+    {
+      "fields": {
+        "tags": [
+          "wood",
+          "toy",
+          "car",
+          "sweden",
+          "design"
+        ]
+      }
+    },
+    {
+      "fields": {
+        "tags": [
+          "home dÃ©cor",
+          "clocks",
+          "interior design",
+          "yellow",
+          "gifts"
+        ]
+      }
+    },
+    {
+      "fields": {
+        "tags": [
+          "vase",
+          "flowers",
+          "accessories"
+        ]
+      }
+    }
+  ]
+}

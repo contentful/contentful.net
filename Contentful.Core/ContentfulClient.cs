@@ -227,7 +227,7 @@ namespace Contentful.Core
                     var token = entryTokens[i];
                     var grandParent = token.Parent.Parent;
 
-                    if(grandParent["sys"]["type"]?.ToString() != "Entry")
+                    if(grandParent["sys"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
                     {
                         continue;
                     }
@@ -264,7 +264,14 @@ namespace Contentful.Core
 
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
-            var id = ((JValue) entryToken.SelectToken("$.sys.id")).Value.ToString();
+            var id = ((JValue) entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
+
+            if(id == null)
+            {
+                //No id token present, not possible to resolve links. Probably because the sys property has been excluded with a select statement.
+                return;
+            }
+
             entryToken.AddFirst(new JProperty( "$id", new JValue(id)));
             processedIds.Add(id);
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
