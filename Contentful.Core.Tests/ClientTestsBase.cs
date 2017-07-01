@@ -78,6 +78,12 @@ namespace Contentful.Core.Tests
         public string Title { get; set; }
     }
 
+    public class TestWithTags
+    {
+        public SystemProperties Sys { get; set; }
+        public List<string> Tags { get; set; }
+    }
+
     public class TestCompany : IMarker
     {
         public string CompanyDescription { get; set; }

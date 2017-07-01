@@ -230,6 +230,11 @@ namespace Contentful.AspNetCore.TagHelpers
 
         private void SetDefaults(ContentfulImageTagHelper defaults)
         {
+            if(defaults == null)
+            {
+                return;
+            }
+
             ProgressiveJpg = defaults.ProgressiveJpg || ProgressiveJpg;
             ResizeBehaviour = ResizeBehaviour != ImageResizeBehaviour.Default ? ResizeBehaviour : defaults.ResizeBehaviour;
             FocusArea = FocusArea != ImageFocusArea.Default ? FocusArea : defaults.FocusArea;
