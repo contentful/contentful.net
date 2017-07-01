@@ -9,3 +9,4 @@ script:
   - dotnet restore
   - dotnet build 
   - dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj
+  - dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj
