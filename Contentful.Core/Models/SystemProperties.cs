@@ -82,6 +82,11 @@ namespace Contentful.Core.Models
         public int? PublishedCounter { get; set; }
 
         /// <summary>
+        /// The published version of the resource.
+        /// </summary>
+        public int? PublishedVersion { get; set; }
+
+        /// <summary>
         /// The user that published the resource.
         /// </summary>
         public User PublishedBy { get; set; }

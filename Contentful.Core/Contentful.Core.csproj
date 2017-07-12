@@ -4,7 +4,7 @@
     <PackageId>contentful.csharp</PackageId>
     <AssemblyTitle>contentful.net</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>0.14.3-beta</VersionPrefix>
+    <VersionPrefix>0.14.4-beta</VersionPrefix>
     <TargetFramework>netstandard1.4</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
@@ -18,9 +18,9 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <AssemblyVersion>0.14.3.0</AssemblyVersion>
-    <FileVersion>0.14.3.0</FileVersion>
-    <Version>0.14.3-beta</Version>
+    <AssemblyVersion>0.14.4.0</AssemblyVersion>
+    <FileVersion>0.14.4.0</FileVersion>
+    <Version>0.14.4-beta</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options">
