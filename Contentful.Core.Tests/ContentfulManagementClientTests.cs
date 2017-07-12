@@ -570,6 +570,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("Somethi", res.First().Fields.field1["en-US"].ToString());
             Assert.Equal(DateTime.Parse("2016-11-23T09:40:56.857Z").ToUniversalTime(), res.First().SystemProperties.CreatedAt);
             Assert.Equal("testagain", res.First().SystemProperties.ContentType.SystemProperties.Id);
+            Assert.Equal(1, res.First().SystemProperties.PublishedCounter);
         }
 
         [Fact]
