@@ -75,5 +75,20 @@ namespace Contentful.Core.Models
         /// The <seealso cref="Space"/> of the resource. Only applicable for <seealso cref="Entry{T}"/>, <seealso cref="Asset"/> and <seealso cref="ContentType"/> resource types.
         /// </summary>
         public Space Space { get; set; }
+
+        /// <summary>
+        /// The number of times the resource has been published.
+        /// </summary>
+        public int? PublishedCounter { get; set; }
+
+        /// <summary>
+        /// The user that published the resource.
+        /// </summary>
+        public User PublishedBy { get; set; }
+
+        /// <summary>
+        /// When the resource was first published.
+        /// </summary>
+        public DateTime? FirstPublishedAt { get; set; }
     }
 }
