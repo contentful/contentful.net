@@ -232,17 +232,8 @@ namespace Contentful.Core
                         continue;
                     }
 
-                    if(ContentTypeResolver != null)
-                    {
-                        var contentType = grandParent["sys"]["contentType"]["sys"]["id"]?.ToString();
-
-                        var type = ContentTypeResolver.Resolve(contentType);
-
-                        if(type != null)
-                        {
-                            grandParent.AddFirst(new JProperty("$type", type.AssemblyQualifiedName));
-                        }
-                    }
+                    ResolveContentTypes(grandParent);
+                    
 
                     //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
                     token.Parent.Remove();
@@ -262,6 +253,28 @@ namespace Contentful.Core
             return collection;
         }
 
+        private void ResolveContentTypes(JContainer container)
+        {
+            if(ContentTypeResolver == null || container["$type"] != null)
+            {
+                return;
+            }
+
+            var contentType = container["sys"]?["contentType"]?["sys"]?["id"]?.ToString();
+
+            if(contentType == null)
+            {
+                return;
+            }
+
+            var type = ContentTypeResolver.Resolve(contentType);
+
+            if (type != null)
+            {
+                container.AddFirst(new JProperty("$type", type.AssemblyQualifiedName));
+            }
+        }
+
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
             var id = ((JValue) entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
@@ -272,7 +285,10 @@ namespace Contentful.Core
                 return;
             }
 
+            ResolveContentTypes(entryToken);
+
             entryToken.AddFirst(new JProperty( "$id", new JValue(id)));
+
             processedIds.Add(id);
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
 

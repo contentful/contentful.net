@@ -189,6 +189,10 @@ namespace Contentful.Core.Tests
     {
         public Dictionary<string, Type> _types = new Dictionary<string, Type>()
         {
+            { "ContentTypeId1", typeof(TestCategory) },
+            { "ContentType2", typeof(TestCategory) },
+            { "ContentType3", typeof(TestCategory) },
+            { "testagain", typeof(TestCategory) },
             { "6XwpTaSiiI2Ak2Ww0oi6qa", typeof(TestCategory) },
             { "2PqfXUJwE8qSYKuM0U6w8M", typeof(TestEntryModel) },
             { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) }

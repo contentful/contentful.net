@@ -695,6 +695,21 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UsingAContentTypeResolverShouldYieldCorrectTypesInCollectionWithIncludes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
+            _client.ContentTypeResolver = new TestResolver();
+            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+            //Act
+            var res = await _client.GetEntriesAsync<IMarker>();
+
+            //Assert
+            Assert.Equal(2, res.Count());
+            Assert.IsType<TestCategory>(res.First());
+        }
+
+        [Fact]
         public async Task GetEntryWithInvalidSpaceShouldSerializeErrorMessageCorrectlyAndThrowContentfulException()
         {
             //Arrange
