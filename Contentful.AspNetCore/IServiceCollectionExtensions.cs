@@ -30,5 +30,21 @@ namespace Contentful.AspNetCore
             services.TryAddTransient<IContentfulManagementClient, ContentfulManagementClient>();
             return services;
         }
+
+        /// <summary>
+        /// Adds Contentful services to the IServiceCollection.
+        /// </summary>
+        /// <param name="services">The IServiceCollection.</param>
+        /// <param name="configuration">The IConfiguration used to retrieve configuration from.</param>
+        /// <returns>The IServiceCollection.</returns>
+        public static IServiceCollection AddContentful(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddOptions();
+            services.Configure<ContentfulOptions>(configuration.GetSection("ContentfulOptions"));
+            services.TryAddSingleton<HttpClient>();
+            services.TryAddTransient<IContentfulClient, ContentfulClient>();
+            services.TryAddTransient<IContentfulManagementClient, ContentfulManagementClient>();
+            return services;
+        }
     }
 }
