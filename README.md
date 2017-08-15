@@ -8,11 +8,19 @@ This is the .NET SDK for [Contentful's][1] Content Delivery and Content Manageme
 
 ## Setup
 
-We recommend you use the NuGet package manager to add Contentful to your .Net application using the following command in your NuGet package manager console.
+We recommend you use the NuGet Package Manager to add Contentful Client Library to your .NET Application using one of the following options:
 
-```powershell
-PM> Install-Package contentful.csharp
-```
+- In Visual Studio, open Package Manager Console window and run the following command:
+
+  ```powershell
+  PM> Install-Package contentful.csharp
+  ```
+
+- In a command-line, run the following .NET CLI command:
+
+  ```console
+  > dotnet add package contentful.csharp
+  ```
 
 ## Usage
 
