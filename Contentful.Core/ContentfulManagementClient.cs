@@ -412,12 +412,12 @@ namespace Contentful.Core
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
+        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await GetEntriesCollectionAsync<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
@@ -426,12 +426,12 @@ namespace Contentful.Core
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
         /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
         /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
+        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
