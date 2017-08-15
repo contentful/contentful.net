@@ -60,7 +60,8 @@ Console.WriteLine(entry.Fields.productName.ToString()); // => Contentful
 Normally you serialize this response into your own class instead of the generic `Entry<>` type. You can do this by providing a suitable type to seralize into. Take the following class as an example:
 
 ```csharp
-public class Product {
+public class Product
+{
     public string ProductName { get; set; }
     public string Price { get; set; }
     public string Description { get; set; }
@@ -99,7 +100,8 @@ You can then use the client to, for example, create a content type.
 
 ```csharp
 var contentType = new ContentType();
-contentType.SystemProperties = new SystemProperties() {
+contentType.SystemProperties = new SystemProperties()
+{
     Id = "new-content-type"
 };
 contentType.Name = "New contenttype";
