@@ -8,11 +8,19 @@ This is the .NET SDK for [Contentful's][1] Content Delivery and Content Manageme
 
 ## Setup
 
-We recommend you use the NuGet package manager to add Contentful to your .Net application using the following command in your NuGet package manager console.
+We recommend you use the NuGet Package Manager to add the SDK to your .NET Application using one of the following options:
 
-```csharp
-Install-Package contentful.csharp -prerelease
-```
+- In Visual Studio, open Package Manager Console window and run the following command:
+
+  ```powershell
+  PM> Install-Package contentful.csharp
+  ```
+
+- In a command-line, run the following .NET CLI command:
+
+  ```console
+  > dotnet add package contentful.csharp
+  ```
 
 ## Usage
 
@@ -52,7 +60,8 @@ Console.WriteLine(entry.Fields.productName.ToString()); // => Contentful
 Normally you serialize this response into your own class instead of the generic `Entry<>` type. You can do this by providing a suitable type to seralize into. Take the following class as an example:
 
 ```csharp
-public class Product {
+public class Product
+{
     public string ProductName { get; set; }
     public string Price { get; set; }
     public string Description { get; set; }
@@ -91,7 +100,8 @@ You can then use the client to, for example, create a content type.
 
 ```csharp
 var contentType = new ContentType();
-contentType.SystemProperties = new SystemProperties() {
+contentType.SystemProperties = new SystemProperties()
+{
     Id = "new-content-type"
 };
 contentType.Name = "New contenttype";
