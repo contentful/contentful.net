@@ -1,6 +1,6 @@
 ![build status](https://travis-ci.com/contentful/contentful.net.svg?token=Pyo2hEQ4sLp3x19cTNf6&branch=master)
 
-# Contentful Client Library for .NET
+# contentful.net
 
 [https://www.contentful.com][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
@@ -8,7 +8,7 @@ This is the .NET SDK for [Contentful's][1] Content Delivery and Content Manageme
 
 ## Setup
 
-We recommend you use the NuGet Package Manager to add Contentful Client Library to your .NET Application using one of the following options:
+We recommend you use the NuGet Package Manager to add the SDK to your .NET Application using one of the following options:
 
 - In Visual Studio, open Package Manager Console window and run the following command:
 
