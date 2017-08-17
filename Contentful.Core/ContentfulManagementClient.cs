@@ -458,8 +458,6 @@ namespace Contentful.Core
                         continue;
                     }
 
-
-
                     //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
                     token.Parent.Remove();
                     grandParent.Add(token.Children());
@@ -501,6 +499,23 @@ namespace Contentful.Core
             var updatedEntry = jsonObject.ToObject<Entry<dynamic>>(Serializer);
 
             return updatedEntry;
+        }
+
+        /// <summary>
+        /// Creates an entry.
+        /// </summary>
+        /// <param name="entry">The object to create an entry from.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created entry.</returns>
+        public async Task<T> CreateEntryAsync<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entryToCreate = new Entry<dynamic>();
+            entryToCreate.Fields = entry;
+
+            var createdEntry = await CreateEntryAsync(entryToCreate, contentTypeId, spaceId, cancellationToken);
+            return (createdEntry.Fields as JObject).ToObject<T>();
         }
 
         /// <summary>

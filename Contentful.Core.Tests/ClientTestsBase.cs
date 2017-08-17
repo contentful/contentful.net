@@ -208,5 +208,6 @@ namespace Contentful.Core.Tests
     {
         public SystemProperties Sys { get; set; }
         public Dictionary<string, string> Field1 { get; set; }
+        public Dictionary<string, string> Field34 { get; set; }
     }
 }
