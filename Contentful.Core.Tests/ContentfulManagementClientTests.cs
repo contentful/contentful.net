@@ -574,6 +574,26 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithCustomTypes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
+
+            //Act
+            var res = await _client.GetEntriesCollectionAsync<ManagementEntry>();
+
+            //Assert
+            Assert.Equal(8, res.Total);
+            Assert.Equal(100, res.Limit);
+            Assert.Equal(0, res.Skip);
+            Assert.Equal(8, res.Items.Count());
+            Assert.Equal("Somethi", res.First().Field1["en-US"].ToString());
+            Assert.Equal(DateTime.Parse("2016-11-23T09:40:56.857Z").ToUniversalTime(), res.First().Sys.CreatedAt);
+            Assert.Equal("testagain", res.First().Sys.ContentType.SystemProperties.Id);
+            Assert.Equal(1, res.First().Sys.PublishedCounter);
+        }
+
+        [Fact]
         public async Task CreateOrUpdateEntryShouldThrowIfIdIsNotSet()
         {
             //Arrange

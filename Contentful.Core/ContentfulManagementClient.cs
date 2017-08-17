@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -437,8 +438,36 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
+            var isContentfulResource = typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
             var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
+
+            if (!isContentfulResource)
+            {
+                var entryTokens = jsonObject.SelectTokens("$.items[*]..fields").ToList();
+
+                for (var i = entryTokens.Count - 1; i >= 0; i--)
+                {
+                    var token = entryTokens[i];
+                    var grandParent = token.Parent.Parent;
+
+                    if (grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
+                    {
+                        continue;
+                    }
+
+
+
+                    //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
+                    token.Parent.Remove();
+                    grandParent.Add(token.Children());
+                }
+
+                var entries = jsonObject.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
+                collection.Items = entries;
+            }
 
             return collection;
         }

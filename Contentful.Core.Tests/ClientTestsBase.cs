@@ -203,4 +203,10 @@ namespace Contentful.Core.Tests
             return _types.TryGetValue(contentTypeId, out var type) ? type : null;
         }
     }
+
+    public class ManagementEntry
+    {
+        public SystemProperties Sys { get; set; }
+        public Dictionary<string, string> Field1 { get; set; }
+    }
 }
