@@ -579,6 +579,41 @@ namespace Contentful.Core
             return (createdEntry.Fields as JObject).ToObject<T>();
         }
 
+
+        /// <summary>
+        /// Updates an entry fields for a certain locale using the values from the provided object.
+        /// </summary>
+        /// <param name="entry">The object to use as values for the entry fields.</param>
+        /// <param name="id">The id of the entry to update.</param>
+        /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
+        public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entryToUpdate = await GetEntryAsync(id, spaceId);
+            
+            if(locale == null)
+            {
+                locale = (await GetLocalesCollectionAsync(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
+            }
+
+            var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
+            var fieldsToUpdate = (entryToUpdate.Fields as JObject);
+
+            foreach (var prop in fieldsToUpdate.Children().Where(p => p is JProperty).Cast<JProperty>())
+            {
+                if(jsonEntry[prop.Name] != null)
+                {
+                    fieldsToUpdate[prop.Name][locale] = jsonEntry[prop.Name];
+                }
+            }
+
+            var updatedEntry = await CreateOrUpdateEntryAsync(entryToUpdate,spaceId: spaceId, version: entryToUpdate.SystemProperties.Version, cancellationToken: cancellationToken);
+
+            return updatedEntry;
+        }
+
         /// <summary>
         /// Get a single entry by the specified id.
         /// </summary>
@@ -2162,7 +2197,7 @@ namespace Contentful.Core
             return await SendHttpRequestAsync(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken).ConfigureAwait(false);
         }
 
-        private StringContent ConvertObjectToJsonStringContent(object ob)
+        private string ConvertObjectToJsonString(object ob)
         {
             var resolver = new CamelCasePropertyNamesContractResolver();
             resolver.NamingStrategy.OverrideSpecifiedNames = false;
@@ -2172,6 +2207,13 @@ namespace Contentful.Core
                 ContractResolver = resolver
 
             });
+
+            return serializedObject;
+        }
+
+        private StringContent ConvertObjectToJsonStringContent(object ob)
+        {
+            var serializedObject = ConvertObjectToJsonString(ob);
             return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
         }
     }

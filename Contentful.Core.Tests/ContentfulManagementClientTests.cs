@@ -725,6 +725,53 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UpdateEntryForLocaleShouldSetValuesCorrectly()
+        {
+            //Arrange
+            var entry = new TestNested();
+
+            entry.Field1 = "Benko";
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            var contentSet = "";
+
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateEntryForLocale(entry, "532", locale: "en-US");
+            //Assert
+
+            Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
+        }
+
+        [Fact]
+        public async Task UpdateEntryForLocaleShouldSetValuesCorrectlyWhenNoLocaleIsSpecified()
+        {
+            //Arrange
+            var entry = new TestNested();
+
+            entry.Field1 = "Benko";
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            var contentSet = "";
+
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateEntryForLocale(entry, "532");
+            //Assert
+
+            Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
+        }
+
+        [Fact]
         public async Task CreateEntryShouldCallCorrectUrlWithData()
         {
             //Arrange
