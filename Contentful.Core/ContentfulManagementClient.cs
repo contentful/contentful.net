@@ -557,6 +557,29 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Creates or updates an entry. Updates if an entry with the same id already exists.
+        /// </summary>
+        /// <param name="entry">The entry to create or update.</param>
+        /// <param name="id">The id of the entry to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry. Need only be set if you are creating a new entry.</param>
+        /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated entry.</returns>
+        public async Task<T> CreateOrUpdateEntryAsync<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entryToCreate = new Entry<dynamic>();
+            entryToCreate.SystemProperties = new SystemProperties
+            {
+                Id = id
+            };
+            entryToCreate.Fields = entry;
+
+            var createdEntry = await CreateOrUpdateEntryAsync(entryToCreate, spaceId, contentTypeId, version, cancellationToken);
+            return (createdEntry.Fields as JObject).ToObject<T>();
+        }
+
+        /// <summary>
         /// Get a single entry by the specified id.
         /// </summary>
         /// <param name="entryId">The id of the entry.</param>
