@@ -82,18 +82,38 @@ namespace Contentful.Core.Models
         public int? PublishedCounter { get; set; }
 
         /// <summary>
-        /// The published version of the resource.
+        /// The published version of the resource. Will only be present for management API calls.
         /// </summary>
         public int? PublishedVersion { get; set; }
 
         /// <summary>
-        /// The user that published the resource.
+        /// The user that published the resource. Will only be present for management API calls.
         /// </summary>
         public User PublishedBy { get; set; }
 
         /// <summary>
-        /// When the resource was first published.
+        /// The number of times the resource has been published. Will only be present for management API calls.
+        /// </summary>
+        public int? PublishCounter { get; set; }
+
+        /// <summary>
+        /// When the resource was first published. Will only be present for management API calls.
         /// </summary>
         public DateTime? FirstPublishedAt { get; set; }
+
+        /// <summary>
+        /// The date and time the resource was archived. Will only be present for management API calls.
+        /// </summary>
+        public DateTime? ArchivedAt { get; set; }
+
+        /// <summary>
+        /// The version that is currently archived. Will only be present for management API calls.
+        /// </summary>
+        public int? ArchivedVersion { get; set; }
+
+        /// <summary>
+        /// The link to the user that last archived this content. Will only be present for management API call.
+        /// </summary>
+        public User ArchivedBy { get; set; }
     }
 }
