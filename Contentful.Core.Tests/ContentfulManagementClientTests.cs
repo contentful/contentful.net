@@ -574,6 +574,26 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithCustomTypes()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
+
+            //Act
+            var res = await _client.GetEntriesCollectionAsync<ManagementEntry>();
+
+            //Assert
+            Assert.Equal(8, res.Total);
+            Assert.Equal(100, res.Limit);
+            Assert.Equal(0, res.Skip);
+            Assert.Equal(8, res.Items.Count());
+            Assert.Equal("Somethi", res.First().Field1["en-US"].ToString());
+            Assert.Equal(DateTime.Parse("2016-11-23T09:40:56.857Z").ToUniversalTime(), res.First().Sys.CreatedAt);
+            Assert.Equal("testagain", res.First().Sys.ContentType.SystemProperties.Id);
+            Assert.Equal(1, res.First().Sys.PublishedCounter);
+        }
+
+        [Fact]
         public async Task CreateOrUpdateEntryShouldThrowIfIdIsNotSet()
         {
             //Arrange
@@ -670,17 +690,131 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task CreateOrUpdateEntryShouldCallCorrectUrlWithDataForCustomType()
+        {
+            //Arrange
+            var entry = new ManagementEntry();
+            
+            entry.Field34 = new Dictionary<string, string>()
+            {
+                { "en-US", "banana" }
+            };
+            var contentTypeHeader = "";
+            var contentSet = "";
+            var requestUrl = "";
+            var versionHeader = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
+                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            var res = await _client.CreateOrUpdateEntryAsync(entry, "532", contentTypeId: "Bryan Fury", version: 45);
+            //Assert
+            Assert.Equal("Bryan Fury", contentTypeHeader);
+            Assert.Equal("45", versionHeader);
+            Assert.Equal("https://api.contentful.com/spaces/666/entries/532", requestUrl);
+            Assert.Contains(@"""field34"":{""en-US"":""banana""}", contentSet);
+        }
+
+        [Fact]
+        public async Task UpdateEntryForLocaleShouldSetValuesCorrectly()
+        {
+            //Arrange
+            var entry = new TestNested();
+
+            entry.Field1 = "Benko";
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            var contentSet = "";
+
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateEntryForLocale(entry, "532", locale: "en-US");
+            //Assert
+
+            Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
+        }
+
+        [Fact]
+        public async Task UpdateEntryForLocaleShouldSetValuesCorrectlyWhenNoLocaleIsSpecified()
+        {
+            //Arrange
+            var entry = new TestNested();
+
+            entry.Field1 = "Benko";
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            var contentSet = "";
+
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateEntryForLocale(entry, "532");
+            //Assert
+
+            Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
+        }
+
+        [Fact]
         public async Task CreateEntryShouldCallCorrectUrlWithData()
         {
             //Arrange
-            var entry = new Entry<dynamic>();
-
-#pragma warning disable IDE0017 // Object initialization can be simplified
-            entry.Fields = new ExpandoObject();
-#pragma warning restore IDE0017 // Object initialization can be simplified
+            var entry = new Entry<dynamic>
+            {
+                Fields = new ExpandoObject()
+            };
             entry.Fields.field34 = new Dictionary<string, string>()
             {
                 { "en-US", "bapple" }
+            };
+            var contentTypeHeader = "";
+            var contentSet = "";
+            var requestUrl = "";
+            _handler.VerificationBeforeSend = () =>
+            {
+                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            var res = await _client.CreateEntryAsync(entry, contentTypeId: "Ling Xiaoyu");
+            //Assert
+            Assert.Equal("Ling Xiaoyu", contentTypeHeader);
+            Assert.Equal("https://api.contentful.com/spaces/666/entries", requestUrl);
+            Assert.Contains(@"""field34"":{""en-US"":""bapple""}", contentSet);
+        }
+
+        [Fact]
+        public async Task CreateEntryWithCustomTypeShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            var entry = new ManagementEntry()
+            {
+                Field34 = new Dictionary<string, string>()
+                {
+                    { "en-US", "bapple" }
+                }
             };
             var contentTypeHeader = "";
             var contentSet = "";

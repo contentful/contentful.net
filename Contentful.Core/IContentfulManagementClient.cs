@@ -92,6 +92,16 @@ namespace Contentful.Core
         Task<Entry<dynamic>> CreateEntryAsync(Entry<dynamic> entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Creates an entry.
+        /// </summary>
+        /// <param name="entry">The object to create an entry from.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created entry.</returns>
+        Task<T> CreateEntryAsync<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Creates or updates an <see cref="Entry{T}"/>. Updates if an entry with the same id already exists.
         /// </summary>
         /// <param name="entry">The entry to create or update.</param>
@@ -101,6 +111,29 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
         Task<Entry<dynamic>> CreateOrUpdateEntryAsync(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = default(int?), CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Creates or updates an entry. Updates if an entry with the same id already exists.
+        /// </summary>
+        /// <param name="entry">The entry to create or update.</param>
+        /// <param name="id">The id of the entry to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry. Need only be set if you are creating a new entry.</param>
+        /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated entry.</returns>
+        Task<T> CreateOrUpdateEntryAsync<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Updates an entry fields for a certain locale using the values from the provided object.
+        /// </summary>
+        /// <param name="entry">The object to use as values for the entry fields.</param>
+        /// <param name="id">The id of the entry to update.</param>
+        /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
+        Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Creates or updates a webhook in a <see cref="Space"/>.  Updates if a webhook with the same id already exists.
@@ -319,7 +352,7 @@ namespace Contentful.Core
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource;
+        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
@@ -329,7 +362,7 @@ namespace Contentful.Core
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource;
+        Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a single entry by the specified id.

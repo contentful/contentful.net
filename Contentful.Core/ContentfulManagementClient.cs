@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -412,12 +413,12 @@ namespace Contentful.Core
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
+        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await GetEntriesCollectionAsync<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
@@ -426,19 +427,45 @@ namespace Contentful.Core
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
         /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
         /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken)) where T : IContentfulResource
+        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
 
+            var isContentfulResource = typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
+
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
             var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
+
+            if (!isContentfulResource)
+            {
+                var entryTokens = jsonObject.SelectTokens("$.items[*]..fields").ToList();
+
+                for (var i = entryTokens.Count - 1; i >= 0; i--)
+                {
+                    var token = entryTokens[i];
+                    var grandParent = token.Parent.Parent;
+
+                    if (grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
+                    {
+                        continue;
+                    }
+
+                    //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
+                    token.Parent.Remove();
+                    grandParent.Add(token.Children());
+                }
+
+                var entries = jsonObject.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
+                collection.Items = entries;
+            }
 
             return collection;
         }
@@ -475,6 +502,23 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Creates an entry.
+        /// </summary>
+        /// <param name="entry">The object to create an entry from.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created entry.</returns>
+        public async Task<T> CreateEntryAsync<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entryToCreate = new Entry<dynamic>();
+            entryToCreate.Fields = entry;
+
+            var createdEntry = await CreateEntryAsync(entryToCreate, contentTypeId, spaceId, cancellationToken);
+            return (createdEntry.Fields as JObject).ToObject<T>();
+        }
+
+        /// <summary>
         /// Creates or updates an <see cref="Entry{T}"/>. Updates if an entry with the same id already exists.
         /// </summary>
         /// <param name="entry">The entry to create or update.</param>
@@ -508,6 +552,64 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedEntry = jsonObject.ToObject<Entry<dynamic>>(Serializer);
+
+            return updatedEntry;
+        }
+
+        /// <summary>
+        /// Creates or updates an entry. Updates if an entry with the same id already exists.
+        /// </summary>
+        /// <param name="entry">The entry to create or update.</param>
+        /// <param name="id">The id of the entry to create or update.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry. Need only be set if you are creating a new entry.</param>
+        /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated entry.</returns>
+        public async Task<T> CreateOrUpdateEntryAsync<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entryToCreate = new Entry<dynamic>();
+            entryToCreate.SystemProperties = new SystemProperties
+            {
+                Id = id
+            };
+            entryToCreate.Fields = entry;
+
+            var createdEntry = await CreateOrUpdateEntryAsync(entryToCreate, spaceId, contentTypeId, version, cancellationToken);
+            return (createdEntry.Fields as JObject).ToObject<T>();
+        }
+
+
+        /// <summary>
+        /// Updates an entry fields for a certain locale using the values from the provided object.
+        /// </summary>
+        /// <param name="entry">The object to use as values for the entry fields.</param>
+        /// <param name="id">The id of the entry to update.</param>
+        /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
+        public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var entryToUpdate = await GetEntryAsync(id, spaceId);
+            
+            if(locale == null)
+            {
+                locale = (await GetLocalesCollectionAsync(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
+            }
+
+            var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
+            var fieldsToUpdate = (entryToUpdate.Fields as JObject);
+
+            foreach (var prop in fieldsToUpdate.Children().Where(p => p is JProperty).Cast<JProperty>())
+            {
+                if(jsonEntry[prop.Name] != null)
+                {
+                    fieldsToUpdate[prop.Name][locale] = jsonEntry[prop.Name];
+                }
+            }
+
+            var updatedEntry = await CreateOrUpdateEntryAsync(entryToUpdate,spaceId: spaceId, version: entryToUpdate.SystemProperties.Version, cancellationToken: cancellationToken);
 
             return updatedEntry;
         }
@@ -2095,7 +2197,7 @@ namespace Contentful.Core
             return await SendHttpRequestAsync(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken).ConfigureAwait(false);
         }
 
-        private StringContent ConvertObjectToJsonStringContent(object ob)
+        private string ConvertObjectToJsonString(object ob)
         {
             var resolver = new CamelCasePropertyNamesContractResolver();
             resolver.NamingStrategy.OverrideSpecifiedNames = false;
@@ -2105,6 +2207,13 @@ namespace Contentful.Core
                 ContractResolver = resolver
 
             });
+
+            return serializedObject;
+        }
+
+        private StringContent ConvertObjectToJsonStringContent(object ob)
+        {
+            var serializedObject = ConvertObjectToJsonString(ob);
             return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
         }
     }
