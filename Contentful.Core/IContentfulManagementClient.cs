@@ -125,15 +125,28 @@ namespace Contentful.Core
         Task<T> CreateOrUpdateEntryAsync<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Updates an entry fields for a certain locale using the values from the provided object.
+        /// Creates an entry with values for a certain locale from the provided object.
         /// </summary>
         /// <param name="entry">The object to use as values for the entry fields.</param>
-        /// <param name="id">The id of the entry to update.</param>
-        /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null.</param>
+        /// <param name="id">The of the entry to create.</param>
+        /// <param name="contentTypeId">The id of the content type to create an entry for.</param>
+        /// <param name="locale">The locale to set fields for. The default locale for the space will be used if this parameter is null or empty.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
-        Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>The created <see cref="Entry{T}"/>.</returns>
+        Task<Entry<dynamic>> CreateEntryForLocaleAsync(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        
+
+            /// <summary>
+            /// Updates an entry fields for a certain locale using the values from the provided object.
+            /// </summary>
+            /// <param name="entry">The object to use as values for the entry fields.</param>
+            /// <param name="id">The id of the entry to update.</param>
+            /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null.</param>
+            /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+            /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+            /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
+            Task<Entry<dynamic>> UpdateEntryForLocaleAsync(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Creates or updates a webhook in a <see cref="Space"/>.  Updates if a webhook with the same id already exists.

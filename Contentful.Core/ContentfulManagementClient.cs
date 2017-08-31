@@ -579,21 +579,56 @@ namespace Contentful.Core
             return (createdEntry.Fields as JObject).ToObject<T>();
         }
 
+        /// <summary>
+        /// Creates an entry with values for a certain locale from the provided object.
+        /// </summary>
+        /// <param name="entry">The object to use as values for the entry fields.</param>
+        /// <param name="id">The of the entry to create.</param>
+        /// <param name="contentTypeId">The id of the content type to create an entry for.</param>
+        /// <param name="locale">The locale to set fields for. The default locale for the space will be used if this parameter is null or empty.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Entry{T}"/>.</returns>
+        public async Task<Entry<dynamic>> CreateEntryForLocaleAsync(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                locale = (await GetLocalesCollectionAsync(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
+            }
+
+            var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
+            var jsonToCreate = new JObject();
+            foreach (var prop in jsonEntry.Children().Where(p => p is JProperty).Cast<JProperty>())
+            {
+                var val = jsonEntry[prop.Name];
+                jsonToCreate.Add(new JProperty(prop.Name, new JObject(new JProperty(locale, val))));
+            }
+
+            var entryToCreate = new Entry<dynamic>();
+            entryToCreate.SystemProperties = new SystemProperties
+            {
+                Id = id
+            };
+            entryToCreate.Fields = jsonToCreate;
+
+            return await CreateOrUpdateEntryAsync(entryToCreate, spaceId: spaceId, contentTypeId: contentTypeId, cancellationToken: cancellationToken);
+        }
+
 
         /// <summary>
         /// Updates an entry fields for a certain locale using the values from the provided object.
         /// </summary>
         /// <param name="entry">The object to use as values for the entry fields.</param>
         /// <param name="id">The id of the entry to update.</param>
-        /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null.</param>
+        /// <param name="locale">The locale to set the fields for. The default locale for the space will be used if this parameter is null or empty.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        /// <returns>The updated <see cref="Entry{T}"/>.</returns>
+        public async Task<Entry<dynamic>> UpdateEntryForLocaleAsync(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var entryToUpdate = await GetEntryAsync(id, spaceId);
             
-            if(locale == null)
+            if(string.IsNullOrEmpty(locale))
             {
                 locale = (await GetLocalesCollectionAsync(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
