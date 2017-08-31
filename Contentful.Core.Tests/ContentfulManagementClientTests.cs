@@ -741,10 +741,33 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateEntryForLocale(entry, "532", locale: "en-US");
+            var res = await _client.UpdateEntryForLocaleAsync(entry, "532", locale: "en-US");
             //Assert
 
             Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
+        }
+
+        [Fact]
+        public async Task CreateEntryForLocaleShouldSetValuesCorrectly()
+        {
+            //Arrange
+            var entry = new TestNested();
+
+            entry.Field1 = "Fischer";
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
+            var contentSet = "";
+
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateEntryForLocaleAsync(entry, "532", "contentType", locale: "en-US");
+            //Assert
+
+            Assert.Contains(@"""field1"":{""en-US"":""Fischer""}", contentSet);
         }
 
         [Fact]
@@ -765,7 +788,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateEntryForLocale(entry, "532");
+            var res = await _client.UpdateEntryForLocaleAsync(entry, "532");
             //Assert
 
             Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
