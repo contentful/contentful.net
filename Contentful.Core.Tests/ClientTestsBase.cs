@@ -157,12 +157,12 @@ namespace Contentful.Core.Tests
     public class ContentfulEvent
     {
         public string Title { get; set; }
-        public Asset Image { get; set; } = new Asset { File = new Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        public Asset Image { get; set; } = new Asset { File = new Core.Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
     }
 
     public class Group
     {
-        public Asset Image { get; set; } = new Asset { File = new Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
+        public Asset Image { get; set; } = new Asset { File = new Core.Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
     }
 
     public class MainContainer
