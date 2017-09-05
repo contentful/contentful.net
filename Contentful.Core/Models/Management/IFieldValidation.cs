@@ -98,7 +98,7 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         /// <param name="message">The custom error message for this validation.</param>
         /// <param name="requiredValues">The values to validate the field value against.</param>
-        public InValuesValidator(string message = null, params string[] requiredValues) : this(requiredValues.AsEnumerable())
+        public InValuesValidator(string message = null, params string[] requiredValues) : this(requiredValues.AsEnumerable(), message)
         {
 
         }
