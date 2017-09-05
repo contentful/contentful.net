@@ -7,6 +7,7 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using System.Threading;
 using Newtonsoft.Json;
+using Contentful.Core.Configuration;
 
 namespace Contentful.Core
 {
@@ -15,6 +16,11 @@ namespace Contentful.Core
     /// </summary>
     public interface IContentfulClient
     {
+        /// <summary>
+        /// Gets or sets the resolver used when resolving entries to typed objects.
+        /// </summary>
+        IContentTypeResolver ContentTypeResolver { get; set; }
+
         /// <summary>
         /// Gets or sets the settings that should be used for deserialization.
         /// </summary>
