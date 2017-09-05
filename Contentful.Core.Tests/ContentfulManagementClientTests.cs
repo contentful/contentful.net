@@ -2447,6 +2447,34 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UploadedFileAndCreateAssetShouldYieldCorrectResult()
+        {
+            //Arrange
+            var fileBytes = new byte[] { 12, 43, 43, 54 };
+            _handler.Responses.Enqueue(GetResponseFromFile(@"UploadResult.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagement.json"));
+            _handler.Responses.Enqueue(new HttpResponseMessage());
+            var asset = new ManagementAsset()
+            {
+                SystemProperties = new SystemProperties
+                {
+                    Id = "356"
+                },
+                Files = new Dictionary<string, Core.Models.File>
+                {
+                    {  "en-US", new Core.Models.File() },
+                    {  "sv-SE", new Core.Models.File() }
+                }
+            };
+            //Act
+            var res = await _client.UploadFileAndCreateAssetAsync(asset, fileBytes);
+
+            Assert.IsType<ManagementAsset>(res);
+            Assert.NotNull(res.SystemProperties.Id);
+            Assert.Equal("3S1ngcWajSia6I4sssQwyK", res.SystemProperties.Id);
+        }
+
+        [Fact]
         public async Task GetExtensionsShouldReturnCorrectObject()
         {
             //Arrange
