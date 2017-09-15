@@ -1,0 +1,104 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "spaceid"
+          }
+        },
+        "type": "Entry",
+        "id": "pageid",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "page"
+          }
+        }
+      },
+      "fields": {
+        "key": "bugfix",
+        "header": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "page2id"
+          }
+        },
+        "shared": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "sharedid"
+          }
+        }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "spaceid"
+            }
+          },
+          "type": "Entry",
+          "id": "sharedid",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "shared"
+            }
+          }
+        },
+        "fields": {
+          "field1": "value"
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "spaceid"
+            }
+          },
+          "type": "Entry",
+          "id": "page2id",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "page"
+            }
+          }
+        },
+        "fields": {
+          "key": "bugfix2",
+          "shared": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "sharedid"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

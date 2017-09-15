@@ -180,6 +180,17 @@ namespace Contentful.Core.Tests
         public Asset Media { get; set; }
     }
 
+
+    public class TestNestedSharedItem
+    {
+        public TestNested Shared { get; set; }
+    }
+
+    public class Footer
+    {
+        public string Key { get; set; }
+    }
+
     public interface IMarker
     {
 

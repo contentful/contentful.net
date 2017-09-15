@@ -757,5 +757,20 @@ namespace Contentful.Core.Tests
             Assert.Equal(4, res.Count());
             Assert.Equal("kitchen", res.First().Tags.First());
         }
+
+        [Fact]
+        public async Task ComplexStructureIsDeserializedCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"NestedSharedStructure.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<TestNestedSharedItem>();
+
+            //Assert
+            Assert.Equal(1, res.Count());
+            Assert.NotNull(res.First().Shared);
+            Assert.NotNull(res.First().Shared.Field1);
+        }
     }
 }
