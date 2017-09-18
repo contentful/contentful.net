@@ -7,6 +7,7 @@
     <None Remove="JsonFiles\SampleUser.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesMissingEntries.json" />
     <EmbeddedResource Include="JsonFiles\EntryCollectionLoopedReferences.json" />
