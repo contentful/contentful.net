@@ -287,6 +287,11 @@ namespace Contentful.Core
 
             ResolveContentTypes(entryToken);
 
+            if(entryToken["$type"] != null)
+            {
+                type = Type.GetType(entryToken["$type"].Value<string>());
+            }
+
             entryToken.AddFirst(new JProperty( "$id", new JValue(id)));
 
             processedIds.Add(id);

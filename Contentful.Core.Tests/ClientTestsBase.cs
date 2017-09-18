@@ -148,13 +148,13 @@ namespace Contentful.Core.Tests
         public Asset Icon { get; set; }
     }
 
-    public class TestNested
+    public class TestNested : IMarker
     {
         public string Field1 { get; set; }
         public Asset Field4 { get; set; }
     }
 
-    public class ContentfulEvent
+    public class ContentfulEvent : IMarker
     {
         public string Title { get; set; }
         public Asset Image { get; set; } = new Asset { File = new Core.Models.File { Url = "" }, SystemProperties = new SystemProperties { Type = "Asset" } };
@@ -181,7 +181,7 @@ namespace Contentful.Core.Tests
     }
 
 
-    public class TestNestedSharedItem
+    public class TestNestedSharedItem : IMarker
     {
         public TestNested Shared { get; set; }
     }
@@ -206,7 +206,9 @@ namespace Contentful.Core.Tests
             { "testagain", typeof(TestCategory) },
             { "6XwpTaSiiI2Ak2Ww0oi6qa", typeof(TestCategory) },
             { "2PqfXUJwE8qSYKuM0U6w8M", typeof(TestEntryModel) },
-            { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) }
+            { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) },
+            { "events", typeof(ContentfulEvent) },
+            { "page", typeof(TestNestedSharedItem) }
         };
 
         public Type Resolve(string contentTypeId)

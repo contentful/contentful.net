@@ -745,6 +745,30 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task AllAssetsInACollectionShouldDeserializeCorrectlyWithResolver()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntryCollectionLoopedReferences.json");
+            _client.ContentTypeResolver = new TestResolver();
+            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+
+            //Act
+            _client.ResolveEntriesSelectively = true;
+            var entries = await _client.GetEntriesAsync<IMarker>();
+            _client.ResolveEntriesSelectively = false;
+            var nulls = entries.Where(c => (c as ContentfulEvent).Image == null).ToList();
+
+            //Assert
+            Assert.Equal(4, entries.Count());
+            Assert.Collection(entries,
+                c => { Assert.NotNull((c as ContentfulEvent).Image); },
+                c => { Assert.NotNull((c as ContentfulEvent).Image); },
+                c => { Assert.NotNull((c as ContentfulEvent).Image); },
+                c => { Assert.NotNull((c as ContentfulEvent).Image); }
+                );
+        }
+
+        [Fact]
         public async Task GetEntriesWithSelectShouldYieldCorrectResult()
         {
             //Arrange
@@ -765,12 +789,33 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"NestedSharedStructure.json");
 
             //Act
+            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntriesAsync<TestNestedSharedItem>();
+            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Equal(1, res.Count());
             Assert.NotNull(res.First().Shared);
             Assert.NotNull(res.First().Shared.Field1);
+        }
+
+        [Fact]
+        public async Task ComplexStructureIsDeserializedCorrectlyWithResolver()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"NestedSharedStructure.json");
+            _client.ContentTypeResolver = new TestResolver();
+            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+
+            //Act
+            _client.ResolveEntriesSelectively = true;
+            var res = await _client.GetEntriesAsync<IMarker>();
+            _client.ResolveEntriesSelectively = false;
+
+            //Assert
+            Assert.Equal(1, res.Count());
+            Assert.NotNull((res.First() as TestNestedSharedItem).Shared);
+            Assert.NotNull((res.First() as TestNestedSharedItem).Shared.Field1);
         }
     }
 }
