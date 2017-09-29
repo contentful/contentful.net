@@ -186,6 +186,15 @@ namespace Contentful.Core.Tests
         public TestNested Shared { get; set; }
     }
 
+    public class SelfReferencer
+    {
+        public SystemProperties Sys { get; set; }
+        public string Title { get; set; }
+        public string Slug { get; set; }
+        public string Description { get; set; }
+        public List<SelfReferencer> SubCategories { get; set; }
+    }
+
     public class Footer
     {
         public string Key { get; set; }

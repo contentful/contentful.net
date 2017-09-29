@@ -817,5 +817,19 @@ namespace Contentful.Core.Tests
             Assert.NotNull((res.First() as TestNestedSharedItem).Shared);
             Assert.NotNull((res.First() as TestNestedSharedItem).Shared.Field1);
         }
+
+        [Fact]
+        public async Task ComplexStructureWithSelfReferenceIsDeserializedCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithSelfreference.json");
+
+            //Act
+            var res = await _client.GetEntriesAsync<SelfReferencer>();
+
+            //Assert
+            Assert.Equal(5, res.Count());
+            Assert.NotNull(res.ToList());
+        }
     }
 }
