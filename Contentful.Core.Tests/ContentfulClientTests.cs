@@ -829,7 +829,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(5, res.Count());
-            Assert.NotNull(res.ToList());
+            Assert.Equal(res.First().SubCategories.First().Sys.Id, res.Skip(3).First().Sys.Id);
         }
     }
 }
