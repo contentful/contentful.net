@@ -1,0 +1,164 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 5,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "SpaceId"
+          }
+        },
+        "id": "3NOzUxqSwMcq6okOgoQw62",
+        "type": "Entry",
+        "createdAt": "2017-09-18T19:23:48.597Z",
+        "updatedAt": "2017-09-18T19:25:11.298Z",
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "category"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "CDA",
+        "slug": "cda",
+        "description": "Learning...",
+        "subCategories": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "WRYerFCjOo282AmyGWgkA"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "SpaceId"
+          }
+        },
+        "id": "1014tnTOEuqMUeG6AsOEow",
+        "type": "Entry",
+        "createdAt": "2017-09-27T13:54:10.278Z",
+        "updatedAt": "2017-09-27T13:54:10.278Z",
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "category"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Preview",
+        "slug": "preview",
+        "description": "What?"
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "SpaceId"
+          }
+        },
+        "id": "4JVwDbEpUkMmo2QSosEgEy",
+        "type": "Entry",
+        "createdAt": "2017-09-27T13:53:20.218Z",
+        "updatedAt": "2017-09-27T13:53:20.218Z",
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "category"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Website",
+        "slug": "website",
+        "description": "Learning dom dom dom!"
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "SpaceId"
+          }
+        },
+        "id": "WRYerFCjOo282AmyGWgkA",
+        "type": "Entry",
+        "createdAt": "2017-09-18T19:24:18.033Z",
+        "updatedAt": "2017-09-27T13:54:49.890Z",
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "category"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "searching",
+        "slug": "searching",
+        "description": "Learn how to find stuff in your life."
+      }
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "SpaceId"
+          }
+        },
+        "id": "5DpkdEcPi8ymWW8eaaQ2Mq",
+        "type": "Entry",
+        "createdAt": "2017-09-27T13:52:58.587Z",
+        "updatedAt": "2017-09-27T13:52:58.587Z",
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "category"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Application",
+        "slug": "application",
+        "description": "App app app!"
+      }
+    }
+  ]
+}

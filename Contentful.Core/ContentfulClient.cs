@@ -292,9 +292,12 @@ namespace Contentful.Core
                 type = Type.GetType(entryToken["$type"].Value<string>());
             }
 
-            entryToken.AddFirst(new JProperty( "$id", new JValue(id)));
-
-            processedIds.Add(id);
+            if (!processedIds.Contains(id))
+            {
+                entryToken.AddFirst(new JProperty("$id", new JValue(id)));
+                processedIds.Add(id);
+            }
+            
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
 
             //Walk through and add any included entries as direct links.

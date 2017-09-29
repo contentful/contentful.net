@@ -4,9 +4,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\SampleUser.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesMissingEntries.json" />
