@@ -71,6 +71,16 @@ namespace Contentful.Core
         /// <returns>The updated <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
         Task<ManagementAsset> CreateOrUpdateAssetAsync(ManagementAsset asset, string spaceId = null, int? version = default(int?), CancellationToken cancellationToken = default(CancellationToken));
 
+
+        /// <summary>
+        /// Creates an <see cref="Contentful.Core.Models.Management.ManagementAsset"/> with a randomly created id.
+        /// </summary>
+        /// <param name="asset">The asset to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
+        Task<ManagementAsset> CreateAssetAsync(ManagementAsset asset, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+
         /// <summary>
         /// Creates or updates a ContentType. Updates if a content type with the same id already exists.
         /// </summary>
