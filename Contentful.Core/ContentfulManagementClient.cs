@@ -1097,6 +1097,27 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Creates an <see cref="Contentful.Core.Models.Management.ManagementAsset"/> with a randomly created id.
+        /// </summary>
+        /// <param name="asset">The asset to create.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ManagementAsset> CreateAssetAsync(ManagementAsset asset, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets",
+                ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }), cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var createdAsset = jsonObject.ToObject<ManagementAsset>(Serializer);
+
+            return createdAsset;
+        }
+
+        /// <summary>
         /// Gets all locales in a <see cref="Space"/>.
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>

@@ -1158,7 +1158,7 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task CreateAssetShouldCallCorrectUrlWithCorrectData()
+        public async Task CreateOrUpdateAssetShouldCallCorrectUrlWithCorrectData()
         {
             //Arrange
             var asset = new ManagementAsset()
@@ -1187,6 +1187,38 @@ namespace Contentful.Core.Tests
             Assert.Equal(HttpMethod.Put, requestMethod);
             Assert.Contains(@"""en-US"":""Burton Green""", contentSet);
             Assert.Equal("https://api.contentful.com/spaces/666/assets/424", requestUrl);
+        }
+
+        [Fact]
+        public async Task CreateAssetShouldCallCorrectUrlWithCorrectData()
+        {
+            //Arrange
+            var asset = new ManagementAsset()
+            {
+                Title = new Dictionary<string, string>()
+            };
+            asset.Title["en-US"] = "Burton Green";
+            asset.SystemProperties = new SystemProperties()
+            {
+                Id = "424"
+            };
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var requestUrl = "";
+            var contentSet = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.CreateAssetAsync(asset);
+            //Assert
+            Assert.Equal(HttpMethod.Post, requestMethod);
+            Assert.Contains(@"""en-US"":""Burton Green""", contentSet);
+            Assert.Equal("https://api.contentful.com/spaces/666/assets", requestUrl);
         }
 
         [Fact]
