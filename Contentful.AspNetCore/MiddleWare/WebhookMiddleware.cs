@@ -92,12 +92,18 @@ namespace Contentful.AspNetCore.MiddleWare
 
             var responses = new List<object>();
 
-            foreach (var consumer in foundConsumers.Select(c => c))
+            var bodyString = "";
+
+            using (var reader = new StreamReader(context.Request.Body))
+            {
+                bodyString = reader.ReadToEnd();
+            }
+
+                foreach (var consumer in foundConsumers.Select(c => c))
             {
                 var methodInfo = consumer.Item1.GetType().GetMethod("Invoke");
                 var param = methodInfo.GetParameters().First();
                 var type = param.ParameterType;
-                var body = context.Request.Body;
 
                 if (consumer.Item2 != null && consumer.Item2.Invoke(context) == false)
                 {
@@ -105,38 +111,34 @@ namespace Contentful.AspNetCore.MiddleWare
                     continue;
                 }
 
-                using (var reader = new StreamReader(body))
-                using (var jsonReader = new JsonTextReader(reader))
+                var serializedObject = new object();
+                var serializationSuccessful = false;
+                try
                 {
-                    var ser = new JsonSerializer();
-                    var serializedObject = new object();
-                    var serializationSuccessful = false;
+                    serializedObject = JsonConvert.DeserializeObject(bodyString, type);
+                    serializationSuccessful = true;
+                }
+                catch (Exception ex)
+                {
+                    //Add the exception to the responses sent back to Contentful.
+                    responses.Add(ex);
+                }
+
+                if (serializationSuccessful)
+                {
+                    var returnedObject = new object();
                     try
                     {
-                        serializedObject = ser.Deserialize(jsonReader, type);
-                        serializationSuccessful = true;
+                        returnedObject = consumer.Item1.DynamicInvoke(serializedObject);
+                        responses.Add(returnedObject);
                     }
                     catch (Exception ex)
                     {
                         //Add the exception to the responses sent back to Contentful.
                         responses.Add(ex);
                     }
-
-                    if (serializationSuccessful)
-                    {
-                        var returnedObject = new object();
-                        try
-                        {
-                            returnedObject = consumer.Item1.DynamicInvoke(serializedObject);
-                            responses.Add(returnedObject);
-                        }
-                        catch (Exception ex)
-                        {
-                            //Add the exception to the responses sent back to Contentful.
-                            responses.Add(ex);
-                        }
-                    }
                 }
+                
             }
 
             context.Response.StatusCode = 200;
