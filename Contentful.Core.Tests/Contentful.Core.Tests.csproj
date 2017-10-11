@@ -19,6 +19,7 @@
     <EmbeddedResource Include="JsonFiles\OrganizationsCollection.json" />
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
+    <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
     <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
     <EmbeddedResource Include="JsonFiles\SampleUser.json" />
     <EmbeddedResource Include="JsonFiles\TokensCollection.json" />

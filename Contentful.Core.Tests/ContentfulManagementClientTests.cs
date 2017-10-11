@@ -1352,6 +1352,39 @@ namespace Contentful.Core.Tests
             Assert.Equal($"https://api.contentful.com/spaces/666/assets/{id}/files/{locale}/process", requestUrl);
         }
 
+        [Fact]
+        public async Task ProcessingAsseToCompletionShouldReturnCorrectAsset()
+        {
+            //Arrange
+            _handler.Responses.Enqueue(new HttpResponseMessage());
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagement.json"));
+            
+            //Act
+            var res = await _client.ProcessAssetUntilCompletedAsync("123", 3, "en-US");
+
+            //Assert
+            Assert.NotNull(res);
+            Assert.Equal("Ernest Hemingway (1950)", res.Title["en-US"]);
+            Assert.Equal("Hemingway in the cabin of his boat Pilar, off the coast of Cuba", res.Description["en-US"]);
+        }
+
+        [Fact]
+        public async Task ProcessingAssetToCompletionShouldFailAfterTimeout()
+        {
+            //Arrange
+            _handler.Responses.Enqueue(new HttpResponseMessage());
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
+            _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagement.json"));
+            //Act
+            var ex = await Assert.ThrowsAsync<TimeoutException>(async () => await _client.ProcessAssetUntilCompletedAsync("123", 3, "en-US", 300));
+
+            //Assert
+            Assert.Equal("The processing of the asset did not finish in a timely manner. Max delay of 300 reached.", ex.Message);
+        }
+
         [Theory]
         [InlineData("7HG7")]
         [InlineData("asf")]
