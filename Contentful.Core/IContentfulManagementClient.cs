@@ -537,6 +537,21 @@ namespace Contentful.Core
         Task<ContentfulCollection<WebHook>> GetWebHooksCollectionAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Processes an asset by the specified id and keeps polling the API until it has finished processing. **Note that this might result in multiple API calls.**
+        /// </summary>
+        /// <param name="assetId">The id of the asset to process.</param>
+        /// <param name="version">The last known version of the asset.</param>
+        /// <param name="locale">The locale for which files should be processed.</param>
+        /// <param name="maxDelay">The maximum number of milliseconds allowed for the operation.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> that has been processed.</returns>
+        /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="TimeoutException">The processing of the asset did not finish within the allotted time.</exception>
+        Task<ManagementAsset> ProcessAssetUntilCompletedAsync(string assetId, int version, string locale, int maxDelay = 2000, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Processes an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to process.</param>
