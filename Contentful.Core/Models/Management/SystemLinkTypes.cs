@@ -13,9 +13,20 @@ namespace Contentful.Core.Models.Management
         /// A reference to an entry.
         /// </summary>
         public const string Entry = "Entry";
+        
         /// <summary>
         /// A reference to an asset.
         /// </summary>
         public const string Asset = "Asset";
+
+        /// <summary>
+        /// A reference to a space.
+        /// </summary>
+        public const string Space = "Space";
+
+        /// <summary>
+        /// A reference to a contenttype.
+        /// </summary>
+        public const string ContentType = "ContentType";
     }
 }
