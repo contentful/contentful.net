@@ -11,6 +11,28 @@ namespace Contentful.Core.Models.Management
     public class Reference
     {
         /// <summary>
+        /// Initializes a new Reference.
+        /// </summary>
+        public Reference()
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new Reference.
+        /// </summary>
+        /// <param name="linkType">The linktype of the reference. Normally one of <see cref="SystemLinkTypes"/>.</param>
+        /// <param name="id">The id of the item which is being referenced.</param>
+        public Reference(string linkType, string id)
+        {
+            Sys = new ReferenceProperties
+            {
+                LinkType = linkType,
+                Id = id
+            };
+        }
+
+        /// <summary>
         /// The properties for this reference.
         /// </summary>
         public ReferenceProperties Sys { get; set; }
@@ -32,7 +54,7 @@ namespace Contentful.Core.Models.Management
         public string LinkType { get; set; }
 
         /// <summary>
-        /// The if of the item which is being referenced.
+        /// The id of the item which is being referenced.
         /// </summary>
         public string Id { get; set; }
     }
