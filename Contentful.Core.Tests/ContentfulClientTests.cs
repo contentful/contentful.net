@@ -232,13 +232,13 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
-            var res = await _client.GetEntry<Entry<TestEntryModel>>("12");
+            var res = await _client.GetEntry<TestEntryModel>("12");
 
             //Assert
-            Assert.Equal("SoSo Wall Clock", res.Fields.ProductName);
-            Assert.Equal("soso-wall-clock", res.Fields.Slug);
-            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.033Z").ToUniversalTime(), res.SystemProperties.CreatedAt);
-            Assert.Equal("2PqfXUJwE8qSYKuM0U6w8M", res.SystemProperties.ContentType.SystemProperties.Id);
+            Assert.Equal("SoSo Wall Clock", res.ProductName);
+            Assert.Equal("soso-wall-clock", res.Slug);
+            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.033Z").ToUniversalTime(), res.Sys.CreatedAt);
+            Assert.Equal("2PqfXUJwE8qSYKuM0U6w8M", res.Sys.ContentType.SystemProperties.Id);
         }
 
         [Fact]
@@ -367,13 +367,13 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"MultipleLinksSameAsset.json");
 
             //Act
-            var res = await _client.GetEntries<Entry<TwoAssets>>();
+            var res = await _client.GetEntries<TwoAssets>();
             var list = res.ToList();
 
             //Assert
             Assert.Equal(2, list.Count);
-            Assert.Equal(list[0].Fields.First, list[0].Fields.Second);
-            Assert.Equal(list[0].Fields.First, list[1].Fields.Second);
+            Assert.Equal(list[0].First, list[0].Second);
+            Assert.Equal(list[0].First, list[1].Second);
         }
 
         [Fact]
@@ -397,11 +397,11 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntries<Entry<TestEntryModel>>(queryBuilder:null);
+            var res = await _client.GetEntries<TestEntryModel>(queryBuilder:null);
 
             //Assert
             Assert.Equal(9, res.Count());
-            Assert.Equal("Home & Kitchen", res.First().Fields.Title);
+            Assert.Equal("Home & Kitchen", res.First().Title);
         }
 
         [Fact]
@@ -426,16 +426,16 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntries<Entry<TestEntryModel>>();
+            var res = await _client.GetEntries<TestEntryModel>();
 
             //Assert
             Assert.Equal(9, res.Total);
             Assert.Equal(100, res.Limit);
             Assert.Equal(0, res.Skip);
             Assert.Equal(9, res.Items.Count());
-            Assert.Equal("Home & Kitchen", res.Items.First().Fields.Title);
-            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.899Z").ToUniversalTime(), res.Items.First().SystemProperties.CreatedAt);
-            Assert.Equal("6XwpTaSiiI2Ak2Ww0oi6qa", res.Items.First().SystemProperties.ContentType.SystemProperties.Id);
+            Assert.Equal("Home & Kitchen", res.Items.First().Title);
+            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.899Z").ToUniversalTime(), res.Items.First().Sys.CreatedAt);
+            Assert.Equal("6XwpTaSiiI2Ak2Ww0oi6qa", res.Items.First().Sys.ContentType.SystemProperties.Id);
         }
 
         [Fact]

@@ -68,6 +68,7 @@ namespace Contentful.Core.Tests
 
     public class TestEntryModel : IMarker
     {
+        public SystemProperties Sys { get; set; }
         public string ProductName { get; set; }
         public string Slug { get; set; }
         public string Title { get; set; }

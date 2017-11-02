@@ -133,20 +133,14 @@ namespace Contentful.Core
 
             var ob = default(T);
 
-            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
-            {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>(Serializer);
-            }
-            else
-            {
-                var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-                //move the sys object beneath the fields to make serialization more logical for the end user.
-                var sys = json.SelectToken("$.sys");
-                var fields = json.SelectToken("$.fields");
-                fields["sys"] = sys;
-                ob = fields.ToObject<T>(Serializer);
-            }
+            //move the sys object beneath the fields to make serialization more logical for the end user.
+            var sys = json.SelectToken("$.sys");
+            var fields = json.SelectToken("$.fields");
+            fields["sys"] = sys;
+            ob = fields.ToObject<T>(Serializer);
+            
             return ob;
         }
 
@@ -200,48 +194,32 @@ namespace Contentful.Core
             IEnumerable<T> entries;
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var isContentfulResource = typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
             var processedIds = new HashSet<string>();
             foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
-                if (isContentfulResource)
-                {
-                    ResolveLinks(json, item, processedIds, typeof(T).GetRuntimeProperty("Fields").PropertyType);
-                }
-                else
-                {
-                    ResolveLinks(json, item, processedIds, typeof(T));
-                }
+                ResolveLinks(json, item, processedIds, typeof(T));
             }
+            
+            var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
 
-            if (isContentfulResource)
+            for (var i = entryTokens.Count - 1; i >= 0; i--)
             {
-                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
-            }
-            else
-            {
-                var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
+                var token = entryTokens[i];
+                var grandParent = token.Parent.Parent;
 
-                for (var i = entryTokens.Count - 1; i >= 0; i--)
+                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
                 {
-                    var token = entryTokens[i];
-                    var grandParent = token.Parent.Parent;
-
-                    if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
-                    {
-                        continue;
-                    }
-
-                    ResolveContentTypes(grandParent);
-                    
-
-                    //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
-                    token.Parent.Remove();
-                    grandParent.Add(token.Children());
+                    continue;
                 }
 
-                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
+                ResolveContentTypes(grandParent);
+
+                //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
+                token.Parent.Remove();
+                grandParent.Add(token.Children());
             }
+
+            entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
 
             var collection = json.ToObject<ContentfulCollection<T>>(Serializer);
             collection.Items = entries;
