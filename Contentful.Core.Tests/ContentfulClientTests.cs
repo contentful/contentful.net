@@ -94,7 +94,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
-            var res = await _client.GetEntry<TestEntryWithSysProperties>("12");
+            var res = await _client.GetEntry<TestEntryModel>("12");
 
             //Assert
             Assert.Equal("SoSo Wall Clock", res.ProductName);
@@ -274,7 +274,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntries<TestEntryWithSysProperties>();
+            var res = await _client.GetEntries<TestEntryModel>();
             var list = res.ToList();
             //Assert
             Assert.Equal(9, list.Count);

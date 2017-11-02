@@ -90,11 +90,6 @@ namespace Contentful.Core.Tests
         public string CompanyDescription { get; set; }
     }
 
-    public class TestEntryWithSysProperties : TestEntryModel
-    {
-        public SystemProperties Sys { get; set; }
-    }
-
     public class TestModelWithIncludes
     {
         public string Title { get; set; }
