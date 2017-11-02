@@ -44,7 +44,7 @@ namespace Contentful.Core.Tests
                 authHeader = request.Headers.GetValues("Authorization").First();
             };
             //Act
-            await client.GetAssetAsync("564");
+            await client.GetAsset("564");
 
             //Assert
             Assert.Equal("Bearer 444", authHeader);
@@ -67,7 +67,7 @@ namespace Contentful.Core.Tests
             .InformationalVersion;
 
             //Act
-            await client.GetAssetAsync("123");
+            await client.GetAsset("123");
 
             //Assert
             Assert.StartsWith($"sdk contentful.csharp/{version}", userAgent);
@@ -80,7 +80,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntry.json");
             
             //Act
-            var res = await _client.GetEntryAsync<TestEntryModel>("12");
+            var res = await _client.GetEntry<TestEntryModel>("12");
 
             //Assert
             Assert.Equal("SoSo Wall Clock", res.ProductName);
@@ -94,7 +94,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
-            var res = await _client.GetEntryAsync<TestEntryWithSysProperties>("12");
+            var res = await _client.GetEntry<TestEntryWithSysProperties>("12");
 
             //Assert
             Assert.Equal("SoSo Wall Clock", res.ProductName);
@@ -114,7 +114,7 @@ namespace Contentful.Core.Tests
             //Act
 
             //Assert
-            await Assert.ThrowsAsync<ContentfulException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+            await Assert.ThrowsAsync<ContentfulException>(async () => await _client.GetEntry<TestEntryModel>("12"));
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace Contentful.Core.Tests
             response.Headers.Add("X-Contentful-RateLimit-Reset", "45");
             _handler.Response = response;
             //Act
-            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntry<TestEntryModel>("12"));
             //Assert
             Assert.Equal(45, ex.SecondsUntilNextRequest);
         }
@@ -155,7 +155,7 @@ namespace Contentful.Core.Tests
             _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
             _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg; };  
             //Act
-            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntry<TestEntryModel>("12"));
             //Assert
             Assert.Equal(1, ex.SecondsUntilNextRequest);
             //1 request + 3 retries
@@ -189,7 +189,7 @@ namespace Contentful.Core.Tests
             _handler.Responses.Enqueue(response);
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntry.json"));
             //Act
-            var res = await _client.GetEntryAsync<TestEntryModel>("12");
+            var res = await _client.GetEntry<TestEntryModel>("12");
             //Assert
             //1 request + 1 retries
             Assert.Equal(2, numberOfTimesCalled);
@@ -203,7 +203,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntry.json");
 
             //Act
-            var res = await _client.GetEntryAsync<Entry<TestEntryModel>>("12");
+            var res = await _client.GetEntry<Entry<TestEntryModel>>("12");
 
             //Assert
             Assert.Equal("SoSo Wall Clock", res.Fields.ProductName);
@@ -221,7 +221,7 @@ namespace Contentful.Core.Tests
             //Act
 
             //Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEntryAsync<TestEntryModel>(""));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEntry<TestEntryModel>(""));
         }
 
         [Fact]
@@ -231,7 +231,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<TestEntryModel>();
+            var res = await _client.GetEntries<TestEntryModel>();
 
             //Assert
             Assert.Equal(9, res.Count());
@@ -245,7 +245,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<TestEntryWithSysProperties>();
+            var res = await _client.GetEntries<TestEntryWithSysProperties>();
             var list = res.ToList();
             //Assert
             Assert.Equal(9, list.Count);
@@ -260,7 +260,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
+            var res = await _client.GetEntries<TestModelWithIncludes>();
             var list = res.ToList();
             //Assert
             Assert.Equal(2, list.Count);
@@ -281,7 +281,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesMissingEntries.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<TestModelWithIncludes>();
+            var res = await _client.GetEntries<TestModelWithIncludes>();
             var list = res.ToList();
 
             //Assert
@@ -306,7 +306,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"NestedAsset.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<MainContainer>();
+            var res = await _client.GetEntries<MainContainer>();
             var list = res.ToList();
 
             //Assert
@@ -322,7 +322,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"MultipleLinksSameAsset.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<TwoAssets>();
+            var res = await _client.GetEntries<TwoAssets>();
             var list = res.ToList();
 
             //Assert
@@ -338,7 +338,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"MultipleLinksSameAsset.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<Entry<TwoAssets>>();
+            var res = await _client.GetEntries<Entry<TwoAssets>>();
             var list = res.ToList();
 
             //Assert
@@ -354,7 +354,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesAuthor.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<Author>();
+            var res = await _client.GetEntries<Author>();
             var list = res.ToList();
             //Assert
             Assert.Equal(1, list.Count);
@@ -368,7 +368,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<Entry<TestEntryModel>>(queryBuilder:null);
+            var res = await _client.GetEntries<Entry<TestEntryModel>>(queryBuilder:null);
 
             //Assert
             Assert.Equal(9, res.Count());
@@ -382,7 +382,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
             var builder = QueryBuilder<TestEntryModel>.New;
             //Act
-            var res = await _client.GetEntriesByTypeAsync("666", builder);
+            var res = await _client.GetEntriesByType("666", builder);
 
             //Assert
             Assert.Equal(9, res.Count());
@@ -397,7 +397,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<Entry<TestEntryModel>>();
+            var res = await _client.GetEntries<Entry<TestEntryModel>>();
 
             //Assert
             Assert.Equal(9, res.Total);
@@ -416,7 +416,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<Entry<TestModelWithIncludes>>();
+            var res = await _client.GetEntries<Entry<TestModelWithIncludes>>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -432,7 +432,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesAndLocales.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<Entry<dynamic>>();
+            var res = await _client.GetEntries<Entry<dynamic>>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -448,7 +448,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleAsset.json");
 
             //Act
-            var res = await _client.GetAssetAsync("12");
+            var res = await _client.GetAsset("12");
 
             //Assert
             Assert.Equal("ihavenoidea", res.Title);
@@ -465,7 +465,7 @@ namespace Contentful.Core.Tests
             //Act
 
             //Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAssetAsync(""));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAsset(""));
         }
 
         [Fact]
@@ -475,7 +475,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
 
             //Act
-            var res = await _client.GetAssetsAsync();
+            var res = await _client.GetAssets();
 
             //Assert
             Assert.Equal(12, res.Count());
@@ -490,7 +490,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
 
             //Act
-            var res = await _client.GetAssetsAsync(queryBuilder:null);
+            var res = await _client.GetAssets(queryBuilder:null);
 
             //Assert
             Assert.Equal(12, res.Total);
@@ -510,7 +510,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSpace.json");
 
             //Act
-            var res = await _client.GetSpaceAsync();
+            var res = await _client.GetSpace();
 
             //Assert
             Assert.Equal("Products", res.Name);
@@ -538,7 +538,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleContentType.json");
 
             //Act
-            var res = await _client.GetContentTypeAsync("someid");
+            var res = await _client.GetContentType("someid");
 
             //Assert
             Assert.Equal("Product", res.Name);
@@ -557,7 +557,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"ContenttypesCollection.json");
 
             //Act
-            var res = await _client.GetContentTypesAsync();
+            var res = await _client.GetContentTypes();
 
             //Assert
             Assert.Equal(3, res.Count());
@@ -575,7 +575,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"InitialSyncNoNextPage.json");
 
             //Act
-            var res = await _client.SyncInitialAsync();
+            var res = await _client.SyncInitial();
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -596,7 +596,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"InitialSyncDeletionOnly.json");
 
             //Act
-            var res = await _client.SyncInitialAsync(SyncType.Deletion);
+            var res = await _client.SyncInitial(SyncType.Deletion);
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -615,7 +615,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"NextSyncUrl.json");
 
             //Act
-            var res = await _client.SyncNextResultAsync("SomeSyncToken");
+            var res = await _client.SyncNextResult("SomeSyncToken");
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -637,7 +637,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"NextSyncUrl.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResultAsync(""));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResult(""));
             //Assert
             Assert.Equal($"nextPageUrl must be specified.{Environment.NewLine}Parameter name: nextSyncOrPageUrl", ex.Message);
         }
@@ -652,7 +652,7 @@ namespace Contentful.Core.Tests
             _handler.Responses.Enqueue(GetResponseFromFile(@"InitialSyncNoNextPage.json"));
 
             //Act
-            var res = await _client.SyncInitialRecursiveAsync();
+            var res = await _client.SyncInitialRecursive();
 
             //Assert
             Assert.Null(res.NextPageUrl);
@@ -673,7 +673,7 @@ namespace Contentful.Core.Tests
             var source = new CancellationTokenSource(1500);
             _handler.VerificationBeforeSend = async () => { await Task.Delay(3000); };
             //Act
-            var ex = Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.GetEntryAsync<Entry<dynamic>>("123", "", source.Token));
+            var ex = Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.GetEntry<Entry<dynamic>>("123", "", source.Token));
 
             //Assert
             Assert.Equal(TaskStatus.Faulted,ex.Status);
@@ -687,7 +687,7 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new TestResolver();
             _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
             //Act
-            var res = await _client.GetEntriesAsync<IMarker>();
+            var res = await _client.GetEntries<IMarker>();
 
             //Assert
             Assert.Equal(9, res.Count());
@@ -702,7 +702,7 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new TestResolver();
             _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
             //Act
-            var res = await _client.GetEntriesAsync<IMarker>();
+            var res = await _client.GetEntries<IMarker>();
 
             //Assert
             Assert.Equal(2, res.Count());
@@ -719,7 +719,7 @@ namespace Contentful.Core.Tests
             //Act
 
             //Assert
-            await Assert.ThrowsAsync<ContentfulException>(async () => await _client.GetEntryAsync<TestEntryModel>("12"));
+            await Assert.ThrowsAsync<ContentfulException>(async () => await _client.GetEntry<TestEntryModel>("12"));
         }
 
         [Fact]
@@ -730,7 +730,7 @@ namespace Contentful.Core.Tests
 
             //Act
             _client.ResolveEntriesSelectively = true;
-            var entries = await _client.GetEntriesAsync<ContentfulEvent>();
+            var entries = await _client.GetEntries<ContentfulEvent>();
             _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => c.Image == null).ToList();
 
@@ -754,7 +754,7 @@ namespace Contentful.Core.Tests
 
             //Act
             _client.ResolveEntriesSelectively = true;
-            var entries = await _client.GetEntriesAsync<IMarker>();
+            var entries = await _client.GetEntries<IMarker>();
             _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => (c as ContentfulEvent).Image == null).ToList();
 
@@ -775,7 +775,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithoutSys.json");
             var builder = QueryBuilder<TestWithTags>.New;
             //Act
-            var res = await _client.GetEntriesByTypeAsync("666", builder);
+            var res = await _client.GetEntriesByType("666", builder);
 
             //Assert
             Assert.Equal(4, res.Count());
@@ -790,7 +790,7 @@ namespace Contentful.Core.Tests
 
             //Act
             _client.ResolveEntriesSelectively = true;
-            var res = await _client.GetEntriesAsync<TestNestedSharedItem>();
+            var res = await _client.GetEntries<TestNestedSharedItem>();
             _client.ResolveEntriesSelectively = false;
 
             //Assert
@@ -809,7 +809,7 @@ namespace Contentful.Core.Tests
 
             //Act
             _client.ResolveEntriesSelectively = true;
-            var res = await _client.GetEntriesAsync<IMarker>();
+            var res = await _client.GetEntries<IMarker>();
             _client.ResolveEntriesSelectively = false;
 
             //Assert
@@ -825,7 +825,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithSelfreference.json");
 
             //Act
-            var res = await _client.GetEntriesAsync<SelfReferencer>();
+            var res = await _client.GetEntries<SelfReferencer>();
 
             //Assert
             Assert.Equal(5, res.Count());

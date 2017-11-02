@@ -80,7 +80,7 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to create a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Space"/></returns>
-        public async Task<Space> CreateSpaceAsync(string name, string defaultLocale, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> CreateSpace(string name, string defaultLocale, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!string.IsNullOrEmpty(organisation))
             {
@@ -91,7 +91,7 @@ namespace Contentful.Core
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -105,9 +105,9 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to update a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Space"/></returns>
-        public async Task<Space> UpdateSpaceNameAsync(Space space, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> UpdateSpaceName(Space space, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await UpdateSpaceNameAsync(space.SystemProperties.Id, space.Name, space.SystemProperties.Version ?? 1, organisation, cancellationToken).ConfigureAwait(false);
+            return await UpdateSpaceName(space.SystemProperties.Id, space.Name, space.SystemProperties.Version ?? 1, organisation, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to update a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Space"/></returns>
-        public async Task<Space> UpdateSpaceNameAsync(string id, string name, int version, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> UpdateSpaceName(string id, string name, int version, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!string.IsNullOrEmpty(organisation))
             {
@@ -134,7 +134,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -147,11 +147,11 @@ namespace Contentful.Core
         /// <param name="id">The id of the space to get.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Space" /></returns>
-        public async Task<Space> GetSpaceAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> GetSpace(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{id}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -163,11 +163,11 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Space"/>.</returns>
-        public async Task<IEnumerable<Space>> GetSpacesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<Space>> GetSpaces(CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync(_baseUrl, cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -180,11 +180,11 @@ namespace Contentful.Core
         /// <param name="id">The id of the space to delete.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns></returns>
-        public async Task DeleteSpaceAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteSpace(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await DeleteAsync($"{_baseUrl}{id}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -193,11 +193,11 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to get the content types of. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetContentTypesAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ContentType>> GetContentTypes(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -213,7 +213,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="ContentType"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
-        public async Task<ContentType> CreateOrUpdateContentTypeAsync(ContentType contentType, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> CreateOrUpdateContentType(ContentType contentType, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (contentType.SystemProperties?.Id == null)
             {
@@ -228,7 +228,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -244,7 +244,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<ContentType> GetContentTypeAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> GetContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -253,7 +253,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>(Serializer);
@@ -270,7 +270,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task DeleteContentTypeAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -279,7 +279,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<ContentType> ActivateContentTypeAsync(string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> ActivateContentType(string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -305,7 +305,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>(Serializer);
@@ -322,7 +322,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task DeactivateContentTypeAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeactivateContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -331,7 +331,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/published", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -340,11 +340,11 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to get the activated content types of. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetActivatedContentTypesAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ContentType>> GetActivatedContentTypes(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -360,7 +360,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="Contentful.Core.Models.Management.EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<EditorInterface> GetEditorInterfaceAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<EditorInterface> GetEditorInterface(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -369,7 +369,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/editor_interface", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var editorInterface = jsonObject.ToObject<EditorInterface>(Serializer);
@@ -388,7 +388,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="Contentful.Core.Models.Management.EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<EditorInterface> UpdateEditorInterfaceAsync(EditorInterface editorInterface, string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<EditorInterface> UpdateEditorInterface(EditorInterface editorInterface, string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -402,7 +402,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedEditorInterface = jsonObject.ToObject<EditorInterface>(Serializer);
@@ -418,9 +418,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetEntriesCollectionAsync<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return await GetEntriesCollection<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -432,11 +432,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollectionAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var isContentfulResource = typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
 
@@ -478,7 +478,7 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> CreateEntryAsync(Entry<dynamic> entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> CreateEntry(Entry<dynamic> entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -493,7 +493,7 @@ namespace Contentful.Core
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedEntry = jsonObject.ToObject<Entry<dynamic>>(Serializer);
@@ -509,12 +509,12 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created entry.</returns>
-        public async Task<T> CreateEntryAsync<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> CreateEntry<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var entryToCreate = new Entry<dynamic>();
             entryToCreate.Fields = entry;
 
-            var createdEntry = await CreateEntryAsync(entryToCreate, contentTypeId, spaceId, cancellationToken);
+            var createdEntry = await CreateEntry(entryToCreate, contentTypeId, spaceId, cancellationToken);
             return (createdEntry.Fields as JObject).ToObject<T>();
         }
 
@@ -527,7 +527,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> CreateOrUpdateEntryAsync(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> CreateOrUpdateEntry(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entry.SystemProperties?.Id))
             {
@@ -548,7 +548,7 @@ namespace Contentful.Core
             RemoveVersionHeader();
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Content-Type");
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedEntry = jsonObject.ToObject<Entry<dynamic>>(Serializer);
@@ -566,7 +566,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated entry.</returns>
-        public async Task<T> CreateOrUpdateEntryAsync<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> CreateOrUpdateEntry<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var entryToCreate = new Entry<dynamic>();
             entryToCreate.SystemProperties = new SystemProperties
@@ -575,7 +575,7 @@ namespace Contentful.Core
             };
             entryToCreate.Fields = entry;
 
-            var createdEntry = await CreateOrUpdateEntryAsync(entryToCreate, spaceId, contentTypeId, version, cancellationToken);
+            var createdEntry = await CreateOrUpdateEntry(entryToCreate, spaceId, contentTypeId, version, cancellationToken);
             return (createdEntry.Fields as JObject).ToObject<T>();
         }
 
@@ -589,11 +589,11 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> CreateEntryForLocaleAsync(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> CreateEntryForLocale(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(locale))
             {
-                locale = (await GetLocalesCollectionAsync(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
+                locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
 
             var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
@@ -611,7 +611,7 @@ namespace Contentful.Core
             };
             entryToCreate.Fields = jsonToCreate;
 
-            return await CreateOrUpdateEntryAsync(entryToCreate, spaceId: spaceId, contentTypeId: contentTypeId, cancellationToken: cancellationToken);
+            return await CreateOrUpdateEntry(entryToCreate, spaceId: spaceId, contentTypeId: contentTypeId, cancellationToken: cancellationToken);
         }
 
 
@@ -624,13 +624,13 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> UpdateEntryForLocaleAsync(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var entryToUpdate = await GetEntryAsync(id, spaceId);
+            var entryToUpdate = await GetEntry(id, spaceId);
             
             if(string.IsNullOrEmpty(locale))
             {
-                locale = (await GetLocalesCollectionAsync(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
+                locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
 
             var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
@@ -644,7 +644,7 @@ namespace Contentful.Core
                 }
             }
 
-            var updatedEntry = await CreateOrUpdateEntryAsync(entryToUpdate,spaceId: spaceId, version: entryToUpdate.SystemProperties.Version, cancellationToken: cancellationToken);
+            var updatedEntry = await CreateOrUpdateEntry(entryToUpdate,spaceId: spaceId, version: entryToUpdate.SystemProperties.Version, cancellationToken: cancellationToken);
 
             return updatedEntry;
         }
@@ -658,7 +658,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> GetEntryAsync(string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> GetEntry(string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -667,7 +667,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
@@ -681,7 +681,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task DeleteEntryAsync(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -694,7 +694,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -707,7 +707,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> PublishEntryAsync(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> PublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -720,7 +720,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
@@ -735,7 +735,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> UnpublishEntryAsync(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> UnpublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -748,7 +748,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
@@ -763,7 +763,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> ArchiveEntryAsync(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> ArchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -776,7 +776,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
@@ -791,7 +791,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> UnarchiveEntryAsync(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> UnarchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -804,7 +804,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
         }
@@ -817,9 +817,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(QueryBuilder<Asset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(QueryBuilder<Asset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetAssetsCollectionAsync(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
+            return await GetAssetsCollection(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -830,11 +830,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollectionAsync(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>(Serializer);
@@ -851,11 +851,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetPublishedAssetsCollectionAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetPublishedAssetsCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementAsset>>(Serializer);
@@ -874,7 +874,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> GetAssetAsync(string assetId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> GetAsset(string assetId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -883,7 +883,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{assetId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -899,7 +899,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteAssetAsync(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -912,7 +912,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -925,7 +925,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> published.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> PublishAssetAsync(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> PublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -938,7 +938,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -955,7 +955,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> unpublished.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> UnpublishAssetAsync(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> UnpublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -968,7 +968,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -985,7 +985,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> archived.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> ArchiveAssetAsync(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> ArchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -1000,7 +1000,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1017,7 +1017,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> unarchived.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> UnarchiveAssetAsync(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> UnarchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -1030,7 +1030,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1050,11 +1050,11 @@ namespace Contentful.Core
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="TimeoutException">The processing of the asset did not finish within the allotted time.</exception>
-        public async Task<ManagementAsset> ProcessAssetUntilCompletedAsync(string assetId, int version, string locale, int maxDelay = 2000, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> ProcessAssetUntilCompleted(string assetId, int version, string locale, int maxDelay = 2000, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await ProcessAssetAsync(assetId, version, locale, spaceId, cancellationToken);
+            await ProcessAsset(assetId, version, locale, spaceId, cancellationToken);
 
-            var processedAsset = await GetAssetAsync(assetId, spaceId, cancellationToken);
+            var processedAsset = await GetAsset(assetId, spaceId, cancellationToken);
             var delay = 0;
             var completed = false;
             
@@ -1064,7 +1064,7 @@ namespace Contentful.Core
 
                 if (processedAsset?.Files[locale]?.Url == null)
                 {
-                    processedAsset = await GetAssetAsync(assetId, spaceId, cancellationToken);
+                    processedAsset = await GetAsset(assetId, spaceId, cancellationToken);
                 }
                 else
                 {
@@ -1087,7 +1087,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task ProcessAssetAsync(string assetId, int version, string locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ProcessAsset(string assetId, int version, string locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -1102,7 +1102,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1114,7 +1114,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> CreateOrUpdateAssetAsync(ManagementAsset asset, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> CreateOrUpdateAsset(ManagementAsset asset, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(asset.SystemProperties?.Id))
             {
@@ -1128,7 +1128,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var updatedAsset = jsonObject.ToObject<ManagementAsset>(Serializer);
@@ -1144,12 +1144,12 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> CreateAssetAsync(ManagementAsset asset, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> CreateAsset(ManagementAsset asset, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets",
                 ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var createdAsset = jsonObject.ToObject<ManagementAsset>(Serializer);
@@ -1164,11 +1164,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{Locale}"/> of locales.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Locale>> GetLocalesCollectionAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Locale>> GetLocalesCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res);
+            await EnsureSuccessfulResult(res);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Locale>>(Serializer);
@@ -1186,7 +1186,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> CreateLocaleAsync(Locale locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Locale> CreateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales",
                 ConvertObjectToJsonStringContent(
@@ -1200,7 +1200,7 @@ namespace Contentful.Core
                         optional = locale.Optional
                     }), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1216,7 +1216,7 @@ namespace Contentful.Core
         /// <returns>The requested <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="localeId">localeId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> GetLocaleAsync(string localeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Locale> GetLocale(string localeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(localeId))
             {
@@ -1225,7 +1225,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1240,7 +1240,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> UpdateLocaleAsync(Locale locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Locale> UpdateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(locale.SystemProperties?.Id))
             {
@@ -1257,7 +1257,7 @@ namespace Contentful.Core
                 optional = locale.Optional
             }), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1272,7 +1272,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="localeId">localeId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteLocaleAsync(string localeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteLocale(string localeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(localeId))
             {
@@ -1281,7 +1281,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales/{localeId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1291,11 +1291,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<WebHook>> GetWebHooksCollectionAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<WebHook>> GetWebHooksCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>(Serializer);
@@ -1313,14 +1313,14 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebHook> CreateWebHookAsync(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebHook> CreateWebHook(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             //Not allowed to post system properties
             webhook.SystemProperties = null;
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", ConvertObjectToJsonStringContent(webhook), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1336,7 +1336,7 @@ namespace Contentful.Core
         /// <returns>The created <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The id of the webhook parameter was null or empty.</exception>
-        public async Task<WebHook> CreateOrUpdateWebHookAsync(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebHook> CreateOrUpdateWebHook(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhook?.SystemProperties?.Id))
             {
@@ -1350,7 +1350,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{id}", ConvertObjectToJsonStringContent(webhook), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1366,7 +1366,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebHook> GetWebHookAsync(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebHook> GetWebHook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1375,7 +1375,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1390,7 +1390,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteWebHookAsync(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteWebHook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1399,7 +1399,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions/{webhookId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1411,7 +1411,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebHookCallDetails"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<WebHookCallDetails>> GetWebHookCallDetailsCollectionAsync(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<WebHookCallDetails>> GetWebHookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1420,7 +1420,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>(Serializer);
@@ -1440,7 +1440,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.WebHookCallDetails"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> or <see name="callId">callId</see> parameter was null or empty.</exception>
-        public async Task<WebHookCallDetails> GetWebHookCallDetailsAsync(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebHookCallDetails> GetWebHookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(callId))
             {
@@ -1454,7 +1454,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/calls/{callId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1470,7 +1470,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="Contentful.Core.Models.Management.WebHookHealthResponse"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebHookHealthResponse> GetWebHookHealthAsync(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebHookHealthResponse> GetWebHookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1479,7 +1479,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhooks/{webhookId}/health", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var health = new WebHookHealthResponse()
@@ -1500,7 +1500,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.Role"/></returns>
         /// <exception cref="ArgumentException">The <see name="roleId">roleId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Role> GetRoleAsync(string roleId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Role> GetRole(string roleId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(roleId))
             {
@@ -1509,7 +1509,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1523,11 +1523,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Role"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Role>> GetAllRolesAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Role>> GetAllRoles(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Role>>(Serializer);
@@ -1545,14 +1545,14 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Role"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Role> CreateRoleAsync(Role role, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Role> CreateRole(Role role, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             //Not allowed to post system properties
             role.SystemProperties = null;
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", ConvertObjectToJsonStringContent(role), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1568,7 +1568,7 @@ namespace Contentful.Core
         /// <returns>The updated <see cref="Contentful.Core.Models.Management.Role"/>.</returns>
         /// <exception cref="ArgumentException">The id parameter of the role was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Role> UpdateRoleAsync(Role role, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Role> UpdateRole(Role role, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(role?.SystemProperties?.Id))
             {
@@ -1582,7 +1582,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1597,7 +1597,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="roleId">roleId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteRoleAsync(string roleId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteRole(string roleId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(roleId))
             {
@@ -1606,7 +1606,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{roleId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1616,7 +1616,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.Snapshot"/>.</returns>
-        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntryAsync(string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntry(string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -1625,7 +1625,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Snapshot>>(Serializer);
@@ -1643,7 +1643,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.Snapshot"/>.</returns>
-        public async Task<Snapshot> GetSnapshotForEntryAsync(string snapshotId, string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Snapshot> GetSnapshotForEntry(string snapshotId, string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(snapshotId))
             {
@@ -1657,7 +1657,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/entries/{entryId}/snapshots/{snapshotId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1671,7 +1671,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
-        public async Task<ContentfulCollection<SnapshotContentType>> GetAllSnapshotsForContentTypeAsync(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<SnapshotContentType>> GetAllSnapshotsForContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -1680,7 +1680,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/snapshots", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<SnapshotContentType>>(Serializer);
@@ -1698,7 +1698,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
-        public async Task<SnapshotContentType> GetSnapshotForContentTypeAsync(string snapshotId, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SnapshotContentType> GetSnapshotForContentType(string snapshotId, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(snapshotId))
             {
@@ -1712,7 +1712,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types/{contentTypeId}/snapshots/{snapshotId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1726,11 +1726,11 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
-        public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMembershipsAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMemberships(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<SpaceMembership>>(Serializer);
@@ -1748,11 +1748,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> CreateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SpaceMembership> CreateSpaceMembership(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1768,7 +1768,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> GetSpaceMembershipAsync(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SpaceMembership> GetSpaceMembership(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(spaceMembershipId))
             {
@@ -1777,7 +1777,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1793,7 +1793,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="spaceMembership">spaceMembership</see> id was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> UpdateSpaceMembershipAsync(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SpaceMembership> UpdateSpaceMembership(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(spaceMembership?.SystemProperties?.Id))
             {
@@ -1802,7 +1802,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", ConvertObjectToJsonStringContent(spaceMembership), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1817,7 +1817,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteSpaceMembershipAsync(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteSpaceMembership(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(spaceMembershipId))
             {
@@ -1826,7 +1826,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembershipId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1836,11 +1836,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ApiKey>> GetAllApiKeysAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ApiKey>> GetAllApiKeys(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>(Serializer);
@@ -1859,7 +1859,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ApiKey> CreateApiKeyAsync(string name, string description, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ApiKey> CreateApiKey(string name, string description, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -1868,7 +1868,7 @@ namespace Contentful.Core
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1886,7 +1886,7 @@ namespace Contentful.Core
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/users", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<User>>(Serializer);
@@ -1914,7 +1914,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/users/{userId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1927,11 +1927,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<User> GetCurrentUserAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> GetCurrentUser(CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_directApiUrl}users/me", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1945,11 +1945,11 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task<UploadReference> GetUploadAsync(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1963,14 +1963,14 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
-        public async Task<UploadReference> UploadFileAsync(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var byteArrayContent = new ByteArrayContent(bytes);
             byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
 
             var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", byteArrayContent, cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -1984,11 +1984,11 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task DeleteUploadAsync(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await DeleteAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1999,9 +1999,9 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
-        public async Task<ManagementAsset> UploadFileAndCreateAssetAsync(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var upload = await UploadFileAsync(bytes, spaceId, cancellationToken);
+            var upload = await UploadFile(bytes, spaceId, cancellationToken);
             upload.SystemProperties.CreatedAt = null;
             upload.SystemProperties.CreatedBy = null;
             upload.SystemProperties.Space = null;
@@ -2011,11 +2011,11 @@ namespace Contentful.Core
                 file.Value.UploadReference = upload;
             }
 
-            var createdAsset = await CreateOrUpdateAssetAsync(asset);
+            var createdAsset = await CreateOrUpdateAsset(asset);
 
             foreach (var file in createdAsset.Files) {
 
-                await ProcessAssetAsync(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, file.Key);
+                await ProcessAsset(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, file.Key);
             }
 
             return createdAsset;
@@ -2028,11 +2028,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<UiExtension>> GetAllExtensionsAsync(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<UiExtension>> GetAllExtensions(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<UiExtension>>(Serializer);
@@ -2050,7 +2050,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<UiExtension> CreateExtensionAsync(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions",
                 ConvertObjectToJsonStringContent(new
@@ -2065,7 +2065,7 @@ namespace Contentful.Core
                     }
                 }), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -2082,7 +2082,7 @@ namespace Contentful.Core
         /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<UiExtension> CreateOrUpdateExtensionAsync(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UiExtension> CreateOrUpdateExtension(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (extension.SystemProperties?.Id == null)
             {
@@ -2107,7 +2107,7 @@ namespace Contentful.Core
 
             RemoveVersionHeader();
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -2123,7 +2123,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="extensionId">extensionId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<UiExtension> GetExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UiExtension> GetExtension(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(extensionId))
             {
@@ -2132,7 +2132,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions/{extensionId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -2147,7 +2147,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task DeleteExtensionAsync(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteExtension(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(extensionId))
             {
@@ -2156,7 +2156,7 @@ namespace Contentful.Core
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions/{extensionId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
 
@@ -2167,7 +2167,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementToken> CreateManagementTokenAsync(ManagementToken token, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementToken> CreateManagementToken(ManagementToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await PostAsync($"{_directApiUrl}users/me/access_tokens",
                 ConvertObjectToJsonStringContent(new
@@ -2176,7 +2176,7 @@ namespace Contentful.Core
                     scopes = token.Scopes
                 }), cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -2190,11 +2190,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokensAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokens(CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_directApiUrl}users/me/access_tokens", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<ManagementToken>>(Serializer);
@@ -2212,7 +2212,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="managementTokenId">managementTokenId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementToken> GetManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementToken> GetManagementToken(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(managementTokenId))
             {
@@ -2221,7 +2221,7 @@ namespace Contentful.Core
 
             var res = await GetAsync($"{_directApiUrl}users/me/access_tokens/{managementTokenId}", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -2236,7 +2236,7 @@ namespace Contentful.Core
         /// <returns>The revoked <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="managementTokenId">managementTokenId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementToken> RevokeManagementTokenAsync(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementToken> RevokeManagementToken(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(managementTokenId))
             {
@@ -2245,7 +2245,7 @@ namespace Contentful.Core
 
             var res = await PutAsync($"{_directApiUrl}users/me/access_tokens/{managementTokenId}/revoked", null, cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -2258,11 +2258,11 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Organization>> GetOrganizationsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Organization>> GetOrganizations(CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_directApiUrl}organizations", cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessfulResultAsync(res).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Organization>>(Serializer);
@@ -2275,22 +2275,22 @@ namespace Contentful.Core
 
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, CancellationToken cancellationToken)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Put, _options.ManagementApiKey, cancellationToken, content).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Put, _options.ManagementApiKey, cancellationToken, content).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancellationToken)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Delete, _options.ManagementApiKey, cancellationToken).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Delete, _options.ManagementApiKey, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken).ConfigureAwait(false);
         }
 
         private string ConvertObjectToJsonString(object ob)

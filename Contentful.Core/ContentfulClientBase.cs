@@ -54,7 +54,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="res">The HttpResonseMessage.</param>
         /// <returns></returns>
-        protected async Task CreateExceptionForFailedRequestAsync(HttpResponseMessage res)
+        protected async Task CreateExceptionForFailedRequest(HttpResponseMessage res)
         {
             var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
@@ -165,7 +165,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="content">The HTTP content.</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> SendHttpRequestAsync(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null)
+        protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -178,14 +178,14 @@ namespace Contentful.Core
 
             httpRequestMessage.Content = content;
 
-            return await SendHttpRequestAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false); ;
+            return await SendHttpRequest(httpRequestMessage, cancellationToken).ConfigureAwait(false); ;
         }
 
-        private async Task<HttpResponseMessage> SendHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        private async Task<HttpResponseMessage> SendHttpRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            response = await EnsureSuccessfulResultAsync(response);
+            response = await EnsureSuccessfulResult(response);
 
             return response;
         }
@@ -219,7 +219,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> EnsureSuccessfulResultAsync(HttpResponseMessage response)
+        protected async Task<HttpResponseMessage> EnsureSuccessfulResult(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
@@ -230,14 +230,14 @@ namespace Contentful.Core
                     {
                         try
                         {
-                            await CreateExceptionForFailedRequestAsync(response).ConfigureAwait(false); ;
+                            await CreateExceptionForFailedRequest(response).ConfigureAwait(false); ;
                         }
                         catch (ContentfulRateLimitException ex)
                         {
                             await Task.Delay(ex.SecondsUntilNextRequest * 1000).ConfigureAwait(false);
                         }
                        
-                        var clonedMessage = await CloneHttpRequestAsync(response.RequestMessage);
+                        var clonedMessage = await CloneHttpRequest(response.RequestMessage);
 
                         response = await _httpClient.SendAsync(clonedMessage).ConfigureAwait(false);
 
@@ -248,15 +248,15 @@ namespace Contentful.Core
                     }
                 }
 
-                await CreateExceptionForFailedRequestAsync(response);
+                await CreateExceptionForFailedRequest(response);
             }
 
             return response;
         }
 
-        private async Task<HttpRequestMessage> CloneHttpRequestAsync(HttpRequestMessage message)
+        private async Task<HttpRequestMessage> CloneHttpRequest(HttpRequestMessage message)
         {
-            HttpRequestMessage clone = new HttpRequestMessage(message.Method, message.RequestUri);
+            var clone = new HttpRequestMessage(message.Method, message.RequestUri);
 
             // Copy the request's content (via a MemoryStream) into the cloned object
             var ms = new MemoryStream();
@@ -271,7 +271,7 @@ namespace Contentful.Core
                         clone.Content.Headers.Add(h.Key, h.Value);
             }
 
-            foreach (KeyValuePair<string, IEnumerable<string>> header in message.Headers)
+            foreach (var header in message.Headers)
                 clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
 
             return clone;
