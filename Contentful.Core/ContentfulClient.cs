@@ -643,7 +643,7 @@ namespace Contentful.Core
 
         private async Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken)
         {
-            return await SendHttpRequest(url, HttpMethod.Get, _options.DeliveryApiKey, cancellationToken).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Get, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken).ConfigureAwait(false);
         }
     }
 }

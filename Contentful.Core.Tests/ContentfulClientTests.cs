@@ -197,6 +197,35 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task SettingPreviewApiShouldUseCorrectApiKey()
+        {
+            //Arrange
+            _handler = new FakeMessageHandler();
+            var httpClient = new HttpClient(_handler);
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "123",
+                PreviewApiKey = "ABC-PREVIEW",
+                SpaceId = "666",
+                UsePreviewApi = true,
+                MaxNumberOfRateLimitRetries = 3
+            });
+            var authHeader = "";
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                authHeader = request.Headers.GetValues("Authorization").First();
+            };
+
+            //Act
+            var res = await _client.GetEntry<Entry<TestEntryModel>>("12");
+
+            //Assert
+            Assert.Equal("Bearer ABC-PREVIEW", authHeader);
+        }
+
+        [Fact]
         public async Task GetEntryShouldSerializeResponseCorrectlyIntoAnEntryModel()
         {
             //Arrange
