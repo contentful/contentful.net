@@ -49,6 +49,8 @@ namespace Contentful.Core
 
         private string Platform => ".net";
 
+        public string Application { get; set; } = "sdk contentful.csharp";
+
         /// <summary>
         /// Creates an exception for a failed API request.
         /// </summary>
@@ -174,7 +176,7 @@ namespace Contentful.Core
             };
             httpRequestMessage.Headers.Add("Authorization", $"Bearer {authToken}");
             
-            httpRequestMessage.Headers.Add("X-Contentful-User-Agent", $"sdk contentful.csharp/{Version}; platform {Platform}; os {Os};");
+            httpRequestMessage.Headers.Add("X-Contentful-User-Agent", $"{Application}/{Version}; platform {Platform}; os {Os};");
 
             httpRequestMessage.Content = content;
 
