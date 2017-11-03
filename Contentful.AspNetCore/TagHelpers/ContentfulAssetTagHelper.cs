@@ -56,7 +56,7 @@ namespace Contentful.AspNetCore.TagHelpers
                 queryBuilder = queryBuilder.LocaleIs(Locale);
             }
 
-            var asset = await _client.GetAssetAsync(AssetId, queryBuilder);
+            var asset = await _client.GetAsset(AssetId, queryBuilder);
 
             output.Attributes.RemoveAll("asset-id");
             output.Attributes.RemoveAll("locale");

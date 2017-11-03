@@ -49,6 +49,9 @@ namespace Contentful.Core
 
         private string Platform => ".net";
 
+        /// <summary>
+        /// Property for sending a custom tracking header.
+        /// </summary>
         public string Application { get; set; } = "sdk contentful.csharp";
 
         /// <summary>
