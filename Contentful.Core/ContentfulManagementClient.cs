@@ -87,7 +87,7 @@ namespace Contentful.Core
                 _httpClient.DefaultRequestHeaders.Add("X-Contentful-Organization", organisation);
             }
 
-            var res = await PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name = name, defaultLocale = defaultLocale }), cancellationToken).ConfigureAwait(false);
+            var res = await PostAsync(_baseUrl, ConvertObjectToJsonStringContent(new { name, defaultLocale }), cancellationToken).ConfigureAwait(false);
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
@@ -128,7 +128,7 @@ namespace Contentful.Core
 
             AddVersionHeader(version);
 
-            var res = await PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name = name }), cancellationToken).ConfigureAwait(false);
+            var res = await PutAsync($"{_baseUrl}{id}", ConvertObjectToJsonStringContent(new { name }), cancellationToken).ConfigureAwait(false);
 
             _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Organization");
 
@@ -511,8 +511,10 @@ namespace Contentful.Core
         /// <returns>The created entry.</returns>
         public async Task<T> CreateEntry<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var entryToCreate = new Entry<dynamic>();
-            entryToCreate.Fields = entry;
+            var entryToCreate = new Entry<dynamic>
+            {
+                Fields = entry
+            };
 
             var createdEntry = await CreateEntry(entryToCreate, contentTypeId, spaceId, cancellationToken);
             return (createdEntry.Fields as JObject).ToObject<T>();
@@ -568,12 +570,14 @@ namespace Contentful.Core
         /// <returns>The created or updated entry.</returns>
         public async Task<T> CreateOrUpdateEntry<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var entryToCreate = new Entry<dynamic>();
-            entryToCreate.SystemProperties = new SystemProperties
+            var entryToCreate = new Entry<dynamic>
             {
-                Id = id
+                SystemProperties = new SystemProperties
+                {
+                    Id = id
+                },
+                Fields = entry
             };
-            entryToCreate.Fields = entry;
 
             var createdEntry = await CreateOrUpdateEntry(entryToCreate, spaceId, contentTypeId, version, cancellationToken);
             return (createdEntry.Fields as JObject).ToObject<T>();
@@ -604,12 +608,14 @@ namespace Contentful.Core
                 jsonToCreate.Add(new JProperty(prop.Name, new JObject(new JProperty(locale, val))));
             }
 
-            var entryToCreate = new Entry<dynamic>();
-            entryToCreate.SystemProperties = new SystemProperties
+            var entryToCreate = new Entry<dynamic>
             {
-                Id = id
+                SystemProperties = new SystemProperties
+                {
+                    Id = id
+                },
+                Fields = jsonToCreate
             };
-            entryToCreate.Fields = jsonToCreate;
 
             return await CreateOrUpdateEntry(entryToCreate, spaceId: spaceId, contentTypeId: contentTypeId, cancellationToken: cancellationToken);
         }
@@ -1866,7 +1872,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The name of the api key must be set.", nameof(name));
             }
 
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name = name, description = description }), cancellationToken).ConfigureAwait(false);
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name, description }), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 

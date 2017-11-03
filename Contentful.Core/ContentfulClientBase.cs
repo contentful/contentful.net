@@ -228,7 +228,7 @@ namespace Contentful.Core
                 if((int)response.StatusCode == 429 && _options.MaxNumberOfRateLimitRetries > 0)
                 {
                     //Limit retries to 10 regardless of config
-                    for (int i = 0; i < _options.MaxNumberOfRateLimitRetries && i < 10; i++)
+                    for (var i = 0; i < _options.MaxNumberOfRateLimitRetries && i < 10; i++)
                     {
                         try
                         {

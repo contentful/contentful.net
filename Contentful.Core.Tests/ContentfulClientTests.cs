@@ -36,7 +36,7 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             var httpClient = new HttpClient(_handler);
-            var client = new ContentfulClient(httpClient, "444", "435");
+            var client = new ContentfulClient(httpClient, "444", "", "435");
             _handler.Response = GetResponseFromFile(@"SampleAsset.json");
             var authHeader = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>
@@ -53,10 +53,9 @@ namespace Contentful.Core.Tests
         [Fact]
         public async Task CreatingAContentfulClientAndMakingCallShouldAddUserAgentHeader()
         {
-
             //Arrange
             var httpClient = new HttpClient(_handler);
-            var client = new ContentfulClient(httpClient, "123", "435");
+            var client = new ContentfulClient(httpClient, "123", "", "435");
             _handler.Response = GetResponseFromFile(@"SampleAsset.json");
             var userAgent = "";
             _handler.VerifyRequest = (HttpRequestMessage request) =>

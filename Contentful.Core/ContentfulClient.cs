@@ -64,16 +64,18 @@ namespace Contentful.Core
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class.
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
-        /// <param name="deliveryApiKey">The delivery API key used when communicating with the Contentful API</param>
+        /// <param name="deliveryApiKey">The delivery API key used when communicating with the Contentful API.</param>
+        /// <param name="previewApiKey">The preview API key used when communicating with the Contentful Preview API.</param>
         /// <param name="spaceId">The ID of the space to fetch content from.</param>
         /// <param name="usePreviewApi">Whether or not to use the Preview API for requests.
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string spaceId, bool usePreviewApi = false):
+        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false):
             this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
             {
                 DeliveryApiKey = deliveryApiKey,
                 SpaceId = spaceId,
+                PreviewApiKey = previewApiKey,
                 UsePreviewApi = usePreviewApi
             }))
         {
