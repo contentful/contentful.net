@@ -49,7 +49,7 @@ namespace Contentful.Core.Tests
             .InformationalVersion;
 
             //Act
-            await _client.GetAssetAsync("sdf");
+            await _client.GetAsset("sdf");
 
             //Assert
             Assert.Equal("Bearer 564", authHeader);
@@ -120,7 +120,7 @@ namespace Contentful.Core.Tests
 
 
             //Act
-            var res = await _client.CreateOrUpdateContentTypeAsync(contentType);
+            var res = await _client.CreateOrUpdateContentType(contentType);
 
             //Assert
             Assert.Null(res.Name);
@@ -133,7 +133,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EditorInterface.json");
 
             //Act
-            var res = await _client.GetEditorInterfaceAsync("someid");
+            var res = await _client.GetEditorInterface("someid");
 
             //Assert
             Assert.Equal(7, res.Controls.Count);
@@ -157,7 +157,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateSpaceAsync("Spaceman", "en-US", "112");
+            var res = await _client.CreateSpace("Spaceman", "en-US", "112");
 
             //Assert
             Assert.True(headerSet);
@@ -182,7 +182,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateSpaceNameAsync("spaceId", "Spacemaster", 37, "333");
+            var res = await _client.UpdateSpaceName("spaceId", "Spacemaster", 37, "333");
 
             //Assert
             Assert.True(headerSet);
@@ -207,7 +207,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteSpaceAsync(id);
+            await _client.DeleteSpace(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -220,7 +220,7 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
             //Act
-            var res = await _client.GetContentTypesAsync();
+            var res = await _client.GetContentTypes();
 
             //Assert
             Assert.Equal(4, res.Count());
@@ -237,7 +237,7 @@ namespace Contentful.Core.Tests
                 Name = "Barbossa"
             };
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentTypeAsync(contentType));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentType(contentType));
 
             //Assert
             Assert.Equal($"The id of the content type must be set.{Environment.NewLine}Parameter name: contentType", ex.Message);
@@ -267,7 +267,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateOrUpdateContentTypeAsync(contentType, version: 22);
+            var res = await _client.CreateOrUpdateContentType(contentType, version: 22);
 
             //Assert
             Assert.Equal("22", versionHeader);
@@ -281,7 +281,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleContentType.json");
 
             //Act
-            var res = await _client.GetContentTypeAsync("someid");
+            var res = await _client.GetContentType("someid");
 
             //Assert
             Assert.Equal("Product", res.Name);
@@ -300,7 +300,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleContentType.json");
 
             //Act
-            var res = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetContentTypeAsync(""));
+            var res = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetContentType(""));
 
             //Assert
             Assert.Equal("contentTypeId", res.Message);
@@ -323,7 +323,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteContentTypeAsync(id);
+            await _client.DeleteContentType(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -336,7 +336,7 @@ namespace Contentful.Core.Tests
             //Arrange
             
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.ActivateContentTypeAsync("", 34));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.ActivateContentType("", 34));
 
             //Assert
             Assert.Equal("contentTypeId", ex.Message);
@@ -362,7 +362,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.ActivateContentTypeAsync("758", 345);
+            var res = await _client.ActivateContentType("758", 345);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -376,7 +376,7 @@ namespace Contentful.Core.Tests
             //Arrange
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeactivateContentTypeAsync(""));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeactivateContentType(""));
 
             //Assert
             Assert.Equal("contentTypeId", ex.Message);
@@ -398,7 +398,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeactivateContentTypeAsync("324");
+            await _client.DeactivateContentType("324");
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -418,7 +418,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.GetActivatedContentTypesAsync();
+            var res = await _client.GetActivatedContentTypes();
 
             //Assert
             Assert.Equal(4, res.Count());
@@ -433,7 +433,7 @@ namespace Contentful.Core.Tests
             //Arrange
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEditorInterfaceAsync(""));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEditorInterface(""));
             //Assert
             Assert.Equal("contentTypeId", ex.Message);
         }
@@ -445,7 +445,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EditorInterface.json");
 
             //Act
-            var res = await _client.GetEditorInterfaceAsync("23");
+            var res = await _client.GetEditorInterface("23");
             //Assert
             Assert.Equal(7, res.Controls.Count);
             Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
@@ -463,7 +463,7 @@ namespace Contentful.Core.Tests
             //Arrange
             var editorInterface = new EditorInterface();
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateEditorInterfaceAsync(editorInterface, "", 6));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateEditorInterface(editorInterface, "", 6));
             //Assert
             Assert.Equal("contentTypeId", ex.Message);
         }
@@ -509,7 +509,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EditorInterface.json");
 
             //Act
-            var res = await _client.UpdateEditorInterfaceAsync(editorInterface, "123", 16);
+            var res = await _client.UpdateEditorInterface(editorInterface, "123", 16);
 
             //Assert
             Assert.Equal("16", versionHeader);
@@ -546,7 +546,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EditorInterface.json");
 
             //Act
-            var res = await _client.UpdateEditorInterfaceAsync(editorInterface, "123", 1);
+            var res = await _client.UpdateEditorInterface(editorInterface, "123", 1);
 
             //Assert
             Assert.Equal(7, res.Controls.Count);
@@ -560,7 +560,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<Entry<dynamic>>();
+            var res = await _client.GetEntriesCollection<Entry<dynamic>>();
 
             //Assert
             Assert.Equal(8, res.Total);
@@ -580,7 +580,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
 
             //Act
-            var res = await _client.GetEntriesCollectionAsync<ManagementEntry>();
+            var res = await _client.GetEntriesCollection<ManagementEntry>();
 
             //Assert
             Assert.Equal(8, res.Total);
@@ -602,7 +602,7 @@ namespace Contentful.Core.Tests
                 SystemProperties = new SystemProperties()
             };
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateEntryAsync(entry, contentTypeId: "Hwoarang"));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateEntry(entry, contentTypeId: "Hwoarang"));
             //Assert
             Assert.Equal("The id of the entry must be set.", ex.Message);
         }
@@ -624,7 +624,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            var res = await _client.CreateOrUpdateEntryAsync(entry, contentTypeId: "Eddie Gordo");
+            var res = await _client.CreateOrUpdateEntry(entry, contentTypeId: "Eddie Gordo");
             //Assert
             Assert.Equal("Eddie Gordo", contentTypeHeader);
         }
@@ -645,7 +645,7 @@ namespace Contentful.Core.Tests
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
             //Act
-            var res = await _client.CreateOrUpdateEntryAsync(entry, version: 7);
+            var res = await _client.CreateOrUpdateEntry(entry, version: 7);
             //Assert
             Assert.Null(contentTypeHeader);
         }
@@ -681,7 +681,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            var res = await _client.CreateOrUpdateEntryAsync(entry, contentTypeId: "Bryan Fury", version: 45);
+            var res = await _client.CreateOrUpdateEntry(entry, contentTypeId: "Bryan Fury", version: 45);
             //Assert
             Assert.Equal("Bryan Fury", contentTypeHeader);
             Assert.Equal("45", versionHeader);
@@ -716,7 +716,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            var res = await _client.CreateOrUpdateEntryAsync(entry, "532", contentTypeId: "Bryan Fury", version: 45);
+            var res = await _client.CreateOrUpdateEntry(entry, "532", contentTypeId: "Bryan Fury", version: 45);
             //Assert
             Assert.Equal("Bryan Fury", contentTypeHeader);
             Assert.Equal("45", versionHeader);
@@ -741,7 +741,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateEntryForLocaleAsync(entry, "532", locale: "en-US");
+            var res = await _client.UpdateEntryForLocale(entry, "532", locale: "en-US");
             //Assert
 
             Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
@@ -763,7 +763,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateEntryForLocaleAsync(entry, "532", "contentType", locale: "sv-SE");
+            var res = await _client.CreateEntryForLocale(entry, "532", "contentType", locale: "sv-SE");
             //Assert
 
             Assert.Contains(@"""field1"":{""sv-SE"":""Fischer""}", contentSet);
@@ -785,7 +785,7 @@ namespace Contentful.Core.Tests
   
 
             //Act
-            var res = await _client.CreateEntryForLocaleAsync(entry, "532", "contentType", locale: "sv-SE");
+            var res = await _client.CreateEntryForLocale(entry, "532", "contentType", locale: "sv-SE");
             //Assert
 
             Assert.Contains("contentType", contentTypeHeader);
@@ -808,7 +808,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateEntryForLocaleAsync(entry, "532", "contentType");
+            var res = await _client.CreateEntryForLocale(entry, "532", "contentType");
             //Assert
 
             Assert.Contains(@"""field1"":{""en-US"":""Alekhine""}", contentSet);
@@ -832,7 +832,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateEntryForLocaleAsync(entry, "532");
+            var res = await _client.UpdateEntryForLocale(entry, "532");
             //Assert
 
             Assert.Contains(@"""field1"":{""en-US"":""Benko""}", contentSet);
@@ -865,7 +865,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            var res = await _client.CreateEntryAsync(entry, contentTypeId: "Ling Xiaoyu");
+            var res = await _client.CreateEntry(entry, contentTypeId: "Ling Xiaoyu");
             //Assert
             Assert.Equal("Ling Xiaoyu", contentTypeHeader);
             Assert.Equal("https://api.contentful.com/spaces/666/entries", requestUrl);
@@ -898,7 +898,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            var res = await _client.CreateEntryAsync(entry, contentTypeId: "Ling Xiaoyu");
+            var res = await _client.CreateEntry(entry, contentTypeId: "Ling Xiaoyu");
             //Assert
             Assert.Equal("Ling Xiaoyu", contentTypeHeader);
             Assert.Equal("https://api.contentful.com/spaces/666/entries", requestUrl);
@@ -912,7 +912,7 @@ namespace Contentful.Core.Tests
             var entry = new Entry<dynamic>();
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEntryAsync(entry, contentTypeId: ""));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEntry(entry, contentTypeId: ""));
             //Assert
             Assert.Equal($"The content type id must be set.{Environment.NewLine}Parameter name: contentTypeId", ex.Message);
         }
@@ -923,7 +923,7 @@ namespace Contentful.Core.Tests
             //Arrange
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEntryAsync(""));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEntry(""));
             //Assert
             Assert.Equal("entryId", ex.Message);
         }
@@ -935,7 +935,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            var res = await _client.GetEntryAsync("43");
+            var res = await _client.GetEntry("43");
             //Assert
             Assert.Equal("42BwcCt4TeeskG0eq8S2CQ", res.SystemProperties.Id);
             Assert.Equal("Somethi", res.Fields.field1["en-US"].ToString());
@@ -963,7 +963,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteEntryAsync(id, 32);
+            await _client.DeleteEntry(id, 32);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -994,7 +994,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            await _client.PublishEntryAsync(id, 23);
+            await _client.PublishEntry(id, 23);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -1025,7 +1025,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            await _client.PublishEntryAsync(id, 23);
+            await _client.PublishEntry(id, 23);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -1056,7 +1056,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            await _client.ArchiveEntryAsync(id, 78);
+            await _client.ArchiveEntry(id, 78);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -1087,7 +1087,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            await _client.UnarchiveEntryAsync(id, 67);
+            await _client.UnarchiveEntry(id, 67);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1102,7 +1102,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"AssetsCollectionManagement.json");
 
             //Act
-            var res = await _client.GetAssetsCollectionAsync();
+            var res = await _client.GetAssetsCollection();
 
             //Assert
             Assert.Equal(7, res.Count());
@@ -1129,7 +1129,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.GetAssetsCollectionAsync(query);
+            var res = await _client.GetAssetsCollection(query);
 
             //Assert
             Assert.Equal(7, res.Count());
@@ -1152,7 +1152,7 @@ namespace Contentful.Core.Tests
             asset.Title["en-US"] = "Burton Green";
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateAssetAsync(asset));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateAsset(asset));
             //Assert
             Assert.Equal("The id of the asset must be set.", ex.Message);
         }
@@ -1182,7 +1182,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateOrUpdateAssetAsync(asset);
+            var res = await _client.CreateOrUpdateAsset(asset);
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
             Assert.Contains(@"""en-US"":""Burton Green""", contentSet);
@@ -1214,7 +1214,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateAssetAsync(asset);
+            var res = await _client.CreateAsset(asset);
             //Assert
             Assert.Equal(HttpMethod.Post, requestMethod);
             Assert.Contains(@"""en-US"":""Burton Green""", contentSet);
@@ -1242,7 +1242,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateOrUpdateAssetAsync(asset, version: 234);
+            var res = await _client.CreateOrUpdateAsset(asset, version: 234);
             //Assert
             Assert.Equal("234", versionHeader);
         }
@@ -1254,7 +1254,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"AssetsCollectionManagement.json");
 
             //Act
-            var res = await _client.GetPublishedAssetsCollectionAsync();
+            var res = await _client.GetPublishedAssetsCollection();
 
             //Assert
             Assert.Equal(7, res.Count());
@@ -1272,7 +1272,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAssetAsync(""));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAsset(""));
 
             //Assert
             Assert.Equal("assetId", ex.Message);
@@ -1285,7 +1285,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
 
             //Act
-            var res = await _client.GetAssetAsync("234");
+            var res = await _client.GetAsset("234");
 
             //Assert
             Assert.Equal("Ernest Hemingway (1950)", res.Title["en-US"]);
@@ -1314,7 +1314,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteAssetAsync(id, 86);
+            await _client.DeleteAsset(id, 86);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1344,7 +1344,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.ProcessAssetAsync(id, 25, locale);
+            await _client.ProcessAsset(id, 25, locale);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -1362,7 +1362,7 @@ namespace Contentful.Core.Tests
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagement.json"));
             
             //Act
-            var res = await _client.ProcessAssetUntilCompletedAsync("123", 3, "en-US");
+            var res = await _client.ProcessAssetUntilCompleted("123", 3, "en-US");
 
             //Assert
             Assert.NotNull(res);
@@ -1379,7 +1379,7 @@ namespace Contentful.Core.Tests
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagement.json"));
             //Act
-            var ex = await Assert.ThrowsAsync<TimeoutException>(async () => await _client.ProcessAssetUntilCompletedAsync("123", 3, "en-US", 300));
+            var ex = await Assert.ThrowsAsync<TimeoutException>(async () => await _client.ProcessAssetUntilCompleted("123", 3, "en-US", 300));
 
             //Assert
             Assert.Equal("The processing of the asset did not finish in a timely manner. Max delay of 300 reached.", ex.Message);
@@ -1407,7 +1407,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.PublishAssetAsync(id, 23);
+            await _client.PublishAsset(id, 23);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -1437,7 +1437,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.UnpublishAssetAsync(id, 38);
+            await _client.UnpublishAsset(id, 38);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1467,7 +1467,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.ArchiveAssetAsync(id, 23);
+            await _client.ArchiveAsset(id, 23);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
@@ -1497,7 +1497,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.UnarchiveAssetAsync(id, 89);
+            await _client.UnarchiveAsset(id, 89);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1512,7 +1512,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"LocalesCollection.json");
 
             //Act
-            var res = await _client.GetLocalesCollectionAsync();
+            var res = await _client.GetLocalesCollection();
 
             //Assert
             Assert.Equal(1, res.Count());
@@ -1542,7 +1542,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateLocaleAsync(locale);
+            var res = await _client.CreateLocale(locale);
 
             //Assert
             Assert.Equal(@"{""code"":""en-UI"",""contentDeliveryApi"":false,""contentManagementApi"":false,""fallbackCode"":""sv-SE"",""name"":""Unintelligible English"",""optional"":true}", contentSet);
@@ -1557,7 +1557,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleLocale.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetLocaleAsync(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetLocale(id));
 
             //Assert
             Assert.Equal("The localeId must be set.", ex.Message);
@@ -1570,7 +1570,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleLocale.json");
 
             //Act
-            var res = await _client.GetLocaleAsync("art");
+            var res = await _client.GetLocale("art");
 
             //Assert
             Assert.Equal("U.S. English", res.Name);
@@ -1595,7 +1595,7 @@ namespace Contentful.Core.Tests
 
 
             //Act
-            await _client.DeleteLocaleAsync(id);
+            await _client.DeleteLocale(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1603,13 +1603,13 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task GetAllWebHooksShouldDeserializeCorrectly()
+        public async Task GetAllWebhooksShouldDeserializeCorrectly()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCollection.json");
 
             //Act
-            var res = await _client.GetWebHooksCollectionAsync();
+            var res = await _client.GetWebhooksCollection();
 
             //Assert
             Assert.Equal(1, res.Total);
@@ -1619,12 +1619,12 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task CreateWebHookShouldCallCorrectUrlWithData()
+        public async Task CreateWebhookShouldCallCorrectUrlWithData()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
 
-            var webhook = new WebHook()
+            var webhook = new Webhook()
             {
                 Name = "Some hook",
                 Url = "https://www.cracked.com/",
@@ -1647,7 +1647,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateWebHookAsync(webhook);
+            var res = await _client.CreateWebhook(webhook);
 
             //Assert
             Assert.Equal(HttpMethod.Post, method);
@@ -1663,17 +1663,17 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task CreateOrUpdateWebHookShouldThrowIfNoIdSet(string id)
+        public async Task CreateOrUpdateWebhookShouldThrowIfNoIdSet(string id)
         {
             //Arrange
-            var webHook = new WebHook()
+            var webHook = new Webhook()
             {
                 SystemProperties = new SystemProperties()
             };
             webHook.SystemProperties.Id = id;
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateWebHookAsync(webHook));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateWebhook(webHook));
 
             //Assert
             Assert.Equal("The id of the webhook must be set.", ex.Message);
@@ -1683,12 +1683,12 @@ namespace Contentful.Core.Tests
         [InlineData("2354")]
         [InlineData("33")]
         [InlineData("vadfb#¤123")]
-        public async Task CreateOrUpdateWebHookShouldCallCorrectUrlWithData(string id)
+        public async Task CreateOrUpdateWebhookShouldCallCorrectUrlWithData(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
 
-            var webhook = new WebHook()
+            var webhook = new Webhook()
             {
                 SystemProperties = new SystemProperties()
             };
@@ -1713,7 +1713,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateOrUpdateWebHookAsync(webhook);
+            var res = await _client.CreateOrUpdateWebhook(webhook);
 
             //Assert
             Assert.Equal(HttpMethod.Put, method);
@@ -1729,26 +1729,26 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task GetWebHookShouldThrowIfNoIdSet(string id)
+        public async Task GetWebhookShouldThrowIfNoIdSet(string id)
         {
             //Arrange
 
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookAsync(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhook(id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
-        public async Task GetWebHookShouldReturnCorrectObject()
+        public async Task GetWebhookShouldReturnCorrectObject()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
 
             //Act
-            var res = await _client.GetWebHookAsync("ertg");
+            var res = await _client.GetWebhook("ertg");
 
             //Assert
             Assert.Equal("Testhook", res.Name);
@@ -1780,7 +1780,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteWebHookAsync(id);
+            await _client.DeleteWebhook(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1788,12 +1788,12 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task WebHookCallDetailsShouldDeserializeCorrectly()
+        public async Task WebhookCallDetailsShouldDeserializeCorrectly()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
             //Act
-            var res = await _client.GetWebHookCallDetailsAsync("b", "s");
+            var res = await _client.GetWebhookCallDetails("b", "s");
 
             //Assert
             Assert.Equal("unarchive", res.EventType);
@@ -1803,13 +1803,13 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookCallDetailShouldThrowForWebHookIdNotSet(string id)
+        public async Task WebhookCallDetailShouldThrowForWebHookIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync("some", id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetails("some", id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
@@ -1818,13 +1818,13 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
+        public async Task WebhookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsAsync(id, "some"));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetails(id, "some"));
 
             //Assert
             Assert.Equal($"The id of the webhook call must be set.{Environment.NewLine}Parameter name: callId", ex.Message);
@@ -1833,26 +1833,26 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookCallDetailsShouldThrowForIdNotSet(string id)
+        public async Task WebhookCallDetailsShouldThrowForIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetailsCollection.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsCollectionAsync(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetailsCollection(id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
-        public async Task WebHookCallDetailsCollectionShouldReturnCorrectObject()
+        public async Task WebhookCallDetailsCollectionShouldReturnCorrectObject()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetailsCollection.json");
 
             //Act
-            var res = await _client.GetWebHookCallDetailsCollectionAsync("aaf");
+            var res = await _client.GetWebhookCallDetailsCollection("aaf");
 
             //Assert
             Assert.Equal(2, res.Total);
@@ -1863,26 +1863,26 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookHealthShouldThrowForIdNotSet(string id)
+        public async Task WebhookHealthShouldThrowForIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookHealth.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookHealthAsync(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookHealth(id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
-        public async Task WebHookHealthShouldReturnCorrectObject()
+        public async Task WebhookHealthShouldReturnCorrectObject()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookHealth.json");
 
             //Act
-            var res = await _client.GetWebHookHealthAsync("aaf");
+            var res = await _client.GetWebhookHealth("aaf");
 
             //Assert
             Assert.Equal(2, res.TotalCalls);
@@ -1942,7 +1942,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleRole.json");
 
             //Act
-            var res = await _client.GetRoleAsync("123");
+            var res = await _client.GetRole("123");
 
             //Assert
             Assert.Equal("Developer", res.Name);
@@ -1989,7 +1989,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateRoleAsync(role);
+            var res = await _client.CreateRole(role);
 
             //Assert
             Assert.Equal("Developer", res.Name);
@@ -2004,7 +2004,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleRolesCollection.json");
 
             //Act
-            var res = await _client.GetAllRolesAsync();
+            var res = await _client.GetAllRoles();
 
             //Assert
             Assert.Equal(7, res.Total);
@@ -2052,7 +2052,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateRoleAsync(role);
+            var res = await _client.CreateRole(role);
 
             //Assert
             Assert.Equal(HttpMethod.Post, method);
@@ -2078,7 +2078,7 @@ namespace Contentful.Core.Tests
             role.SystemProperties.Id = id;
             
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateRoleAsync(role));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateRole(role));
 
             //Assert
             Assert.Equal("The id of the role must be set.", ex.Message);
@@ -2129,7 +2129,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateRoleAsync(role);
+            var res = await _client.UpdateRole(role);
 
             //Assert
             Assert.Equal(HttpMethod.Put, method);
@@ -2158,7 +2158,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteRoleAsync(id);
+            await _client.DeleteRole(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -2172,7 +2172,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SnapshotsCollection.json");
 
             //Act
-            var res = await _client.GetAllSnapshotsForEntryAsync("123");
+            var res = await _client.GetAllSnapshotsForEntry("123");
 
             //Assert
             Assert.Equal("Seven Tips From Ernest Hemingway on How to Write Fiction", res.First().Fields["title"]["en-US"]);
@@ -2187,7 +2187,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSnapshot.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync(id, "something"));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntry(id, "something"));
 
             //Assert
             Assert.Equal($"The id of the snapshot must be set.{Environment.NewLine}Parameter name: snapshotId", ex.Message);
@@ -2202,7 +2202,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSnapshot.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntry("something", id));
 
             //Assert
             Assert.Equal($"The id of the entry must be set.{Environment.NewLine}Parameter name: entryId", ex.Message);
@@ -2215,7 +2215,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSnapshot.json");
             
             //Act
-            var res = await _client.GetSnapshotForEntryAsync("123", "wed");
+            var res = await _client.GetSnapshotForEntry("123", "wed");
 
             //Assert
             Assert.Equal("Somethi", res.Fields["field1"]["en-US"]);
@@ -2229,7 +2229,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"ContentTypeSnapshotsCollection.json");
 
             //Act
-            var res = await _client.GetAllSnapshotsForContentTypeAsync("123");
+            var res = await _client.GetAllSnapshotsForContentType("123");
             var list = res.ToList();
 
             //Assert
@@ -2250,7 +2250,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"ContentTypeSnapshotsCollection.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAllSnapshotsForContentTypeAsync(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAllSnapshotsForContentType(id));
 
             //Assert
             Assert.Equal($"The id of the content type must be set.{Environment.NewLine}Parameter name: contentTypeId", ex.Message);
@@ -2267,7 +2267,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSnapshotContentType.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForContentTypeAsync(snapId, id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForContentType(snapId, id));
 
             //Assert
             Assert.Contains($"The id of the ", ex.Message);
@@ -2280,7 +2280,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSnapshotContentType.json");
 
             //Act
-            var res = await _client.GetSnapshotForContentTypeAsync("123", "wed");
+            var res = await _client.GetSnapshotForContentType("123", "wed");
 
             //Assert
             Assert.Equal("Product", res.Snapshot.Name);
@@ -2295,7 +2295,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSpaceMembershipsCollection.json");
 
             //Act
-            var res = await _client.GetSpaceMembershipsAsync();
+            var res = await _client.GetSpaceMemberships();
 
             //Assert
             Assert.Equal(1, res.Total);
@@ -2321,7 +2321,7 @@ namespace Contentful.Core.Tests
             _handler.Response = new HttpResponseMessage() { Content = new StringContent(serializedMembership) };
 
             //Act
-            var res = await _client.CreateSpaceMembershipAsync(membership);
+            var res = await _client.CreateSpaceMembership(membership);
 
             //Assert
             Assert.True(res.Admin);
@@ -2355,7 +2355,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateSpaceMembershipAsync(spaceMembership);
+            var res = await _client.CreateSpaceMembership(spaceMembership);
 
             //Assert
             Assert.Equal(HttpMethod.Post, method);
@@ -2373,7 +2373,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSpaceMembershipsCollection.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntryAsync("something", id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntry("something", id));
 
             //Assert
             Assert.Equal($"The id of the entry must be set.{Environment.NewLine}Parameter name: entryId", ex.Message);
@@ -2410,7 +2410,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateSpaceMembershipAsync(spaceMembership);
+            var res = await _client.UpdateSpaceMembership(spaceMembership);
 
             //Assert
             Assert.Equal(HttpMethod.Put, method);
@@ -2435,7 +2435,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteSpaceMembershipAsync(id);
+            await _client.DeleteSpaceMembership(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -2449,7 +2449,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"ApiKeysCollection.json");
 
             //Act
-            var res = await _client.GetAllApiKeysAsync();
+            var res = await _client.GetAllApiKeys();
 
             //Assert
             Assert.Equal(2, res.Total);
@@ -2473,7 +2473,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateApiKeyAsync("Key sharp!", "This is the desc");
+            var res = await _client.CreateApiKey("Key sharp!", "This is the desc");
 
             //Assert
             Assert.Equal(HttpMethod.Post, method);
@@ -2489,7 +2489,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
 
             //Act
-            var res = await _client.UploadFileAsync(fileBytes);
+            var res = await _client.UploadFile(fileBytes);
 
             //Assert
             Assert.IsType<UploadReference>(res);
@@ -2504,7 +2504,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
 
             //Act
-            var res = await _client.GetUploadAsync("5wAqke81S2C1o32RvTODCl");
+            var res = await _client.GetUpload("5wAqke81S2C1o32RvTODCl");
 
             Assert.IsType<UploadReference>(res);
             Assert.NotNull(res.SystemProperties.Id);
@@ -2532,7 +2532,7 @@ namespace Contentful.Core.Tests
                 }
             };
             //Act
-            var res = await _client.UploadFileAndCreateAssetAsync(asset, fileBytes);
+            var res = await _client.UploadFileAndCreateAsset(asset, fileBytes);
 
             Assert.IsType<ManagementAsset>(res);
             Assert.NotNull(res.SystemProperties.Id);
@@ -2546,7 +2546,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleExtensionsCollection.json");
 
             //Act
-            var res = await _client.GetAllExtensionsAsync();
+            var res = await _client.GetAllExtensions();
 
             //Assert
             Assert.Equal(1, res.Total);
@@ -2561,7 +2561,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleExtension.json");
 
             //Act
-            var res = await _client.GetExtensionAsync("B");
+            var res = await _client.GetExtension("B");
 
             //Assert
             Assert.Equal("trul", res.Name);
@@ -2583,7 +2583,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateExtensionAsync(ext);
+            var res = await _client.CreateExtension(ext);
 
             //Assert
             Assert.Equal("trul", res.Name);
@@ -2609,7 +2609,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateOrUpdateExtensionAsync(ext);
+            var res = await _client.CreateOrUpdateExtension(ext);
 
             //Assert
             Assert.Equal("trul", res.Name);
@@ -2629,7 +2629,7 @@ namespace Contentful.Core.Tests
                 Name = "trul"
             };
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateExtensionAsync(ext));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateExtension(ext));
 
             //Assert
             Assert.Equal($"The id of the extension must be set.{Environment.NewLine}Parameter name: extension", ex.Message);
@@ -2652,7 +2652,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteExtensionAsync(id);
+            await _client.DeleteExtension(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -2674,7 +2674,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateManagementTokenAsync(token);
+            var res = await _client.CreateManagementToken(token);
 
             //Assert
             Assert.Equal("My Token", res.Name);
@@ -2689,7 +2689,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"GetToken.json");
 
             //Act
-            var res = await _client.GetManagementTokenAsync("pop");
+            var res = await _client.GetManagementToken("pop");
 
             //Assert
             Assert.Equal("My Token", res.Name);
@@ -2705,7 +2705,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"TokensCollection.json");
 
             //Act
-            var res = await _client.GetAllManagementTokensAsync();
+            var res = await _client.GetAllManagementTokens();
 
             //Assert
             
@@ -2724,7 +2724,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"RevokedToken.json");
 
             //Act
-            var res = await _client.RevokeManagementTokenAsync("pop");
+            var res = await _client.RevokeManagementToken("pop");
 
             //Assert
             Assert.Equal("My Token", res.Name);
@@ -2739,7 +2739,7 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleUser.json");
             //Act
-            var res = await _client.GetCurrentUserAsync();
+            var res = await _client.GetCurrentUser();
 
             //Assert
             Assert.Equal("https://images.contentful.com/abcd1234", res.AvatarUrl);
@@ -2751,7 +2751,7 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"OrganizationsCollection.json");
             //Act
-            var res = await _client.GetOrganizationsAsync();
+            var res = await _client.GetOrganizations();
 
             //Assert
             Assert.Collection(res,
@@ -2780,7 +2780,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateEntryAsync(entry, "bluemoon");
+            var res = await _client.CreateEntry(entry, "bluemoon");
 
             //Assert
             Assert.Contains("NotCamelISay", contentSet);

@@ -47,6 +47,7 @@ namespace Contentful.Core
             }
             ResolveEntriesSelectively = _options.ResolveEntriesSelectively;
             SerializerSettings.Converters.Add(new AssetJsonConverter());
+            SerializerSettings.TypeNameHandling = TypeNameHandling.All;
         }
 
         /// <summary>
@@ -64,16 +65,18 @@ namespace Contentful.Core
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class.
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
-        /// <param name="deliveryApiKey">The delivery API key used when communicating with the Contentful API</param>
+        /// <param name="deliveryApiKey">The delivery API key used when communicating with the Contentful API.</param>
+        /// <param name="previewApiKey">The preview API key used when communicating with the Contentful Preview API.</param>
         /// <param name="spaceId">The ID of the space to fetch content from.</param>
         /// <param name="usePreviewApi">Whether or not to use the Preview API for requests.
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string spaceId, bool usePreviewApi = false):
+        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false):
             this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
             {
                 DeliveryApiKey = deliveryApiKey,
                 SpaceId = spaceId,
+                PreviewApiKey = previewApiKey,
                 UsePreviewApi = usePreviewApi
             }))
         {
@@ -106,9 +109,9 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
-        public async Task<T> GetEntryAsync<T>(string entryId, QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> GetEntry<T>(string entryId, QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetEntryAsync<T>(entryId, queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return await GetEntry<T>(entryId, queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -122,31 +125,25 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
-        public async Task<T> GetEntryAsync<T>(string entryId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> GetEntry<T>(string entryId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(entryId))
             {
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries/{entryId}{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/entries/{entryId}{queryString}", cancellationToken).ConfigureAwait(false);
 
             var ob = default(T);
 
-            if (typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
-            {
-                ob = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<T>(Serializer);
-            }
-            else
-            {
-                var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-                //move the sys object beneath the fields to make serialization more logical for the end user.
-                var sys = json.SelectToken("$.sys");
-                var fields = json.SelectToken("$.fields");
-                fields["sys"] = sys;
-                ob = fields.ToObject<T>(Serializer);
-            }
+            //move the sys object beneath the fields to make serialization more logical for the end user.
+            var sys = json.SelectToken("$.sys");
+            var fields = json.SelectToken("$.fields");
+            fields["sys"] = sys;
+            ob = fields.ToObject<T>(Serializer);
+            
             return ob;
         }
 
@@ -160,13 +157,13 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesByTypeAsync<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesByType<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var builder = queryBuilder ?? new QueryBuilder<T>();
 
             builder.ContentTypeIs(contentTypeId);
 
-            return await GetEntriesAsync<T>(builder, cancellationToken).ConfigureAwait(false);
+            return await GetEntries<T>(builder, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -178,9 +175,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesAsync<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntries<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetEntriesAsync<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return await GetEntries<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -193,55 +190,39 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesAsync<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntries<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             IEnumerable<T> entries;
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var isContentfulResource = typeof(IContentfulResource).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
             var processedIds = new HashSet<string>();
             foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
-                if (isContentfulResource)
-                {
-                    ResolveLinks(json, item, processedIds, typeof(T).GetRuntimeProperty("Fields").PropertyType);
-                }
-                else
-                {
-                    ResolveLinks(json, item, processedIds, typeof(T));
-                }
+                ResolveLinks(json, item, processedIds, typeof(T));
             }
+            
+            var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
 
-            if (isContentfulResource)
+            for (var i = entryTokens.Count - 1; i >= 0; i--)
             {
-                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
-            }
-            else
-            {
-                var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
+                var token = entryTokens[i];
+                var grandParent = token.Parent.Parent;
 
-                for (var i = entryTokens.Count - 1; i >= 0; i--)
+                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
                 {
-                    var token = entryTokens[i];
-                    var grandParent = token.Parent.Parent;
-
-                    if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
-                    {
-                        continue;
-                    }
-
-                    ResolveContentTypes(grandParent);
-                    
-
-                    //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
-                    token.Parent.Remove();
-                    grandParent.Add(token.Children());
+                    continue;
                 }
 
-                entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
+                ResolveContentTypes(grandParent);
+
+                //Remove the fields property and let the fields be direct descendants of the node to make deserialization logical.
+                token.Parent.Remove();
+                grandParent.Add(token.Children());
             }
+
+            entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
 
             var collection = json.ToObject<ContentfulCollection<T>>(Serializer);
             collection.Items = entries;
@@ -354,7 +335,11 @@ namespace Contentful.Core
                         {
                             propType = prop?.PropertyType;
 
-                            if (propType != null && typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
+                            if (propType != null && propType.IsArray)
+                            {
+                                propType = propType.GetElementType();
+                            }
+                            else if (propType != null && typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
                             {
                                 propType = propType.GetTypeInfo().GenericTypeArguments[0];
                             }
@@ -386,9 +371,9 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
-        public async Task<Asset> GetAssetAsync(string assetId, QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Asset> GetAsset(string assetId, QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetAssetAsync(assetId, queryBuilder?.Build(), cancellationToken);
+            return await GetAsset(assetId, queryBuilder?.Build(), cancellationToken);
         }
 
         /// <summary>
@@ -400,14 +385,14 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
-        public async Task<Asset> GetAssetAsync(string assetId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Asset> GetAsset(string assetId, string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{assetId}{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/assets/{assetId}{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.ToObject<Asset>(Serializer);
@@ -423,9 +408,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Asset>> GetAssetsAsync(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Asset>> GetAssets(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await GetAssetsAsync(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return await GetAssets(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -436,9 +421,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Asset>> GetAssetsAsync(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Asset>> GetAssets(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>(Serializer);
@@ -453,9 +438,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Space"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Space> GetSpaceAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> GetSpace(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var space = jsonObject.ToObject<Space>(Serializer);
@@ -471,14 +456,14 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<ContentType> GetContentTypeAsync(string contentTypeId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> GetContentType(string contentTypeId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentType = jsonObject.ToObject<ContentType>(Serializer);
@@ -491,9 +476,9 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetContentTypesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/content_types/", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/content_types/", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
@@ -504,20 +489,20 @@ namespace Contentful.Core
         /// <summary>
         /// Fetches an initial sync result of content. Note that this sync might not contain the entire result. 
         /// If the <see cref="SyncResult"/> returned contains a <see cref="SyncResult.NextPageUrl"/> that means 
-        /// there are more resources to fetch. See also the <see cref="SyncInitialRecursiveAsync"/> method.
+        /// there are more resources to fetch. See also the <see cref="SyncInitialRecursive"/> method.
         /// </summary>
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncInitialAsync(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default(CancellationToken))
         {
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
 
-            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return syncResult;
         }
@@ -531,7 +516,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ArgumentException">The <see name="nextSyncOrPageUrl">nextSyncOrPageUrl</see> parameter was null or empty</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncNextResultAsync(string nextSyncOrPageUrl, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SyncResult> SyncNextResult(string nextSyncOrPageUrl, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(nextSyncOrPageUrl))
             {
@@ -542,9 +527,9 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken:syncToken);
 
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
 
-            var syncResult = ParseSyncResultAsync(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return syncResult;
         }
@@ -553,7 +538,7 @@ namespace Contentful.Core
         /// Fetches an inital sync result of content and then recursively calls the api for any further 
         /// content available using the <see cref="SyncResult.NextPageUrl"/>. Note that this might result in
         /// multiple outgoing calls to the Contentful API. If you have a large amount of entries to sync consider using 
-        /// the <see cref="SyncInitialAsync"/> method in conjunction with the <see cref="SyncNextResultAsync"/> method and 
+        /// the <see cref="SyncInitial"/> method in conjunction with the <see cref="SyncNextResult"/> method and 
         /// handling each response separately.
         /// </summary>
         /// <param name="syncType">The optional type of items that should be synced.</param>
@@ -561,13 +546,13 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncInitialRecursiveAsync(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default(CancellationToken))
         {
-            var syncResult = await SyncInitialAsync(syncType, contentTypeId).ConfigureAwait(false);
+            var syncResult = await SyncInitial(syncType, contentTypeId).ConfigureAwait(false);
 
             while (!string.IsNullOrEmpty(syncResult.NextPageUrl))
             {
-                var nextResult = await SyncNextResultAsync(syncResult.NextPageUrl, cancellationToken).ConfigureAwait(false);
+                var nextResult = await SyncNextResult(syncResult.NextPageUrl, cancellationToken).ConfigureAwait(false);
 
                 syncResult.Entries = syncResult.Entries.Concat(nextResult.Entries);
                 syncResult.Assets = syncResult.Assets.Concat(nextResult.Assets);
@@ -582,7 +567,7 @@ namespace Contentful.Core
             return syncResult;
         }
 
-        private SyncResult ParseSyncResultAsync(string content)
+        private SyncResult ParseSyncResult(string content)
         {
             var jsonObject = JObject.Parse(content);
             var syncResult = jsonObject.ToObject<SyncResult>(Serializer);
@@ -641,9 +626,9 @@ namespace Contentful.Core
             return query.ToString();
         }
 
-        private async Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken)
+        private async Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken)
         {
-            return await SendHttpRequestAsync(url, HttpMethod.Get, _options.DeliveryApiKey, cancellationToken).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Get, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken).ConfigureAwait(false);
         }
     }
 }

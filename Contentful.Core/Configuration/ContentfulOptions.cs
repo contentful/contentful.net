@@ -12,11 +12,17 @@ namespace Contentful.Core.Configuration
     public class ContentfulOptions
     {
         /// <summary>
-        /// The api key used when communicating with the Contentful delivery or preview API.
-        /// <remarks>If you specify the <see cref="UsePreviewApi"/> option, 
-        /// you need to use the preview API key to call the Contentful API.</remarks>
+        /// The api key used when communicating with the Contentful delivery API.
         /// </summary>
         public string DeliveryApiKey { get; set; }
+
+        /// <summary>
+        /// The api key used when communicating with the Contentful preview API.
+        /// <remarks>
+        /// To use the preview API the <see cref="UsePreviewApi"/> property must be set to true.
+        /// </remarks>
+        /// </summary>
+        public string PreviewApiKey { get; set; }
 
         /// <summary>
         /// The api key used when communicating with the Contentful management API.
