@@ -166,6 +166,11 @@ namespace Contentful.Core.Tests
         public List<Container> Items { get; set; }
     }
 
+    public class MainContainerArray
+    {
+        public Container[] Items { get; set; }
+    }
+
     public class Container
     {
         public List<Item> Items { get; set; }
@@ -189,6 +194,15 @@ namespace Contentful.Core.Tests
         public string Slug { get; set; }
         public string Description { get; set; }
         public List<SelfReferencer> SubCategories { get; set; }
+    }
+
+    public class SelfReferencerInArray
+    {
+        public SystemProperties Sys { get; set; }
+        public string Title { get; set; }
+        public string Slug { get; set; }
+        public string Description { get; set; }
+        public SelfReferencer[] SubCategories { get; set; }
     }
 
     public class Footer

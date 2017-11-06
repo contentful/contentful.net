@@ -344,6 +344,22 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithNestedAssetInArray()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"NestedAsset.json");
+
+            //Act
+            var res = await _client.GetEntries<MainContainerArray>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.NotNull(list[0].Items[0].Items[0].Media.File);
+            Assert.Equal("test.container.item1.media", list[0].Items[0].Items[0].Media.Title);
+            Assert.Equal(1, list.Count());
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyWithSameAssetLinkedMultipleTimes()
         {
             //Arrange
@@ -713,7 +729,6 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
             _client.ContentTypeResolver = new TestResolver();
-            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
             //Act
             var res = await _client.GetEntries<IMarker>();
 
@@ -728,7 +743,6 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
             _client.ContentTypeResolver = new TestResolver();
-            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
             //Act
             var res = await _client.GetEntries<IMarker>();
 
@@ -778,7 +792,6 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntryCollectionLoopedReferences.json");
             _client.ContentTypeResolver = new TestResolver();
-            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
 
             //Act
             _client.ResolveEntriesSelectively = true;
@@ -833,7 +846,6 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"NestedSharedStructure.json");
             _client.ContentTypeResolver = new TestResolver();
-            _client.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
 
             //Act
             _client.ResolveEntriesSelectively = true;
@@ -854,6 +866,22 @@ namespace Contentful.Core.Tests
 
             //Act
             var res = await _client.GetEntries<SelfReferencer>();
+
+            //Assert
+            Assert.Equal(5, res.Count());
+            Assert.Equal(res.First().SubCategories.First().Sys.Id, res.Skip(3).First().Sys.Id);
+        }
+
+        [Fact]
+        public async Task ComplexStructureWithSelfReferenceInArrayIsDeserializedCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithSelfreference.json");
+
+            //Act
+            _client.ResolveEntriesSelectively = true;
+            var res = await _client.GetEntries<SelfReferencerInArray>();
+            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Equal(5, res.Count());

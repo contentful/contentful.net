@@ -47,6 +47,7 @@ namespace Contentful.Core
             }
             ResolveEntriesSelectively = _options.ResolveEntriesSelectively;
             SerializerSettings.Converters.Add(new AssetJsonConverter());
+            SerializerSettings.TypeNameHandling = TypeNameHandling.All;
         }
 
         /// <summary>
@@ -334,7 +335,11 @@ namespace Contentful.Core
                         {
                             propType = prop?.PropertyType;
 
-                            if (propType != null && typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
+                            if (propType != null && propType.IsArray)
+                            {
+                                propType = propType.GetElementType();
+                            }
+                            else if (propType != null && typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
                             {
                                 propType = propType.GetTypeInfo().GenericTypeArguments[0];
                             }
