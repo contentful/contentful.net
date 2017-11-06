@@ -164,8 +164,8 @@ namespace Contentful.Core
         /// <param name="webhook">The webhook to create or update.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
-        Task<WebHook> CreateOrUpdateWebHook(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
+        Task<Webhook> CreateOrUpdateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Creates a role in a <see cref="Space"/>.
@@ -201,8 +201,8 @@ namespace Contentful.Core
         /// <param name="webhook">The webhook to create.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
-        Task<WebHook> CreateWebHook(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
+        Task<Webhook> CreateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Deactivates a <see cref="ContentType"/> by the specified id.
@@ -278,7 +278,7 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to delete.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        Task DeleteWebHook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get all activated content types of a space.
@@ -497,8 +497,8 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
-        Task<WebHook> GetWebHook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>The <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
+        Task<Webhook> GetWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the details of a specific webhook call.
@@ -507,8 +507,8 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get details for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Contentful.Core.Models.Management.WebHookCallDetails"/>.</returns>
-        Task<WebHookCallDetails> GetWebHookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>The <see cref="Contentful.Core.Models.Management.WebhookCallDetails"/>.</returns>
+        Task<WebhookCallDetails> GetWebhookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all recent call details for a webhook.
@@ -516,8 +516,8 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get details for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebHookCallDetails"/>.</returns>
-        Task<ContentfulCollection<WebHookCallDetails>> GetWebHookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebhookCallDetails"/>.</returns>
+        Task<ContentfulCollection<WebhookCallDetails>> GetWebhookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets a response containing an overview of the recent webhook calls.
@@ -525,16 +525,16 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get health details for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="Contentful.Core.Models.Management.WebHookHealthResponse"/>.</returns>
-        Task<WebHookHealthResponse> GetWebHookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>A <see cref="Contentful.Core.Models.Management.WebhookHealthResponse"/>.</returns>
+        Task<WebhookHealthResponse> GetWebhookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets all webhooks for a <see cref="Space"/>.
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
-        Task<ContentfulCollection<WebHook>> GetWebHooksCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
+        Task<ContentfulCollection<Webhook>> GetWebhooksCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Processes an asset by the specified id and keeps polling the API until it has finished processing. **Note that this might result in multiple API calls.**

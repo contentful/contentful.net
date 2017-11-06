@@ -1603,13 +1603,13 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task GetAllWebHooksShouldDeserializeCorrectly()
+        public async Task GetAllWebhooksShouldDeserializeCorrectly()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCollection.json");
 
             //Act
-            var res = await _client.GetWebHooksCollection();
+            var res = await _client.GetWebhooksCollection();
 
             //Assert
             Assert.Equal(1, res.Total);
@@ -1619,12 +1619,12 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task CreateWebHookShouldCallCorrectUrlWithData()
+        public async Task CreateWebhookShouldCallCorrectUrlWithData()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
 
-            var webhook = new WebHook()
+            var webhook = new Webhook()
             {
                 Name = "Some hook",
                 Url = "https://www.cracked.com/",
@@ -1647,7 +1647,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateWebHook(webhook);
+            var res = await _client.CreateWebhook(webhook);
 
             //Assert
             Assert.Equal(HttpMethod.Post, method);
@@ -1663,17 +1663,17 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task CreateOrUpdateWebHookShouldThrowIfNoIdSet(string id)
+        public async Task CreateOrUpdateWebhookShouldThrowIfNoIdSet(string id)
         {
             //Arrange
-            var webHook = new WebHook()
+            var webHook = new Webhook()
             {
                 SystemProperties = new SystemProperties()
             };
             webHook.SystemProperties.Id = id;
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateWebHook(webHook));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateWebhook(webHook));
 
             //Assert
             Assert.Equal("The id of the webhook must be set.", ex.Message);
@@ -1683,12 +1683,12 @@ namespace Contentful.Core.Tests
         [InlineData("2354")]
         [InlineData("33")]
         [InlineData("vadfb#¤123")]
-        public async Task CreateOrUpdateWebHookShouldCallCorrectUrlWithData(string id)
+        public async Task CreateOrUpdateWebhookShouldCallCorrectUrlWithData(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
 
-            var webhook = new WebHook()
+            var webhook = new Webhook()
             {
                 SystemProperties = new SystemProperties()
             };
@@ -1713,7 +1713,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateOrUpdateWebHook(webhook);
+            var res = await _client.CreateOrUpdateWebhook(webhook);
 
             //Assert
             Assert.Equal(HttpMethod.Put, method);
@@ -1729,26 +1729,26 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task GetWebHookShouldThrowIfNoIdSet(string id)
+        public async Task GetWebhookShouldThrowIfNoIdSet(string id)
         {
             //Arrange
 
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHook(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhook(id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
-        public async Task GetWebHookShouldReturnCorrectObject()
+        public async Task GetWebhookShouldReturnCorrectObject()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
 
             //Act
-            var res = await _client.GetWebHook("ertg");
+            var res = await _client.GetWebhook("ertg");
 
             //Assert
             Assert.Equal("Testhook", res.Name);
@@ -1780,7 +1780,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            await _client.DeleteWebHook(id);
+            await _client.DeleteWebhook(id);
 
             //Assert
             Assert.Equal(HttpMethod.Delete, requestMethod);
@@ -1788,12 +1788,12 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task WebHookCallDetailsShouldDeserializeCorrectly()
+        public async Task WebhookCallDetailsShouldDeserializeCorrectly()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
             //Act
-            var res = await _client.GetWebHookCallDetails("b", "s");
+            var res = await _client.GetWebhookCallDetails("b", "s");
 
             //Assert
             Assert.Equal("unarchive", res.EventType);
@@ -1803,13 +1803,13 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookCallDetailShouldThrowForWebHookIdNotSet(string id)
+        public async Task WebhookCallDetailShouldThrowForWebHookIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetails("some", id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetails("some", id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
@@ -1818,13 +1818,13 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
+        public async Task WebhookCallDetailShouldThrowForWebHookCallIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetails.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetails(id, "some"));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetails(id, "some"));
 
             //Assert
             Assert.Equal($"The id of the webhook call must be set.{Environment.NewLine}Parameter name: callId", ex.Message);
@@ -1833,26 +1833,26 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookCallDetailsShouldThrowForIdNotSet(string id)
+        public async Task WebhookCallDetailsShouldThrowForIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetailsCollection.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookCallDetailsCollection(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetailsCollection(id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
-        public async Task WebHookCallDetailsCollectionShouldReturnCorrectObject()
+        public async Task WebhookCallDetailsCollectionShouldReturnCorrectObject()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookCallDetailsCollection.json");
 
             //Act
-            var res = await _client.GetWebHookCallDetailsCollection("aaf");
+            var res = await _client.GetWebhookCallDetailsCollection("aaf");
 
             //Assert
             Assert.Equal(2, res.Total);
@@ -1863,26 +1863,26 @@ namespace Contentful.Core.Tests
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public async Task WebHookHealthShouldThrowForIdNotSet(string id)
+        public async Task WebhookHealthShouldThrowForIdNotSet(string id)
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookHealth.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebHookHealth(id));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookHealth(id));
 
             //Assert
             Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
         }
 
         [Fact]
-        public async Task WebHookHealthShouldReturnCorrectObject()
+        public async Task WebhookHealthShouldReturnCorrectObject()
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"WebhookHealth.json");
 
             //Act
-            var res = await _client.GetWebHookHealth("aaf");
+            var res = await _client.GetWebhookHealth("aaf");
 
             //Assert
             Assert.Equal(2, res.TotalCalls);

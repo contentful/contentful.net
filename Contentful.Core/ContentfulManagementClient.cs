@@ -1295,17 +1295,17 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<WebHook>> GetWebHooksCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Webhook>> GetWebhooksCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<WebHook>>(Serializer);
-            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHook>(Serializer));
+            var collection = jsonObject.ToObject<ContentfulCollection<Webhook>>(Serializer);
+            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<Webhook>(Serializer));
             collection.Items = hooks;
 
             return collection;
@@ -1317,9 +1317,9 @@ namespace Contentful.Core
         /// <param name="webhook">The webhook to create.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebHook> CreateWebHook(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Webhook> CreateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             //Not allowed to post system properties
             webhook.SystemProperties = null;
@@ -1330,7 +1330,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHook>(Serializer);
+            return jsonObject.ToObject<Webhook>(Serializer);
         }
 
         /// <summary>
@@ -1339,10 +1339,10 @@ namespace Contentful.Core
         /// <param name="webhook">The webhook to create or update.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The created <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The id of the webhook parameter was null or empty.</exception>
-        public async Task<WebHook> CreateOrUpdateWebHook(WebHook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Webhook> CreateOrUpdateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhook?.SystemProperties?.Id))
             {
@@ -1360,7 +1360,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHook>(Serializer);
+            return jsonObject.ToObject<Webhook>(Serializer);
         }
 
         /// <summary>
@@ -1369,10 +1369,10 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Contentful.Core.Models.Management.WebHook"/>.</returns>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebHook> GetWebHook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Webhook> GetWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1385,7 +1385,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHook>(Serializer);
+            return jsonObject.ToObject<Webhook>(Serializer);
         }
 
         /// <summary>
@@ -1396,7 +1396,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteWebHook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1414,10 +1414,10 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get details for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebHookCallDetails"/>.</returns>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebhookCallDetails"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<WebHookCallDetails>> GetWebHookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<WebhookCallDetails>> GetWebhookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1429,8 +1429,8 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var collection = jsonObject.ToObject<ContentfulCollection<WebHookCallDetails>>(Serializer);
-            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebHookCallDetails>(Serializer));
+            var collection = jsonObject.ToObject<ContentfulCollection<WebhookCallDetails>>(Serializer);
+            var hooks = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<WebhookCallDetails>(Serializer));
             collection.Items = hooks;
 
             return collection;
@@ -1443,10 +1443,10 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get details for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Contentful.Core.Models.Management.WebHookCallDetails"/>.</returns>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.WebhookCallDetails"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> or <see name="callId">callId</see> parameter was null or empty.</exception>
-        public async Task<WebHookCallDetails> GetWebHookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebhookCallDetails> GetWebhookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(callId))
             {
@@ -1464,7 +1464,7 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            return jsonObject.ToObject<WebHookCallDetails>(Serializer);
+            return jsonObject.ToObject<WebhookCallDetails>(Serializer);
         }
 
         /// <summary>
@@ -1473,10 +1473,10 @@ namespace Contentful.Core
         /// <param name="webhookId">The id of the webhook to get health details for.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="Contentful.Core.Models.Management.WebHookHealthResponse"/>.</returns>
+        /// <returns>A <see cref="Contentful.Core.Models.Management.WebhookHealthResponse"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebHookHealthResponse> GetWebHookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebhookHealthResponse> GetWebhookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1488,7 +1488,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var health = new WebHookHealthResponse()
+            var health = new WebhookHealthResponse()
             {
                 SystemProperties = jsonObject["sys"]?.ToObject<SystemProperties>(Serializer),
                 TotalCalls = jsonObject["calls"]["total"].Value<int>(),

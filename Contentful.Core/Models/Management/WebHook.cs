@@ -8,7 +8,7 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Represents an webhook configuration in a <see cref="Space"/>.
     /// </summary>
-    public class WebHook : IContentfulResource
+    public class Webhook : IContentfulResource
     {
         /// <summary>
         /// Common system managed metadata properties.

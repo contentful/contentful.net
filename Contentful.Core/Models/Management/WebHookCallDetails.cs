@@ -8,7 +8,7 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Represents the details of a webhook call.
     /// </summary>
-    public class WebHookCallDetails : IContentfulResource
+    public class WebhookCallDetails : IContentfulResource
     {
         /// <summary>
         /// Common system managed metadata properties.
@@ -49,11 +49,11 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Details of the response.
         /// </summary>
-        public WebHookResponse Response { get; set; }
+        public WebhookResponse Response { get; set; }
 
         /// <summary>
         /// Details of the request.
         /// </summary>
-        public WebHookRequest Request { get; set; }
+        public WebhookRequest Request { get; set; }
     }
 }

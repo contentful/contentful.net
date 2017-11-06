@@ -7,7 +7,7 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Represents a request to a web hook.
     /// </summary>
-    public class WebHookRequest
+    public class WebhookRequest
     {
         /// <summary>
         /// The url this request called.

@@ -8,7 +8,7 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Represents the response of a webhook health check.
     /// </summary>
-    public class WebHookHealthResponse : IContentfulResource
+    public class WebhookHealthResponse : IContentfulResource
     {
         /// <summary>
         /// Common system managed metadata properties.
