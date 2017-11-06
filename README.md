@@ -52,12 +52,12 @@ If you are running asp.net core and wish to take advantage of [the options patte
 After creating a `ContentfulClient`, you can now query for a single entry:
 
 ```csharp
-var entry = await client.GetEntryAsync<Entry<dynamic>>("<entry_id>");
+var entry = await client.GetEntryAsync<Product>("<entry_id>");
 
-Console.WriteLine(entry.Fields.productName.ToString()); // => Contentful
+Console.WriteLine(entry.ProductName); // => Contentful
+Console.WriteLine(product.Price); // => 12.38
+Console.WriteLine(product.Description); // => A fantastic product.
 ```
-
-Normally you serialize this response into your own class instead of the generic `Entry<>` type. You can do this by providing a suitable type to seralize into. Take the following class as an example:
 
 ```csharp
 public class Product
@@ -67,23 +67,24 @@ public class Product
     public string Description { get; set; }
 }
 ```
+The properties of your class will be automatically deserialized from fields with matching names.
 
-Pass this class to the `GetEntryAsync<>` method to serialize the response correctly.
+If you're interested in the system properties of the entry, add a `SystemProperties` property to the class.
 
 ```csharp
-var product = await client.GetEntryAsync<Product>("<entry_id>");
-
-Console.WriteLine(product.ProductName); // => Your product
-Console.WriteLine(product.Price); // => 12.38
-Console.WriteLine(product.Description); // => A fantastic product.
+public class Product
+{
+    public SystemProperties Sys { get; set; }
+    public string ProductName { get; set; }
+    public string Price { get; set; }
+    public string Description { get; set; }
+}
 ```
 
-You can combine the two approaches if you're interested in the system properties of the entry but still want to use your own class.
-
 ```csharp
-var productEntry = await client.GetEntryAsync<Entry<product>>("<entry_id>");
+var productEntry = await client.GetEntryAsync<Product>("<entry_id>");
 
-Console.WriteLine(entry.Fields.Price); // => 12.38
+Console.WriteLine(entry.Price); // => 12.38
 Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
 ```
 
