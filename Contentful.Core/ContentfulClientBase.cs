@@ -45,9 +45,35 @@ namespace Contentful.Core
         public string Version => typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             .InformationalVersion;
 
-        private string Os => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "macOS" : "Linux";
+        private string Os => IsWindows ? "Windows" : IsMacOS ? "macOS" : "Linux";
 
         private string Platform => ".net";
+
+        private static bool IsWindows
+        {
+            get
+            {
+                try
+                {
+                    return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+                }
+                catch (PlatformNotSupportedException) { }
+                return false;
+            }
+        }
+
+        private static bool IsMacOS
+        {
+            get
+            {
+                try
+                {
+                    return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+                }
+                catch (PlatformNotSupportedException) { }
+                return false;
+            }
+        }
 
         /// <summary>
         /// Property for sending a custom tracking header.
