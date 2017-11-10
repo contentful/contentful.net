@@ -30,7 +30,7 @@ To create a new client you need to pass an `HttpClient`, your delivery API key a
 
 ```csharp
 var httpClient = new HttpClient();
-var client = new ContentfulClient(httpClient, "<content_delivery_api_key>", "<space_id>");
+var client = new ContentfulClient(httpClient, "<content_delivery_api_key>", "<content_preview_api_key>", "<space_id>");
 ```
 
 or:
@@ -40,6 +40,7 @@ var httpClient = new HttpClient();
 var options = new ContentfulOptions()
 {
     DeliveryApiKey = "<content_delivery_api_key>",
+    PreviewApiKey, "<content_preview_api_key>"
     SpaceId = "<space_id>"
 }
 var client = new ContentfulClient(httpClient, options);
@@ -52,7 +53,7 @@ If you are running asp.net core and wish to take advantage of [the options patte
 After creating a `ContentfulClient`, you can now query for a single entry:
 
 ```csharp
-var entry = await client.GetEntryAsync<Product>("<entry_id>");
+var entry = await client.GetEntry<Product>("<entry_id>");
 
 Console.WriteLine(entry.ProductName); // => Contentful
 Console.WriteLine(product.Price); // => 12.38
@@ -82,7 +83,7 @@ public class Product
 ```
 
 ```csharp
-var productEntry = await client.GetEntryAsync<Product>("<entry_id>");
+var productEntry = await client.GetEntry<Product>("<entry_id>");
 
 Console.WriteLine(entry.Price); // => 12.38
 Console.WriteLine(entry.SystemProperties.Id); // => 2CfTFQGwogugS6QcOuwO6q
@@ -123,7 +124,7 @@ contentType.Fields = new List<Field>()
 };
 
 
-await managementClient.CreateOrUpdateContentTypeAsync(contentType);
+await managementClient.CreateOrUpdateContentType(contentType);
 ```
 
 ## Further information
