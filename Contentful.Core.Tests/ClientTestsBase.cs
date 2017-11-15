@@ -148,6 +148,7 @@ namespace Contentful.Core.Tests
     {
         public string Field1 { get; set; }
         public Asset Field4 { get; set; }
+        public string NewField { get; set; }
     }
 
     public class ContentfulEvent : IMarker

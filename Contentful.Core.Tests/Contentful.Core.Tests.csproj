@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
+    <None Remove="JsonFiles\SampleContentTypeFields.json" />
     <None Remove="JsonFiles\SampleUser.json" />
   </ItemGroup>
   <ItemGroup>
@@ -20,6 +21,7 @@
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
     <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
+    <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />
     <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
     <EmbeddedResource Include="JsonFiles\SampleUser.json" />
     <EmbeddedResource Include="JsonFiles\TokensCollection.json" />

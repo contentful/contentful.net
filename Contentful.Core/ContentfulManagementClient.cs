@@ -633,7 +633,9 @@ namespace Contentful.Core
         public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var entryToUpdate = await GetEntry(id, spaceId);
-            
+            var contentType = await GetContentType(entryToUpdate.SystemProperties.ContentType.SystemProperties.Id);
+            var allFieldIds = contentType.Fields.Select(f => f.Id);
+
             if(string.IsNullOrEmpty(locale))
             {
                 locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
@@ -642,11 +644,16 @@ namespace Contentful.Core
             var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
             var fieldsToUpdate = (entryToUpdate.Fields as JObject);
 
-            foreach (var prop in fieldsToUpdate.Children().Where(p => p is JProperty).Cast<JProperty>())
+            foreach (var fieldId in allFieldIds)
             {
-                if(jsonEntry[prop.Name] != null)
+                if(jsonEntry[fieldId] != null)
                 {
-                    fieldsToUpdate[prop.Name][locale] = jsonEntry[prop.Name];
+                    if(fieldsToUpdate[fieldId] == null)
+                    {
+                        fieldsToUpdate.Add(fieldId, new JObject(new JProperty(locale, null)));
+                    }
+
+                    fieldsToUpdate[fieldId][locale] = jsonEntry[fieldId];
                 }
             }
 
