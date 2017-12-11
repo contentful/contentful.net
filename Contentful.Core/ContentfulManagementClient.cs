@@ -80,7 +80,7 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to create a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Space"/></returns>
-        public async Task<Space> CreateSpace(string name, string defaultLocale, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> CreateSpace(string name, string defaultLocale, string organisation = null, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrEmpty(organisation))
             {
@@ -105,7 +105,7 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to update a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Space"/></returns>
-        public async Task<Space> UpdateSpaceName(Space space, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> UpdateSpaceName(Space space, string organisation = null, CancellationToken cancellationToken = default)
         {
             return await UpdateSpaceName(space.SystemProperties.Id, space.Name, space.SystemProperties.Version ?? 1, organisation, cancellationToken).ConfigureAwait(false);
         }
@@ -119,7 +119,7 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to update a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Space"/></returns>
-        public async Task<Space> UpdateSpaceName(string id, string name, int version, string organisation = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> UpdateSpaceName(string id, string name, int version, string organisation = null, CancellationToken cancellationToken = default)
         {
             if (!string.IsNullOrEmpty(organisation))
             {
@@ -147,7 +147,7 @@ namespace Contentful.Core
         /// <param name="id">The id of the space to get.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Space" /></returns>
-        public async Task<Space> GetSpace(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Space> GetSpace(string id, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{id}", cancellationToken).ConfigureAwait(false);
 
@@ -163,7 +163,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Space"/>.</returns>
-        public async Task<IEnumerable<Space>> GetSpaces(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<Space>> GetSpaces(CancellationToken cancellationToken = default)
         {
             var res = await GetAsync(_baseUrl, cancellationToken).ConfigureAwait(false);
 
@@ -180,7 +180,7 @@ namespace Contentful.Core
         /// <param name="id">The id of the space to delete.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns></returns>
-        public async Task DeleteSpace(string id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteSpace(string id, CancellationToken cancellationToken = default)
         {
             var res = await DeleteAsync($"{_baseUrl}{id}", cancellationToken).ConfigureAwait(false);
 
@@ -193,7 +193,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to get the content types of. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetContentTypes(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ContentType>> GetContentTypes(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/content_types", cancellationToken).ConfigureAwait(false);
 
@@ -213,7 +213,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="ContentType"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
-        public async Task<ContentType> CreateOrUpdateContentType(ContentType contentType, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> CreateOrUpdateContentType(ContentType contentType, string spaceId = null, int? version = null, CancellationToken cancellationToken = default)
         {
             if (contentType.SystemProperties?.Id == null)
             {
@@ -244,7 +244,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<ContentType> GetContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> GetContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -270,7 +270,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task DeleteContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -292,7 +292,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<ContentType> ActivateContentType(string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentType> ActivateContentType(string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -322,7 +322,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task DeactivateContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeactivateContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -340,7 +340,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to get the activated content types of. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetActivatedContentTypes(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<ContentType>> GetActivatedContentTypes(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/content_types", cancellationToken).ConfigureAwait(false);
 
@@ -360,7 +360,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="Contentful.Core.Models.Management.EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<EditorInterface> GetEditorInterface(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<EditorInterface> GetEditorInterface(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -388,7 +388,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into a <see cref="Contentful.Core.Models.Management.EditorInterface"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task<EditorInterface> UpdateEditorInterface(EditorInterface editorInterface, string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<EditorInterface> UpdateEditorInterface(EditorInterface editorInterface, string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -418,7 +418,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default)
         {
             return await GetEntriesCollection<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
@@ -432,7 +432,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/entries{queryString}", cancellationToken).ConfigureAwait(false);
 
@@ -478,7 +478,7 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> CreateEntry(Entry<dynamic> entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> CreateEntry(Entry<dynamic> entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -509,7 +509,7 @@ namespace Contentful.Core
         /// <param name="contentTypeId">The id of the <see cref="ContentType"/> of the entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created entry.</returns>
-        public async Task<T> CreateEntry<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> CreateEntry<T>(T entry, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var entryToCreate = new Entry<dynamic>
             {
@@ -529,7 +529,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> CreateOrUpdateEntry(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> CreateOrUpdateEntry(Entry<dynamic> entry, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entry.SystemProperties?.Id))
             {
@@ -568,7 +568,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated entry.</returns>
-        public async Task<T> CreateOrUpdateEntry<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> CreateOrUpdateEntry<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default)
         {
             var entryToCreate = new Entry<dynamic>
             {
@@ -593,7 +593,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> CreateEntryForLocale(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> CreateEntryForLocale(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(locale))
             {
@@ -630,7 +630,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Entry{T}"/>.</returns>
-        public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var entryToUpdate = await GetEntry(id, spaceId);
             var contentType = await GetContentType(entryToUpdate.SystemProperties.ContentType.SystemProperties.Id);
@@ -671,7 +671,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> GetEntry(string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> GetEntry(string entryId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -694,7 +694,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task DeleteEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -720,7 +720,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> PublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> PublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -748,7 +748,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> UnpublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> UnpublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -776,7 +776,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> ArchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> ArchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -804,7 +804,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="entryId">entryId</see> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> UnarchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Entry<dynamic>> UnarchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -830,7 +830,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(QueryBuilder<Asset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(QueryBuilder<Asset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default)
         {
             return await GetAssetsCollection(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
         }
@@ -843,7 +843,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets/{queryString}", cancellationToken).ConfigureAwait(false);
 
@@ -864,7 +864,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetPublishedAssetsCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementAsset>> GetPublishedAssetsCollection(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/public/assets", cancellationToken).ConfigureAwait(false);
 
@@ -887,7 +887,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> GetAsset(string assetId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> GetAsset(string assetId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -912,7 +912,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -938,7 +938,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> published.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> PublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> PublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -968,7 +968,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> unpublished.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> UnpublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> UnpublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -998,7 +998,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> archived.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> ArchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> ArchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -1030,7 +1030,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> unarchived.</returns>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> UnarchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> UnarchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -1063,7 +1063,7 @@ namespace Contentful.Core
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="TimeoutException">The processing of the asset did not finish within the allotted time.</exception>
-        public async Task<ManagementAsset> ProcessAssetUntilCompleted(string assetId, int version, string locale, int maxDelay = 2000, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> ProcessAssetUntilCompleted(string assetId, int version, string locale, int maxDelay = 2000, string spaceId = null, CancellationToken cancellationToken = default)
         {
             await ProcessAsset(assetId, version, locale, spaceId, cancellationToken);
 
@@ -1100,7 +1100,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task ProcessAsset(string assetId, int version, string locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ProcessAsset(string assetId, int version, string locale, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
@@ -1127,7 +1127,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> CreateOrUpdateAsset(ManagementAsset asset, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> CreateOrUpdateAsset(ManagementAsset asset, string spaceId = null, int? version = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(asset.SystemProperties?.Id))
             {
@@ -1157,7 +1157,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementAsset> CreateAsset(ManagementAsset asset, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> CreateAsset(ManagementAsset asset, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/assets",
                 ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }), cancellationToken).ConfigureAwait(false);
@@ -1177,7 +1177,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{Locale}"/> of locales.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Locale>> GetLocalesCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Locale>> GetLocalesCollection(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales", cancellationToken).ConfigureAwait(false);
 
@@ -1199,7 +1199,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> CreateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Locale> CreateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/locales",
                 ConvertObjectToJsonStringContent(
@@ -1229,7 +1229,7 @@ namespace Contentful.Core
         /// <returns>The requested <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="localeId">localeId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> GetLocale(string localeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Locale> GetLocale(string localeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(localeId))
             {
@@ -1253,7 +1253,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Locale> UpdateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Locale> UpdateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(locale.SystemProperties?.Id))
             {
@@ -1285,7 +1285,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="localeId">localeId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteLocale(string localeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteLocale(string localeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(localeId))
             {
@@ -1304,7 +1304,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Webhook>> GetWebhooksCollection(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Webhook>> GetWebhooksCollection(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", cancellationToken).ConfigureAwait(false);
 
@@ -1326,7 +1326,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Webhook> CreateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Webhook> CreateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default)
         {
             //Not allowed to post system properties
             webhook.SystemProperties = null;
@@ -1349,7 +1349,7 @@ namespace Contentful.Core
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The id of the webhook parameter was null or empty.</exception>
-        public async Task<Webhook> CreateOrUpdateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Webhook> CreateOrUpdateWebhook(Webhook webhook, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(webhook?.SystemProperties?.Id))
             {
@@ -1379,7 +1379,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Webhook> GetWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Webhook> GetWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1403,7 +1403,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteWebhook(string webhookId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1424,7 +1424,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.WebhookCallDetails"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<WebhookCallDetails>> GetWebhookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<WebhookCallDetails>> GetWebhookCallDetailsCollection(string webhookId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1453,7 +1453,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.WebhookCallDetails"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> or <see name="callId">callId</see> parameter was null or empty.</exception>
-        public async Task<WebhookCallDetails> GetWebhookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebhookCallDetails> GetWebhookCallDetails(string callId, string webhookId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(callId))
             {
@@ -1483,7 +1483,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="Contentful.Core.Models.Management.WebhookHealthResponse"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="webhookId">webhookId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<WebhookHealthResponse> GetWebhookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<WebhookHealthResponse> GetWebhookHealth(string webhookId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(webhookId))
             {
@@ -1513,7 +1513,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.Role"/></returns>
         /// <exception cref="ArgumentException">The <see name="roleId">roleId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Role> GetRole(string roleId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Role> GetRole(string roleId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(roleId))
             {
@@ -1536,7 +1536,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Role"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Role>> GetAllRoles(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Role>> GetAllRoles(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles", cancellationToken).ConfigureAwait(false);
 
@@ -1558,7 +1558,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Role"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Role> CreateRole(Role role, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Role> CreateRole(Role role, string spaceId = null, CancellationToken cancellationToken = default)
         {
             //Not allowed to post system properties
             role.SystemProperties = null;
@@ -1581,7 +1581,7 @@ namespace Contentful.Core
         /// <returns>The updated <see cref="Contentful.Core.Models.Management.Role"/>.</returns>
         /// <exception cref="ArgumentException">The id parameter of the role was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<Role> UpdateRole(Role role, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Role> UpdateRole(Role role, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(role?.SystemProperties?.Id))
             {
@@ -1610,7 +1610,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="roleId">roleId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteRole(string roleId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteRole(string roleId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(roleId))
             {
@@ -1629,7 +1629,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.Snapshot"/>.</returns>
-        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntry(string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Snapshot>> GetAllSnapshotsForEntry(string entryId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
@@ -1656,7 +1656,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.Snapshot"/>.</returns>
-        public async Task<Snapshot> GetSnapshotForEntry(string snapshotId, string entryId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Snapshot> GetSnapshotForEntry(string snapshotId, string entryId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(snapshotId))
             {
@@ -1684,7 +1684,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
-        public async Task<ContentfulCollection<SnapshotContentType>> GetAllSnapshotsForContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<SnapshotContentType>> GetAllSnapshotsForContentType(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(contentTypeId))
             {
@@ -1711,7 +1711,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.SnapshotContentType"/>.</returns>
-        public async Task<SnapshotContentType> GetSnapshotForContentType(string snapshotId, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SnapshotContentType> GetSnapshotForContentType(string snapshotId, string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(snapshotId))
             {
@@ -1739,7 +1739,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
-        public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMemberships(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<SpaceMembership>> GetSpaceMemberships(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", cancellationToken).ConfigureAwait(false);
 
@@ -1761,7 +1761,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> CreateSpaceMembership(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SpaceMembership> CreateSpaceMembership(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships", ConvertObjectToJsonStringContent(spaceMembership), cancellationToken).ConfigureAwait(false);
 
@@ -1781,7 +1781,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> GetSpaceMembership(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SpaceMembership> GetSpaceMembership(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(spaceMembershipId))
             {
@@ -1806,7 +1806,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="spaceMembership">spaceMembership</see> id was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SpaceMembership> UpdateSpaceMembership(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SpaceMembership> UpdateSpaceMembership(SpaceMembership spaceMembership, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(spaceMembership?.SystemProperties?.Id))
             {
@@ -1830,7 +1830,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task DeleteSpaceMembership(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteSpaceMembership(string spaceMembershipId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(spaceMembershipId))
             {
@@ -1849,7 +1849,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ApiKey>> GetAllApiKeys(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ApiKey>> GetAllApiKeys(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", cancellationToken).ConfigureAwait(false);
 
@@ -1872,7 +1872,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ApiKey> CreateApiKey(string name, string description, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ApiKey> CreateApiKey(string name, string description, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -1895,7 +1895,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<User>> GetAllUsers(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<User>> GetAllUsers(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/users", cancellationToken).ConfigureAwait(false);
 
@@ -1918,7 +1918,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<User> GetUser(string userId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> GetUser(string userId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -1940,7 +1940,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.User"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<User> GetCurrentUser(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> GetCurrentUser(CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_directApiUrl}users/me", cancellationToken).ConfigureAwait(false);
 
@@ -1958,7 +1958,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
@@ -1976,7 +1976,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
-        public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var byteArrayContent = new ByteArrayContent(bytes);
             byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
@@ -1997,7 +1997,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await DeleteAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
@@ -2012,7 +2012,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
-        public async Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementAsset> UploadFileAndCreateAsset(ManagementAsset asset, byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var upload = await UploadFile(bytes, spaceId, cancellationToken);
             upload.SystemProperties.CreatedAt = null;
@@ -2041,7 +2041,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<UiExtension>> GetAllExtensions(string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<UiExtension>> GetAllExtensions(string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions", cancellationToken).ConfigureAwait(false);
 
@@ -2063,7 +2063,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/extensions",
                 ConvertObjectToJsonStringContent(new
@@ -2095,7 +2095,7 @@ namespace Contentful.Core
         /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id of the content type is not set.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<UiExtension> CreateOrUpdateExtension(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UiExtension> CreateOrUpdateExtension(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default)
         {
             if (extension.SystemProperties?.Id == null)
             {
@@ -2136,7 +2136,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="extensionId">extensionId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<UiExtension> GetExtension(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UiExtension> GetExtension(string extensionId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(extensionId))
             {
@@ -2160,7 +2160,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        public async Task DeleteExtension(string extensionId, string spaceId = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteExtension(string extensionId, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(extensionId))
             {
@@ -2180,7 +2180,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementToken> CreateManagementToken(ManagementToken token, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementToken> CreateManagementToken(ManagementToken token, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_directApiUrl}users/me/access_tokens",
                 ConvertObjectToJsonStringContent(new
@@ -2203,7 +2203,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokens(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<ManagementToken>> GetAllManagementTokens(CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_directApiUrl}users/me/access_tokens", cancellationToken).ConfigureAwait(false);
 
@@ -2225,7 +2225,7 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="managementTokenId">managementTokenId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementToken> GetManagementToken(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementToken> GetManagementToken(string managementTokenId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(managementTokenId))
             {
@@ -2249,7 +2249,7 @@ namespace Contentful.Core
         /// <returns>The revoked <see cref="Contentful.Core.Models.Management.ManagementToken"/>.</returns>
         /// <exception cref="ArgumentException">The <see name="managementTokenId">managementTokenId</see> parameter was null or empty.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ManagementToken> RevokeManagementToken(string managementTokenId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ManagementToken> RevokeManagementToken(string managementTokenId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(managementTokenId))
             {
@@ -2271,7 +2271,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Organization"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Organization>> GetOrganizations(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContentfulCollection<Organization>> GetOrganizations(CancellationToken cancellationToken = default)
         {
             var res = await GetAsync($"{_directApiUrl}organizations", cancellationToken).ConfigureAwait(false);
 
