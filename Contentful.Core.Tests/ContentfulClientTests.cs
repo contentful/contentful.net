@@ -887,5 +887,146 @@ namespace Contentful.Core.Tests
             Assert.Equal(5, res.Count());
             Assert.Equal(res.First().SubCategories.First().Sys.Id, res.Skip(3).First().Sys.Id);
         }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForSingleAsset()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+            //Act
+            await client.GetAsset("434");
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/assets/434", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForAssets()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+            //Act
+            await client.GetAssets();
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/assets/", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForSingleEntry()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+            //Act
+            await client.GetEntry<dynamic>("444");
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/entries/444", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForEntries()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+            //Act
+            await client.GetEntries<dynamic>();
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/entries", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForSingleContentType()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+            //Act
+            await client.GetContentType("123");
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/content_types/123", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForContentTypes()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollection.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+            //Act
+            await client.GetContentTypes();
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/content_types/", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForSyncInitial()
+        {
+            //Arrange
+            var client = GetClientWithEnvironment();
+            _handler.Response = GetResponseFromFile(@"InitialSyncNoNextPage.json");
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.SyncInitial();
+
+            //Assert
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/sync?initial=true", path);
+        }
+
+        private ContentfulClient GetClientWithEnvironment(string env = "special")
+        {
+            var httpClient = new HttpClient(_handler);
+            var options = new ContentfulOptions
+            {
+                DeliveryApiKey = "123",
+                PreviewApiKey = "3123",
+                Environment = "special",
+                SpaceId = "564"
+            };
+            var client = new ContentfulClient(httpClient, options);
+            return client;
+        }
     }
 }

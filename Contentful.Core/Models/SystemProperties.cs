@@ -115,5 +115,10 @@ namespace Contentful.Core.Models
         /// The link to the user that last archived this content. Will only be present for management API call.
         /// </summary>
         public User ArchivedBy { get; set; }
+
+        /// <summary>
+        /// The link to the status that the current object had. Used only for resources that have a status.
+        /// </summary>
+        public Status Status { get; set; }
     }
 }

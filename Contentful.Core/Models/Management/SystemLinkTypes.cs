@@ -28,5 +28,10 @@ namespace Contentful.Core.Models.Management
         /// A reference to a contenttype.
         /// </summary>
         public const string ContentType = "ContentType";
+
+        /// <summary>
+        /// A reference to a status object.
+        /// </summary>
+        public const string Status = "Status";
     }
 }
