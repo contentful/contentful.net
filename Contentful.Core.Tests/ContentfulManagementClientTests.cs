@@ -693,11 +693,12 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateEntryShouldCallCorrectUrlWithDataForCustomType()
         {
             //Arrange
-            var entry = new ManagementEntry();
-            
-            entry.Field34 = new Dictionary<string, string>()
+            var entry = new ManagementEntry
+            {
+                Field34 = new Dictionary<string, string>()
             {
                 { "en-US", "banana" }
+            }
             };
             var contentTypeHeader = "";
             var contentSet = "";
@@ -728,9 +729,10 @@ namespace Contentful.Core.Tests
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectly()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Benko";
+            var entry = new TestNested
+            {
+                Field1 = "Benko"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleContentTypeFields.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
@@ -752,9 +754,10 @@ namespace Contentful.Core.Tests
         public async Task CreateEntryForLocaleShouldSetValuesCorrectly()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Fischer";
+            var entry = new TestNested
+            {
+                Field1 = "Fischer"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentSet = "";
 
@@ -774,9 +777,10 @@ namespace Contentful.Core.Tests
         public async Task CreateEntryForLocaleShouldSetCorrectContentTypeHeader()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Fischer";
+            var entry = new TestNested
+            {
+                Field1 = "Fischer"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentTypeHeader = "";
             _handler.VerificationBeforeSend = () =>
@@ -796,9 +800,10 @@ namespace Contentful.Core.Tests
         public async Task CreateEntryForLocaleShouldSetValuesCorrectlyWhenNoLocaleIsSpecified()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Alekhine";
+            var entry = new TestNested
+            {
+                Field1 = "Alekhine"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentSet = "";
@@ -819,9 +824,10 @@ namespace Contentful.Core.Tests
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectlyWhenNoLocaleIsSpecified()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Benko";
+            var entry = new TestNested
+            {
+                Field1 = "Benko"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleContentTypeFields.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
@@ -844,10 +850,11 @@ namespace Contentful.Core.Tests
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectlyWithFieldsNotPresentInEntry()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Benko";
-            entry.NewField = "This is new!";
+            var entry = new TestNested
+            {
+                Field1 = "Benko",
+                NewField = "This is new!"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleContentTypeFields.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
@@ -2794,14 +2801,18 @@ namespace Contentful.Core.Tests
         public async Task SerializedObjectShouldBeProperlyCapitalized()
         {
             //Arrange
-            var fields = new CamelTest();
-            fields.NotCamel = "Not a camel";
-            fields.NotACamelEither = "Neither is this!";
-            fields.LongThing = "This is though, a pure camel!";
+            var fields = new CamelTest
+            {
+                NotCamel = "Not a camel",
+                NotACamelEither = "Neither is this!",
+                LongThing = "This is though, a pure camel!"
+            };
 
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
-            var entry = new Entry<dynamic>();
-            entry.Fields = fields;
+            var entry = new Entry<dynamic>
+            {
+                Fields = fields
+            };
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
@@ -2815,6 +2826,85 @@ namespace Contentful.Core.Tests
             Assert.Contains("NotCamelISay", contentSet);
             Assert.Contains("NoCamelHere", contentSet);
             Assert.Contains("long", contentSet);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForContentTypesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetContentTypes();
+
+            //Assert
+            Assert.Equal(4, res.Count());
+            Assert.Equal("someName", res.First().Name);
+            Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForCreatingContentTypesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            var contentType = new ContentType()
+            {
+                Name = "Barbossa",
+                SystemProperties = new SystemProperties()
+            };
+            contentType.SystemProperties.Id = "323";
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateOrUpdateContentType(contentType);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/323", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForSingleContentTypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetContentType("123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123", path);
+        }
+
+        private ContentfulManagementClient GetClientWithEnvironment(string env = "special")
+        {
+            var httpClient = new HttpClient(_handler);
+            var options = new ContentfulOptions
+            {
+                ManagementApiKey = "123",
+                Environment = env,
+                SpaceId = "564"
+            };
+            var client = new ContentfulManagementClient(httpClient, options);
+            return client;
         }
     }
 }

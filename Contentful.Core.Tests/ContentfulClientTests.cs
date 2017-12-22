@@ -711,16 +711,17 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public void CancellingRequestShouldSuccesfulAbortRequest()
+        public async Task CancellingRequestShouldSuccesfulAbortRequest()
         {
             //Arrange
             var source = new CancellationTokenSource(1500);
-            _handler.VerificationBeforeSend = async () => { await Task.Delay(3000); };
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
+            _handler.Delay = 3000;
             //Act
-            var ex = Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.GetEntry<Entry<dynamic>>("123", "", source.Token));
+            var ex = await Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.GetEntry<Entry<dynamic>>("123", "", source.Token));
 
             //Assert
-            Assert.Equal(TaskStatus.Faulted,ex.Status);
+            Assert.Equal("The operation was canceled.",ex.Message);
         }
 
         [Fact]
@@ -1022,7 +1023,7 @@ namespace Contentful.Core.Tests
             {
                 DeliveryApiKey = "123",
                 PreviewApiKey = "3123",
-                Environment = "special",
+                Environment = env,
                 SpaceId = "564"
             };
             var client = new ContentfulClient(httpClient, options);
