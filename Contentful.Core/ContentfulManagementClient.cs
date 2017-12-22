@@ -2172,7 +2172,6 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
-
         /// <summary>
         /// Creates a CMA management token that can be used to access the Contentful Management API.
         /// </summary>
@@ -2319,7 +2318,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("You must provide a name for the environment", nameof(name));
+                throw new ArgumentException("You must provide a name for the environment.", nameof(name));
             }
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments", ConvertObjectToJsonStringContent(new { name }), cancellationToken).ConfigureAwait(false);
@@ -2345,11 +2344,11 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("You must provide a name for the environment", nameof(name));
+                throw new ArgumentException("You must provide a name for the environment.", nameof(name));
             }
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentException("You must provide an id for the environment", nameof(id));
+                throw new ArgumentException("You must provide an id for the environment.", nameof(id));
             }
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(new { name }), cancellationToken).ConfigureAwait(false);
@@ -2374,7 +2373,7 @@ namespace Contentful.Core
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentException("You must provide an id for the environment", nameof(id));
+                throw new ArgumentException("You must provide an id for the environment.", nameof(id));
             }
 
             var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", cancellationToken).ConfigureAwait(false);
@@ -2392,23 +2391,18 @@ namespace Contentful.Core
         /// <param name="id">The id of the environment to delete.</param>
         /// <param name="spaceId">The id of the space to get an environment in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulEnvironment> DeleteEnvironment(string id, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task DeleteEnvironment(string id, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentException("You must provide an id for the environment", nameof(id));
+                throw new ArgumentException("You must provide an id for the environment.", nameof(id));
             }
 
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
-
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-
-            return jsonObject.ToObject<ContentfulEnvironment>(Serializer);
         }
 
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken)

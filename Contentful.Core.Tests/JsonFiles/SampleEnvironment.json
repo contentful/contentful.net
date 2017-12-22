@@ -1,0 +1,35 @@
+{
+  "name": "my dev environment",
+  "sys": {
+    "type": "Environment",
+    "id": "abc",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "564564"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "avgbn"
+      }
+    },
+    "createdAt": "2017-08-08T08:18:25Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "nfdndg"
+      }
+    },
+    "updatedAt": "2017-08-08T08:18:25Z",
+    "status": {
+      "type": "Link",
+      "linkType": "Status",
+      "id": "queued"
+    }
+  }
+}

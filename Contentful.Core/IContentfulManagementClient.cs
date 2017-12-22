@@ -859,6 +859,6 @@ namespace Contentful.Core
         /// <returns>The <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulEnvironment> DeleteEnvironment(string id, string spaceId = null, CancellationToken cancellationToken = default);
+        Task DeleteEnvironment(string id, string spaceId = null, CancellationToken cancellationToken = default);
     }
 }
