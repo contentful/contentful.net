@@ -35,9 +35,11 @@
         },
         "updatedAt": "2017-08-08T08:18:25Z",
         "status": {
-          "type": "Link",
-          "linkType": "Status",
-          "id": "queued"
+          "sys": {
+            "type": "Link",
+            "linkType": "Status",
+            "id": "queued"
+          }
         }
       }
     },
@@ -70,9 +72,11 @@
         },
         "updatedAt": "2017-08-08T08:18:25Z",
         "status": {
-          "type": "Link",
-          "linkType": "Status",
-          "id": "queued"
+          "sys": {
+            "type": "Link",
+            "linkType": "Status",
+            "id": "queued"
+          }
         }
       }
     }

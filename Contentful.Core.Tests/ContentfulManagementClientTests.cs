@@ -3668,15 +3668,15 @@ namespace Contentful.Core.Tests
             Assert.Collection(res,
                 (e) => {
                     Assert.Equal("my dev environment", e.Name);
-                    Assert.Equal("queued", e.SystemProperties.Status.Id);
-                    Assert.Equal("Link", e.SystemProperties.Status.Type);
-                    Assert.Equal("Status", e.SystemProperties.Status.LinkType);
+                    Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
+                    Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
+                    Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
                 },
                 (e) => {
                     Assert.Equal("madada", e.Name);
-                    Assert.Equal("queued", e.SystemProperties.Status.Id);
-                    Assert.Equal("Link", e.SystemProperties.Status.Type);
-                    Assert.Equal("Status", e.SystemProperties.Status.LinkType);
+                    Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
+                    Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
+                    Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
                 }
                 );
         }
@@ -3796,9 +3796,9 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("my dev environment", res.Name);
-            Assert.Equal("queued", res.SystemProperties.Status.Id);
-            Assert.Equal("Link", res.SystemProperties.Status.Type);
-            Assert.Equal("Status", res.SystemProperties.Status.LinkType);
+            Assert.Equal("queued", res.SystemProperties.Status.SystemProperties.Id);
+            Assert.Equal("Link", res.SystemProperties.Status.SystemProperties.Type);
+            Assert.Equal("Status", res.SystemProperties.Status.SystemProperties.LinkType);
         }
 
         [Theory]
