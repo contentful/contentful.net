@@ -574,6 +574,23 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesForLocaleShouldSerializeIntoCorrectCollection()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
+
+            //Act
+            var res = await _client.GetEntriesForLocale<TestNested>(null, "en-US");
+
+            //Assert
+            Assert.Equal(8, res.Total);
+            Assert.Equal(100, res.Limit);
+            Assert.Equal(0, res.Skip);
+            Assert.Equal(8, res.Items.Count());
+            Assert.Equal("Somethi", res.First().Field1);
+        }
+
+        [Fact]
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithCustomTypes()
         {
             //Arrange

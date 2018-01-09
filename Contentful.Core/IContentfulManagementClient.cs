@@ -369,13 +369,23 @@ namespace Contentful.Core
         Task<EditorInterface> GetEditorInterface(string contentTypeId, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// Gets all the entries of a space in a specific locale, filtered by an optional <see cref="QueryBuilder{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="locale">The locale to fetch entries for. Defaults to the default of the space.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default);
+        Task<ContentfulCollection<T>> GetEntriesForLocale<T>(QueryBuilder<T> queryBuilder, string locale = null, string spaceId = null, CancellationToken cancellationToken = default);
+        
+
+            /// <summary>
+            /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+            /// </summary>
+            /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+            /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+            /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+            /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+            Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 

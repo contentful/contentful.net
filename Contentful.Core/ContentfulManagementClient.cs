@@ -411,6 +411,49 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Gets all the entries of a space in a specific locale, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// </summary>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="locale">The locale to fetch entries for. Defaults to the default of the space.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<T>> GetEntriesForLocale<T>(QueryBuilder<T> queryBuilder, string locale = null, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(locale))
+            {
+                locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
+            }
+
+            var entries = await GetEntriesCollection<JObject>(queryBuilder?.Build(), cancellationToken);
+
+            var items = entries.Items.Select(j => ReconstructJsonObject(j).ToObject<T>()).ToList();
+
+            var collection = new ContentfulCollection<T>();
+            collection.Limit = entries.Limit;
+            collection.Skip = entries.Skip;
+            collection.Total = entries.Total;
+            collection.Errors = entries.Errors;
+            collection.IncludedAssets = entries.IncludedAssets;
+            collection.IncludedEntries = entries.IncludedEntries;
+            collection.Items = items;
+
+            return collection;
+
+            JObject ReconstructJsonObject(JObject oldObject)
+            {
+                var newObject = new JObject(new JProperty("sys", oldObject["sys"]));
+                foreach(var child in oldObject.Children<JProperty>().Where(p => p.Name != "sys"))
+                {
+                    var value = child.Value[locale];
+                    newObject.Add(child.Name, value);
+                }
+
+                return newObject;
+            }
+        }
+
+        /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
         /// </summary>
         /// <typeparam name="T">The type to serialize the response into.</typeparam>
