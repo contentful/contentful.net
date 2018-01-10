@@ -478,6 +478,26 @@ namespace Contentful.Core.Search
         }
 
         /// <summary>
+        /// Adds a search parameter to only fetch entries which links to the specified entry.
+        /// </summary>
+        /// <param name="id">The id of the entry to get all incoming links for.</param>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
+        public QueryBuilder<T> LinksToEntry(string id)
+        {
+            return AddFieldRestriction("links_to_entry", id, string.Empty);
+        }
+
+        /// <summary>
+        /// Adds a search parameter to only fetch entries which links to the specified asset.
+        /// </summary>
+        /// <param name="id">The id of the asset to get all incoming links for.</param>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
+        public QueryBuilder<T> LinksToAsset(string id)
+        {
+            return AddFieldRestriction("links_to_asset", id, string.Empty);
+        }
+
+        /// <summary>
         /// Adds the restriction for a specific field, value and operator.
         /// </summary>
         /// <param name="field">The field to restrict.</param>
