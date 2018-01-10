@@ -477,6 +477,16 @@ namespace Contentful.Core.Search
             return FieldMatches(memberName, value);
         }
 
+        public QueryBuilder<T> LinksToEntry(string id)
+        {
+            return AddFieldRestriction("links_to_entry", id, string.Empty);
+        }
+
+        public QueryBuilder<T> LinksToAsset(string id)
+        {
+            return AddFieldRestriction("links_to_asset", id, string.Empty);
+        }
+
         /// <summary>
         /// Adds the restriction for a specific field, value and operator.
         /// </summary>
