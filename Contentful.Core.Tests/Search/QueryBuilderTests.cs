@@ -524,5 +524,31 @@ namespace Contentful.Core.Tests.Search
             //Assert
             Assert.Equal("?fields.NoCamelHere=whatever", result);
         }
+
+        [Fact]
+        public void FieldEqualsForIncomingEntryLinksShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.LinksToEntry("some-id").Build();
+
+            //Assert
+            Assert.Equal("?links_to_entry=some-id", result);
+        }
+
+        [Fact]
+        public void FieldEqualsForIncomingAssetLinksShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.LinksToAsset("some-id").Build();
+
+            //Assert
+            Assert.Equal("?links_to_asset=some-id", result);
+        }
     }
 }
