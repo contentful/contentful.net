@@ -15,4 +15,4 @@ jobs:
             dotnet test Contentful.Core.Tests
       - run:
           name: E2E tests
-          command: e2e-tests.sh
+          command: ./e2e-tests.sh
