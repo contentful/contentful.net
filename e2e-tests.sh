@@ -1,10 +1,10 @@
 #!/bin/bash
 # Run .NET specific api-coverage tests
-ENV='"REPO_SDK=dotnet REPO_SLUG='$TRAVIS_REPO_SLUG' REPO_COMMIT='$TRAVIS_COMMIT'"'
+ENV='"REPO_SDK=dotnet REPO_SLUG=contentful/contentful.net REPO_COMMIT='$CIRCLE_SHA1'"'
 
 BODY="{
   \"request\": {
-    \"message\": \"$TRAVIS_REPO_SLUG SDK Triggered Request\",
+    \"message\": \"contentful/contentful.net SDK Triggered Request\",
     \"branch\":\"travis_experiments\",
     \"config\": {\"env\": $ENV}
   }
