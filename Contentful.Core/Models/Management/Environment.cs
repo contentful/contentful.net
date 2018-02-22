@@ -15,10 +15,5 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         [JsonProperty("sys")]
         public SystemProperties SystemProperties { get; set; }
-
-        /// <summary>
-        /// The name of the environment.
-        /// </summary>
-        public string Name { get; set; }
     }
 }

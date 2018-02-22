@@ -14,6 +14,7 @@ using System.Threading;
 using Contentful.Core.Errors;
 using Newtonsoft.Json;
 using System.Collections;
+using Contentful.Core.Models.Management;
 
 namespace Contentful.Core
 {
@@ -484,6 +485,21 @@ namespace Contentful.Core
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
 
             return contentTypes;
+        }
+
+        /// <summary>
+        /// Get all locales of an environment.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
+        public async Task<IEnumerable<Locale>> GetLocales(CancellationToken cancellationToken = default)
+        {
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{(string.IsNullOrEmpty(EnvironmentsBase) ? "environments/master/" : EnvironmentsBase)}locales/", cancellationToken).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var locales = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<Locale>(Serializer));
+
+            return locales;
         }
 
         /// <summary>

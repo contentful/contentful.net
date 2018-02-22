@@ -373,6 +373,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="locale">The locale to fetch entries for. Defaults to the default of the space.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         Task<ContentfulCollection<T>> GetEntriesForLocale<T>(QueryBuilder<T> queryBuilder, string locale = null, string spaceId = null, CancellationToken cancellationToken = default);
@@ -829,25 +830,23 @@ namespace Contentful.Core
         /// <summary>
         /// Creates a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
         /// </summary>
-        /// <param name="name">The name of the environment to create.</param>
         /// <param name="spaceId">The id of the space to create an environment in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="System.ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulEnvironment> CreateEnvironment(string name, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentfulEnvironment> CreateEnvironment(string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
         /// </summary>
-        /// <param name="name">The name of the environment to create.</param>
         /// <param name="id">The id of the environment to create.</param>
         /// <param name="spaceId">The id of the space to create an environment in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="System.ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulEnvironment> CreateEnvironmentById(string name, string id, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentfulEnvironment> CreateEnvironmentById(string id, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.

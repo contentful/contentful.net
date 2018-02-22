@@ -3684,32 +3684,16 @@ namespace Contentful.Core.Tests
             Assert.Equal(2, res.Total);
             Assert.Collection(res,
                 (e) => {
-                    Assert.Equal("my dev environment", e.Name);
                     Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
                     Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
                     Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
                 },
                 (e) => {
-                    Assert.Equal("madada", e.Name);
                     Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
                     Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
                     Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
                 }
                 );
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public async Task CreateEnvironmentShouldThrowIfNameNotSet(string s)
-        {
-            //Arrange
-            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
-
-            //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEnvironment(s));
-            //Assert
-            Assert.Equal($"You must provide a name for the environment.{Environment.NewLine}Parameter name: name", ex.Message);
         }
 
         [Fact]
@@ -3719,35 +3703,18 @@ namespace Contentful.Core.Tests
 
             _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
             var requestUrl = "";
-            var contentSet = "";
             var requestMethod = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
             };
 
             //Act
-            var res = await _client.CreateEnvironment("envo");
+            var res = await _client.CreateEnvironment();
             //Assert
             Assert.Equal(HttpMethod.Post, requestMethod);
-            Assert.Contains(@"""name"":""envo""", contentSet);
             Assert.Equal("https://api.contentful.com/spaces/666/environments", requestUrl);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public async Task CreateEnvironmentByIdShouldThrowIfNameNotSet(string s)
-        {
-            //Arrange
-            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
-
-            //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEnvironmentById(s, "someId"));
-            //Assert
-            Assert.Equal($"You must provide a name for the environment.{Environment.NewLine}Parameter name: name", ex.Message);
         }
 
         [Theory]
@@ -3759,7 +3726,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEnvironmentById("som", s));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEnvironmentById(s));
             //Assert
             Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
         }
@@ -3771,20 +3738,17 @@ namespace Contentful.Core.Tests
 
             _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
             var requestUrl = "";
-            var contentSet = "";
             var requestMethod = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
             };
 
             //Act
-            var res = await _client.CreateEnvironmentById("envo", "bob");
+            var res = await _client.CreateEnvironmentById("bob");
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
-            Assert.Contains(@"""name"":""envo""", contentSet);
             Assert.Equal("https://api.contentful.com/spaces/666/environments/bob", requestUrl);
         }
 
@@ -3812,7 +3776,6 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEnvironment("hehe");
 
             //Assert
-            Assert.Equal("my dev environment", res.Name);
             Assert.Equal("queued", res.SystemProperties.Status.SystemProperties.Id);
             Assert.Equal("Link", res.SystemProperties.Status.SystemProperties.Type);
             Assert.Equal("Status", res.SystemProperties.Status.SystemProperties.LinkType);
