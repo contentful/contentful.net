@@ -120,5 +120,10 @@ namespace Contentful.Core.Models
         /// The link to the status that the current object had. Used only for resources that have a status.
         /// </summary>
         public Status Status { get; set; }
+
+        /// <summary>
+        /// The link to the environment of the resource.
+        /// </summary>
+        public ContentfulEnvironment Environment { get; set; }
     }
 }

@@ -2360,7 +2360,7 @@ namespace Contentful.Core
         public async Task<ContentfulEnvironment> CreateEnvironment(string spaceId = null, CancellationToken cancellationToken = default)
         {
 
-            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments", null, cancellationToken).ConfigureAwait(false);
+            var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments", ConvertObjectToJsonStringContent(null), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2385,7 +2385,7 @@ namespace Contentful.Core
                 throw new ArgumentException("You must provide an id for the environment.", nameof(id));
             }
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", null, cancellationToken).ConfigureAwait(false);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(null), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
