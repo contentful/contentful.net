@@ -3711,7 +3711,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateEnvironment();
+            var res = await _client.CreateEnvironment("theenv");
             //Assert
             Assert.Equal(HttpMethod.Post, requestMethod);
             Assert.Equal("https://api.contentful.com/spaces/666/environments", requestUrl);
@@ -3726,7 +3726,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
 
             //Act
-            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEnvironmentById(s));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateEnvironment(s, ""));
             //Assert
             Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
         }
@@ -3746,7 +3746,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.CreateEnvironmentById("bob");
+            var res = await _client.CreateOrUpdateEnvironment("bob", "pop");
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
             Assert.Equal("https://api.contentful.com/spaces/666/environments/bob", requestUrl);

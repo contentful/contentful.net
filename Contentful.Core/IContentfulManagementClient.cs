@@ -835,7 +835,7 @@ namespace Contentful.Core
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="System.ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulEnvironment> CreateEnvironment(string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentfulEnvironment> CreateEnvironment(string name, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
@@ -846,7 +846,7 @@ namespace Contentful.Core
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="System.ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulEnvironment> CreateEnvironmentById(string id, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentfulEnvironment> CreateOrUpdateEnvironment(string id, string name, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
