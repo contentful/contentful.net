@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: microsoft/aspnetcore-build:2.0
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: dotnet build
+      - run:
+          name: Unit tests
+          command: | 
+            dotnet test Contentful.AspNetCore.Tests
+            dotnet test Contentful.Core.Tests
+      - run:
+          name: E2E tests
+          command: ./e2e-tests.sh
