@@ -30,5 +30,16 @@ namespace Contentful.Core.Models.Management
         /// The access token for the API key.
         /// </summary>
         public string AccessToken { get; set; }
+
+        /// <summary>
+        /// A link to the preview api key coupled with this api key.
+        /// </summary>
+        [JsonProperty("preview_api_key", NullValueHandling = NullValueHandling.Ignore)]
+        public ApiKey PreviewApiKey { get; set; }
+
+        /// <summary>
+        /// Links to all the environments to which this API key has access.
+        /// </summary>
+        public List<ContentfulEnvironment> Environments { get; set; }
     }
 }
