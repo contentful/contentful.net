@@ -830,6 +830,7 @@ namespace Contentful.Core
         /// <summary>
         /// Creates a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
         /// </summary>
+        /// <param name="name">The name of the environment.</param>
         /// <param name="spaceId">The id of the space to create an environment in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
@@ -841,6 +842,7 @@ namespace Contentful.Core
         /// Creates a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
         /// </summary>
         /// <param name="id">The id of the environment to create.</param>
+        /// <param name="name">The name of the environment.</param>
         /// <param name="spaceId">The id of the space to create an environment in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
