@@ -2396,7 +2396,7 @@ namespace Contentful.Core
                 throw new ArgumentException("You must provide a name for the environment.", nameof(name));
             }
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(null), cancellationToken).ConfigureAwait(false);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(new { name }), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
