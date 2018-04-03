@@ -2379,6 +2379,7 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="id">The id of the environment to create.</param>
         /// <param name="name">The name of the environment to create.</param>
+        /// <param name="version">The last known version of the environment. Must be set when updating an environment.</param>
         /// <param name="spaceId">The id of the space to create an environment in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
