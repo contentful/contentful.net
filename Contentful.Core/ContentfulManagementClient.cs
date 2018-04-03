@@ -2384,7 +2384,7 @@ namespace Contentful.Core
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulEnvironment> CreateOrUpdateEnvironment(string id, string name, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulEnvironment> CreateOrUpdateEnvironment(string id, string name, int? version = null, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -2396,7 +2396,11 @@ namespace Contentful.Core
                 throw new ArgumentException("You must provide a name for the environment.", nameof(name));
             }
 
+            AddVersionHeader(version);
+
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(new { name }), cancellationToken).ConfigureAwait(false);
+
+            RemoveVersionHeader();
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
