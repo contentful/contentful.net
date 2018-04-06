@@ -516,7 +516,7 @@ namespace Contentful.Core
         {
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -543,7 +543,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken:syncToken);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
