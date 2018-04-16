@@ -73,7 +73,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.InProximityOf("locField", "12,-13").Build();
             //Assert
-            Assert.Equal("?locField[near]=12,-13", result);
+            Assert.Equal("?locField[near]=12%2C-13", result);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.InProximityOf(c => c.Title, "45.45,-13").Build();
             //Assert
-            Assert.Equal("?fields.title[near]=45.45,-13", result);
+            Assert.Equal("?fields.title[near]=45.45%2C-13", result);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.WithinArea("locField", "42", "32","54","-38").Build();
             //Assert
-            Assert.Equal("?locField[within]=42,32,54,-38", result);
+            Assert.Equal("?locField[within]=42%2C32%2C54%2C-38", result);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.WithinArea(c => c.Title, "42", "32", "54", "-38").Build();
             //Assert
-            Assert.Equal("?fields.title[within]=42,32,54,-38", result);
+            Assert.Equal("?fields.title[within]=42%2C32%2C54%2C-38", result);
         }
 
         [Fact]
@@ -117,7 +117,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.WithinRadius("locField", "13", "-44", 5).Build();
             //Assert
-            Assert.Equal("?locField[within]=13,-44,5", result);
+            Assert.Equal("?locField[within]=13%2C-44%2C5", result);
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.WithinRadius(c => c.Title, "42", "32", 5).Build();
             //Assert
-            Assert.Equal("?fields.title[within]=42,32,5", result);
+            Assert.Equal("?fields.title[within]=42%2C32%2C5", result);
         }
 
         [Fact]
@@ -305,7 +305,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.FieldEqualsAll("someField", new []{"value1", "value2", "andSoOnAndSoForth"}).Build();
             //Assert
-            Assert.Equal("?someField[all]=value1,value2,andSoOnAndSoForth", result);
+            Assert.Equal("?someField[all]=value1%2Cvalue2%2CandSoOnAndSoForth", result);
         }
 
         [Fact]
@@ -316,7 +316,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.FieldEqualsAll(c => c.Title, new[] { "value1", "value2", "andSoOnAndSoForth" }).Build();
             //Assert
-            Assert.Equal("?fields.title[all]=value1,value2,andSoOnAndSoForth", result);
+            Assert.Equal("?fields.title[all]=value1%2Cvalue2%2CandSoOnAndSoForth", result);
         }
 
         [Fact]
@@ -327,7 +327,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.FieldIncludes("someField", new[] { "some", "other", "value" }).Build();
             //Assert
-            Assert.Equal("?someField[in]=some,other,value", result);
+            Assert.Equal("?someField[in]=some%2Cother%2Cvalue", result);
         }
 
         [Fact]
@@ -338,7 +338,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.FieldIncludes(c => c.Title, new[] { "value1", "value2", "andSoOnAndSoForth" }).Build();
             //Assert
-            Assert.Equal("?fields.title[in]=value1,value2,andSoOnAndSoForth", result);
+            Assert.Equal("?fields.title[in]=value1%2Cvalue2%2CandSoOnAndSoForth", result);
         }
 
         [Fact]
@@ -349,7 +349,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.FieldExcludes("someField", new[] { "some", "other", "value" }).Build();
             //Assert
-            Assert.Equal("?someField[nin]=some,other,value", result);
+            Assert.Equal("?someField[nin]=some%2Cother%2Cvalue", result);
         }
 
         [Fact]
@@ -360,7 +360,7 @@ namespace Contentful.Core.Tests.Search
             //Act
             var result = builder.FieldExcludes(c => c.Title, new[] { "value1", "value2", "andSoOnAndSoForth" }).Build();
             //Assert
-            Assert.Equal("?fields.title[nin]=value1,value2,andSoOnAndSoForth", result);
+            Assert.Equal("?fields.title[nin]=value1%2Cvalue2%2CandSoOnAndSoForth", result);
         }
 
         [Theory]

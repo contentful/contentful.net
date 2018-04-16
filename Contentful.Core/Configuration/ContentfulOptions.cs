@@ -50,5 +50,10 @@ namespace Contentful.Core.Configuration
         /// 0 means that no retries will be made. Maximum is 10.
         /// </summary>
         public int MaxNumberOfRateLimitRetries { get; set; }
+
+        /// <summary>
+        /// Gets or sets the space environment to use with this client.
+        /// </summary>
+        public string Environment { get; set; }
     }
 }

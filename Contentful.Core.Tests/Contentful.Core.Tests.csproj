@@ -5,10 +5,13 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
+    <None Remove="JsonFiles\EnvironmentsCollection.json" />
     <None Remove="JsonFiles\SampleContentTypeFields.json" />
+    <None Remove="JsonFiles\SampleEnvironment.json" />
     <None Remove="JsonFiles\SampleUser.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
@@ -22,6 +25,7 @@
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
     <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
     <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />
+    <EmbeddedResource Include="JsonFiles\SampleEnvironment.json" />
     <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
     <EmbeddedResource Include="JsonFiles\SampleUser.json" />
     <EmbeddedResource Include="JsonFiles\TokensCollection.json" />

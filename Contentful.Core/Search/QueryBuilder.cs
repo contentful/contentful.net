@@ -524,7 +524,7 @@ namespace Contentful.Core.Search
                 sb.Append(hasQuery ? '&' : '?');
                 sb.Append(parameter.Key);
                 sb.Append('=');
-                sb.Append(parameter.Value);
+                sb.Append(System.Net.WebUtility.UrlEncode(parameter.Value));
                 hasQuery = true;
             }
 

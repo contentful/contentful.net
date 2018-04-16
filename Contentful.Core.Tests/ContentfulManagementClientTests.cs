@@ -574,6 +574,23 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesForLocaleShouldSerializeIntoCorrectCollection()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
+
+            //Act
+            var res = await _client.GetEntriesForLocale<TestNested>(null, "en-US");
+
+            //Assert
+            Assert.Equal(8, res.Total);
+            Assert.Equal(100, res.Limit);
+            Assert.Equal(0, res.Skip);
+            Assert.Equal(8, res.Items.Count());
+            Assert.Equal("Somethi", res.First().Field1);
+        }
+
+        [Fact]
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithCustomTypes()
         {
             //Arrange
@@ -693,11 +710,12 @@ namespace Contentful.Core.Tests
         public async Task CreateOrUpdateEntryShouldCallCorrectUrlWithDataForCustomType()
         {
             //Arrange
-            var entry = new ManagementEntry();
-            
-            entry.Field34 = new Dictionary<string, string>()
+            var entry = new ManagementEntry
+            {
+                Field34 = new Dictionary<string, string>()
             {
                 { "en-US", "banana" }
+            }
             };
             var contentTypeHeader = "";
             var contentSet = "";
@@ -728,9 +746,10 @@ namespace Contentful.Core.Tests
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectly()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Benko";
+            var entry = new TestNested
+            {
+                Field1 = "Benko"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleContentTypeFields.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
@@ -752,9 +771,10 @@ namespace Contentful.Core.Tests
         public async Task CreateEntryForLocaleShouldSetValuesCorrectly()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Fischer";
+            var entry = new TestNested
+            {
+                Field1 = "Fischer"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentSet = "";
 
@@ -774,9 +794,10 @@ namespace Contentful.Core.Tests
         public async Task CreateEntryForLocaleShouldSetCorrectContentTypeHeader()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Fischer";
+            var entry = new TestNested
+            {
+                Field1 = "Fischer"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentTypeHeader = "";
             _handler.VerificationBeforeSend = () =>
@@ -796,9 +817,10 @@ namespace Contentful.Core.Tests
         public async Task CreateEntryForLocaleShouldSetValuesCorrectlyWhenNoLocaleIsSpecified()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Alekhine";
+            var entry = new TestNested
+            {
+                Field1 = "Alekhine"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentSet = "";
@@ -819,9 +841,10 @@ namespace Contentful.Core.Tests
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectlyWhenNoLocaleIsSpecified()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Benko";
+            var entry = new TestNested
+            {
+                Field1 = "Benko"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleContentTypeFields.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
@@ -844,10 +867,11 @@ namespace Contentful.Core.Tests
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectlyWithFieldsNotPresentInEntry()
         {
             //Arrange
-            var entry = new TestNested();
-
-            entry.Field1 = "Benko";
-            entry.NewField = "This is new!";
+            var entry = new TestNested
+            {
+                Field1 = "Benko",
+                NewField = "This is new!"
+            };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleContentTypeFields.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"LocalesCollection.json"));
@@ -2794,14 +2818,18 @@ namespace Contentful.Core.Tests
         public async Task SerializedObjectShouldBeProperlyCapitalized()
         {
             //Arrange
-            var fields = new CamelTest();
-            fields.NotCamel = "Not a camel";
-            fields.NotACamelEither = "Neither is this!";
-            fields.LongThing = "This is though, a pure camel!";
+            var fields = new CamelTest
+            {
+                NotCamel = "Not a camel",
+                NotACamelEither = "Neither is this!",
+                LongThing = "This is though, a pure camel!"
+            };
 
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
-            var entry = new Entry<dynamic>();
-            entry.Fields = fields;
+            var entry = new Entry<dynamic>
+            {
+                Fields = fields
+            };
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
@@ -2815,6 +2843,991 @@ namespace Contentful.Core.Tests
             Assert.Contains("NotCamelISay", contentSet);
             Assert.Contains("NoCamelHere", contentSet);
             Assert.Contains("long", contentSet);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForContentTypesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetContentTypes();
+
+            //Assert
+            Assert.Equal(4, res.Count());
+            Assert.Equal("someName", res.First().Name);
+            Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForCreatingContentTypesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            var contentType = new ContentType()
+            {
+                Name = "Barbossa",
+                SystemProperties = new SystemProperties()
+            };
+            contentType.SystemProperties.Id = "323";
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateOrUpdateContentType(contentType);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/323", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForSingleContentTypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetContentType("123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForDeleteContentTypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.DeleteContentType("123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForActivateContentTypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.ActivateContentType("123", 2);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123/published", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForDeactivateContentTypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.DeactivateContentType("123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123/published", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForGetActivatedContentTypesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.GetActivatedContentTypes();
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/public/content_types", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForGettingEditorInterfaceShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EditorInterface.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetEditorInterface("123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123/editor_interface", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForUpdatingEditorInterfaceShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EditorInterface.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.UpdateEditorInterface(new EditorInterface(), "123", 2);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/123/editor_interface", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGettingEntriesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetEntriesCollection<dynamic>();
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForCreatingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateEntry(new Entry<dynamic>(), "123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForCreatingOrUpdatingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateOrUpdateEntry(new Entry<dynamic> { SystemProperties = new SystemProperties { Id = "323" } }, version: 123);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/323", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForGettingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetEntry("123");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForDeletingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.DeleteEntry("123", 32);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForPublishingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.PublishEntry("123", 43);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123/published", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForUnpublishingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.UnpublishEntry("123", 32);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123/published", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForArchivingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.ArchiveEntry("123", 32);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123/archived", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForUnarchivingEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.UnarchiveEntry("123", 32);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123/archived", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGettingAssetsShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"AssetsCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetAssetsCollection();
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGettingPublishedAssetsShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"AssetsCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetPublishedAssetsCollection();
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/public/assets", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetAsset("343");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentDeleteAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.DeleteAsset("343", 4);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentPublishAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.PublishAsset("343", 45);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343/published", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentUnpublishAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.UnpublishAsset("343", 45);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343/published", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentArchiveAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.ArchiveAsset("343", 45);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343/archived", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentUnarchiveAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.UnarchiveAsset("343", 45);
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343/archived", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentProcessAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.ProcessAsset("343", 47, "en-US");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/343/files/en-US/process", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentCreateOrUpdateAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateOrUpdateAsset(new ManagementAsset { SystemProperties = new SystemProperties { Id="325" } });
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/325", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentCreateAssetShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateAsset(new ManagementAsset());
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetLocalesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"LocalesCollection.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetLocalesCollection();
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/locales", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentCreateLocaleShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleLocale.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateLocale(new Locale());
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/locales", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetLocaleShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleLocale.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetLocale("en-US");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/locales/en-US", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentUpdateLocaleShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleLocale.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.UpdateLocale(new Locale() { SystemProperties = new SystemProperties { Id = "en-US" } });
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/locales/en-US", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentDeleteLocaleShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            await client.DeleteLocale("en-US");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/locales/en-US", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetAllSnapshotsForEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SnapshotsCollection.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetAllSnapshotsForEntry("4343");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/4343/snapshots", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetSnapshotForEntryShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleSnapshot.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetSnapshotForEntry("666", "4343");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/4343/snapshots/666", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetAllSnapshotsForContentTypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContentTypeSnapshotsCollection.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetAllSnapshotsForContentType("abc");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/abc/snapshots", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetSnapshotForContenttypeShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleSnapshotContentType.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetSnapshotForContentType("432", "bdb");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/bdb/snapshots/432", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetAllExtensionsShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtensionsCollection.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetAllExtensions();
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/extensions", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentCreateExtensionsShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateExtension(new UiExtension());
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/extensions", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentCreateOrUpdateExtensionsShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.CreateOrUpdateExtension(new UiExtension() { SystemProperties = new SystemProperties { Id = "t4t" } });
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/extensions/t4t", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentGetExtensionShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetExtension("gegjy");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/extensions/gegjy", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentDeleteExtensionShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+           await client.DeleteExtension("sbth");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/extensions/sbth", path);
+        }
+
+        [Fact]
+        public async Task GettingEnvironmentsShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EnvironmentsCollection.json");
+            
+            //Act
+            var res = await _client.GetEnvironments();
+
+            //Assert
+            Assert.Equal(2, res.Total);
+            Assert.Collection(res,
+                (e) => {
+                    Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
+                    Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
+                    Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
+                },
+                (e) => {
+                    Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
+                    Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
+                    Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
+                }
+                );
+        }
+
+        [Fact]
+        public async Task CreateEnvironmentShouldCallCorrectUrlWithCorrectData()
+        {
+            //Arrange
+
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.CreateEnvironment("theenv");
+            //Assert
+            Assert.Equal(HttpMethod.Post, requestMethod);
+            Assert.Equal("https://api.contentful.com/spaces/666/environments", requestUrl);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task CreateEnvironmentByIdShouldThrowIfIdNotSet(string s)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateEnvironment(s, ""));
+            //Assert
+            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Fact]
+        public async Task CreateEnvironmentByIdShouldCallCorrectUrlWithCorrectData()
+        {
+            //Arrange
+
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateEnvironment("bob", "pop");
+            //Assert
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal("https://api.contentful.com/spaces/666/environments/bob", requestUrl);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetEnvironmentByIdShouldThrowIfIdNotSet(string s)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEnvironment(s));
+            //Assert
+            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetEnvironmentShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+
+            //Act
+            var res = await _client.GetEnvironment("hehe");
+
+            //Assert
+            Assert.Equal("queued", res.SystemProperties.Status.SystemProperties.Id);
+            Assert.Equal("Link", res.SystemProperties.Status.SystemProperties.Type);
+            Assert.Equal("Status", res.SystemProperties.Status.SystemProperties.LinkType);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task DeleteEnvironmentByIdShouldThrowIfIdNotSet(string s)
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeleteEnvironment(s));
+            //Assert
+            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Fact]
+        public async Task DeleteEnvironmentShouldCallCorrectURl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteEnvironment("hehe");
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/666/environments/hehe", requestUrl);
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+        }
+
+        private ContentfulManagementClient GetClientWithEnvironment(string env = "special")
+        {
+            var httpClient = new HttpClient(_handler);
+            var options = new ContentfulOptions
+            {
+                ManagementApiKey = "123",
+                Environment = env,
+                SpaceId = "564"
+            };
+            var client = new ContentfulManagementClient(httpClient, options);
+            return client;
         }
     }
 }

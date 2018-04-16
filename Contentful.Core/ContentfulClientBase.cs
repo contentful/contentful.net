@@ -32,6 +32,8 @@ namespace Contentful.Core
         /// </summary>
         protected ContentfulOptions _options;
 
+        internal string EnvironmentsBase => string.IsNullOrEmpty(_options.Environment) ? "" : $"environments/{_options.Environment}/";
+
         internal JsonSerializer Serializer => JsonSerializer.Create(SerializerSettings);
 
         /// <summary>

@@ -46,17 +46,22 @@ namespace Contentful.Core.Tests
             VerifyRequest?.Invoke(request);
             VerificationBeforeSend?.Invoke();
 
+            await Task.Delay(Delay);
+
             if (Responses.Count > 0)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 return await Task.FromResult(Responses.Dequeue());
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
             return await Task.FromResult(Response);
         }
         public Action<HttpRequestMessage> VerifyRequest { get; set; }
         public Action VerificationBeforeSend { get; set; }
         public Queue<HttpResponseMessage> Responses { get; set; }
         public HttpResponseMessage Response { get; set; }
+        public int Delay { get; set; }
     }
     
     public class TwoAssets

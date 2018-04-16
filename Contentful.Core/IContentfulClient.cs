@@ -8,6 +8,7 @@ using Contentful.Core.Search;
 using System.Threading;
 using Newtonsoft.Json;
 using Contentful.Core.Configuration;
+using Contentful.Core.Models.Management;
 
 namespace Contentful.Core
 {
@@ -155,6 +156,13 @@ namespace Contentful.Core
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get all locales of an environment.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
+        Task<IEnumerable<Locale>> GetLocales(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Fetches an initial sync result of content. Note that this sync might not contain the entire result. 
