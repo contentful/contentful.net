@@ -1908,6 +1908,65 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Gets a collection of all preview <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ApiKey>> GetAllPreviewApiKeys(string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/preview_api_keys", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<ApiKey>>(Serializer);
+            var keys = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiKey>(Serializer));
+            collection.Items = keys;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets an <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="apiKeyId">The id of the api key get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ApiKey> GetApiKey(string apiKeyId, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{apiKeyId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+           
+            return jsonObject.ToObject<ApiKey>(Serializer);
+        }
+
+        /// <summary>
+        /// Gets a preview <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="apiKeyId">The id of the api key get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ApiKey> GetPreviewApiKey(string apiKeyId, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/preview_api_keys/{apiKeyId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ApiKey>(Serializer);
+        }
+
+        /// <summary>
         /// Creates an <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
         /// </summary>
         /// <param name="name">The name of the API key to create.</param>
@@ -1930,6 +1989,20 @@ namespace Contentful.Core
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             return jsonObject.ToObject<ApiKey>(Serializer);
+        }
+
+        /// <summary>
+        /// Deletes an api key by the specified id.
+        /// </summary>
+        /// <param name="apiKeyId">The id of the api key to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
+        public async Task DeleteApiKey(string apiKeyId, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{apiKeyId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
         /// <summary>
