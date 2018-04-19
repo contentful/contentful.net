@@ -1,0 +1,55 @@
+{
+  "name": "Website Key",
+  "description": "Use this key for your website. Create separate keys for your other apps.",
+  "accessToken": "23423423456433",
+  "policies": [
+    {
+      "effect": "allow",
+      "actions": "all"
+    }
+  ],
+  "sys": {
+    "type": "ApiKey",
+    "id": "123",
+    "version": 1,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "333"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "123321"
+      }
+    },
+    "createdAt": "2016-11-15T07:35:02Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "32131"
+      }
+    },
+    "updatedAt": "2016-11-15T07:35:31Z"
+  },
+  "environments": [
+    {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    }
+  ],
+  "preview_api_key": {
+    "sys": {
+      "type": "Link",
+      "linkType": "PreviewApiKey",
+      "id": "666"
+    }
+  }
+}
