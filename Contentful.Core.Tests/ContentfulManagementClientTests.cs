@@ -2511,6 +2511,47 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetApiKeyShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ApiKey.json");
+
+            //Act
+            var res = await _client.GetApiKey("12");
+
+            //Assert
+            Assert.Equal("23423423456433", res.AccessToken);
+        }
+
+        [Fact]
+        public async Task GetPreviewApiKeysShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ApiKeysCollection.json");
+
+            //Act
+            var res = await _client.GetAllPreviewApiKeys();
+
+            //Assert
+            Assert.Equal(2, res.Total);
+            Assert.Equal(2, res.Count());
+            Assert.Equal("123", res.First().AccessToken);
+        }
+
+        [Fact]
+        public async Task GetPreviewApiKeyShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ApiKey.json");
+
+            //Act
+            var res = await _client.GetPreviewApiKey("12");
+
+            //Assert
+            Assert.Equal("23423423456433", res.AccessToken);
+        }
+
+        [Fact]
         public async Task CreateApiKeyShouldCallCorrectUrlWithData()
         {
             //Arrange

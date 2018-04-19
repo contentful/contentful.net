@@ -297,6 +297,44 @@ namespace Contentful.Core
         Task<ContentfulCollection<ApiKey>> GetAllApiKeys(string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Gets a collection of all preview <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<ApiKey>> GetAllPreviewApiKeys(string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets an <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="apiKeyId">The id of the api key get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ApiKey> GetApiKey(string apiKeyId, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a preview <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="apiKeyId">The id of the api key get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ApiKey> GetPreviewApiKey(string apiKeyId, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes an api key by the specified id.
+        /// </summary>
+        /// <param name="apiKeyId">The id of the api key to delete.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
+        Task DeleteApiKey(string apiKeyId, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Gets all <see cref="Contentful.Core.Models.Management.Role">roles</see> of a space.
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
