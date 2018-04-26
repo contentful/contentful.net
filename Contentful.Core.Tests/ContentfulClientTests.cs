@@ -998,7 +998,7 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task SettingEnvironmentShouldThroworSyncInitial()
+        public async Task SettingEnvironmentShouldYieldCorrectUrlForSyncInitial()
         {
             //Arrange
             var client = GetClientWithEnvironment();
@@ -1010,7 +1010,10 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await Assert.ThrowsAsync<NotSupportedException>(async () => { await client.SyncInitial(); });
+            var res = await client.SyncInitial();
+
+            //Assert	
+            Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/sync?initial=true", path);
         }
 
         private ContentfulClient GetClientWithEnvironment(string env = "special")

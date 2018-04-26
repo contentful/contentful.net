@@ -514,13 +514,9 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default)
         {
-            if(!string.IsNullOrEmpty(_options.Environment) && _options.Environment != "master") {
-                throw new NotSupportedException("Sync is not supported for non-master environments");
-            }
-
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -538,11 +534,6 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<SyncResult> SyncNextResult(string nextSyncOrPageUrl, CancellationToken cancellationToken = default)
         {
-            if (!string.IsNullOrEmpty(_options.Environment) && _options.Environment != "master")
-            {
-                throw new NotSupportedException("Sync is not supported for non-master environments");
-            }
-
             if (string.IsNullOrEmpty(nextSyncOrPageUrl))
             {
                 throw new ArgumentException("nextPageUrl must be specified.", nameof(nextSyncOrPageUrl));
@@ -552,7 +543,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken:syncToken);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
