@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Contentful.Core.Images
@@ -32,6 +33,11 @@ namespace Contentful.Core.Images
                 return this;
             }
 
+            if(_querystringValues.Any(c => c.Key == "fm"))
+            {
+                return this;
+            }
+
             _querystringValues.Add(new KeyValuePair<string, string>("fm", format.ToString().ToLower()));
             return this;
         }
@@ -44,6 +50,24 @@ namespace Contentful.Core.Images
         public ImageUrlBuilder SetJpgQuality(int quality)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("q", quality.ToString()));
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the color depth of the png image returned to 8 bit.
+        /// </summary>
+        /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
+        public ImageUrlBuilder Set8BitPng()
+        {
+            if(!_querystringValues.Any(c => c.Key == "fm"))
+            {
+                SetFormat(ImageFormat.Png);
+            }
+            else if (!_querystringValues.Any(c => c.Key == "fm" && c.Value == "png"))
+            {
+                throw new ArgumentException("The format must be set to png when using the 8 bit png color depth.");
+            }
+            _querystringValues.Add(new KeyValuePair<string, string>("fl", "png8"));
             return this;
         }
 

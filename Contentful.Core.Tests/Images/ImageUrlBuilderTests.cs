@@ -60,6 +60,50 @@ namespace Contentful.Core.Tests.Images
         }
 
         [Fact]
+        public void Setting8BitPngShouldSetCorrectQueryString()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.Set8BitPng().Build();
+            //Assert
+            Assert.Equal($"?fm=png&fl=png8", result);
+        }
+
+        [Fact]
+        public void Setting8BitPngAndFormatShouldSetCorrectQueryString()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.SetFormat(ImageFormat.Png).Set8BitPng().Build();
+            //Assert
+            Assert.Equal($"?fm=png&fl=png8", result);
+        }
+
+        [Fact]
+        public void Setting8BitPngAndFormatInDifferentOrderShouldSetCorrectQueryString()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.Set8BitPng().SetFormat(ImageFormat.Png).Build();
+            //Assert
+            Assert.Equal($"?fm=png&fl=png8", result);
+        }
+
+        [Fact]
+        public void Setting8BitPngWithIncorrectFormatShouldThrow()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var ex = Assert.Throws<ArgumentException>(() => builder.SetFormat(ImageFormat.Jpg).Set8BitPng().Build());
+            //Assert
+            Assert.Equal("The format must be set to png when using the 8 bit png color depth.", ex.Message);
+        }
+
+        [Fact]
         public void SettingProgressiveJpgShouldSetCorrectQueryString()
         {
             //Arrange
