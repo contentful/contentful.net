@@ -60,6 +60,17 @@ namespace Contentful.Core.Tests.Images
         }
 
         [Fact]
+        public void Setting8BitPngShouldSetCorrectQueryString()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.Set8BitPng().Build();
+            //Assert
+            Assert.Equal($"?fl=png8", result);
+        }
+
+        [Fact]
         public void SettingProgressiveJpgShouldSetCorrectQueryString()
         {
             //Arrange

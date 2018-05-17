@@ -48,6 +48,16 @@ namespace Contentful.Core.Images
         }
 
         /// <summary>
+        /// Sets the quality of the png image returned to 8 bit.
+        /// </summary>
+        /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
+        public ImageUrlBuilder Set8BitPng()
+        {
+            _querystringValues.Add(new KeyValuePair<string, string>("fl", "png8"));
+            return this;
+        }
+
+        /// <summary>
         /// Sets the returned jpg to be progressive.
         /// </summary>
         /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
