@@ -38,6 +38,9 @@
   - [Core Features](#core-features)
   - [Getting started](#getting-started)
     - [Your first request](#your-first-request)
+  - [Using the SDK with the Preview API](#using-the-sdk-with-the-preview-api)
+  - [Authentication](#authentication)
+  - [Further documentation](#further-documentation)
   - [Reach out to us](#reach-out-to-us)
     - [You have questions about how to use this library?](#you-have-questions-about-how-to-use-this-library)
     - [You found a bug or want to propose a feature?](#you-found-a-bug-or-want-to-propose-a-feature)
@@ -180,9 +183,33 @@ contentType.Fields = new List<Field>()
 await managementClient.CreateOrUpdateContentType(contentType);
 ```
 
-## Further information
+## Using the SDK with the Preview API
 
-You can read the full documentation and explore the api at <https://contentful.github.io/contentful.net-docs/>
+This SDK can also be used with the Preview API. Make sure you have a preview API key configured and set `UsePreviewAPI` on your client.
+
+```csharp
+var httpClient = new HttpClient();
+var options = new ContentfulOptions()
+{
+    DeliveryApiKey = "<content_delivery_api_key>",
+    PreviewApiKey, "<content_preview_api_key>"
+    SpaceId = "<space_id>",
+    UsePreviewApi = true
+}
+var client = new ContentfulClient(httpClient, options);
+```
+
+## Authentication
+
+To get your own content from Contentful, an app should authenticate with an OAuth bearer token.
+
+You can create API keys using the [Contentful web interface](https://app.contentful.com). Go to the app, open the space that you want to access (top left corner lists all the spaces), and navigate to the APIs area. Open the API Keys section and create your first token. Done.
+
+For more information, check the [Contentful REST API reference on Authentication](https://www.contentful.com/developers/docs/references/authentication/).
+
+## Further documentation
+
+You can read the full documentation at https://www.contentful.com/developers/docs/net/ and explore the api at <https://contentful.github.io/contentful.net-docs/>
 
 [1]: https://www.contentful.com
 [2]: https://docs.asp.net/en/latest/fundamentals/configuration.html#options-config-objects
