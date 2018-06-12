@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Text;
@@ -29,12 +30,12 @@ namespace Contentful.Core
         /// The main class for interaction with the contentful deliver and preview APIs.
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
-        /// <param name="options">The <see cref="ContentfulOptions"/> used for this client.</param>
+        /// <param name="options">The options object used to retrieve the <see cref="ContentfulOptions"/> for this client.</param>
         /// <exception cref="ArgumentException">The <see name="options">options</see> parameter was null or empty</exception>
-        public ContentfulClient(HttpClient httpClient, ContentfulOptions options)
+        public ContentfulClient(HttpClient httpClient, IOptions<ContentfulOptions> options)
         {
             _httpClient = httpClient;
-            _options = options;
+            _options = options.Value;
 
             if (options == null)
             {
@@ -54,6 +55,17 @@ namespace Contentful.Core
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class.
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
+        /// <param name="options">The <see cref="ContentfulOptions"/> used for this client.</param>
+        public ContentfulClient(HttpClient httpClient, ContentfulOptions options):
+            this(httpClient, new OptionsWrapper<ContentfulOptions>(options))
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentfulClient"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="deliveryApiKey">The delivery API key used when communicating with the Contentful API.</param>
         /// <param name="previewApiKey">The preview API key used when communicating with the Contentful Preview API.</param>
         /// <param name="spaceId">The ID of the space to fetch content from.</param>
@@ -61,13 +73,13 @@ namespace Contentful.Core
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
         public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false):
-            this(httpClient, new ContentfulOptions()
+            this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
             {
                 DeliveryApiKey = deliveryApiKey,
                 SpaceId = spaceId,
                 PreviewApiKey = previewApiKey,
                 UsePreviewApi = usePreviewApi
-            })
+            }))
         {
 
         }

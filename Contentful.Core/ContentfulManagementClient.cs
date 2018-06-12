@@ -3,6 +3,7 @@ using Contentful.Core.Errors;
 using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -31,12 +32,12 @@ namespace Contentful.Core
         /// The main class for interaction with the contentful deliver and preview APIs.
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
-        /// <param name="options">The <see cref="ContentfulOptions"/> used for this client.</param>
+        /// <param name="options">The options object used to retrieve the <see cref="ContentfulOptions"/> for this client.</param>
         /// <exception cref="ArgumentException">The <see name="options">options</see> parameter was null or empty</exception>
-        public ContentfulManagementClient(HttpClient httpClient, ContentfulOptions options)
+        public ContentfulManagementClient(HttpClient httpClient, IOptions<ContentfulOptions> options)
         {
             _httpClient = httpClient;
-            _options = options;
+            _options = options.Value;
 
             if (options == null)
             {
@@ -48,14 +49,25 @@ namespace Contentful.Core
         /// Initializes a new instance of the <see cref="ContentfulManagementClient"/> class.
         /// </summary>
         /// <param name="httpClient">The HttpClient of your application.</param>
+        /// <param name="options">The <see cref="ContentfulOptions"/> used for this client.</param>
+        public ContentfulManagementClient(HttpClient httpClient, ContentfulOptions options) :
+            this(httpClient, new OptionsWrapper<ContentfulOptions>(options))
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContentfulManagementClient"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HttpClient of your application.</param>
         /// <param name="managementApiKey">The management API key used when communicating with the Contentful API</param>
         /// <param name="spaceId">The id of the space to fetch content from.</param>
         public ContentfulManagementClient(HttpClient httpClient, string managementApiKey, string spaceId) :
-            this(httpClient, new ContentfulOptions()
+            this(httpClient, new OptionsWrapper<ContentfulOptions>(new ContentfulOptions()
             {
                 ManagementApiKey = managementApiKey,
                 SpaceId = spaceId
-            })
+            }))
         {
 
         }
