@@ -1,6 +1,6 @@
 ![build status](https://travis-ci.com/contentful/contentful.net.svg?token=Pyo2hEQ4sLp3x19cTNf6&branch=master)
 
-![header](./.github/header.png)
+![header](https://images.ctfassets.net/gw484zixu8ng/1gSVGV8tICAkeaqkc8C6yG/753ebdf385fc756c7ed48baebd84236d/header-dotnet.png)
 <p align="center">
   <a href="https://www.contentful.com/slack/">
     <img src="https://img.shields.io/badge/-Join%20Community%20Slack-2AB27B.svg?logo=slack&maxAge=31557600" alt="Join Contentful Community Slack">
