@@ -88,7 +88,16 @@ namespace Contentful.Core.Configuration
 
                 return equalsConstraint;
             }
-            if(jObject["paths"] != null)
+            if (jObject["in"] != null)
+            {
+                var inConstraint = new InConstraint();
+
+                inConstraint.Property = jObject["in"][0]["doc"]?.ToString();
+                inConstraint.ValueToEqual = jObject["in"][1]?.ToString();
+
+                return inConstraint;
+            }
+            if (jObject["paths"] != null)
             {
                 var pathsConstraint = new PathConstraint();
 
@@ -130,7 +139,10 @@ namespace Contentful.Core.Configuration
             {
                 return new { paths = new dynamic[] { new { doc = (constraint as PathConstraint).Fields } } };
             }
-
+            if (constraint is InConstraint)
+            {
+                return new { @in = new dynamic[] { new { doc = (constraint as InConstraint).Property }, (constraint as InConstraint).ValueToEqual } };
+            }
 
             return null;
         }

@@ -79,6 +79,22 @@ namespace Contentful.Core.Models.Management
     }
 
     /// <summary>
+    /// Represents a constraint that inverts the value of the constraint it encapsulates.
+    /// </summary>
+    public class InConstraint : IConstraint
+    {
+        /// <summary>
+        /// The property to evaluate.
+        /// </summary>
+        public string Property { get; set; }
+
+        /// <summary>
+        /// The value that must exist in the property.
+        /// </summary>
+        public string ValueToEqual { get; set; }
+    }
+
+    /// <summary>
     /// Represents a constraint that restricts what fields are allowed to be managed.
     /// </summary>
     public class PathConstraint : IConstraint
