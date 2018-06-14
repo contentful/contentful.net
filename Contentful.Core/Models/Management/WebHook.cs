@@ -47,6 +47,9 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         public List<string> Topics { get; set; }
 
+        /// <summary>
+        /// The filters applied to this webhook.
+        /// </summary>
         public List<IConstraint> Filters { get; set; }
     }
 }
