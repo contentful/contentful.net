@@ -1668,6 +1668,9 @@ namespace Contentful.Core.Tests
             Assert.Equal(1, res.Total);
             Assert.Equal(1, res.Count());
             Assert.Equal("Testhook", res.First().Name);
+            Assert.Equal(2, res.First().Filters.Count);
+            Assert.IsType(typeof(EqualsConstraint), res.First().Filters.First());
+            Assert.IsType(typeof(InConstraint), (res.First().Filters.Last() as NotConstraint).ConstraintToInvert);
             Assert.Equal("https://robertlinde.se/", res.First().Url);
         }
 
@@ -1813,6 +1816,10 @@ namespace Contentful.Core.Tests
                 (t) => Assert.Equal("ContentType.save", t),
                 (t) => Assert.Equal("Entry.publish", t),
                 (t) => Assert.Equal("Entry.unpublish", t));
+            Assert.Collection(res.Filters,
+                (f) => Assert.IsType(typeof(EqualsConstraint), f),
+                (f) => Assert.IsType(typeof(InConstraint),(f as NotConstraint).ConstraintToInvert)
+                );
             Assert.Collection(res.Headers, (h) => { Assert.Equal("bob", h.Key); Assert.Equal("uncle", h.Value); });
         }
 

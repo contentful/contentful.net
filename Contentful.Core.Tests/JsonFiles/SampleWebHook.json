@@ -16,6 +16,28 @@
     "Entry.publish",
     "Entry.unpublish"
   ],
+  "filters": [
+    {
+      "equals": [
+        {
+          "doc": "sys.environment.sys.id"
+        },
+        "master"
+      ]
+    },
+    {
+      "not": {
+        "in": [
+          {
+            "doc": "sys.contentType.sys.id"
+          },
+          [
+            "32"
+          ]
+        ]
+      }
+    }
+  ],
   "sys": {
     "type": "WebhookDefinition",
     "id": "2PCWZTHhjvfUYTfgSNamDn",
