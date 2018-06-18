@@ -7,6 +7,7 @@ using Contentful.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using Contentful.Core;
+using Microsoft.Extensions.Options;
 
 namespace Contentful.AspNetCore
 {
@@ -26,8 +27,16 @@ namespace Contentful.AspNetCore
             services.AddOptions();
             services.Configure<ContentfulOptions>(configuration.GetSection("ContentfulOptions"));
             services.TryAddSingleton<HttpClient>();
-            services.TryAddTransient<IContentfulClient, ContentfulClient>();
-            services.TryAddTransient<IContentfulManagementClient, ContentfulManagementClient>();
+            services.TryAddTransient<IContentfulClient>((sp) => {
+                var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
+                var client = sp.GetService<HttpClient>();
+                return new ContentfulClient(client, options);
+            });
+            services.TryAddTransient<IContentfulManagementClient>((sp) => {
+                var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
+                var client = sp.GetService<HttpClient>();
+                return new ContentfulManagementClient(client, options);
+            });
             return services;
         }
 
@@ -42,8 +51,16 @@ namespace Contentful.AspNetCore
             services.AddOptions();
             services.Configure<ContentfulOptions>(configuration.GetSection("ContentfulOptions"));
             services.TryAddSingleton<HttpClient>();
-            services.TryAddTransient<IContentfulClient, ContentfulClient>();
-            services.TryAddTransient<IContentfulManagementClient, ContentfulManagementClient>();
+            services.TryAddTransient<IContentfulClient>((sp) => {
+                var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
+                var client = sp.GetService<HttpClient>();
+                return new ContentfulClient(client, options);
+            });
+            services.TryAddTransient<IContentfulManagementClient>((sp) => {
+                var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
+                var client = sp.GetService<HttpClient>();
+                return new ContentfulManagementClient(client, options);
+            });
             return services;
         }
     }
