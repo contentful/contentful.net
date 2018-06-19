@@ -26,6 +26,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.0" />
   </ItemGroup>
 </Project>

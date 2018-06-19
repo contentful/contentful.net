@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using Contentful.Core;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Http;
 
 namespace Contentful.AspNetCore
 {
@@ -16,6 +17,8 @@ namespace Contentful.AspNetCore
     /// </summary>
     public static class IServiceCollectionExtensions
     {
+        private const string HttpClientName = "ContentfulClient";
+
         /// <summary>
         /// Adds Contentful services to the IServiceCollection.
         /// </summary>
@@ -27,15 +30,16 @@ namespace Contentful.AspNetCore
             services.AddOptions();
             services.Configure<ContentfulOptions>(configuration.GetSection("ContentfulOptions"));
             services.TryAddSingleton<HttpClient>();
+            services.AddHttpClient(HttpClientName);
             services.TryAddTransient<IContentfulClient>((sp) => {
                 var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
-                var client = sp.GetService<HttpClient>();
-                return new ContentfulClient(client, options);
+                var factory = sp.GetService<IHttpClientFactory>();
+                return new ContentfulClient(factory.CreateClient(HttpClientName), options);
             });
             services.TryAddTransient<IContentfulManagementClient>((sp) => {
                 var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
-                var client = sp.GetService<HttpClient>();
-                return new ContentfulManagementClient(client, options);
+                var factory = sp.GetService<IHttpClientFactory>();
+                return new ContentfulManagementClient(factory.CreateClient(HttpClientName), options);
             });
             return services;
         }
