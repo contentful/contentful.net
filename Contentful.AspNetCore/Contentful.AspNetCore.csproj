@@ -3,7 +3,7 @@
     <Description>Official .NET SDK for the Contentful Content Delivery and Management API for ASP.NET core.</Description>
     <PackageId>contentful.aspnetcore</PackageId>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>2.2.0</VersionPrefix>
+    <VersionPrefix>2.2.1</VersionPrefix>
     <TargetFramework>netstandard1.6</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
@@ -14,13 +14,13 @@
     <PackageLicenseUrl>https://github.com/contentful/contentful.net/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/contentful/contentful.net</RepositoryUrl>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.5\Contentful.AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="contentful.csharp" Version="2.2.0" />
+    <PackageReference Include="contentful.csharp" Version="2.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="1.1.2" />

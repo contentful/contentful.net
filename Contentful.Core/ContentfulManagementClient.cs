@@ -2172,6 +2172,40 @@ namespace Contentful.Core
             return collection;
         }
 
+        private StringContent GetExtensionAsContent(UiExtension extension)
+        {
+            StringContent extensionContent = null;
+
+            if (string.IsNullOrEmpty(extension.SrcDoc))
+            {
+                extensionContent = ConvertObjectToJsonStringContent(new
+                {
+                    extension = new
+                    {
+                        src = extension.Src,
+                        name = extension.Name,
+                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
+                        sidebar = extension.Sidebar
+                    }
+                });
+            }
+            else
+            {
+                extensionContent = ConvertObjectToJsonStringContent(new
+                {
+                    extension = new
+                    {
+                        name = extension.Name,
+                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
+                        srcdoc = extension.SrcDoc,
+                        sidebar = extension.Sidebar
+                    }
+                });
+            }
+
+            return extensionContent;
+        }
+
         /// <summary>
         /// Creates a UiExtension in a <see cref="Space"/>.
         /// </summary>
@@ -2183,17 +2217,7 @@ namespace Contentful.Core
         public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions",
-                ConvertObjectToJsonStringContent(new
-                {
-                    extension = new
-                    {
-                        src = extension.Src,
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
-                        srcDoc = extension.SrcDoc,
-                        sidebar = extension.Sidebar
-                    }
-                }), cancellationToken).ConfigureAwait(false);
+                GetExtensionAsContent(extension), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2223,17 +2247,7 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions/{extension.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new
-                {
-                    extension = new
-                    {
-                        src = extension.Src,
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
-                        srcDoc = extension.SrcDoc,
-                        sidebar = extension.Sidebar
-                    }
-                }), cancellationToken).ConfigureAwait(false);
+                GetExtensionAsContent(extension), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
 

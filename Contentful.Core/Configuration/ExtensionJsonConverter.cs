@@ -50,7 +50,7 @@ namespace Contentful.Core.Configuration
             extension.Name = extensionProperties["name"]?.ToString();
             extension.Sidebar = extensionProperties["sidebar"]?.Value<bool>() ?? false;
             extension.FieldTypes = extensionProperties["fieldTypes"]?.Values<dynamic>()?.Select(c => c.type.ToString())?.Cast<string>().ToList();
-            extension.SrcDoc = extensionProperties["srcDoc"]?.ToString();
+            extension.SrcDoc = extensionProperties["srcdoc"]?.ToString();
 
             return extension;
         }
@@ -77,7 +77,7 @@ namespace Contentful.Core.Configuration
                         src = extension.Src,
                         name = extension.Name,
                         fieldTypes = extension.FieldTypes,
-                        srcDoc = extension.SrcDoc,
+                        srcdoc = extension.SrcDoc,
                         sidebar = extension.Sidebar } });
         }
     }
