@@ -1980,6 +1980,36 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Updates an <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="name">The name of the API key to create.</param>
+        /// <param name="description">The description of the API key to create.</param>
+        /// <param name="version">The last known version of the api key.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The updated <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ApiKey> UpdateApiKey(string name, string description, int version, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("The name of the api key must be set.", nameof(name));
+            }
+
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys", ConvertObjectToJsonStringContent(new { name, description }), cancellationToken).ConfigureAwait(false);
+
+            AddVersionHeader(version);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            RemoveVersionHeader();
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ApiKey>(Serializer);
+        }
+
+        /// <summary>
         /// Deletes an api key by the specified id.
         /// </summary>
         /// <param name="apiKeyId">The id of the api key to delete.</param>
