@@ -2002,13 +2002,13 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the api key must be set.", nameof(id));
             }
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{id}", ConvertObjectToJsonStringContent(new { name, description }), cancellationToken).ConfigureAwait(false);
-
             AddVersionHeader(version);
 
-            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{id}", ConvertObjectToJsonStringContent(new { name, description }), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 

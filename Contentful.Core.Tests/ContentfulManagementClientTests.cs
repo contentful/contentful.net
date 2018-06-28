@@ -2583,6 +2583,50 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UpdateApiKeyShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ApiKeysCollection.json");
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            var headerSet = false;
+            _handler.VerificationBeforeSend = () =>
+            {
+                headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First() == "5";
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateApiKey("some-id", "Key sharp2", "This is the desc again", 5);
+
+            //Assert
+            Assert.True(headerSet);
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/api_keys/some-id", url);
+            Assert.Equal(@"{""name"":""Key sharp2"",""description"":""This is the desc again""}", contentSet);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task UpdateApiKeyShouldThrowIfNoIdSet(string id)
+        {
+            //Arrange
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateApiKey(id, "Key sharp2", "This is the desc again", 5));
+
+            //Assert
+            Assert.Equal($"The id of the api key must be set.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Fact]
         public async Task UploadingFileShouldYieldCorrectResult()
         {
             //Arrange
