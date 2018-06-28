@@ -79,7 +79,14 @@ namespace Contentful.Core.Tests
         public string Title { get; set; }
     }
 
-    public class TestCategory : IMarker
+    public class StructuredModel  : IContent
+    {
+        public SystemProperties Sys { get; set; }
+        public string Title { get; set; }
+        public Document Structure { get; set; }
+    }
+
+    public class TestCategory : IMarker, IContent
     {
         public string Title { get; set; }
     }
@@ -234,6 +241,19 @@ namespace Contentful.Core.Tests
             { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) },
             { "events", typeof(ContentfulEvent) },
             { "page", typeof(TestNestedSharedItem) }
+        };
+
+        public Type Resolve(string contentTypeId)
+        {
+            return _types.TryGetValue(contentTypeId, out var type) ? type : null;
+        }
+    }
+
+    public class StructuredResolver : IContentTypeResolver
+    {
+        public Dictionary<string, Type> _types = new Dictionary<string, Type>()
+        {
+            { "sFzTZbSuM8coEwygeUYes", typeof(StructuredModel) }
         };
 
         public Type Resolve(string contentTypeId)

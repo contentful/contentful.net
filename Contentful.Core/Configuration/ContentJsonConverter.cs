@@ -11,13 +11,13 @@ namespace Contentful.Core.Configuration
     /// <summary>
     /// JsonConverter for converting Contentful assets into a simpler <see cref="Asset"/> structure.
     /// </summary>
-    public class AssetJsonConverter : JsonConverter
+    public class ContentJsonConverter : JsonConverter
     {
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
         /// </summary>
         /// <param name="objectType">The type to convert to.</param>
-        public override bool CanConvert(Type objectType) => objectType == typeof(Asset);
+        public override bool CanConvert(Type objectType) => objectType == typeof(IContent);
 
         /// <summary>
         /// Gets a value indicating whether this JsonConverter can write JSON.
@@ -38,39 +38,40 @@ namespace Contentful.Core.Configuration
                 return null;
             }
 
-            var asset = new Asset();
-
             var jObject = JObject.Load(reader);
             if (jObject.TryGetValue("$ref", out var refId))
             {
-                return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue) refId).Value.ToString());
+                return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue)refId).Value.ToString());
+            }
+            var type = jObject.Value<string>("type") ?? jObject.Value<JObject>("sys").Value<string>("type");
+            var serializationType = jObject.Value<string>("$type");
+            switch (type)
+            {
+                case "paragraph":
+                    return jObject.ToObject<Paragraph>(serializer);
+                case "mark":
+                    return jObject.ToObject<Mark>();
+                case "text":
+                    return jObject.ToObject<Text>();
+                case "Asset":
+                    return jObject.ToObject<Asset>(serializer);
+                case "Entry":
+                    if (string.IsNullOrEmpty(serializationType))
+                    {
+                        return jObject.ToObject<Block>();
+                    }
+                    var typeinfo = Type.GetType(serializationType);
+                    if(typeof(IContent).IsAssignableFrom(typeinfo) == false)
+                    {
+                        // The type does not implement IContent and will throw a deserialization exception.
+                        throw new JsonSerializationException($"The type {typeinfo.Name} does not implement IContent. This is required if a type is used in a structured content field.");
+                    }
+                    return jObject.ToObject(typeinfo);
+                default:
+                    break;
             }
 
-            asset.SystemProperties = jObject.SelectToken("$.sys")?.ToObject<SystemProperties>();
-
-            if (!string.IsNullOrEmpty(asset.SystemProperties.Locale))
-            {
-                asset.Title = jObject.SelectToken("$.fields.title")?.ToString();
-                asset.TitleLocalized = new Dictionary<string, string>();
-                asset.TitleLocalized.Add(asset.SystemProperties.Locale, asset.Title);
-                asset.Description = jObject.SelectToken("$.fields.description")?.ToString();
-                asset.DescriptionLocalized = new Dictionary<string, string>();
-                asset.DescriptionLocalized.Add(asset.SystemProperties.Locale, asset.Description);
-                asset.File = jObject.SelectToken("$.fields.file")?.ToObject<File>();
-                asset.FilesLocalized = new Dictionary<string, File>();
-                asset.FilesLocalized.Add(asset.SystemProperties.Locale, asset.File);
-            }
-            else
-            {
-                asset.TitleLocalized = jObject.SelectToken("$.fields.title")?.ToObject<Dictionary<string, string>>();
-                asset.DescriptionLocalized = jObject.SelectToken("$.fields.description")?.ToObject<Dictionary<string, string>>();
-                asset.FilesLocalized = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
-            }
-            if (!serializer.ReferenceResolver.IsReferenced(serializer, asset))
-            {
-                serializer.ReferenceResolver.AddReference(serializer, asset.SystemProperties.Id, asset);
-            }
-            return asset;
+            return new Mark();
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ namespace Contentful.Core.Models
     /// <summary>
     /// Represents a single asset of a <see cref="Space"/>.
     /// </summary>
-    public class Asset : IContentfulResource
+    public class Asset : IContentfulResource, IContent
     {
         /// <summary>
         /// Common system managed metadata properties.

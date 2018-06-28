@@ -47,6 +47,7 @@ namespace Contentful.Core
             }
             ResolveEntriesSelectively = _options.ResolveEntriesSelectively;
             SerializerSettings.Converters.Add(new AssetJsonConverter());
+            SerializerSettings.Converters.Add(new ContentJsonConverter());
             SerializerSettings.TypeNameHandling = TypeNameHandling.All;
         }
 
@@ -248,8 +249,8 @@ namespace Contentful.Core
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
             var id = ((JValue) entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
-
-            if(id == null)
+            
+            if (id == null)
             {
                 //No id token present, not possible to resolve links. Probably because the sys property has been excluded with a select statement.
                 return;
@@ -273,6 +274,13 @@ namespace Contentful.Core
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {
+                var isEntryBlock = linkToken.Parent.Parent.Value<string>("type") == "link-entry-block";
+
+                if (isEntryBlock)
+                {
+                    //continue;
+                }
+
                 var propName = (linkToken.Parent.Parent.Ancestors().FirstOrDefault(a => a is JProperty) as JProperty)?.Name;
 
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();

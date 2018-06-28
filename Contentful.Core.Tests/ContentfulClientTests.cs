@@ -10,6 +10,7 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using System.Threading;
 using System.Reflection;
+using System.Text;
 
 namespace Contentful.Core.Tests
 {
@@ -1016,6 +1017,41 @@ namespace Contentful.Core.Tests
             Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/sync?initial=true", path);
         }
 
+        [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithStructuredField()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
+            _client.ContentTypeResolver = new StructuredResolver();
+            //Act
+            var res = await _client.GetEntries<StructuredModel>();
+
+            //Assert
+            Assert.Equal(8, res.Count());
+            Assert.Equal("Home & Kitchen", res.First().Title);
+        }
+
+        [Fact]
+        public async Task TurningStructuredContentIntoHtmlShouldYieldCorrectResult()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
+            _client.ContentTypeResolver = new StructuredResolver();
+            var collection = new ContentRenderererCollection();
+            collection.AddRenderer(new ParagraphRenderer(collection));
+            collection.AddRenderer(new TextRenderer());
+            collection.AddRenderer(new AssetRenderer());
+            collection.AddRenderer(new StructuredContentRenderer());
+            collection.AddRenderer(new NullContentRenderer());
+
+            var htmlrenderer = new HtmlRenderer(collection);
+            //Act
+            var res = await _client.GetEntries<StructuredModel>();
+            var html = htmlrenderer.ToHtml(res.First().Structure);
+            //Assert
+            Assert.Equal("<div>", html);
+        }
+
         private ContentfulClient GetClientWithEnvironment(string env = "special")
         {
             var httpClient = new HttpClient(_handler);
@@ -1028,6 +1064,31 @@ namespace Contentful.Core.Tests
             };
             var client = new ContentfulClient(httpClient, options);
             return client;
+        }
+
+        public class StructuredContentRenderer : IContentRenderer
+        {
+            public int Order { get; set; }
+
+            public bool SupportsContent(IContent content)
+            {
+                return content is StructuredModel;
+            } 
+
+            public string Render(IContent content)
+            {
+                var model = content as StructuredModel;
+
+                var sb = new StringBuilder();
+
+                sb.Append("<div>");
+
+                sb.Append($"<h2>{model.Title}</h2>");
+
+                sb.Append("</div>");
+
+                return sb.ToString();
+            }
         }
     }
 }
