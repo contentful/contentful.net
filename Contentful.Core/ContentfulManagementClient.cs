@@ -1292,6 +1292,8 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the Locale must be set.");
             }
 
+            AddVersionHeader(locale.SystemProperties.Version);
+
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(new
             {
                 code = locale.Code,
@@ -1301,6 +1303,8 @@ namespace Contentful.Core
                 name = locale.Name,
                 optional = locale.Optional
             }), cancellationToken).ConfigureAwait(false);
+
+            RemoveVersionHeader();
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
