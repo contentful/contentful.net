@@ -54,7 +54,7 @@ namespace Contentful.Core.Configuration
                 return;
             }
 
-            serializer.Serialize(writer, method);
+            serializer.Serialize(writer, value.ToString());
         }
     }
 
@@ -105,7 +105,33 @@ namespace Contentful.Core.Configuration
                 return;
             }
 
-            serializer.Serialize(writer, contenttype);
+            var contenttypestring = "";
+
+            switch (contenttype)
+            {
+                case TransformationContentTypes.ContentfulManagementPlusJson:
+                    contenttypestring = "application/vnd.contentful.management.v1+json";
+                    break;
+                case TransformationContentTypes.ContentfulManagementPlusJsonAndCharset:
+                    contenttypestring = "application/vnd.contentful.management.v1+json; charset=utf-8";
+                    break;
+                case TransformationContentTypes.ApplicationJson:
+                    contenttypestring = "application/json";
+                    break;
+                case TransformationContentTypes.ApplicationJsonAndCharset:
+                    contenttypestring = "application/json; charset=utf-8";
+                    break;
+                case TransformationContentTypes.FormEncoded:
+                    contenttypestring = "application/x-www-form-urlencoded";
+                    break;
+                case TransformationContentTypes.FormEncodedAndCharset:
+                    contenttypestring = "application/x-www-form-urlencoded; charset=utf-8";
+                    break;
+                default:
+                    break;
+            }
+
+            serializer.Serialize(writer, contenttypestring);
         }
     }
 }

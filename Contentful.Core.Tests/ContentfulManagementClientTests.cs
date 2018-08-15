@@ -1714,6 +1714,7 @@ namespace Contentful.Core.Tests
             Assert.Contains(@"""httpBasicPassword"":""Tepes""", contentSet);
             Assert.Contains(@"""Entry.create""", contentSet);
             Assert.Contains(@"""Asset.publish""", contentSet);
+            Assert.DoesNotContain(@"""transformation""", contentSet);
         }
 
         [Theory]
@@ -1780,6 +1781,67 @@ namespace Contentful.Core.Tests
             Assert.Contains(@"""httpBasicPassword"":""Caligula""", contentSet);
             Assert.Contains(@"""Asset.create""", contentSet);
             Assert.Contains(@"""Entry.*""", contentSet);
+            Assert.DoesNotContain(@"""transformation""", contentSet);
+        }
+
+        [Theory]
+        [InlineData("654")]
+        [InlineData("123")]
+        [InlineData("bill")]
+        public async Task CreateOrUpdateWebhookShouldCallCorrectUrlWithDataAndTransformation(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
+
+            var webhook = new Webhook()
+            {
+                SystemProperties = new SystemProperties()
+            };
+            webhook.SystemProperties.Id = id;
+            webhook.Name = "Canabanana";
+            webhook.Url = "http://www.imdb.com/name/nm0000549/";
+            webhook.HttpBasicPassword = "Roger";
+            webhook.HttpBasicUsername = "Wilco";
+            webhook.Topics = new List<string>()
+            {
+                "Asset.create",
+                "Entry.*"
+            };
+
+            var transform = new WebhookTransformation
+            {
+                Body = new { SomeStuff = "hello!" },
+                ContentType = TransformationContentTypes.ContentfulManagementPlusJsonAndCharset,
+                Method = HttpMethods.PUT
+            };
+
+            webhook.Transformation = transform;
+
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateWebhook(webhook);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/spaces/666/webhook_definitions/{id}", url);
+            Assert.Contains(@"""name"":""Canabanana""", contentSet);
+            Assert.Contains(@"""url"":""http://www.imdb.com/name/nm0000549/""", contentSet);
+            Assert.Contains(@"""httpBasicUsername"":""Wilco""", contentSet);
+            Assert.Contains(@"""httpBasicPassword"":""Roger""", contentSet);
+            Assert.Contains(@"""Asset.create""", contentSet);
+            Assert.Contains(@"""Entry.*""", contentSet);
+            Assert.Contains(@"""transformation""", contentSet);
+            Assert.Contains(@"""contentType""", contentSet);
+            Assert.Contains(@"""application/vnd.contentful.management.v1+json; charset=utf-8""", contentSet);
         }
 
         [Theory]
