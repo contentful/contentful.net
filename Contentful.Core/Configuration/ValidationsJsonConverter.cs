@@ -20,10 +20,7 @@ namespace Contentful.Core.Configuration
         /// Determines whether this instance can convert the specified object type.
         /// </summary>
         /// <param name="objectType">The type to convert to.</param>
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType is IFieldValidator;
-        }
+        public override bool CanConvert(Type objectType) => objectType is IFieldValidator;
 
         /// <summary>
         /// Reads the JSON representation of the object.

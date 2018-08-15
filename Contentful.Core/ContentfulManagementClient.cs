@@ -2598,7 +2598,6 @@ namespace Contentful.Core
             var serializedObject = JsonConvert.SerializeObject(ob, new JsonSerializerSettings
             {
                 ContractResolver = resolver
-
             });
 
             return serializedObject;
