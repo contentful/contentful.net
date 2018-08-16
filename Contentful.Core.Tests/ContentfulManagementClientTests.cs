@@ -2786,7 +2786,53 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleExtension.json");
             var ext = new UiExtension()
             {
+                SystemProperties = new SystemProperties
+                {
+                    Id = "1234"
+                },
                 Name = "trul"
+            };
+
+            //Act
+            var res = await _client.CreateExtension(ext);
+
+            //Assert
+            Assert.Equal("trul", res.Name);
+            Assert.Equal(2, res.FieldTypes.Count);
+            Assert.Collection(res.FieldTypes,
+               (t) => Assert.Equal("Symbol", t),
+               (t) => Assert.Equal("Text", t));
+            Assert.Equal("https://robertlinde.se", res.Src);
+        }
+
+        [Fact]
+        public async Task CreateExtensionWithParametersShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var ext = new UiExtension()
+            {
+                SystemProperties = new SystemProperties
+                {
+                    Id = "1234"
+                },
+                Name = "trul",
+                FieldTypes = new List<string> { "Symbol", "Text" }
+            };
+
+            ext.Parameters = new UiExtensionParametersLists
+            {
+                InstanceParameters = new List<UiExtensionParameters>
+                {
+                    new UiExtensionParameters
+                    {
+                        Id = "test",
+                        Name = "Test",
+                        Type = UiExtensionParameterTypes.Symbol,
+                        Description = "This is the description",
+                        Default = "nutty"
+                    }
+                }
             };
 
             //Act
