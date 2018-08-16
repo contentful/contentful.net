@@ -42,5 +42,29 @@ namespace Contentful.Core.Models.Management
         /// Whether or not this is an extension for the Contentful sidebar.
         /// </summary>
         public bool Sidebar { get; set; }
+
+        /// <summary>
+        /// The parameters applicable to this extension.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public UiExtensionParametersLists Parameters { get; set; }
+    }
+
+    /// <summary>
+    /// Class encapsulating the two lists of extension parameters available.
+    /// </summary>
+    public class UiExtensionParametersLists
+    {
+        /// <summary>
+        /// The parameters that should be available at installation time of the extension.
+        /// </summary>
+        [JsonProperty("installation")]
+        public List<UiExtensionParameters> InstallationParameters { get; set; }
+
+        /// <summary>
+        /// The parameters that should be available at runtime for the extension.
+        /// </summary>
+        [JsonProperty("instance")]
+        public List<UiExtensionParameters> InstanceParameters { get; set; }
     }
 }
