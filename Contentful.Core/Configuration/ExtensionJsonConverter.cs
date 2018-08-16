@@ -51,7 +51,7 @@ namespace Contentful.Core.Configuration
             extension.Sidebar = extensionProperties["sidebar"]?.Value<bool>() ?? false;
             extension.FieldTypes = extensionProperties["fieldTypes"]?.Values<dynamic>()?.Select(c => c.type.ToString())?.Cast<string>().ToList();
             extension.SrcDoc = extensionProperties["srcdoc"]?.ToString();
-
+            extension.Parameters = extensionProperties["parameters"]?.Value<UiExtensionParametersLists>();
             return extension;
         }
 
@@ -78,7 +78,9 @@ namespace Contentful.Core.Configuration
                         name = extension.Name,
                         fieldTypes = extension.FieldTypes,
                         srcdoc = extension.SrcDoc,
-                        sidebar = extension.Sidebar } });
+                        sidebar = extension.Sidebar,
+                        parameters = extension.Parameters
+                    } });
         }
     }
 }

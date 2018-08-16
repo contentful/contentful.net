@@ -13,6 +13,7 @@ namespace Contentful.Core.Models.Management
         /// Editor for a single asset.
         /// </summary>
         public const string AssetLinkEditor = "assetLinkEditor";
+
         /// <summary>
         /// Editor for multiple assets.
         /// </summary>

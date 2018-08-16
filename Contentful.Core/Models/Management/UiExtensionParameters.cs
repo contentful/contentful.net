@@ -49,4 +49,30 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         public dynamic Labels { get; set; }
     }
+
+    /// <summary>
+    /// Represents the allowed values for types for ui extension parameters.
+    /// </summary>
+    public class UiExtensionParameterTypes
+    {
+        /// <summary>
+        /// A simple string value.
+        /// </summary>
+        public const string Symbol = "Symbol";
+
+        /// <summary>
+        /// An enumeration of values.
+        /// </summary>
+        public const string Enum = "Enum";
+
+        /// <summary>
+        /// A numeric value.
+        /// </summary>
+        public const string Number = "Number";
+
+        /// <summary>
+        /// A boolean value.
+        /// </summary>
+        public const string Boolean = "Boolean";
+    }
 }
