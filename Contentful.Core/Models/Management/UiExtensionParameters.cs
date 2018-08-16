@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -37,16 +38,19 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Default value to use for the parameter. Must match the type of parameter, i.e. a bool for a "Boolean" type.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Default { get; set; }
 
         /// <summary>
         /// If the parameter is of type "Enum", this property is used to specify the values and labels that should be available as options.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<object> Options { get; set; }
 
         /// <summary>
         /// Property to customize the labels for the parameter.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Labels { get; set; }
     }
 

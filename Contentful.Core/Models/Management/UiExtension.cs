@@ -9,23 +9,24 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Encapsulates information about a Contentful Ui Extension
     /// </summary>
-    [JsonConverter(typeof(ExtensionJsonConverter))]
     public class UiExtension : IContentfulResource
     {
         /// <summary>
         /// Common system managed metadata properties.
         /// </summary>
-        [JsonProperty("sys")]
+        [JsonIgnore]
         public SystemProperties SystemProperties { get; set; }
 
         /// <summary>
         /// The source URL for html file for the extension.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Src { get; set; }
 
         /// <summary>
         /// String representation of the widget, e.g. inline HTML.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string SrcDoc { get; set; }
 
         /// <summary>
@@ -36,6 +37,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The field types for which this extension applies.
         /// </summary>
+        [JsonConverter(typeof(SingleValueToWrappedJsonConverter))]
         public List<string> FieldTypes { get; set; }
 
         /// <summary>
@@ -58,13 +60,13 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The parameters that should be available at installation time of the extension.
         /// </summary>
-        [JsonProperty("installation")]
+        [JsonProperty("installation", NullValueHandling = NullValueHandling.Ignore)]
         public List<UiExtensionParameters> InstallationParameters { get; set; }
 
         /// <summary>
         /// The parameters that should be available at runtime for the extension.
         /// </summary>
-        [JsonProperty("instance")]
+        [JsonProperty("instance", NullValueHandling = NullValueHandling.Ignore)]
         public List<UiExtensionParameters> InstanceParameters { get; set; }
     }
 }

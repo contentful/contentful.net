@@ -42,6 +42,8 @@ namespace Contentful.Core
             {
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
+
+            SerializerSettings.Converters.Add(new ExtensionJsonConverter());
         }
 
         /// <summary>
@@ -2200,40 +2202,6 @@ namespace Contentful.Core
             return collection;
         }
 
-        private StringContent GetExtensionAsContent(UiExtension extension)
-        {
-            StringContent extensionContent = null;
-
-            if (string.IsNullOrEmpty(extension.SrcDoc))
-            {
-                extensionContent = ConvertObjectToJsonStringContent(new
-                {
-                    extension = new
-                    {
-                        src = extension.Src,
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
-                        sidebar = extension.Sidebar
-                    }
-                });
-            }
-            else
-            {
-                extensionContent = ConvertObjectToJsonStringContent(new
-                {
-                    extension = new
-                    {
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
-                        srcdoc = extension.SrcDoc,
-                        sidebar = extension.Sidebar
-                    }
-                });
-            }
-
-            return extensionContent;
-        }
-
         /// <summary>
         /// Creates a UiExtension in a <see cref="Space"/>.
         /// </summary>
@@ -2245,12 +2213,12 @@ namespace Contentful.Core
         public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions",
-                GetExtensionAsContent(extension), cancellationToken).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(extension), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-
+            
             return jsonObject.ToObject<UiExtension>(Serializer);
         }
 
@@ -2275,7 +2243,7 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions/{extension.SystemProperties.Id}",
-                GetExtensionAsContent(extension), cancellationToken).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(extension), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
@@ -2595,10 +2563,14 @@ namespace Contentful.Core
             var resolver = new CamelCasePropertyNamesContractResolver();
             resolver.NamingStrategy.OverrideSpecifiedNames = false;
 
-            var serializedObject = JsonConvert.SerializeObject(ob, new JsonSerializerSettings
+            var settings = new JsonSerializerSettings
             {
-                ContractResolver = resolver
-            });
+                ContractResolver = resolver,
+            };
+
+            settings.Converters.Add(new ExtensionJsonConverter());
+
+            var serializedObject = JsonConvert.SerializeObject(ob, settings);
 
             return serializedObject;
         }
