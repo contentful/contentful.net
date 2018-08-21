@@ -2,6 +2,7 @@
 using Contentful.Core.Models.Management;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace Contentful.Core.Configuration
             extension.Sidebar = extensionProperties["sidebar"]?.Value<bool>() ?? false;
             extension.FieldTypes = extensionProperties["fieldTypes"]?.Values<dynamic>()?.Select(c => c.type.ToString())?.Cast<string>().ToList();
             extension.SrcDoc = extensionProperties["srcdoc"]?.ToString();
-
+            extension.Parameters = extensionProperties["parameters"]?.ToObject<UiExtensionParametersLists>();
             return extension;
         }
 
@@ -69,16 +70,22 @@ namespace Contentful.Core.Configuration
             {
                 return;
             }
+            var extensionStructure = new
+            {
+                extension
+            };
 
-            serializer.Serialize(writer, 
-                new {
-                    sys = extension.SystemProperties,
-                    extension = new {
-                        src = extension.Src,
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes,
-                        srcdoc = extension.SrcDoc,
-                        sidebar = extension.Sidebar } });
+            var resolver = new CamelCasePropertyNamesContractResolver();
+            resolver.NamingStrategy.OverrideSpecifiedNames = false;
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = resolver,
+            };
+
+            var jObject = JObject.FromObject(extensionStructure, JsonSerializer.Create(settings));
+
+            serializer.Serialize(writer, jObject);
         }
     }
 }

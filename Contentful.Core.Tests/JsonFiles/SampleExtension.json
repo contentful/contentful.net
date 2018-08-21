@@ -11,7 +11,19 @@
       }
     ],
     "srcDoc": null,
-    "sidebar": false
+    "sidebar": false,
+    "parameters": {
+      "instance": [
+        {
+          "id": "test",
+          "name": "Test",
+          "type": "Symbol",
+          "default": "nutty",
+          "required": false,
+          "description": "This is the description"
+        }
+      ]
+    }
   },
   "sys": {
     "id": "14wQugcvz8Y2I8ISaggWSO",

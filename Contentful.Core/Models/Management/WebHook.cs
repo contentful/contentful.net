@@ -51,5 +51,11 @@ namespace Contentful.Core.Models.Management
         /// The filters applied to this webhook.
         /// </summary>
         public List<IConstraint> Filters { get; set; }
+
+        /// <summary>
+        /// The transformation applied to this webhook.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public WebhookTransformation Transformation { get; set; }
     }
 }

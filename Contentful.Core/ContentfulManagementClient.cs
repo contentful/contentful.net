@@ -42,6 +42,8 @@ namespace Contentful.Core
             {
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
+
+            SerializerSettings.Converters.Add(new ExtensionJsonConverter());
         }
 
         /// <summary>
@@ -1292,6 +1294,8 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the Locale must be set.");
             }
 
+            AddVersionHeader(locale.SystemProperties.Version);
+
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}locales/{locale.SystemProperties.Id}", ConvertObjectToJsonStringContent(new
             {
                 code = locale.Code,
@@ -1301,6 +1305,8 @@ namespace Contentful.Core
                 name = locale.Name,
                 optional = locale.Optional
             }), cancellationToken).ConfigureAwait(false);
+
+            RemoveVersionHeader();
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -1980,6 +1986,42 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Updates an <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
+        /// </summary>
+        /// <param name="id">The id of the API key to update.</param>
+        /// <param name="name">The name of the API key to update.</param>
+        /// <param name="description">The description of the API key to update.</param>
+        /// <param name="version">The last known version of the api key.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The updated <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ApiKey> UpdateApiKey(string id, string name, string description, int version, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("The name of the api key must be set.", nameof(name));
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("The id of the api key must be set.", nameof(id));
+            }
+
+            AddVersionHeader(version);
+
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{id}", ConvertObjectToJsonStringContent(new { name, description }), cancellationToken).ConfigureAwait(false);
+
+            RemoveVersionHeader();
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ApiKey>(Serializer);
+        }
+
+        /// <summary>
         /// Deletes an api key by the specified id.
         /// </summary>
         /// <param name="apiKeyId">The id of the api key to delete.</param>
@@ -2160,40 +2202,6 @@ namespace Contentful.Core
             return collection;
         }
 
-        private StringContent GetExtensionAsContent(UiExtension extension)
-        {
-            StringContent extensionContent = null;
-
-            if (string.IsNullOrEmpty(extension.SrcDoc))
-            {
-                extensionContent = ConvertObjectToJsonStringContent(new
-                {
-                    extension = new
-                    {
-                        src = extension.Src,
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
-                        sidebar = extension.Sidebar
-                    }
-                });
-            }
-            else
-            {
-                extensionContent = ConvertObjectToJsonStringContent(new
-                {
-                    extension = new
-                    {
-                        name = extension.Name,
-                        fieldTypes = extension.FieldTypes?.Select(c => new { type = c }),
-                        srcdoc = extension.SrcDoc,
-                        sidebar = extension.Sidebar
-                    }
-                });
-            }
-
-            return extensionContent;
-        }
-
         /// <summary>
         /// Creates a UiExtension in a <see cref="Space"/>.
         /// </summary>
@@ -2205,12 +2213,12 @@ namespace Contentful.Core
         public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions",
-                GetExtensionAsContent(extension), cancellationToken).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(extension), cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-
+            
             return jsonObject.ToObject<UiExtension>(Serializer);
         }
 
@@ -2235,7 +2243,7 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions/{extension.SystemProperties.Id}",
-                GetExtensionAsContent(extension), cancellationToken).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(extension), cancellationToken).ConfigureAwait(false);
 
             RemoveVersionHeader();
 
@@ -2555,11 +2563,14 @@ namespace Contentful.Core
             var resolver = new CamelCasePropertyNamesContractResolver();
             resolver.NamingStrategy.OverrideSpecifiedNames = false;
 
-            var serializedObject = JsonConvert.SerializeObject(ob, new JsonSerializerSettings
+            var settings = new JsonSerializerSettings
             {
-                ContractResolver = resolver
+                ContractResolver = resolver,
+            };
 
-            });
+            settings.Converters.Add(new ExtensionJsonConverter());
+
+            var serializedObject = JsonConvert.SerializeObject(ob, settings);
 
             return serializedObject;
         }

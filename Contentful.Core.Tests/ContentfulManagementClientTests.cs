@@ -1714,6 +1714,7 @@ namespace Contentful.Core.Tests
             Assert.Contains(@"""httpBasicPassword"":""Tepes""", contentSet);
             Assert.Contains(@"""Entry.create""", contentSet);
             Assert.Contains(@"""Asset.publish""", contentSet);
+            Assert.DoesNotContain(@"""transformation""", contentSet);
         }
 
         [Theory]
@@ -1780,6 +1781,67 @@ namespace Contentful.Core.Tests
             Assert.Contains(@"""httpBasicPassword"":""Caligula""", contentSet);
             Assert.Contains(@"""Asset.create""", contentSet);
             Assert.Contains(@"""Entry.*""", contentSet);
+            Assert.DoesNotContain(@"""transformation""", contentSet);
+        }
+
+        [Theory]
+        [InlineData("654")]
+        [InlineData("123")]
+        [InlineData("bill")]
+        public async Task CreateOrUpdateWebhookShouldCallCorrectUrlWithDataAndTransformation(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
+
+            var webhook = new Webhook()
+            {
+                SystemProperties = new SystemProperties()
+            };
+            webhook.SystemProperties.Id = id;
+            webhook.Name = "Canabanana";
+            webhook.Url = "http://www.imdb.com/name/nm0000549/";
+            webhook.HttpBasicPassword = "Roger";
+            webhook.HttpBasicUsername = "Wilco";
+            webhook.Topics = new List<string>()
+            {
+                "Asset.create",
+                "Entry.*"
+            };
+
+            var transform = new WebhookTransformation
+            {
+                Body = new { SomeStuff = "hello!" },
+                ContentType = TransformationContentTypes.ContentfulManagementPlusJsonAndCharset,
+                Method = HttpMethods.PUT
+            };
+
+            webhook.Transformation = transform;
+
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateWebhook(webhook);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/spaces/666/webhook_definitions/{id}", url);
+            Assert.Contains(@"""name"":""Canabanana""", contentSet);
+            Assert.Contains(@"""url"":""http://www.imdb.com/name/nm0000549/""", contentSet);
+            Assert.Contains(@"""httpBasicUsername"":""Wilco""", contentSet);
+            Assert.Contains(@"""httpBasicPassword"":""Roger""", contentSet);
+            Assert.Contains(@"""Asset.create""", contentSet);
+            Assert.Contains(@"""Entry.*""", contentSet);
+            Assert.Contains(@"""transformation""", contentSet);
+            Assert.Contains(@"""contentType""", contentSet);
+            Assert.Contains(@"""application/vnd.contentful.management.v1+json; charset=utf-8""", contentSet);
         }
 
         [Theory]
@@ -2583,6 +2645,50 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UpdateApiKeyShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ApiKeysCollection.json");
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            var headerSet = false;
+            _handler.VerificationBeforeSend = () =>
+            {
+                headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First() == "5";
+            };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateApiKey("some-id", "Key sharp2", "This is the desc again", 5);
+
+            //Assert
+            Assert.True(headerSet);
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/api_keys/some-id", url);
+            Assert.Equal(@"{""name"":""Key sharp2"",""description"":""This is the desc again""}", contentSet);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task UpdateApiKeyShouldThrowIfNoIdSet(string id)
+        {
+            //Arrange
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateApiKey(id, "Key sharp2", "This is the desc again", 5));
+
+            //Assert
+            Assert.Equal($"The id of the api key must be set.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Fact]
         public async Task UploadingFileShouldYieldCorrectResult()
         {
             //Arrange
@@ -2680,7 +2786,53 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleExtension.json");
             var ext = new UiExtension()
             {
+                SystemProperties = new SystemProperties
+                {
+                    Id = "1234"
+                },
                 Name = "trul"
+            };
+
+            //Act
+            var res = await _client.CreateExtension(ext);
+
+            //Assert
+            Assert.Equal("trul", res.Name);
+            Assert.Equal(2, res.FieldTypes.Count);
+            Assert.Collection(res.FieldTypes,
+               (t) => Assert.Equal("Symbol", t),
+               (t) => Assert.Equal("Text", t));
+            Assert.Equal("https://robertlinde.se", res.Src);
+        }
+
+        [Fact]
+        public async Task CreateExtensionWithParametersShouldReturnCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleExtension.json");
+            var ext = new UiExtension()
+            {
+                SystemProperties = new SystemProperties
+                {
+                    Id = "1234"
+                },
+                Name = "trul",
+                FieldTypes = new List<string> { "Symbol", "Text" }
+            };
+
+            ext.Parameters = new UiExtensionParametersLists
+            {
+                InstanceParameters = new List<UiExtensionParameters>
+                {
+                    new UiExtensionParameters
+                    {
+                        Id = "test",
+                        Name = "Test",
+                        Type = UiExtensionParameterTypes.Symbol,
+                        Description = "This is the description",
+                        Default = "nutty"
+                    }
+                }
             };
 
             //Act
