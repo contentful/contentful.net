@@ -216,5 +216,27 @@ namespace Contentful.Core.Tests.Images
             //Assert
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void SettingFormatToPngShouldNotAllowForJpgSpecificValues()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.SetFormat(ImageFormat.Png).SetJpgQuality(34).UseProgressiveJpg().Build();
+            //Assert
+            Assert.Equal("?fm=png", result);
+        }
+
+        [Fact]
+        public void SettingFormatToJpgShouldAllowForJpgSpecificValues()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.SetFormat(ImageFormat.Jpg).SetJpgQuality(34).UseProgressiveJpg().Build();
+            //Assert
+            Assert.Equal("?fm=jpg&q=34&fl=progressive", result);
+        }
     }
 }
