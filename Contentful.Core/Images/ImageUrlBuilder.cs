@@ -174,6 +174,7 @@ namespace Contentful.Core.Images
         /// <returns>The formatted querystring.</returns>
         public string Build()
         {
+            ClearImproperValues();
             var sb = new StringBuilder();
             var hasQuery = false;
 
@@ -187,6 +188,23 @@ namespace Contentful.Core.Images
             }
 
             return sb.ToString();
+        }
+
+        private void ClearImproperValues()
+        {
+            // If the querystrings contain both jpg specific values and a specific format, make sure the format is jpg, else remove the jpg specific values.
+            if (_querystringValues.Any(c => c.Key == "q" || c.Key == "fl") && _querystringValues.Any(c => c.Key == "fm")){
+                var format = _querystringValues.First(c => c.Key == "fm").Value;
+
+                if(format != "jpg")
+                {
+                    var quality = _querystringValues.FirstOrDefault(c => c.Key == "q");
+                    var progressive = _querystringValues.FirstOrDefault(c => c.Key == "fl" && c.Value == "progressive");
+
+                    _querystringValues.Remove(quality);
+                    _querystringValues.Remove(progressive);
+                }
+            }
         }
     }
 }
