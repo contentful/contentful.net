@@ -103,7 +103,7 @@ namespace Contentful.AspNetCore.TagHelpers
 
             var contentType = Asset.File.ContentType;
 
-            var isJpg = contentType?.ToLower() == "image/jpeg";
+            var isJpg = (contentType?.ToLower() == "image/jpeg" && Format == ImageFormat.Default) || Format == ImageFormat.Jpg;
 
             var queryBuilder = new ImageUrlBuilder();
 
