@@ -175,5 +175,75 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
             Assert.Equal("https://robertlinde.se", tagHelper.Url);
             Assert.Equal("200w", tagHelper.Size);
         }
+
+        [Fact]
+        public async Task JpgSpecificValuesShouldNotBeSetForNonJpgAsset()
+        {
+            //Arrange
+            var clientMock = new Mock<IContentfulClient>();
+            var tagHelper = new ContentfulImageTagHelper(clientMock.Object);
+            tagHelper.Asset = new Core.Models.Asset()
+            {
+                Description = "Banana",
+                File = new Core.Models.File()
+                {
+                    Url = "https://robertlinde.se",
+                    ContentType = "image/png"
+                }
+            };
+
+            tagHelper.JpgQuality = 45;
+            tagHelper.ProgressiveJpg = true;
+            tagHelper.Width = 50;
+
+            var context = new TagHelperContext(new TagHelperAttributeList(), new Dictionary<object, object>(), "test");
+            var output = new TagHelperOutput("img", new TagHelperAttributeList(), (b, c) => {
+                var tagHelperContent = new DefaultTagHelperContent();
+                tagHelperContent.SetContent(string.Empty);
+                return Task.FromResult<TagHelperContent>(tagHelperContent);
+            });
+
+            //Act
+            await tagHelper.ProcessAsync(context, output);
+
+            //Assert
+            Assert.Equal("https://robertlinde.se", tagHelper.Url);
+            Assert.Equal("https://robertlinde.se?w=50", output.Attributes["src"].Value);
+        }
+
+        [Fact]
+        public async Task JpgSpecificValuesShouldBeSetForJpgAsset()
+        {
+            //Arrange
+            var clientMock = new Mock<IContentfulClient>();
+            var tagHelper = new ContentfulImageTagHelper(clientMock.Object);
+            tagHelper.Asset = new Core.Models.Asset()
+            {
+                Description = "Banana",
+                File = new Core.Models.File()
+                {
+                    Url = "https://robertlinde.se",
+                    ContentType = "image/jpeg"
+                }
+            };
+
+            tagHelper.JpgQuality = 45;
+            tagHelper.ProgressiveJpg = true;
+            tagHelper.Width = 50;
+
+            var context = new TagHelperContext(new TagHelperAttributeList(), new Dictionary<object, object>(), "test");
+            var output = new TagHelperOutput("img", new TagHelperAttributeList(), (b, c) => {
+                var tagHelperContent = new DefaultTagHelperContent();
+                tagHelperContent.SetContent(string.Empty);
+                return Task.FromResult<TagHelperContent>(tagHelperContent);
+            });
+
+            //Act
+            await tagHelper.ProcessAsync(context, output);
+
+            //Assert
+            Assert.Equal("https://robertlinde.se", tagHelper.Url);
+            Assert.Equal("https://robertlinde.se?w=50&q=45&fl=progressive", output.Attributes["src"].Value);
+        }
     }
 }
