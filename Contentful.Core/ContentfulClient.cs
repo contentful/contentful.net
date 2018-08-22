@@ -249,7 +249,12 @@ namespace Contentful.Core
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
             var id = ((JValue) entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
-            
+
+            if (id == null)
+            {
+                id = ((JValue)entryToken.SelectToken("$.data.target.id"))?.Value?.ToString();
+            }
+
             if (id == null)
             {
                 //No id token present, not possible to resolve links. Probably because the sys property has been excluded with a select statement.
@@ -270,17 +275,10 @@ namespace Contentful.Core
             }
             
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
-
+            links.AddRange(entryToken.SelectTokens("$.fields..data.target"));
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {
-                var isEntryBlock = linkToken.Parent.Parent.Value<string>("type") == "link-entry-block";
-
-                if (isEntryBlock)
-                {
-                    //continue;
-                }
-
                 var propName = (linkToken.Parent.Parent.Ancestors().FirstOrDefault(a => a is JProperty) as JProperty)?.Name;
 
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
@@ -306,6 +304,11 @@ namespace Contentful.Core
                 }
 
                 var grandParent = (JObject)linkToken.Parent.Parent;
+
+                if((grandParent.Parent.Parent is JObject) && grandParent.Parent.Parent.Value<string>("nodeType") == "embedded-entry-block")
+                {
+                    grandParent = (JObject)grandParent.Parent.Parent;
+                }
 
                 if (replacementToken != null)
                 {

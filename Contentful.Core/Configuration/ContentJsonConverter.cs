@@ -43,7 +43,7 @@ namespace Contentful.Core.Configuration
             {
                 return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue)refId).Value.ToString());
             }
-            var type = jObject.Value<string>("type") ?? jObject.Value<JObject>("sys").Value<string>("type");
+            var type = jObject.Value<string>("nodeType") ?? jObject.Value<JObject>("sys").Value<string>("type");
             var serializationType = jObject.Value<string>("$type");
             switch (type)
             {
@@ -53,6 +53,8 @@ namespace Contentful.Core.Configuration
                     return jObject.ToObject<Mark>();
                 case "text":
                     return jObject.ToObject<Text>();
+                case "hyperlink":
+                    return jObject.ToObject<Hyperlink>(serializer);
                 case "Asset":
                     return jObject.ToObject<Asset>(serializer);
                 case "Entry":

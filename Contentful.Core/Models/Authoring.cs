@@ -8,17 +8,31 @@ namespace Contentful.Core.Models
 {
     public class Document
     {
-        public string Type { get; set; }
-        public string Category { get; set; }
+        public string NodeType { get; set; }
+        public string NodeClass { get; set; }
         public List<IContent> Content { get; set; }
     }
 
     public class Text : IContent
     {
-        public string Type { get; set; }
-        public string Category { get; set; }
+        public string NodeType { get; set; }
+        public string NodeClass { get; set; }
         public string Value { get; set; }
         public List<Mark> Marks { get; set; }
+    }
+
+    public class Hyperlink : IContent
+    {
+        public string NodeType { get; set; }
+        public string NodeClass { get; set; }
+        public HyperlinkData Data { get; set; }
+        public List<IContent> Content { get; set; }
+    }
+
+    public class HyperlinkData
+    {
+        public string Url { get; set; }
+        public string Title { get; set; }
     }
 
     public class Mark : IContent
@@ -28,16 +42,21 @@ namespace Contentful.Core.Models
 
     public class Paragraph : IContent
     {
-        public string Type { get; set; }
-        public string Category { get; set; }
+        public string NodeType { get; set; }
+        public string NodeClass { get; set; }
         public List<IContent> Content { get; set; }
     }
 
     public class Block : IContent
     {
-        public string Type { get; set; }
-        public string Category { get; set; }
-        public ReferenceProperties Sys { get; set; }
+        public string NodeType { get; set; }
+        public string NodeClass { get; set; }
+        public BlockData Data { get; set; }
+    }
+
+    public class BlockData
+    {
+        public ReferenceProperties Target { get; set; }
     }
 
     public interface IContent
@@ -133,15 +152,22 @@ namespace Contentful.Core.Models
             var text = content as Text;
             var sb = new StringBuilder();
 
-            foreach (var mark in text.Marks)
+            if (text.Marks != null)
             {
-                sb.Append($"<{MarkToHtmlTag(mark)}>");
+                foreach (var mark in text.Marks)
+                {
+                    sb.Append($"<{MarkToHtmlTag(mark)}>");
+                }
             }
+
             sb.Append(text.Value);
 
-            foreach (var mark in text.Marks)
+            if (text.Marks != null)
             {
-                sb.Append($"</{MarkToHtmlTag(mark)}>");
+                foreach (var mark in text.Marks)
+                {
+                    sb.Append($"</{MarkToHtmlTag(mark)}>");
+                }
             }
 
             return sb.ToString();
@@ -172,13 +198,48 @@ namespace Contentful.Core.Models
         {
             var asset = content as Asset;
             var sb = new StringBuilder();
-            if(asset.File?.ContentType?.ToLower() == "image/png")
+            if(asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
             {
                 sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
             }else
             {
                 sb.Append($"<a href=\"{asset.File.Url}\">{asset.Title}</a>");
             }
+
+            return sb.ToString();
+        }
+    }
+
+    public class HyperlinkContentRenderer : IContentRenderer
+    {
+        private readonly ContentRenderererCollection _renderererCollection;
+
+        public HyperlinkContentRenderer(ContentRenderererCollection contentRenderererCollection)
+        {
+            _renderererCollection = contentRenderererCollection;
+        }
+
+        public int Order { get; set; }
+
+        public bool SupportsContent(IContent content)
+        {
+            return content is Hyperlink;
+        }
+
+        public string Render(IContent content)
+        {
+            var link = content as Hyperlink;
+            var sb = new StringBuilder();
+
+            sb.Append($"<a href=\"{link.Data.Url}\" title=\"{link.Data.Title}\">");
+
+            foreach (var subContent in link.Content)
+            {
+                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append("</a>");
 
             return sb.ToString();
         }

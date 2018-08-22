@@ -40,25 +40,16 @@
         },
         "categoryDescription": "Shop for furniture, bedding, bath, vacuums, kitchen products, and more",
         "structure": {
-          "type": "document",
+          "nodeType": "document",
           "content": [
             {
-              "type": "link-entry-block",
-              "category": "block",
-              "sys": {
-                "link": "Link",
-                "linkType": "Entry",
-                "id": "651CQ8rLoIYCeY6G0QG22q"
-              }
-            },
-            {
-              "type": "paragraph",
-              "category": "block",
+              "nodeType": "paragraph",
+              "nodeClass": "block",
               "content": [
                 {
-                  "type": "text",
-                  "category": "text",
-                  "value": "This is editable",
+                  "nodeClass": "text",
+                  "nodeType": "text",
+                  "value": "This text is bold",
                   "marks": [
                     {
                       "type": "bold"
@@ -66,13 +57,67 @@
                   ]
                 },
                 {
-                  "type": "link-asset-block",
-                  "category": "block",
-                  "sys": {
-                    "link": "Link",
-                    "linkType": "Asset",
-                    "id": "10TkaLheGeQG6qQGqWYqUI"
-                  }
+                  "nodeClass": "text",
+                  "nodeType": "text",
+                  "value": " but this doesn't have any formatting. "
+                },
+                {
+                  "nodeClass": "text",
+                  "nodeType": "text",
+                  "value": "But if we ask you to "
+                },
+                {
+                  "nodeType": "hyperlink",
+                  "nodeClass": "inline",
+                  "data": {
+                    "url": "https://prosemirror.net/docs/guide/#doc",
+                    "title": "This page explains the inline schema well"
+                  },
+                  "content": [
+                    {
+                      "nodeClass": "text",
+                      "nodeType": "text",
+                      "value": "click here"
+                    }
+                  ]
+                },
+                {
+                  "nodeClass": "text",
+                  "nodeType": "text",
+                  "value": ", you will see that it's actually a quite simple concept."
+                }
+              ]
+            },
+            {
+              "nodeType": "paragraph",
+              "nodeClass": "block",
+              "content": [
+                {
+                  "nodeClass": "text",
+                  "nodeType": "text",
+                  "value": "Another cool thing is that you can insert an entry between paragraphs like the following: "
+                }
+              ]
+            },
+            {
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block",
+              "data": {
+                "target": {
+                  "type": "Link",
+                  "linkType": "Entry",
+                  "id": "651CQ8rLoIYCeY6G0QG22q"
+                }
+              }
+            },
+            {
+              "nodeType": "paragraph",
+              "nodeClass": "block",
+              "content": [
+                {
+                  "nodeClass": "text",
+                  "nodeType": "text",
+                  "value": "Cool, right?"
                 }
               ]
             }

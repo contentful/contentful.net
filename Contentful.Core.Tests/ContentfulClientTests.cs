@@ -1039,6 +1039,7 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new StructuredResolver();
             var collection = new ContentRenderererCollection();
             collection.AddRenderer(new ParagraphRenderer(collection));
+            collection.AddRenderer(new HyperlinkContentRenderer(collection));
             collection.AddRenderer(new TextRenderer());
             collection.AddRenderer(new AssetRenderer());
             collection.AddRenderer(new StructuredContentRenderer());
