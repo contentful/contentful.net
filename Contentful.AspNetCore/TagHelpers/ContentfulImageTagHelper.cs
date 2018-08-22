@@ -97,9 +97,13 @@ namespace Contentful.AspNetCore.TagHelpers
 
             if (string.IsNullOrEmpty(Url))
             {
-                var asset = await _client.GetAsset(AssetId, "");
-                Url = asset.File.Url;
+                Asset = await _client.GetAsset(AssetId, "");
+                Url = Asset.File.Url;
             }
+
+            var contentType = Asset.File.ContentType;
+
+            var isJpg = contentType?.ToLower() == "image/jpeg";
 
             var queryBuilder = new ImageUrlBuilder();
 
@@ -113,7 +117,7 @@ namespace Contentful.AspNetCore.TagHelpers
                 queryBuilder.SetHeight(Height);
             }
 
-            if (JpgQuality.HasValue)
+            if (JpgQuality.HasValue && isJpg)
             {
                 queryBuilder.SetJpgQuality(JpgQuality.Value);
             }
@@ -132,7 +136,7 @@ namespace Contentful.AspNetCore.TagHelpers
             queryBuilder.SetResizingBehaviour(ResizeBehaviour);
             queryBuilder.SetFormat(Format);
 
-            if (ProgressiveJpg)
+            if (ProgressiveJpg && isJpg)
             {
                 queryBuilder.UseProgressiveJpg();
             }
