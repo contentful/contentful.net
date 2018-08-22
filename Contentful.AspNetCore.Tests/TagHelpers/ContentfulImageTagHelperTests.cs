@@ -212,6 +212,41 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
         }
 
         [Fact]
+        public async Task JpgSpecificValuesShouldNotBeSetForNonJpgAssetWithFormat()
+        {
+            //Arrange
+            var clientMock = new Mock<IContentfulClient>();
+            var tagHelper = new ContentfulImageTagHelper(clientMock.Object);
+            tagHelper.Asset = new Core.Models.Asset()
+            {
+                Description = "Banana",
+                File = new Core.Models.File()
+                {
+                    Url = "https://robertlinde.se",
+                    ContentType = "image/jpeg"
+                }
+            };
+            tagHelper.Format = Core.Images.ImageFormat.Png;
+            tagHelper.JpgQuality = 45;
+            tagHelper.ProgressiveJpg = true;
+            tagHelper.Width = 50;
+
+            var context = new TagHelperContext(new TagHelperAttributeList(), new Dictionary<object, object>(), "test");
+            var output = new TagHelperOutput("img", new TagHelperAttributeList(), (b, c) => {
+                var tagHelperContent = new DefaultTagHelperContent();
+                tagHelperContent.SetContent(string.Empty);
+                return Task.FromResult<TagHelperContent>(tagHelperContent);
+            });
+
+            //Act
+            await tagHelper.ProcessAsync(context, output);
+
+            //Assert
+            Assert.Equal("https://robertlinde.se", tagHelper.Url);
+            Assert.Equal("https://robertlinde.se?w=50&fm=png", output.Attributes["src"].Value);
+        }
+
+        [Fact]
         public async Task JpgSpecificValuesShouldBeSetForJpgAsset()
         {
             //Arrange
@@ -244,6 +279,42 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
             //Assert
             Assert.Equal("https://robertlinde.se", tagHelper.Url);
             Assert.Equal("https://robertlinde.se?w=50&q=45&fl=progressive", output.Attributes["src"].Value);
+        }
+
+        [Fact]
+        public async Task JpgSpecificValuesShouldBeSetForJpgAssetWithFormat()
+        {
+            //Arrange
+            var clientMock = new Mock<IContentfulClient>();
+            var tagHelper = new ContentfulImageTagHelper(clientMock.Object);
+            tagHelper.Asset = new Core.Models.Asset()
+            {
+                Description = "Banana",
+                File = new Core.Models.File()
+                {
+                    Url = "https://robertlinde.se",
+                    ContentType = "image/png"
+                }
+            };
+
+            tagHelper.JpgQuality = 45;
+            tagHelper.ProgressiveJpg = true;
+            tagHelper.Format = Core.Images.ImageFormat.Jpg;
+            tagHelper.Width = 50;
+
+            var context = new TagHelperContext(new TagHelperAttributeList(), new Dictionary<object, object>(), "test");
+            var output = new TagHelperOutput("img", new TagHelperAttributeList(), (b, c) => {
+                var tagHelperContent = new DefaultTagHelperContent();
+                tagHelperContent.SetContent(string.Empty);
+                return Task.FromResult<TagHelperContent>(tagHelperContent);
+            });
+
+            //Act
+            await tagHelper.ProcessAsync(context, output);
+
+            //Assert
+            Assert.Equal("https://robertlinde.se", tagHelper.Url);
+            Assert.Equal("https://robertlinde.se?w=50&q=45&fm=jpg&fl=progressive", output.Attributes["src"].Value);
         }
     }
 }
