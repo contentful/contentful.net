@@ -275,7 +275,6 @@ namespace Contentful.Core
             }
             
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
-            links.AddRange(entryToken.SelectTokens("$.fields..data.target"));
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {

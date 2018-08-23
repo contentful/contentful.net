@@ -47,6 +47,14 @@ namespace Contentful.Core.Models
         public List<IContent> Content { get; set; }
     }
 
+    public class Heading : IContent
+    {
+        public string NodeType { get; set; }
+        public string NodeClass { get; set; }
+        public int HeadingSize { get; set; }
+        public List<IContent> Content { get; set; }
+    }
+
     public class Block : IContent
     {
         public string NodeType { get; set; }
@@ -138,6 +146,37 @@ namespace Contentful.Core.Models
         }
     }
 
+    public class HeadingRenderer : IContentRenderer
+    {
+        private readonly ContentRenderererCollection _renderererCollection;
+
+        public HeadingRenderer(ContentRenderererCollection renderererCollection)
+        {
+            _renderererCollection = renderererCollection;
+        }
+
+        public int Order { get; set; }
+        public bool SupportsContent(IContent content)
+        {
+            return content is Heading;
+        }
+        public string Render(IContent content)
+        {
+            var heading = content as Heading;
+            var sb = new StringBuilder();
+            sb.Append($"<h{heading.HeadingSize}>");
+
+            foreach (var subContent in heading.Content)
+            {
+                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append($"</h{heading.HeadingSize}>");
+            return sb.ToString();
+        }
+    }
+
     public class TextRenderer : IContentRenderer
     {
         public int Order { get; set; }
@@ -179,6 +218,10 @@ namespace Contentful.Core.Models
             {
                 case "bold":
                     return "strong";
+                case "underline":
+                    return "u";
+                case "italic":
+                    return "em";
             }
 
             return "span";

@@ -40,88 +40,273 @@
         },
         "categoryDescription": "Shop for furniture, bedding, bath, vacuums, kitchen products, and more",
         "structure": {
-          "nodeType": "document",
           "content": [
             {
-              "nodeType": "paragraph",
-              "nodeClass": "block",
+              "data": {},
               "content": [
                 {
-                  "nodeClass": "text",
+                  "marks": [],
+                  "value": "Some heading",
                   "nodeType": "text",
-                  "value": "This text is bold",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ]
-                },
-                {
-                  "nodeClass": "text",
-                  "nodeType": "text",
-                  "value": " but this doesn't have any formatting. "
-                },
-                {
-                  "nodeClass": "text",
-                  "nodeType": "text",
-                  "value": "But if we ask you to "
-                },
-                {
-                  "nodeType": "hyperlink",
-                  "nodeClass": "inline",
-                  "data": {
-                    "url": "https://prosemirror.net/docs/guide/#doc",
-                    "title": "This page explains the inline schema well"
-                  },
-                  "content": [
-                    {
-                      "nodeClass": "text",
-                      "nodeType": "text",
-                      "value": "click here"
-                    }
-                  ]
-                },
-                {
-                  "nodeClass": "text",
-                  "nodeType": "text",
-                  "value": ", you will see that it's actually a quite simple concept."
+                  "nodeClass": "text"
                 }
-              ]
+              ],
+              "nodeType": "heading-1",
+              "nodeClass": "block"
             },
             {
-              "nodeType": "paragraph",
-              "nodeClass": "block",
+              "data": {},
               "content": [
                 {
-                  "nodeClass": "text",
+                  "marks": [],
+                  "value": "",
                   "nodeType": "text",
-                  "value": "Another cool thing is that you can insert an entry between paragraphs like the following: "
+                  "nodeClass": "text"
                 }
-              ]
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
             },
             {
-              "nodeType": "embedded-entry-block",
-              "nodeClass": "block",
               "data": {
                 "target": {
-                  "type": "Link",
-                  "linkType": "Entry",
-                  "id": "651CQ8rLoIYCeY6G0QG22q"
+                  "sys": {
+                    "id": "49rofLvvxCOiIMIi6mk8ai",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
                 }
-              }
-            },
-            {
-              "nodeType": "paragraph",
-              "nodeClass": "block",
+              },
               "content": [
                 {
-                  "nodeClass": "text",
+                  "marks": [],
+                  "value": "",
                   "nodeType": "text",
-                  "value": "Cool, right?"
+                  "nodeClass": "text"
                 }
-              ]
+              ],
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some subheading",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "heading-2",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "bold",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some bold",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "italic",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some italics",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "underline",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some underline",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "5ZF9Q4K6iWSYIU2OUs0UaQ",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some raw content",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "An unpublished embed:",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "q2hGXkd5tICym64AcgeKK",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some more content",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
             }
-          ]
+          ],
+          "nodeType": "document",
+          "nodeClass": "document"
         }
       }
     },

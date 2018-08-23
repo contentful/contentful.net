@@ -45,6 +45,18 @@ namespace Contentful.Core.Configuration
             }
             var type = jObject.Value<string>("nodeType") ?? jObject.Value<JObject>("sys").Value<string>("type");
             var serializationType = jObject.Value<string>("$type");
+
+            if (type.StartsWith("heading"))
+            {
+                var sizeString = type.Split("-".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[1];
+                var size = 1;
+                int.TryParse(sizeString, out size);
+
+                var heading = jObject.ToObject<Heading>(serializer);
+                heading.HeadingSize = size;
+                return heading;
+            }
+
             switch (type)
             {
                 case "paragraph":

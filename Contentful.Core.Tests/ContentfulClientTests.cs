@@ -1041,6 +1041,7 @@ namespace Contentful.Core.Tests
             collection.AddRenderer(new ParagraphRenderer(collection));
             collection.AddRenderer(new HyperlinkContentRenderer(collection));
             collection.AddRenderer(new TextRenderer());
+            collection.AddRenderer(new HeadingRenderer(collection));
             collection.AddRenderer(new AssetRenderer());
             collection.AddRenderer(new StructuredContentRenderer());
             collection.AddRenderer(new NullContentRenderer());
