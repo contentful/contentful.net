@@ -101,7 +101,12 @@ namespace Contentful.AspNetCore.TagHelpers
                 Url = Asset.File.Url;
             }
 
-            var contentType = Asset.File.ContentType;
+            var contentType = Asset?.File?.ContentType;
+
+            if(contentType == null && !string.IsNullOrEmpty(Url))
+            {
+                contentType = Url.ToLower().EndsWith(".jpg") || Url.ToLower().EndsWith(".jpeg") ? "image/jpeg" : "";
+            }
 
             var isJpg = (contentType?.ToLower() == "image/jpeg" && Format == ImageFormat.Default) || Format == ImageFormat.Jpg;
 
