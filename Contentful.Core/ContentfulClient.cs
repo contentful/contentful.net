@@ -252,7 +252,7 @@ namespace Contentful.Core
 
             if (id == null)
             {
-                id = ((JValue)entryToken.SelectToken("$.data.target.id"))?.Value?.ToString();
+                id = ((JValue)entryToken.SelectToken("$.data.target.sys.id"))?.Value?.ToString();
             }
 
             if (id == null)
@@ -304,9 +304,9 @@ namespace Contentful.Core
 
                 var grandParent = (JObject)linkToken.Parent.Parent;
 
-                if((grandParent.Parent.Parent is JObject) && grandParent.Parent.Parent.Value<string>("nodeType") == "embedded-entry-block")
+                if((grandParent.Parent.Parent.Parent.Parent is JObject) && grandParent.Parent.Parent.Parent.Parent.Value<string>("nodeType") == "embedded-entry-block")
                 {
-                    grandParent = (JObject)grandParent.Parent.Parent;
+                    grandParent = (JObject)grandParent.Parent.Parent.Parent.Parent;
                 }
 
                 if (replacementToken != null)

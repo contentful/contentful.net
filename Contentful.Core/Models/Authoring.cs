@@ -76,12 +76,20 @@ namespace Contentful.Core.Models
     {
         private readonly ContentRenderererCollection _contentRenderererCollection;
 
-        public HtmlRenderer(ContentRenderererCollection contentRenderererCollection)
+        public HtmlRenderer()
         {
-            _contentRenderererCollection = contentRenderererCollection;
+            _contentRenderererCollection = new ContentRenderererCollection();
+            _contentRenderererCollection.AddRenderers(new List<IContentRenderer> {
+                new ParagraphRenderer(_contentRenderererCollection),
+                new HyperlinkContentRenderer(_contentRenderererCollection),
+                new TextRenderer(),
+                new HeadingRenderer(_contentRenderererCollection),
+                new AssetRenderer(),
+                new NullContentRenderer()
+            });
         }
 
-        public  string ToHtml(Document doc)
+        public string ToHtml(Document doc)
         {
             var sb = new StringBuilder();
             foreach (var content in doc.Content)
@@ -92,6 +100,11 @@ namespace Contentful.Core.Models
 
             return sb.ToString();
         }
+
+        public void AddRenderer(IContentRenderer renderer)
+        {
+            _contentRenderererCollection.AddRenderer(renderer);
+        }
     }
 
     public class ContentRenderererCollection
@@ -100,6 +113,11 @@ namespace Contentful.Core.Models
         public void AddRenderer(IContentRenderer renderer)
         {
             _renderers.Add(renderer);
+        }
+
+        public void AddRenderers(IEnumerable<IContentRenderer> collection)
+        {
+            _renderers.AddRange(collection);
         }
 
         public IContentRenderer GetRendererForContent(IContent content)
@@ -124,7 +142,7 @@ namespace Contentful.Core.Models
             _renderererCollection = renderererCollection;
         }
 
-        public int Order { get; set; }
+        public int Order { get; set; } = 100;
         public bool SupportsContent(IContent content)
         {
             return content is Paragraph;
@@ -155,7 +173,7 @@ namespace Contentful.Core.Models
             _renderererCollection = renderererCollection;
         }
 
-        public int Order { get; set; }
+        public int Order { get; set; } = 100;
         public bool SupportsContent(IContent content)
         {
             return content is Heading;
@@ -179,7 +197,7 @@ namespace Contentful.Core.Models
 
     public class TextRenderer : IContentRenderer
     {
-        public int Order { get; set; }
+        public int Order { get; set; } = 100;
 
         public bool SupportsContent(IContent content)
         {
@@ -230,7 +248,7 @@ namespace Contentful.Core.Models
 
     public class AssetRenderer : IContentRenderer
     {
-        public int Order { get; set; }
+        public int Order { get; set; } = 100;
 
         public bool SupportsContent(IContent content)
         {
@@ -262,7 +280,7 @@ namespace Contentful.Core.Models
             _renderererCollection = contentRenderererCollection;
         }
 
-        public int Order { get; set; }
+        public int Order { get; set; } = 100;
 
         public bool SupportsContent(IContent content)
         {
@@ -290,7 +308,7 @@ namespace Contentful.Core.Models
 
     public class NullContentRenderer : IContentRenderer
     {
-        public int Order { get; set; }
+        public int Order { get; set; } = 100;
         public string Render(IContent content)
         {
             return "";

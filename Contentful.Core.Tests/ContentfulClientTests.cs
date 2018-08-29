@@ -11,6 +11,7 @@ using Contentful.Core.Search;
 using System.Threading;
 using System.Reflection;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Contentful.Core.Tests
 {
@@ -1037,16 +1038,9 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
             _client.ContentTypeResolver = new StructuredResolver();
-            var collection = new ContentRenderererCollection();
-            collection.AddRenderer(new ParagraphRenderer(collection));
-            collection.AddRenderer(new HyperlinkContentRenderer(collection));
-            collection.AddRenderer(new TextRenderer());
-            collection.AddRenderer(new HeadingRenderer(collection));
-            collection.AddRenderer(new AssetRenderer());
-            collection.AddRenderer(new StructuredContentRenderer());
-            collection.AddRenderer(new NullContentRenderer());
 
-            var htmlrenderer = new HtmlRenderer(collection);
+            var htmlrenderer = new HtmlRenderer();
+            htmlrenderer.AddRenderer(new StructuredContentRenderer() { Order = 10 });
             //Act
             var res = await _client.GetEntries<StructuredModel>();
             var html = htmlrenderer.ToHtml(res.First().Structure);
@@ -1085,7 +1079,7 @@ namespace Contentful.Core.Tests
 
                 sb.Append("<div>");
 
-                sb.Append($"<h2>{model.Title}</h2>");
+                sb.Append($"<h2>{model.Body}</h2>");
 
                 sb.Append("</div>");
 

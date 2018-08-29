@@ -84,6 +84,7 @@ namespace Contentful.Core.Tests
         public SystemProperties Sys { get; set; }
         public string Title { get; set; }
         public Document Structure { get; set; }
+        public string Body { get; set; }
     }
 
     public class TestCategory : IMarker, IContent
@@ -253,7 +254,7 @@ namespace Contentful.Core.Tests
     {
         public Dictionary<string, Type> _types = new Dictionary<string, Type>()
         {
-            { "sFzTZbSuM8coEwygeUYes", typeof(StructuredModel) }
+            { "embedded", typeof(StructuredModel) }
         };
 
         public Type Resolve(string contentTypeId)
