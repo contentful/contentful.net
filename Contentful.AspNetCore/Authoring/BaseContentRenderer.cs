@@ -21,8 +21,17 @@ namespace Contentful.AspNetCore.Authoring
     /// </summary>
     public abstract class RazorContentRenderer : IContentRenderer
     {
+        /// <summary>
+        /// The razor view engine used to locate the view.
+        /// </summary>
         protected readonly IRazorViewEngine _razorViewEngine;
+        /// <summary>
+        /// The tempdata provider used in the view context of the view.
+        /// </summary>
         protected readonly ITempDataProvider _tempDataProvider;
+        /// <summary>
+        /// The service provider used to create an http context.
+        /// </summary>
         protected readonly IServiceProvider _serviceProvider;
 
         /// <summary>

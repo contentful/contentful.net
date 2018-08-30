@@ -243,6 +243,11 @@ namespace Contentful.Core.Models
             return content is Text;
         }
 
+        /// <summary>
+        /// Renders the content to a string.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The content as a string.</returns>
         public string Render(IContent content)
         {
             var text = content as Text;
@@ -269,11 +274,6 @@ namespace Contentful.Core.Models
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Renders the content to a string.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The textual string.</returns>
         private string MarkToHtmlTag(Mark mark)
         {
             switch (mark.Type)
@@ -342,9 +342,9 @@ namespace Contentful.Core.Models
         /// Initializes a new HyperlinkContentRenderer.
         /// </summary>
         /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public HyperlinkContentRenderer(ContentRenderererCollection contentRenderererCollection)
+        public HyperlinkContentRenderer(ContentRenderererCollection renderererCollection)
         {
-            _renderererCollection = contentRenderererCollection;
+            _renderererCollection = renderererCollection;
         }
 
         /// <summary>
