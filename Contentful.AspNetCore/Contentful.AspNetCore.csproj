@@ -3,7 +3,7 @@
     <Description>Official .NET SDK for the Contentful Content Delivery and Management API for ASP.NET core.</Description>
     <PackageId>contentful.aspnetcore</PackageId>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>3.4.0-beta9</VersionPrefix>
+    <VersionPrefix>3.4.0-beta3</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
@@ -14,7 +14,7 @@
     <PackageLicenseUrl>https://github.com/contentful/contentful.net/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/contentful/contentful.net</RepositoryUrl>
-    <Version>3.4.0-beta9</Version>
+    <Version>3.4.0-beta3</Version>
     <AssemblyVersion>3.4.0.0</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

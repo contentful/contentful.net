@@ -4,7 +4,7 @@
     <PackageId>contentful.csharp</PackageId>
     <AssemblyTitle>contentful.net</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>3.4.0-beta2</VersionPrefix>
+    <VersionPrefix>3.4.0-beta3</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
@@ -20,7 +20,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <AssemblyVersion>3.4.0.0</AssemblyVersion>
     <FileVersion>3.4.0.0</FileVersion>
-    <Version>3.4.0-beta2</Version>
+    <Version>3.4.0-beta3</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
