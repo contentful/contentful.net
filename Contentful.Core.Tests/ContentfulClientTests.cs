@@ -1052,6 +1052,26 @@ namespace Contentful.Core.Tests
             Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
         }
 
+        [Fact]
+        public async Task TurningStructuredContentIntoHtmlShouldYieldCorrectResultWithSelectiveResolving()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
+            _client.ContentTypeResolver = new StructuredResolver();
+            _client.ResolveEntriesSelectively = true;
+            var htmlrenderer = new HtmlRenderer();
+            htmlrenderer.AddRenderer(new StructuredContentRenderer() { Order = 10 });
+            //Act
+            var res = await _client.GetEntries<StructuredModel>();
+            var html = htmlrenderer.ToHtml(res.First().Structure);
+            //Assert
+            Assert.Contains("<h1>Some heading</h1>", html);
+            Assert.Contains("<h2>Some subheading</h2>", html);
+            Assert.Contains("<div><h2>Embedded 1</h2></div>", html);
+            Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
+            Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
+        }
+
         private ContentfulClient GetClientWithEnvironment(string env = "special")
         {
             var httpClient = new HttpClient(_handler);
