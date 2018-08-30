@@ -7,13 +7,23 @@ using System.Threading.Tasks;
 
 namespace Contentful.AspNetCore.TagHelpers
 {
+    /// <summary>
+    /// Taghelper that renders a structured authoring field.
+    /// </summary>
     [HtmlTargetElement("contentful-structured-text", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class ContentfulStructuredTextTagHelper : TagHelper
     {
         private HtmlRenderer _htmlRenderer;
 
+        /// <summary>
+        /// The document to render.
+        /// </summary>
         public Document Document { get; set; }
 
+        /// <summary>
+        /// Creates a new instance of ContentfulStructuredTextTagHelper.
+        /// </summary>
+        /// <param name="renderer">The HtmlRenderer used to render the document.</param>
         public ContentfulStructuredTextTagHelper(HtmlRenderer renderer)
         {
             _htmlRenderer = renderer;

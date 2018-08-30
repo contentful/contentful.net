@@ -1028,8 +1028,8 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<StructuredModel>();
 
             //Assert
-            Assert.Equal(8, res.Count());
-            Assert.Equal("Home & Kitchen", res.First().Title);
+            Assert.Single(res);
+            Assert.NotNull(res.First().Structure);
         }
 
         [Fact]
@@ -1045,7 +1045,11 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<StructuredModel>();
             var html = htmlrenderer.ToHtml(res.First().Structure);
             //Assert
-            Assert.Equal("<div>", html);
+            Assert.Contains("<h1>Some heading</h1>", html); 
+            Assert.Contains("<h2>Some subheading</h2>", html);
+            Assert.Contains("<div><h2>Embedded 1</h2></div>", html);
+            Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
+            Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
         }
 
         private ContentfulClient GetClientWithEnvironment(string env = "special")
