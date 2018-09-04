@@ -23,7 +23,11 @@ namespace Contentful.Core.Models
                 new ParagraphRenderer(_contentRenderererCollection),
                 new HyperlinkContentRenderer(_contentRenderererCollection),
                 new TextRenderer(),
+                new HorizontalRulerContentRenderer(),
                 new HeadingRenderer(_contentRenderererCollection),
+                new ListContentRenderer(_contentRenderererCollection),
+                new ListItemContentRenderer(_contentRenderererCollection),
+                new QuoteContentRenderer(_contentRenderererCollection),
                 new AssetRenderer(),
                 new NullContentRenderer()
             });
@@ -284,6 +288,8 @@ namespace Contentful.Core.Models
                     return "u";
                 case "italic":
                     return "em";
+                case "code":
+                    return "code";
             }
 
             return "span";
@@ -414,6 +420,210 @@ namespace Contentful.Core.Models
         public bool SupportsContent(IContent content)
         {
             return true;
+        }
+    }
+
+    /// <summary>
+    /// A renderer for a list.
+    /// </summary>
+    public class ListContentRenderer : IContentRenderer
+    {
+        private readonly ContentRenderererCollection _renderererCollection;
+
+        /// <summary>
+        /// Initializes a new ListContentRenderer.
+        /// </summary>
+        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
+        public ListContentRenderer(ContentRenderererCollection renderererCollection)
+        {
+            _renderererCollection = renderererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Renders the content to a string.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The list as a ul or ol HTML string.</returns>
+        public string Render(IContent content)
+        {
+            var list = content as List;
+            var listTagType = "ul";
+            if(list.NodeType == "ordered-list")
+            {
+                listTagType = "ol";
+            }
+
+            var sb = new StringBuilder();
+
+            sb.Append($"<{listTagType}>");
+
+            foreach (var subContent in list.Content)
+            {
+                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append($"</{listTagType}>");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a list, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is List;
+        }
+    }
+
+    /// <summary>
+    /// A renderer for a list item.
+    /// </summary>
+    public class ListItemContentRenderer : IContentRenderer
+    {
+        private readonly ContentRenderererCollection _renderererCollection;
+
+        /// <summary>
+        /// Initializes a new ListItemContentRenderer.
+        /// </summary>
+        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
+        public ListItemContentRenderer(ContentRenderererCollection renderererCollection)
+        {
+            _renderererCollection = renderererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Renders the content to a string.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The list as an li HTML string.</returns>
+        public string Render(IContent content)
+        {
+            var listItem = content as ListItem;
+
+            var sb = new StringBuilder();
+
+            sb.Append($"<li>");
+
+            foreach (var subContent in listItem.Content)
+            {
+                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append($"</li>");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a list, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is ListItem;
+        }
+    }
+
+    /// <summary>
+    /// A renderer for a quote.
+    /// </summary>
+    public class QuoteContentRenderer : IContentRenderer
+    {
+        private readonly ContentRenderererCollection _renderererCollection;
+
+        /// <summary>
+        /// Initializes a new QuoteContentRenderer.
+        /// </summary>
+        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
+        public QuoteContentRenderer(ContentRenderererCollection renderererCollection)
+        {
+            _renderererCollection = renderererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Renders the content to a string.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The list as a quote HTML string.</returns>
+        public string Render(IContent content)
+        {
+            var quote = content as Quote;
+
+            var sb = new StringBuilder();
+
+            sb.Append($"<blockquote>");
+
+            foreach (var subContent in quote.Content)
+            {
+                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append($"</blockquote>");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a list, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is Quote;
+        }
+    }
+
+    /// <summary>
+    /// A content renderer that renders a horizontal ruler.
+    /// </summary>
+    public class HorizontalRulerContentRenderer : IContentRenderer
+    {
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Renders the content to a string.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>An horizontal ruler HTML tag.</returns>
+        public string Render(IContent content)
+        {
+            return "<hr>";
+        }
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a horizontal ruler, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is HorizontalRuler;
         }
     }
 }

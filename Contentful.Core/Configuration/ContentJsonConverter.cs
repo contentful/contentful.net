@@ -69,6 +69,15 @@ namespace Contentful.Core.Configuration
                     return jObject.ToObject<Hyperlink>(serializer);
                 case "Asset":
                     return jObject.ToObject<Asset>(serializer);
+                case "quote":
+                    return jObject.ToObject<Quote>(serializer);
+                case "ordered-list":
+                case "unordered-list":
+                    return jObject.ToObject<List>(serializer);
+                case "list-item":
+                    return jObject.ToObject<ListItem>(serializer);
+                case "hr":
+                    return jObject.ToObject<HorizontalRuler>();
                 case "Entry":
                     if (string.IsNullOrEmpty(serializationType))
                     {

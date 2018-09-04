@@ -1049,6 +1049,10 @@ namespace Contentful.Core.Tests
             Assert.Contains("<h2>Some subheading</h2>", html);
             Assert.Contains("<div><h2>Embedded 1</h2></div>", html);
             Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
+            Assert.Contains("<ul><li><p>Ul list</p></li>", html);
+            Assert.Contains("<ol><li><p> Ol list</p></li>", html);
+            Assert.Contains("<blockquote>Block quote with some stuff and things.</blockquote>", html);
+            Assert.Contains("<hr>", html);
             Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
         }
 

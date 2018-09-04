@@ -185,6 +185,85 @@ namespace Contentful.Core.Models
     }
 
     /// <summary>
+    /// Represents a list content node.
+    /// </summary>
+    public class List : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The class of the node.
+        /// </summary>
+        public string NodeClass { get; set; }
+
+        /// <summary>
+        /// The list of content this paragraph contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a list item content node.
+    /// </summary>
+    public class ListItem : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The class of the node.
+        /// </summary>
+        public string NodeClass { get; set; }
+
+        /// <summary>
+        /// The list of content this paragraph contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a quote content node.
+    /// </summary>
+    public class Quote : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The class of the node.
+        /// </summary>
+        public string NodeClass { get; set; }
+
+        /// <summary>
+        /// The list of content this paragraph contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a horizontal ruler content node.
+    /// </summary>
+    public class HorizontalRuler : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The class of the node.
+        /// </summary>
+        public string NodeClass { get; set; }
+    }
+
+    /// <summary>
     /// Interface that marks a class as a possible part of a content tree.
     /// </summary>
     public interface IContent
