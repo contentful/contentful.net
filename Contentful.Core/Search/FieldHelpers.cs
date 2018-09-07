@@ -1,4 +1,5 @@
-﻿using Contentful.Core.Models;
+﻿using Contentful.Core.Configuration.Attributes;
+using Contentful.Core.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,11 @@ namespace Contentful.Core.Search
                 }
                 else
                 {
+                    if(memberList.LastOrDefault() != "sys" && member.Member.CustomAttributes.Any(c => c.AttributeType == typeof(QueryFieldAttribute)))
+                    {
+                        memberList.Add("fields");
+                    }
+
                     if (member.Member.CustomAttributes.Any(c => c.AttributeType == typeof(JsonPropertyAttribute)))
                     {
                         var attributeData = member.Member.CustomAttributes.First(c => c.AttributeType == typeof(JsonPropertyAttribute));
