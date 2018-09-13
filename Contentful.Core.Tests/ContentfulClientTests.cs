@@ -1041,6 +1041,7 @@ namespace Contentful.Core.Tests
 
             var htmlrenderer = new HtmlRenderer();
             htmlrenderer.AddRenderer(new StructuredContentRenderer() { Order = 10 });
+            htmlrenderer.AddRenderer(new StructuredContentRendererLinks() { Order = 10 });
             //Act
             var res = await _client.GetEntries<StructuredModel>();
             var html = htmlrenderer.ToHtml(res.First().Structure);
@@ -1053,6 +1054,7 @@ namespace Contentful.Core.Tests
             Assert.Contains("<ol><li><p> Ol list</p></li>", html);
             Assert.Contains("<blockquote>Block quote with some stuff and things.</blockquote>", html);
             Assert.Contains("<hr>", html);
+            Assert.Contains("<a href=\"balooba\">Embedded 1</a>", html);
             Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
         }
 
@@ -1096,12 +1098,12 @@ namespace Contentful.Core.Tests
 
             public bool SupportsContent(IContent content)
             {
-                return content is StructuredModel;
+                return content is EntryHyperlink && (content as EntryHyperlink).Data.Target is StructuredModel && (content as EntryHyperlink).NodeType == "embedded-entry-block";
             } 
 
             public string Render(IContent content)
             {
-                var model = content as StructuredModel;
+                var model = (content as EntryHyperlink).Data.Target as StructuredModel;
 
                 var sb = new StringBuilder();
 
@@ -1110,6 +1112,30 @@ namespace Contentful.Core.Tests
                 sb.Append($"<h2>{model.Body}</h2>");
 
                 sb.Append("</div>");
+
+                return sb.ToString();
+            }
+        }
+
+        public class StructuredContentRendererLinks : IContentRenderer
+        {
+            public int Order { get; set; }
+
+            public bool SupportsContent(IContent content)
+            {
+                return content is EntryHyperlink && 
+                    (content as EntryHyperlink).Data.Target is StructuredModel && 
+                    (content as EntryHyperlink).NodeType == "entry-hyperlink";
+            }
+
+            public string Render(IContent content)
+            {
+                var link = (content as EntryHyperlink);
+                var model = (content as EntryHyperlink).Data.Target as StructuredModel;
+
+                var sb = new StringBuilder();
+
+                sb.Append($"<a href=\"{(link.Content.FirstOrDefault() as Text).Value}\">{model.Body}</a>");
 
                 return sb.ToString();
             }

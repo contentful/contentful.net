@@ -522,6 +522,27 @@
               ],
               "nodeType": "paragraph",
               "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "49rofLvvxCOiIMIi6mk8ai",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "balooba",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "entry-hyperlink",
+              "nodeClass": "inline"
             }
           ],
           "nodeType": "document",

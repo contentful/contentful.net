@@ -304,11 +304,6 @@ namespace Contentful.Core
 
                 var grandParent = (JObject)linkToken.Parent.Parent;
 
-                if((grandParent.Parent.Parent.Parent.Parent is JObject) && grandParent.Parent.Parent.Parent.Parent.Value<string>("nodeType") == "embedded-entry-block")
-                {
-                    grandParent = (JObject)grandParent.Parent.Parent.Parent.Parent;
-                }
-
                 if (replacementToken != null)
                 {
                     grandParent.RemoveAll();

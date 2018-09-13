@@ -37,14 +37,19 @@ namespace Contentful.Core.Configuration
             if (reader.TokenType == JsonToken.Null) {
                 return null;
             }
-
+            
             var jObject = JObject.Load(reader);
             if (jObject.TryGetValue("$ref", out var refId))
             {
                 return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue)refId).Value.ToString());
             }
-            var type = jObject.Value<string>("nodeType") ?? jObject.Value<JObject>("sys").Value<string>("type");
+            var type = jObject.Value<string>("nodeType");
             var serializationType = jObject.Value<string>("$type");
+            if (!string.IsNullOrEmpty(serializationType))
+            {
+                var typeinfo = Type.GetType(serializationType);
+                return jObject.ToObject(typeinfo, serializer);
+            }
 
             if (type.StartsWith("heading"))
             {
@@ -78,18 +83,9 @@ namespace Contentful.Core.Configuration
                     return jObject.ToObject<ListItem>(serializer);
                 case "hr":
                     return jObject.ToObject<HorizontalRuler>();
-                case "Entry":
-                    if (string.IsNullOrEmpty(serializationType))
-                    {
-                        return jObject.ToObject<Block>();
-                    }
-                    var typeinfo = Type.GetType(serializationType);
-                    if(typeof(IContent).IsAssignableFrom(typeinfo) == false)
-                    {
-                        // The type does not implement IContent and will throw a deserialization exception.
-                        throw new JsonSerializationException($"The type {typeinfo.Name} does not implement IContent. This is required if a type is used in a structured content field.");
-                    }
-                    return jObject.ToObject(typeinfo);
+                case "entry-hyperlink":
+                case "embedded-entry-block":
+                    return jObject.ToObject<EntryHyperlink>(serializer);
                 default:
                     break;
             }

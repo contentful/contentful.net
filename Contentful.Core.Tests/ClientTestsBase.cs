@@ -1,4 +1,5 @@
 ﻿using Contentful.Core.Configuration;
+using Contentful.Core.Configuration.Attributes;
 using Contentful.Core.Models;
 using Newtonsoft.Json;
 using System;
@@ -131,6 +132,8 @@ namespace Contentful.Core.Tests
 
         public Asset ProfilePhoto { get; set; }
         public List<TestModelWithIncludes> CreatedEntries { get; set; }
+
+        [QueryField]
         public TestNested Test { get; set; }
     }
 
@@ -159,9 +162,12 @@ namespace Contentful.Core.Tests
 
     public class TestNested : IMarker
     {
+        public SystemProperties Sys { get; set; }
         public string Field1 { get; set; }
         public Asset Field4 { get; set; }
         public string NewField { get; set; }
+        [QueryField]
+        public Category Cat { get; set; }
     }
 
     public class ContentfulEvent : IMarker

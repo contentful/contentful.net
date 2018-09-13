@@ -264,6 +264,80 @@ namespace Contentful.Core.Models
     }
 
     /// <summary>
+    /// Represents an hyperlink to an asset.
+    /// </summary>
+    public class AssetHyperlink : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The class of the node.
+        /// </summary>
+        public string NodeClass { get; set; }
+
+        /// <summary>
+        /// The list of content this asset contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+
+        /// <summary>
+        /// The data of the asset hyperlink node.
+        /// </summary>
+        public AssetHyperlinkData Data { get; set; }
+    }
+
+    /// <summary>
+    /// Represents the data of the asset hyperlink.
+    /// </summary>
+    public class AssetHyperlinkData
+    {
+        /// <summary>
+        /// The asset this hyperlink targets
+        /// </summary>
+        public Asset Target { get; set; }
+    }
+
+    /// <summary>
+    /// Represents an hyperlink to an entry.
+    /// </summary>
+    public class EntryHyperlink : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The class of the node.
+        /// </summary>
+        public string NodeClass { get; set; }
+
+        /// <summary>
+        /// The list of content this asset contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+
+        /// <summary>
+        /// The data of the entry hyperlink node.
+        /// </summary>
+        public EntryHyperlinkData Data { get; set; }
+    }
+
+    /// <summary>
+    /// Represents the data of the entry hyperlink.
+    /// </summary>
+    public class EntryHyperlinkData
+    {
+        /// <summary>
+        /// The entry this hyperlink targets
+        /// </summary>
+        public IContent Target { get; set; }
+    }
+
+    /// <summary>
     /// Interface that marks a class as a possible part of a content tree.
     /// </summary>
     public interface IContent

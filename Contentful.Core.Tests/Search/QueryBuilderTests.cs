@@ -550,5 +550,44 @@ namespace Contentful.Core.Tests.Search
             //Assert
             Assert.Equal("?links_to_asset=some-id", result);
         }
+
+        [Fact]
+        public void FieldEqualsForSubreferenceFieldShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.Test.Field1, "something").Build();
+
+            //Assert
+            Assert.Equal("?fields.test.fields.field1=something", result);
+        }
+
+        [Fact]
+        public void FieldEqualsForSubreferenceInMultipleLevelsFieldShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.Test.Cat.Title, "bur").Build();
+
+            //Assert
+            Assert.Equal("?fields.test.fields.cat.fields.title=bur", result);
+        }
+
+        [Fact]
+        public void FieldEqualsForSubreferenceFieldAndContentTypeShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<Author>();
+
+            //Act
+            var result = builder.FieldEquals(c => c.Test.Sys.ContentType.SystemProperties.Id, "123").FieldEquals(c => c.Test.Field1, "something").Build();
+
+            //Assert
+            Assert.Equal("?fields.test.sys.contentType.sys.id=123&fields.test.fields.field1=something", result);
+        }
     }
 }
