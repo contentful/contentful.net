@@ -303,7 +303,7 @@ namespace Contentful.Core.Models
     /// <summary>
     /// Represents an hyperlink to an entry.
     /// </summary>
-    public class EntryHyperlink : IContent
+    public class EntryStructure : IContent
     {
         /// <summary>
         /// The type of node.
@@ -323,13 +323,13 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The data of the entry hyperlink node.
         /// </summary>
-        public EntryHyperlinkData Data { get; set; }
+        public EntryStructureData Data { get; set; }
     }
 
     /// <summary>
     /// Represents the data of the entry hyperlink.
     /// </summary>
-    public class EntryHyperlinkData
+    public class EntryStructureData
     {
         /// <summary>
         /// The entry this hyperlink targets

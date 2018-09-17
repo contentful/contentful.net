@@ -1098,12 +1098,12 @@ namespace Contentful.Core.Tests
 
             public bool SupportsContent(IContent content)
             {
-                return content is EntryHyperlink && (content as EntryHyperlink).Data.Target is StructuredModel && (content as EntryHyperlink).NodeType == "embedded-entry-block";
+                return content is EntryStructure && (content as EntryStructure).Data.Target is StructuredModel && (content as EntryStructure).NodeType == "embedded-entry-block";
             } 
 
             public string Render(IContent content)
             {
-                var model = (content as EntryHyperlink).Data.Target as StructuredModel;
+                var model = (content as EntryStructure).Data.Target as StructuredModel;
 
                 var sb = new StringBuilder();
 
@@ -1123,15 +1123,15 @@ namespace Contentful.Core.Tests
 
             public bool SupportsContent(IContent content)
             {
-                return content is EntryHyperlink && 
-                    (content as EntryHyperlink).Data.Target is StructuredModel && 
-                    (content as EntryHyperlink).NodeType == "entry-hyperlink";
+                return content is EntryStructure && 
+                    (content as EntryStructure).Data.Target is StructuredModel && 
+                    (content as EntryStructure).NodeType == "entry-hyperlink";
             }
 
             public string Render(IContent content)
             {
-                var link = (content as EntryHyperlink);
-                var model = (content as EntryHyperlink).Data.Target as StructuredModel;
+                var link = (content as EntryStructure);
+                var model = (content as EntryStructure).Data.Target as StructuredModel;
 
                 var sb = new StringBuilder();
 

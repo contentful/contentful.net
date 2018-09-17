@@ -84,13 +84,12 @@ namespace Contentful.Core.Configuration
                 case "hr":
                     return jObject.ToObject<HorizontalRuler>();
                 case "entry-hyperlink":
+                case "embedded-entry-inline":
                 case "embedded-entry-block":
-                    return jObject.ToObject<EntryHyperlink>(serializer);
+                    return jObject.ToObject<EntryStructure>(serializer);
                 default:
-                    break;
+                    return jObject; ;
             }
-
-            return new Mark();
         }
 
         /// <summary>
