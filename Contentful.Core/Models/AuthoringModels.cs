@@ -1,4 +1,5 @@
 ﻿using Contentful.Core.Models.Management;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -86,7 +87,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The url of the hyperlink.
         /// </summary>
-        public string Url { get; set; }
+        public string Uri { get; set; }
 
         /// <summary>
         /// The title of the hyperlink.
@@ -335,6 +336,17 @@ namespace Contentful.Core.Models
         /// The entry this hyperlink targets
         /// </summary>
         public IContent Target { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a custom created content node.
+    /// </summary>
+    public class CustomNode : IContent
+    {
+        /// <summary>
+        /// The JSON data of the node.
+        /// </summary>
+        public JObject JObject { get; set; }
     }
 
     /// <summary>

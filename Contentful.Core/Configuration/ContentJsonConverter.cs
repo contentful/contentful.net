@@ -88,7 +88,7 @@ namespace Contentful.Core.Configuration
                 case "embedded-entry-block":
                     return jObject.ToObject<EntryStructure>(serializer);
                 default:
-                    return jObject; ;
+                    return new CustomNode { JObject = jObject };
             }
         }
 

@@ -378,7 +378,7 @@ namespace Contentful.Core.Models
             var link = content as Hyperlink;
             var sb = new StringBuilder();
 
-            sb.Append($"<a href=\"{link.Data.Url}\" title=\"{link.Data.Title}\">");
+            sb.Append($"<a href=\"{link.Data.Uri}\" title=\"{link.Data.Title}\">");
 
             foreach (var subContent in link.Content)
             {
