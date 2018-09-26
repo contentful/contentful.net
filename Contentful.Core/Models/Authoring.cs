@@ -400,7 +400,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The order of this renderer in the collection.
         /// </summary>
-        public int Order { get; set; } = 100;
+        public int Order { get; set; } = 500;
 
         /// <summary>
         /// Renders the content to a string.
