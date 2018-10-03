@@ -1044,7 +1044,7 @@ namespace Contentful.Core.Tests
             htmlrenderer.AddRenderer(new StructuredContentRendererLinks() { Order = 10 });
             //Act
             var res = await _client.GetEntries<StructuredModel>();
-            var html = htmlrenderer.ToHtml(res.First().Structure);
+            var html = await htmlrenderer.ToHtml(res.First().Structure);
             //Assert
             Assert.Contains("<h1>Some heading</h1>", html); 
             Assert.Contains("<h2>Some subheading</h2>", html);
@@ -1069,7 +1069,7 @@ namespace Contentful.Core.Tests
             htmlrenderer.AddRenderer(new StructuredContentRenderer() { Order = 10 });
             //Act
             var res = await _client.GetEntries<StructuredModel>();
-            var html = htmlrenderer.ToHtml(res.First().Structure);
+            var html = await htmlrenderer.ToHtml(res.First().Structure);
             //Assert
             Assert.Contains("<h1>Some heading</h1>", html);
             Assert.Contains("<h2>Some subheading</h2>", html);
@@ -1115,6 +1115,11 @@ namespace Contentful.Core.Tests
 
                 return sb.ToString();
             }
+
+            public Task<string> RenderAsync(IContent content)
+            {
+                return Task.FromResult(Render(content));
+            }
         }
 
         public class StructuredContentRendererLinks : IContentRenderer
@@ -1138,6 +1143,11 @@ namespace Contentful.Core.Tests
                 sb.Append($"<a href=\"{(link.Content.FirstOrDefault() as Text).Value}\">{model.Body}</a>");
 
                 return sb.ToString();
+            }
+
+            public Task<string> RenderAsync(IContent content)
+            {
+                return Task.FromResult(Render(content));
             }
         }
     }

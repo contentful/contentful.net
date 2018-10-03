@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Contentful.Core.Models
 {
@@ -38,13 +39,13 @@ namespace Contentful.Core.Models
         /// </summary>
         /// <param name="doc">The document to turn into HTML.</param>
         /// <returns>An HTML string.</returns>
-        public string ToHtml(Document doc)
+        public async Task<string> ToHtml(Document doc)
         {
             var sb = new StringBuilder();
             foreach (var content in doc.Content)
             {
                 var renderer = _contentRenderererCollection.GetRendererForContent(content);
-                sb.Append(renderer.Render(content));
+                sb.Append(await renderer.RenderAsync(content));
             }
 
             return sb.ToString();
@@ -119,6 +120,13 @@ namespace Contentful.Core.Models
         /// <param name="content">The content to render.</param>
         /// <returns></returns>
         string Render(IContent content);
+
+        /// <summary>
+        /// Renders the provided content as a string.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns></returns>
+        Task<string> RenderAsync(IContent content);
     }
 
     /// <summary>
@@ -172,6 +180,16 @@ namespace Contentful.Core.Models
             sb.Append("</p>");
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
     }
 
     /// <summary>
@@ -224,6 +242,16 @@ namespace Contentful.Core.Models
 
             sb.Append($"</h{heading.HeadingSize}>");
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
         }
     }
 
@@ -294,6 +322,16 @@ namespace Contentful.Core.Models
 
             return "span";
         }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
     }
 
     /// <summary>
@@ -334,6 +372,16 @@ namespace Contentful.Core.Models
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
         }
     }
 
@@ -390,6 +438,16 @@ namespace Contentful.Core.Models
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
     }
 
     /// <summary>
@@ -420,6 +478,16 @@ namespace Contentful.Core.Models
         public bool SupportsContent(IContent content)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
         }
     }
 
@@ -482,6 +550,16 @@ namespace Contentful.Core.Models
         {
             return content is List;
         }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
     }
 
     /// <summary>
@@ -537,6 +615,16 @@ namespace Contentful.Core.Models
         public bool SupportsContent(IContent content)
         {
             return content is ListItem;
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
         }
     }
 
@@ -594,6 +682,16 @@ namespace Contentful.Core.Models
         {
             return content is Quote;
         }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
     }
 
     /// <summary>
@@ -624,6 +722,16 @@ namespace Contentful.Core.Models
         public bool SupportsContent(IContent content)
         {
             return content is HorizontalRuler;
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
         }
     }
 }

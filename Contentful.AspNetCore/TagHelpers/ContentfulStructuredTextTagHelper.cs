@@ -35,14 +35,14 @@ namespace Contentful.AspNetCore.TagHelpers
         /// <param name="context"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             if(Document == null)
             {
                 return;
             }
 
-            var html = _htmlRenderer.ToHtml(Document);
+            var html = await _htmlRenderer.ToHtml(Document);
 
             output.Content.SetHtmlContent(html);
         }

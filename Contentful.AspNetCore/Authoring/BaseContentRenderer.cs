@@ -69,6 +69,13 @@ namespace Contentful.AspNetCore.Authoring
         public abstract string Render(IContent content);
 
         /// <summary>
+        /// Renders the content to a string representation asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The content as a string representation.</returns>
+        public abstract Task<string> RenderAsync(IContent content);
+
+        /// <summary>
         /// Renders a view from a model.
         /// </summary>
         /// <param name="viewName">The name of the view to render.</param>
@@ -85,7 +92,9 @@ namespace Contentful.AspNetCore.Authoring
 
                 if (viewResult.View == null)
                 {
-                    throw new ArgumentNullException($"The view {viewName} could not be found.");
+                    
+                    throw new ArgumentNullException($"The view {viewName} could not be found." +
+                                                    $"Searched the following locations: { viewResult.SearchedLocations }");
                 }
 
                 var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
