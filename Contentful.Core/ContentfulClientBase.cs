@@ -197,8 +197,11 @@ namespace Contentful.Core
         /// <param name="authToken">The authorization token.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="content">The HTTP content.</param>
+        /// <param name="version">The version of the content.</param>
+        /// <param name="contentTypeId">The contenttype id header.</param>
+        /// <param name="organisationId">The organisation it header.</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null)
+        protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null, int? version = null, string contentTypeId = null, string organisationId = null)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -208,6 +211,19 @@ namespace Contentful.Core
             httpRequestMessage.Headers.Add("Authorization", $"Bearer {authToken}");
             
             httpRequestMessage.Headers.Add("X-Contentful-User-Agent", $"{Application}/{Version}; platform {Platform}; os {Os};");
+
+            AddVersionHeader(version, httpRequestMessage);
+
+            if (!string.IsNullOrEmpty(contentTypeId))
+            {
+                httpRequestMessage.Headers.Add("X-Contentful-Content-Type", contentTypeId);
+            }
+
+            if (!string.IsNullOrEmpty(organisationId))
+            {
+                httpRequestMessage.Headers.Add("X-Contentful-Organization", organisationId);
+
+            }
 
             httpRequestMessage.Content = content;
 
@@ -226,25 +242,18 @@ namespace Contentful.Core
         /// <summary>
         /// Adds a Contentful version header to the request.
         /// </summary>
-        /// <param name="version"></param>
-        protected void AddVersionHeader(int? version)
+        /// <param name="version">The version to add.</param>
+        /// <param name="message">The message to add the header to.</param>
+        protected void AddVersionHeader(int? version, HttpRequestMessage message)
         {
-            if (_httpClient.DefaultRequestHeaders.Contains("X-Contentful-Version"))
+            if (message.Headers.Contains("X-Contentful-Version"))
             {
-                _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
+                message.Headers.Remove("X-Contentful-Version");
             }
             if (version.HasValue)
             {
-                _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
+                message.Headers.Add("X-Contentful-Version", version.ToString());
             }
-        }
-
-        /// <summary>
-        /// Removes a Contentful version header from the request.
-        /// </summary>
-        protected void RemoveVersionHeader()
-        {
-            _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
         }
 
         /// <summary>
