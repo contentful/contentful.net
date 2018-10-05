@@ -149,11 +149,11 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             _handler.VerificationBeforeSend = () =>
             {
-                 headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Organization").First() == "112";
             };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                headerSet = request.Headers.GetValues("X-Contentful-Organization").First() == "112";
             };
 
             //Act
@@ -172,12 +172,9 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleSpace.json");
             var headerSet = false;
             var contentSet = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First() == "37";
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
+                headerSet = request.Headers.GetValues("X-Contentful-Version").First() == "37";
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
 
@@ -257,13 +254,10 @@ namespace Contentful.Core.Tests
 
             var versionHeader = "";
             var contentSet = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -351,14 +345,11 @@ namespace Contentful.Core.Tests
             var versionHeader = "";
             var requestUrl = "";
             var requestMethod = HttpMethod.Trace;
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
-            };
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -497,12 +488,9 @@ namespace Contentful.Core.Tests
             var versionHeader = "";
             var contentSet = "";
             var requestUrl = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
@@ -634,9 +622,9 @@ namespace Contentful.Core.Tests
             };
             entry.SystemProperties.Id = "123";
             var contentTypeHeader = "";
-            _handler.VerificationBeforeSend = () =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -685,13 +673,10 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             var requestUrl = "";
             var versionHeader = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
@@ -721,13 +706,10 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             var requestUrl = "";
             var versionHeader = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
@@ -800,11 +782,12 @@ namespace Contentful.Core.Tests
             };
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleEntryManagement.json"));
             var contentTypeHeader = "";
-            _handler.VerificationBeforeSend = () =>
+
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
             };
-  
+
 
             //Act
             var res = await _client.CreateEntryForLocale(entry, "532", "contentType", locale: "sv-SE");
@@ -906,14 +889,11 @@ namespace Contentful.Core.Tests
             var contentTypeHeader = "";
             var contentSet = "";
             var requestUrl = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -939,14 +919,11 @@ namespace Contentful.Core.Tests
             var contentTypeHeader = "";
             var contentSet = "";
             var requestUrl = "";
-            _handler.VerificationBeforeSend = () =>
-            {
-                contentTypeHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Content-Type").First();
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 requestUrl = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -1009,10 +986,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1039,10 +1013,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -1070,10 +1041,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -1101,11 +1069,9 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
-            };
+
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
@@ -1132,10 +1098,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -1289,9 +1252,9 @@ namespace Contentful.Core.Tests
             };
             _handler.Response = GetResponseFromFile(@"SampleAssetManagement.json");
             var versionHeader = "";
-            _handler.VerificationBeforeSend = () =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1360,10 +1323,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1390,10 +1350,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1453,10 +1410,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1483,10 +1437,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1513,10 +1464,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -1543,10 +1491,7 @@ namespace Contentful.Core.Tests
             {
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
-            };
-            _handler.VerificationBeforeSend = () =>
-            {
-                versionHeader = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
             //Act
@@ -2653,12 +2598,9 @@ namespace Contentful.Core.Tests
             var url = "";
             var method = HttpMethod.Trace;
             var headerSet = false;
-            _handler.VerificationBeforeSend = () =>
-            {
-                headerSet = _httpClient.DefaultRequestHeaders.GetValues("X-Contentful-Version").First() == "5";
-            };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
+                headerSet = request.Headers.GetValues("X-Contentful-Version").First() == "5";
                 method = request.Method;
                 url = request.RequestUri.ToString();
                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
