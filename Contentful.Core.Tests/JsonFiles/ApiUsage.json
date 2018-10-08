@@ -1,0 +1,60 @@
+﻿{
+  "total": 2,
+  "limit": 2,
+  "skip": 0,
+  "sys": {
+    "type": "array"
+  },
+  "items": [
+    {
+      "sys": {
+        "type": "ApiUsage",
+        "id": "20_1ElgCn1mi1UHSBLTP2v4TD",
+        "usagePeriod": {
+          "sys": {
+            "type": "Link",
+            "linkType": "UsagePeriod",
+            "id": "20"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "1ElgCn1mi1UHSBLTP2v4TD"
+          }
+        }
+      },
+      "unitOfMeasure": "apiRequests",
+      "interval": "daily",
+      "startDate": "2018-06-15T00:00:00.000Z",
+      "endDate": "2018-07-14T00:00:00.000Z",
+      "usage": [ 6442, 5952, 8713, 1998, 5209, 2894, 1144, 2152, 4305, 4534, 1832, 5979, 6189, 954, 4847, 3953, 9094, 1800, 5044, 1232, 920, 2396, 9551, 4350, 2809, 5496, 9442, 7301, 4349, 1778 ]
+    },
+    {
+      "sys": {
+        "type": "ApiUsage",
+        "id": "20_1ElgCn1mi1UHSBLTP2v5TD",
+        "usagePeriod": {
+          "sys": {
+            "type": "Link",
+            "linkType": "UsagePeriod",
+            "id": "20"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "1ElgCn1mi1UHSBLTP2v5TD"
+          }
+        }
+      },
+      "unitOfMeasure": "apiRequests",
+      "interval": "daily",
+      "startDate": "2018-06-15T00:00:00.000Z",
+      "endDate": "2018-07-14T00:00:00.000Z",
+      "usage": [ 6444, 5955, 8716, 1998, 5209, 2894, 1144, 2152, 4305, 4534, 1832, 5979, 6189, 954, 4847, 3953, 9094, 1800, 5044, 1232, 920, 2396, 9551, 4350, 2809, 5496, 9442, 7301, 4349, 1778 ]
+    }
+  ]
+}

@@ -2431,6 +2431,49 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.UsagePeriod"/> for an organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to get usage periods for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UsagePeriod"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<UsagePeriod>> GetUsagePeriods(string organizationId, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usage_periods", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<UsagePeriod>>(Serializer);
+            var periods = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<UsagePeriod>(Serializer));
+            collection.Items = periods;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a collection of <see cref="Contentful.Core.Models.Management.ApiUsage"/> for an organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to get usage for.</param>
+        /// <param name="type">The type of resource to get usage for, organization or space.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiUsage"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ApiUsage>> GetResourceUsage(string organizationId, string type, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usages/{type}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<ApiUsage>>(Serializer);
+            var apiUsage = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiUsage>(Serializer));
+            collection.Items = apiUsage;
+
+            return collection;
+        }
+
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null)
         {
             return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId).ConfigureAwait(false);
