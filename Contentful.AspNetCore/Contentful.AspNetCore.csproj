@@ -21,7 +21,7 @@
     <DocumentationFile>bin\Release\netstandard1.5\Contentful.AspNetCore.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="contentful.csharp" Version="3.3.6" />
+    <PackageReference Include="contentful.csharp" Version="3.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.1.0" />
