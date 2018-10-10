@@ -9,13 +9,13 @@ using Xunit;
 
 namespace Contentful.AspNetCore.Tests.TagHelpers
 {
-    public class ContentfulStructuredTextTagHelperTests
+    public class ContentfulRichTextTagHelperTests
     {
         [Fact]
-        public void StructuredTagHelperShouldGenerateCorrectHTmlOutput()
+        public async Task RichTextTagHelperShouldGenerateCorrectHTmlOutput()
         {
             //Arrange
-            var taghelper = new ContentfulStructuredTextTagHelper(new HtmlRenderer());
+            var taghelper = new ContentfulRichTextTagHelper(new HtmlRenderer());
             taghelper.Document = new Document
             {
                 Content = new List<IContent>
@@ -41,7 +41,7 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
             });
 
             //Act
-            taghelper.Process(context, output);
+            await taghelper.ProcessAsync(context, output);
             var html = output.Content.GetContent();
             //Assert
             Assert.Equal("<p>Hello friends!</p>", html);

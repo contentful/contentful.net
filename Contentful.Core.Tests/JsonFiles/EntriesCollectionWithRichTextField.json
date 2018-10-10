@@ -38,7 +38,7 @@
       },
       "fields": {
         "name": "All Features",
-        "structure": {
+        "richText": {
           "content": [
             {
               "data": {},

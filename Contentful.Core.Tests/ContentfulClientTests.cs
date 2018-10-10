@@ -1019,32 +1019,32 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task GetEntriesShouldSerializeCorrectlyWithStructuredField()
+        public async Task GetEntriesShouldSerializeCorrectlyWithRichTextField()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
-            _client.ContentTypeResolver = new StructuredResolver();
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
+            _client.ContentTypeResolver = new RichTextResolver();
             //Act
-            var res = await _client.GetEntries<StructuredModel>();
+            var res = await _client.GetEntries<RichTextModel>();
 
             //Assert
             Assert.Single(res);
-            Assert.NotNull(res.First().Structure);
+            Assert.NotNull(res.First().RichText);
         }
 
         [Fact]
-        public async Task TurningStructuredContentIntoHtmlShouldYieldCorrectResult()
+        public async Task TurningRichTextIntoHtmlShouldYieldCorrectResult()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
-            _client.ContentTypeResolver = new StructuredResolver();
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
+            _client.ContentTypeResolver = new RichTextResolver();
 
             var htmlrenderer = new HtmlRenderer();
-            htmlrenderer.AddRenderer(new StructuredContentRenderer() { Order = 10 });
-            htmlrenderer.AddRenderer(new StructuredContentRendererLinks() { Order = 10 });
+            htmlrenderer.AddRenderer(new RichTextContentRenderer() { Order = 10 });
+            htmlrenderer.AddRenderer(new RichTextContentRendererLinks() { Order = 10 });
             //Act
-            var res = await _client.GetEntries<StructuredModel>();
-            var html = await htmlrenderer.ToHtml(res.First().Structure);
+            var res = await _client.GetEntries<RichTextModel>();
+            var html = await htmlrenderer.ToHtml(res.First().RichText);
             //Assert
             Assert.Contains("<h1>Some heading</h1>", html); 
             Assert.Contains("<h2>Some subheading</h2>", html);
@@ -1059,17 +1059,17 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
-        public async Task TurningStructuredContentIntoHtmlShouldYieldCorrectResultWithSelectiveResolving()
+        public async Task TurningRichTextContentIntoHtmlShouldYieldCorrectResultWithSelectiveResolving()
         {
             //Arrange
-            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithStructuredField.json");
-            _client.ContentTypeResolver = new StructuredResolver();
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
+            _client.ContentTypeResolver = new RichTextResolver();
             _client.ResolveEntriesSelectively = true;
             var htmlrenderer = new HtmlRenderer();
-            htmlrenderer.AddRenderer(new StructuredContentRenderer() { Order = 10 });
+            htmlrenderer.AddRenderer(new RichTextContentRenderer() { Order = 10 });
             //Act
-            var res = await _client.GetEntries<StructuredModel>();
-            var html = await htmlrenderer.ToHtml(res.First().Structure);
+            var res = await _client.GetEntries<RichTextModel>();
+            var html = await htmlrenderer.ToHtml(res.First().RichText);
             //Assert
             Assert.Contains("<h1>Some heading</h1>", html);
             Assert.Contains("<h2>Some subheading</h2>", html);
@@ -1092,18 +1092,18 @@ namespace Contentful.Core.Tests
             return client;
         }
 
-        public class StructuredContentRenderer : IContentRenderer
+        public class RichTextContentRenderer : IContentRenderer
         {
             public int Order { get; set; }
 
             public bool SupportsContent(IContent content)
             {
-                return content is EntryStructure && (content as EntryStructure).Data.Target is StructuredModel && (content as EntryStructure).NodeType == "embedded-entry-block";
+                return content is EntryStructure && (content as EntryStructure).Data.Target is RichTextModel && (content as EntryStructure).NodeType == "embedded-entry-block";
             } 
 
             public string Render(IContent content)
             {
-                var model = (content as EntryStructure).Data.Target as StructuredModel;
+                var model = (content as EntryStructure).Data.Target as RichTextModel;
 
                 var sb = new StringBuilder();
 
@@ -1122,21 +1122,21 @@ namespace Contentful.Core.Tests
             }
         }
 
-        public class StructuredContentRendererLinks : IContentRenderer
+        public class RichTextContentRendererLinks : IContentRenderer
         {
             public int Order { get; set; }
 
             public bool SupportsContent(IContent content)
             {
                 return content is EntryStructure && 
-                    (content as EntryStructure).Data.Target is StructuredModel && 
+                    (content as EntryStructure).Data.Target is RichTextModel && 
                     (content as EntryStructure).NodeType == "entry-hyperlink";
             }
 
             public string Render(IContent content)
             {
                 var link = (content as EntryStructure);
-                var model = (content as EntryStructure).Data.Target as StructuredModel;
+                var model = (content as EntryStructure).Data.Target as RichTextModel;
 
                 var sb = new StringBuilder();
 

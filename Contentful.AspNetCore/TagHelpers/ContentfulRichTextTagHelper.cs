@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace Contentful.AspNetCore.TagHelpers
 {
     /// <summary>
-    /// Taghelper that renders a structured authoring field.
+    /// Taghelper that renders a rich text field.
     /// </summary>
-    [HtmlTargetElement("contentful-structured-text", TagStructure = TagStructure.NormalOrSelfClosing)]
-    public class ContentfulStructuredTextTagHelper : TagHelper
+    [HtmlTargetElement("contentful-rich-text", TagStructure = TagStructure.NormalOrSelfClosing)]
+    public class ContentfulRichTextTagHelper : TagHelper
     {
         private HtmlRenderer _htmlRenderer;
 
@@ -21,10 +21,10 @@ namespace Contentful.AspNetCore.TagHelpers
         public Document Document { get; set; }
 
         /// <summary>
-        /// Creates a new instance of ContentfulStructuredTextTagHelper.
+        /// Creates a new instance of ContentfulRichTextTagHelper.
         /// </summary>
         /// <param name="renderer">The HtmlRenderer used to render the document.</param>
-        public ContentfulStructuredTextTagHelper(HtmlRenderer renderer)
+        public ContentfulRichTextTagHelper(HtmlRenderer renderer)
         {
             _htmlRenderer = renderer;
         }

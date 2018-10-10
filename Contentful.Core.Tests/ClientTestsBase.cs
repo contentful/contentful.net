@@ -80,11 +80,11 @@ namespace Contentful.Core.Tests
         public string Title { get; set; }
     }
 
-    public class StructuredModel  : IContent
+    public class RichTextModel  : IContent
     {
         public SystemProperties Sys { get; set; }
         public string Title { get; set; }
-        public Document Structure { get; set; }
+        public Document RichText { get; set; }
         public string Body { get; set; }
     }
 
@@ -256,11 +256,11 @@ namespace Contentful.Core.Tests
         }
     }
 
-    public class StructuredResolver : IContentTypeResolver
+    public class RichTextResolver : IContentTypeResolver
     {
         public Dictionary<string, Type> _types = new Dictionary<string, Type>()
         {
-            { "embedded", typeof(StructuredModel) }
+            { "embedded", typeof(RichTextModel) }
         };
 
         public Type Resolve(string contentTypeId)
