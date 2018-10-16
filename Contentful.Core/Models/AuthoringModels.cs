@@ -17,11 +17,6 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
-
-        /// <summary>
         /// The list of content this document contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -36,11 +31,6 @@ namespace Contentful.Core.Models
         /// The type of the node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The textual value.
@@ -62,11 +52,6 @@ namespace Contentful.Core.Models
         /// The type of the node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The data of the hyperlink node.
@@ -117,11 +102,6 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
-
-        /// <summary>
         /// The list of content this paragraph contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -136,11 +116,6 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The size of the heading.
@@ -162,11 +137,6 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The data of the block.
@@ -196,11 +166,6 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
-
-        /// <summary>
         /// The list of content this paragraph contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -215,11 +180,6 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The list of content this paragraph contains.
@@ -238,11 +198,6 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
-
-        /// <summary>
         /// The list of content this paragraph contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -257,11 +212,6 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
     }
 
     /// <summary>
@@ -273,11 +223,6 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The list of content this asset contains.
@@ -310,11 +255,6 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
-
-        /// <summary>
-        /// The class of the node.
-        /// </summary>
-        public string NodeClass { get; set; }
 
         /// <summary>
         /// The list of content this asset contains.
