@@ -1,0 +1,639 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "jd7yc4wnatx3"
+          }
+        },
+        "id": "4BupPSmi4M02m0U48AQCSM",
+        "type": "Entry",
+        "createdAt": "2018-08-22T10:45:51.649Z",
+        "updatedAt": "2018-08-22T13:08:02.925Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "stTest"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "name": "All Features",
+        "richText": {
+          "content": [
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some heading",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "heading-1",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "49rofLvvxCOiIMIi6mk8ai",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some subheading",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "heading-2",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "bold",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some bold",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "italic",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some italics",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "underline",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some underline",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "5ZF9Q4K6iWSYIU2OUs0UaQ",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some raw content",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "An unpublished embed:",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "q2hGXkd5tICym64AcgeKK",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "embedded-entry-block",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Some more content",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [
+                    {
+                      "data": {},
+                      "type": "code",
+                      "object": "mark"
+                    }
+                  ],
+                  "value": "Some code",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                },
+                {
+                  "data": {
+                    "url": "https://www.contentful.com",
+                    "title": "Title titless"
+                  },
+                  "content": [
+                    {
+                      "marks": [],
+                      "value": "A hyperlink",
+                      "nodeType": "text",
+                      "nodeClass": "text"
+                    }
+                  ],
+                  "nodeType": "hyperlink",
+                  "nodeClass": "inline"
+                },
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "marks": [],
+                          "value": "Ul list",
+                          "nodeType": "text",
+                          "nodeClass": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph",
+                      "nodeClass": "block"
+                    }
+                  ],
+                  "nodeType": "list-item",
+                  "nodeClass": "block"
+                },
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "marks": [],
+                          "value": "A few items",
+                          "nodeType": "text",
+                          "nodeClass": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph",
+                      "nodeClass": "block"
+                    }
+                  ],
+                  "nodeType": "list-item",
+                  "nodeClass": "block"
+                }
+              ],
+              "nodeType": "unordered-list",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "marks": [],
+                          "value": " Ol list",
+                          "nodeType": "text",
+                          "nodeClass": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph",
+                      "nodeClass": "block"
+                    }
+                  ],
+                  "nodeType": "list-item",
+                  "nodeClass": "block"
+                },
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "marks": [],
+                          "value": "two",
+                          "nodeType": "text",
+                          "nodeClass": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph",
+                      "nodeClass": "block"
+                    }
+                  ],
+                  "nodeType": "list-item",
+                  "nodeClass": "block"
+                },
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "marks": [],
+                          "value": "three",
+                          "nodeType": "text",
+                          "nodeClass": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph",
+                      "nodeClass": "block"
+                    }
+                  ],
+                  "nodeType": "list-item",
+                  "nodeClass": "block"
+                }
+              ],
+              "nodeType": "ordered-list",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "Block quote with some stuff and things.",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "blockquote",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "hr",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "paragraph",
+              "nodeClass": "block"
+            },
+            {
+              "data": {
+                "target": {
+                  "sys": {
+                    "id": "49rofLvvxCOiIMIi6mk8ai",
+                    "type": "Link",
+                    "linkType": "Entry"
+                  }
+                }
+              },
+              "content": [
+                {
+                  "marks": [],
+                  "value": "balooba",
+                  "nodeType": "text",
+                  "nodeClass": "text"
+                }
+              ],
+              "nodeType": "entry-hyperlink",
+              "nodeClass": "inline"
+            }
+          ],
+          "nodeType": "document",
+          "nodeClass": "document"
+        }
+      }
+    }
+  ],
+  "errors": [
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "id": "q2hGXkd5tICym64AcgeKK",
+        "type": "Link",
+        "linkType": "Entry"
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "jd7yc4wnatx3"
+            }
+          },
+          "id": "49rofLvvxCOiIMIi6mk8ai",
+          "type": "Entry",
+          "createdAt": "2018-08-22T10:45:20.685Z",
+          "updatedAt": "2018-08-22T10:45:20.686Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "embedded"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "body": "Embedded 1"
+        }
+      },
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "jd7yc4wnatx3"
+            }
+          },
+          "id": "5ZF9Q4K6iWSYIU2OUs0UaQ",
+          "type": "Entry",
+          "createdAt": "2018-08-22T10:45:29.715Z",
+          "updatedAt": "2018-08-22T10:45:29.715Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "embedded"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "body": "Embedded 2"
+        }
+      }
+    ]
+  }
+}

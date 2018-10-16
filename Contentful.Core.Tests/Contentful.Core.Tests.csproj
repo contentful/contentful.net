@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="JsonFiles\ApiKey.json" />
+    <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
     <None Remove="JsonFiles\SampleContentTypeFields.json" />
@@ -13,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />

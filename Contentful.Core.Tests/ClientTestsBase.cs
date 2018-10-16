@@ -80,7 +80,15 @@ namespace Contentful.Core.Tests
         public string Title { get; set; }
     }
 
-    public class TestCategory : IMarker
+    public class RichTextModel  : IContent
+    {
+        public SystemProperties Sys { get; set; }
+        public string Title { get; set; }
+        public Document RichText { get; set; }
+        public string Body { get; set; }
+    }
+
+    public class TestCategory : IMarker, IContent
     {
         public string Title { get; set; }
     }
@@ -240,6 +248,19 @@ namespace Contentful.Core.Tests
             { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) },
             { "events", typeof(ContentfulEvent) },
             { "page", typeof(TestNestedSharedItem) }
+        };
+
+        public Type Resolve(string contentTypeId)
+        {
+            return _types.TryGetValue(contentTypeId, out var type) ? type : null;
+        }
+    }
+
+    public class RichTextResolver : IContentTypeResolver
+    {
+        public Dictionary<string, Type> _types = new Dictionary<string, Type>()
+        {
+            { "embedded", typeof(RichTextModel) }
         };
 
         public Type Resolve(string contentTypeId)

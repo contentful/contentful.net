@@ -41,8 +41,7 @@ namespace Contentful.Core.Configuration
             var asset = new Asset();
 
             var jObject = JObject.Load(reader);
-            JToken refId;
-            if (jObject.TryGetValue("$ref", out refId))
+            if (jObject.TryGetValue("$ref", out var refId))
             {
                 return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue) refId).Value.ToString());
             }
