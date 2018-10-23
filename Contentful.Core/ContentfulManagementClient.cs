@@ -2431,6 +2431,119 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Gets a collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for the specified organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
+        public async Task<ContentfulCollection<OrganizationMembership>> GetOrganizationMemberships(string organizationId, string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships{queryString}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<OrganizationMembership>>(Serializer);
+            var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<OrganizationMembership>(Serializer));
+            collection.Items = memberships;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Creates a membership in an <see cref="Organization"/>.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to create a membership in.</param>
+        /// <param name="role">The role the membership should have for that organization.</param>
+        /// <param name="email">The email address of the membership.</param>
+        /// <param name="suppressInvitation">Whether or not to suppress the invitation email.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<OrganizationMembership> CreateOrganizationMembership(string organizationId, string role, string email, bool suppressInvitation, CancellationToken cancellationToken = default)
+        {
+            var res = await PostAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships", ConvertObjectToJsonStringContent(new { role, email, suppressInvitation }), cancellationToken, null).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<OrganizationMembership>(Serializer);
+        }
+
+        /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
+        /// </summary>
+        /// <param name="membershipId">The id of the membership to get.</param>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<OrganizationMembership> GetOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(membershipId))
+            {
+                throw new ArgumentException("The id of the organization membership must be set", nameof(membershipId));
+            }
+
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<OrganizationMembership>(Serializer);
+        }
+
+        /// <summary>
+        /// Updates a <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
+        /// </summary>
+        /// <param name="role">The role to set for the membership.</param>
+        /// <param name="membershipId">The id of the membership to update.</param>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<OrganizationMembership> UpdateOrganizationMembership(string role, string membershipId, string organizationId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(membershipId))
+            {
+                throw new ArgumentException("The id of the organization membership must be set.", nameof(membershipId));
+            }
+
+            var res = await PutAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}",
+                ConvertObjectToJsonStringContent(new { role }), cancellationToken, null).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<OrganizationMembership>(Serializer);
+        }
+
+        /// <summary>
+        /// Deletes a <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
+        /// </summary>
+        /// <param name="membershipId">The id of the organization membership to delete.</param>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <exception cref="ArgumentException">The <see name="membershipId">membershipId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(membershipId))
+            {
+                throw new ArgumentException("The id of the space membership must be set", nameof(membershipId));
+            }
+
+            var res = await DeleteAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+        }
+
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null)
         {
             return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId).ConfigureAwait(false);
