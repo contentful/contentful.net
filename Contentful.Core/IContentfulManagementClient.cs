@@ -948,9 +948,10 @@ namespace Contentful.Core
         /// Gets a collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for the specified organization.
         /// </summary>
         /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
-        Task<ContentfulCollection<OrganizationMembership>> GetOrganizationMemberships(string organizationId, CancellationToken cancellationToken = default);
+        Task<ContentfulCollection<OrganizationMembership>> GetOrganizationMemberships(string organizationId, string queryString = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a membership in an <see cref="Organization"/>.
