@@ -139,7 +139,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// Initializes a new PragraphRenderer
         /// </summary>
-        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
         public ParagraphRenderer(ContentRendererCollection rendererCollection)
         {
             _rendererCollection = rendererCollection;
@@ -599,7 +599,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// Initializes a new ListItemContentRenderer.
         /// </summary>
-        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
         public ListItemContentRenderer(ContentRendererCollection rendererCollection)
         {
             _rendererCollection = rendererCollection;

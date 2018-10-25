@@ -962,7 +962,7 @@ namespace Contentful.Core
         /// <param name="suppressInvitation">Whether or not to suppress the invitation email.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<OrganizationMembership> CreateOrganizationMembership(string organizationId, string role, string email, bool suppressInvitation, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -972,8 +972,8 @@ namespace Contentful.Core
         /// <param name="organizationId">The id of the organization.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
-        /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="System.ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<OrganizationMembership> GetOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -984,7 +984,7 @@ namespace Contentful.Core
         /// <param name="organizationId">The id of the organization.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<OrganizationMembership> UpdateOrganizationMembership(string role, string membershipId, string organizationId, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -993,8 +993,8 @@ namespace Contentful.Core
         /// <param name="membershipId">The id of the organization membership to delete.</param>
         /// <param name="organizationId">The id of the organization.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="ArgumentException">The <see name="membershipId">membershipId</see> parameter was null or empty.</exception>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="System.ArgumentException">The <see name="membershipId">membershipId</see> parameter was null or empty.</exception>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task DeleteOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default);
     }
 }

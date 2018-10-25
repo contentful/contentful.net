@@ -2440,7 +2440,8 @@ namespace Contentful.Core
         /// <returns>A collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
         public async Task<ContentfulCollection<OrganizationMembership>> GetOrganizationMemberships(string organizationId, string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships{queryString}", cancellationToken).ConfigureAwait(false);
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships{queryString}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2464,7 +2465,9 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<OrganizationMembership> CreateOrganizationMembership(string organizationId, string role, string email, bool suppressInvitation, CancellationToken cancellationToken = default)
         {
-            var res = await PostAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships", ConvertObjectToJsonStringContent(new { role, email, suppressInvitation }), cancellationToken, null).ConfigureAwait(false);
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+
+            var res = await PostAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships", ConvertObjectToJsonStringContent(new { role, email, suppressInvitation }), cancellationToken, null, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2488,8 +2491,9 @@ namespace Contentful.Core
             {
                 throw new ArgumentException("The id of the organization membership must be set", nameof(membershipId));
             }
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
 
-            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2513,9 +2517,10 @@ namespace Contentful.Core
             {
                 throw new ArgumentException("The id of the organization membership must be set.", nameof(membershipId));
             }
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
 
             var res = await PutAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}",
-                ConvertObjectToJsonStringContent(new { role }), cancellationToken, null).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new { role }), cancellationToken, null, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2538,30 +2543,31 @@ namespace Contentful.Core
             {
                 throw new ArgumentException("The id of the space membership must be set", nameof(membershipId));
             }
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
 
-            var res = await DeleteAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken).ConfigureAwait(false);
+            var res = await DeleteAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null)
+        private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
-            return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId, additionalHeaders: additionalHeaders).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null)
+        private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
-            return await SendHttpRequest(url, HttpMethod.Put, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Put, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId, additionalHeaders: additionalHeaders).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancellationToken, int? version = null)
+        private async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancellationToken, int? version = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
-            return await SendHttpRequest(url, HttpMethod.Delete, _options.ManagementApiKey, cancellationToken, version: version).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Delete, _options.ManagementApiKey, cancellationToken, version: version, additionalHeaders: additionalHeaders).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken, int? version = null)
+        private async Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken, int? version = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
-            return await SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken, version: version).ConfigureAwait(false);
+            return await SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken, version: version, additionalHeaders: additionalHeaders).ConfigureAwait(false);
         }
 
         private string ConvertObjectToJsonString(object ob)
