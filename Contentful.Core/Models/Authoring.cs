@@ -29,7 +29,7 @@ namespace Contentful.Core.Models
                 new ListContentRenderer(_contentRenderererCollection),
                 new ListItemContentRenderer(_contentRenderererCollection),
                 new QuoteContentRenderer(_contentRenderererCollection),
-                new AssetRenderer(),
+                new AssetRenderer(_contentRenderererCollection),
                 new NullContentRenderer()
             });
         }
@@ -339,6 +339,17 @@ namespace Contentful.Core.Models
     /// </summary>
     public class AssetRenderer : IContentRenderer
     {
+        private readonly ContentRenderererCollection _renderererCollection;
+
+        /// <summary>
+        /// Initializes a new AssetRenderer.
+        /// </summary>
+        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
+        public AssetRenderer(ContentRenderererCollection renderererCollection)
+        {
+            _renderererCollection = renderererCollection;
+        }
+
         /// <summary>
         /// The order of this renderer in the collection.
         /// </summary>
@@ -351,7 +362,7 @@ namespace Contentful.Core.Models
         /// <returns>Returns true if the content is an asset, otherwise false.</returns>
         public bool SupportsContent(IContent content)
         {
-            return content is Asset;
+            return content is AssetStructure;
         }
 
         /// <summary>
@@ -361,14 +372,30 @@ namespace Contentful.Core.Models
         /// <returns>The html img or a tag.</returns>
         public string Render(IContent content)
         {
-            var asset = content as Asset;
+            var assetStructure = content as AssetStructure;
+            var asset = assetStructure.Data.Target;
+            var nodeType = assetStructure.NodeType;
             var sb = new StringBuilder();
-            if(asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
+            if(nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
             {
                 sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
             }else
             {
-                sb.Append($"<a href=\"{asset.File.Url}\">{asset.Title}</a>");
+                sb.Append($"<a href=\"{asset.File.Url}\">");
+
+                if (assetStructure.Content != null && assetStructure.Content.Any())
+                {
+                    foreach (var subContent in assetStructure.Content)
+                    {
+                        var renderer = _renderererCollection.GetRendererForContent(subContent);
+                        sb.Append(renderer.Render(subContent));
+                    }
+                }
+                else
+                {
+                    sb.Append(asset.Title);
+                }
+                sb.Append("</a>");
             }
 
             return sb.ToString();

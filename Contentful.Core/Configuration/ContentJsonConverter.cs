@@ -72,8 +72,10 @@ namespace Contentful.Core.Configuration
                     return jObject.ToObject<Text>();
                 case "hyperlink":
                     return jObject.ToObject<Hyperlink>(serializer);
-                case "Asset":
-                    return jObject.ToObject<Asset>(serializer);
+                case "asset-hyperlink":
+                case "embedded-asset-inline":
+                case "embedded-asset-block":
+                    return jObject.ToObject<AssetStructure>(serializer);
                 case "blockquote":
                     return jObject.ToObject<Quote>(serializer);
                 case "ordered-list":
