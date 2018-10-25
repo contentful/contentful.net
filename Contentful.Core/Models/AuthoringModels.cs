@@ -279,6 +279,38 @@ namespace Contentful.Core.Models
     }
 
     /// <summary>
+    /// Represents an hyperlink to an asset.
+    /// </summary>
+    public class AssetStructure : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The list of content this asset contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+
+        /// <summary>
+        /// The data of the asset hyperlink node.
+        /// </summary>
+        public AssetStructureData Data { get; set; }
+    }
+
+    /// <summary>
+    /// Represents the data of the asset hyperlink.
+    /// </summary>
+    public class AssetStructureData
+    {
+        /// <summary>
+        /// The asset this hyperlink targets
+        /// </summary>
+        public Asset Target { get; set; }
+    }
+
+    /// <summary>
     /// Represents a custom created content node.
     /// </summary>
     public class CustomNode : IContent

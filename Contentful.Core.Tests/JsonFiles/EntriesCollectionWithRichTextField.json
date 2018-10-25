@@ -39,149 +39,418 @@
       "fields": {
         "name": "All Features",
         "richText": {
+          "data": {},
           "content": [
             {
               "data": {},
               "content": [
                 {
+                  "data": {},
                   "marks": [],
-                  "value": "Some heading",
-                  "nodeType": "text",
-                  "nodeClass": "text"
+                  "value": "Heading 1",
+                  "nodeType": "text"
                 }
               ],
-              "nodeType": "heading-1",
-              "nodeClass": "block"
+              "nodeType": "heading-1"
             },
             {
               "data": {},
               "content": [
                 {
+                  "data": {},
                   "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
+                  "value": "Heading 2",
+                  "nodeType": "text"
                 }
               ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
+              "nodeType": "heading-2"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "Heading 3",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "heading-3"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "Heading 4",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "heading-4"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "Heading 5",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "heading-5"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "Heading 6",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "heading-6"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "Normal Text",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "value": "Bold Text",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [
+                    {
+                      "type": "italic"
+                    }
+                  ],
+                  "value": "Italic Text",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [
+                    {
+                      "type": "underline"
+                    }
+                  ],
+                  "value": "Underline Text",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ],
+                  "value": "Code Text",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [
+                    {
+                      "type": "bold"
+                    },
+                    {
+                      "type": "italic"
+                    }
+                  ],
+                  "value": "Combined Marks",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "marks": [],
+                      "value": "A quote",
+                      "nodeType": "text"
+                    }
+                  ],
+                  "nodeType": "paragraph"
+                }
+              ],
+              "nodeType": "blockquote"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text"
+                },
+                {
+                  "data": {
+                    "uri": "https://example.com"
+                  },
+                  "content": [
+                    {
+                      "data": {},
+                      "marks": [],
+                      "value": "A Hyperlink",
+                      "nodeType": "text"
+                    }
+                  ],
+                  "nodeType": "hyperlink"
+                },
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text"
+                },
+                {
+                  "data": {
+                    "target": {
+                      "sys": {
+                        "id": "49rofLvvxCOiIMIi6mk8ai",
+                        "type": "Link",
+                        "linkType": "Entry"
+                      }
+                    }
+                  },
+                  "content": [
+                    {
+                      "data": {},
+                      "marks": [],
+                      "value": "Entry Hyperlink",
+                      "nodeType": "text"
+                    }
+                  ],
+                  "nodeType": "entry-hyperlink"
+                },
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text"
+                },
+                {
+                  "data": {
+                    "target": {
+                      "sys": {
+                        "id": "4j1JCmvF6MqQymaMqi6OSu",
+                        "type": "Link",
+                        "linkType": "Asset"
+                      }
+                    }
+                  },
+                  "content": [
+                    {
+                      "data": {},
+                      "marks": [],
+                      "value": "Asset Hyp",
+                      "nodeType": "text"
+                    },
+                    {
+                      "data": {},
+                      "marks": [
+                        {
+                          "type": "italic"
+                        }
+                      ],
+                      "value": "erlink",
+                      "nodeType": "text"
+                    }
+                  ],
+                  "nodeType": "asset-hyperlink"
+                },
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": "",
+                  "nodeType": "text"
+                }
+              ],
+              "nodeType": "paragraph"
+            },
+            {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "data": {},
+                          "marks": [],
+                          "value": "Unordered List",
+                          "nodeType": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph"
+                    }
+                  ],
+                  "nodeType": "list-item"
+                },
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "data": {},
+                          "marks": [],
+                          "value": "With Multiple Items",
+                          "nodeType": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph"
+                    },
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "data": {},
+                          "content": [
+                            {
+                              "data": {},
+                              "content": [
+                                {
+                                  "data": {},
+                                  "marks": [],
+                                  "value": "With Nested Values",
+                                  "nodeType": "text"
+                                }
+                              ],
+                              "nodeType": "paragraph"
+                            },
+                            {
+                              "data": {},
+                              "content": [
+                                {
+                                  "data": {},
+                                  "content": [
+                                    {
+                                      "data": {},
+                                      "content": [
+                                        {
+                                          "data": {},
+                                          "marks": [],
+                                          "value": "With Nested Ordered",
+                                          "nodeType": "text"
+                                        }
+                                      ],
+                                      "nodeType": "paragraph"
+                                    }
+                                  ],
+                                  "nodeType": "list-item"
+                                }
+                              ],
+                              "nodeType": "ordered-list"
+                            }
+                          ],
+                          "nodeType": "list-item"
+                        }
+                      ],
+                      "nodeType": "unordered-list"
+                    }
+                  ],
+                  "nodeType": "list-item"
+                }
+              ],
+              "nodeType": "unordered-list"
+            },
+            {
+              "data": {},
+              "content": [],
+              "nodeType": "hr"
             },
             {
               "data": {
                 "target": {
                   "sys": {
-                    "id": "49rofLvvxCOiIMIi6mk8ai",
+                    "id": "4j1JCmvF6MqQymaMqi6OSu",
                     "type": "Link",
-                    "linkType": "Entry"
+                    "linkType": "Asset"
                   }
                 }
               },
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "embedded-entry-block",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "Some subheading",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "heading-2",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [
-                    {
-                      "data": {},
-                      "type": "bold",
-                      "object": "mark"
-                    }
-                  ],
-                  "value": "Some bold",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [
-                    {
-                      "data": {},
-                      "type": "italic",
-                      "object": "mark"
-                    }
-                  ],
-                  "value": "Some italics",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [
-                    {
-                      "data": {},
-                      "type": "underline",
-                      "object": "mark"
-                    }
-                  ],
-                  "value": "Some underline",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
+              "content": [],
+              "nodeType": "embedded-asset-block"
             },
             {
               "data": {
@@ -193,81 +462,63 @@
                   }
                 }
               },
+              "content": [],
+              "nodeType": "embedded-entry-block"
+            },
+            {
+              "data": {},
               "content": [
                 {
+                  "data": {},
+                  "marks": [],
+                  "value": "An Inline Embed ",
+                  "nodeType": "text"
+                },
+                {
+                  "data": {
+                    "target": {
+                      "sys": {
+                        "id": "5ZF9Q4K6iWSYIU2OUs0UaQ",
+                        "type": "Link",
+                        "linkType": "Entry"
+                      }
+                    }
+                  },
+                  "content": [],
+                  "nodeType": "embedded-entry-inline"
+                },
+                {
+                  "data": {},
                   "marks": [],
                   "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
+                  "nodeType": "text"
                 }
               ],
-              "nodeType": "embedded-entry-block",
-              "nodeClass": "block"
+              "nodeType": "paragraph"
             },
             {
               "data": {},
               "content": [
                 {
+                  "data": {},
                   "marks": [],
                   "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
+                  "nodeType": "text"
                 }
               ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
+              "nodeType": "paragraph"
             },
             {
               "data": {},
               "content": [
                 {
+                  "data": {},
                   "marks": [],
-                  "value": "Some raw content",
-                  "nodeType": "text",
-                  "nodeClass": "text"
+                  "value": "Unpublished embed",
+                  "nodeType": "text"
                 }
               ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "An unpublished embed:",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
+              "nodeType": "paragraph"
             },
             {
               "data": {
@@ -279,274 +530,23 @@
                   }
                 }
               },
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "embedded-entry-block",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "Some more content",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [
-                    {
-                      "data": {},
-                      "type": "code",
-                      "object": "mark"
-                    }
-                  ],
-                  "value": "Some code",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                },
-                {
-                  "data": {
-                    "url": "https://www.contentful.com",
-                    "title": "Title titless"
-                  },
-                  "content": [
-                    {
-                      "marks": [],
-                      "value": "A hyperlink",
-                      "nodeType": "text",
-                      "nodeClass": "text"
-                    }
-                  ],
-                  "nodeType": "hyperlink",
-                  "nodeClass": "inline"
-                },
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
+              "content": [],
+              "nodeType": "embedded-entry-block"
             },
             {
               "data": {},
               "content": [
                 {
                   "data": {},
-                  "content": [
-                    {
-                      "data": {},
-                      "content": [
-                        {
-                          "marks": [],
-                          "value": "Ul list",
-                          "nodeType": "text",
-                          "nodeClass": "text"
-                        }
-                      ],
-                      "nodeType": "paragraph",
-                      "nodeClass": "block"
-                    }
-                  ],
-                  "nodeType": "list-item",
-                  "nodeClass": "block"
-                },
-                {
-                  "data": {},
-                  "content": [
-                    {
-                      "data": {},
-                      "content": [
-                        {
-                          "marks": [],
-                          "value": "A few items",
-                          "nodeType": "text",
-                          "nodeClass": "text"
-                        }
-                      ],
-                      "nodeType": "paragraph",
-                      "nodeClass": "block"
-                    }
-                  ],
-                  "nodeType": "list-item",
-                  "nodeClass": "block"
-                }
-              ],
-              "nodeType": "unordered-list",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "data": {},
-                  "content": [
-                    {
-                      "data": {},
-                      "content": [
-                        {
-                          "marks": [],
-                          "value": " Ol list",
-                          "nodeType": "text",
-                          "nodeClass": "text"
-                        }
-                      ],
-                      "nodeType": "paragraph",
-                      "nodeClass": "block"
-                    }
-                  ],
-                  "nodeType": "list-item",
-                  "nodeClass": "block"
-                },
-                {
-                  "data": {},
-                  "content": [
-                    {
-                      "data": {},
-                      "content": [
-                        {
-                          "marks": [],
-                          "value": "two",
-                          "nodeType": "text",
-                          "nodeClass": "text"
-                        }
-                      ],
-                      "nodeType": "paragraph",
-                      "nodeClass": "block"
-                    }
-                  ],
-                  "nodeType": "list-item",
-                  "nodeClass": "block"
-                },
-                {
-                  "data": {},
-                  "content": [
-                    {
-                      "data": {},
-                      "content": [
-                        {
-                          "marks": [],
-                          "value": "three",
-                          "nodeType": "text",
-                          "nodeClass": "text"
-                        }
-                      ],
-                      "nodeType": "paragraph",
-                      "nodeClass": "block"
-                    }
-                  ],
-                  "nodeType": "list-item",
-                  "nodeClass": "block"
-                }
-              ],
-              "nodeType": "ordered-list",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "Block quote with some stuff and things.",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "blockquote",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
                   "marks": [],
                   "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
+                  "nodeType": "text"
                 }
               ],
-              "nodeType": "hr",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {},
-              "content": [
-                {
-                  "marks": [],
-                  "value": "",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "paragraph",
-              "nodeClass": "block"
-            },
-            {
-              "data": {
-                "target": {
-                  "sys": {
-                    "id": "49rofLvvxCOiIMIi6mk8ai",
-                    "type": "Link",
-                    "linkType": "Entry"
-                  }
-                }
-              },
-              "content": [
-                {
-                  "marks": [],
-                  "value": "balooba",
-                  "nodeType": "text",
-                  "nodeClass": "text"
-                }
-              ],
-              "nodeType": "entry-hyperlink",
-              "nodeClass": "inline"
+              "nodeType": "paragraph"
             }
           ],
-          "nodeType": "document",
-          "nodeClass": "document"
+          "nodeType": "document"
         }
       }
     }
@@ -632,6 +632,47 @@
         },
         "fields": {
           "body": "Embedded 2"
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "jd7yc4wnatx3"
+            }
+          },
+          "id": "4j1JCmvF6MqQymaMqi6OSu",
+          "type": "Asset",
+          "createdAt": "2018-10-23T12:54:57.548Z",
+          "updatedAt": "2018-10-23T12:54:57.548Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "revision": 1,
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "cat",
+          "file": {
+            "url": "//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg",
+            "details": {
+              "size": 75713,
+              "image": {
+                "width": 640,
+                "height": 423
+              }
+            },
+            "fileName": "cat",
+            "contentType": "image/jpeg"
+          }
         }
       }
     ]

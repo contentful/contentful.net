@@ -1046,16 +1046,17 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<RichTextModel>();
             var html = await htmlrenderer.ToHtml(res.First().RichText);
             //Assert
-            Assert.Contains("<h1>Some heading</h1>", html); 
-            Assert.Contains("<h2>Some subheading</h2>", html);
-            Assert.Contains("<div><h2>Embedded 1</h2></div>", html);
+            Assert.Contains("<h1>Heading 1</h1>", html); 
+            Assert.Contains("<h2>Heading 2</h2>", html);
+            Assert.Contains("<a href=\"Entry Hyperlink\">Embedded 1</a>", html);
             Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
-            Assert.Contains("<ul><li><p>Ul list</p></li>", html);
-            Assert.Contains("<ol><li><p> Ol list</p></li>", html);
-            Assert.Contains("<blockquote>Block quote with some stuff and things.</blockquote>", html);
+            Assert.Contains("<ul><li><p>Unordered List</p></li>", html);
+            Assert.Contains("<ol><li><p>With Nested Ordered</p></li>", html);
+            Assert.Contains("<blockquote><p>A quote</p></blockquote>", html);
+            Assert.Contains("<a href=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\">Asset Hyp<em>erlink</em></a>", html);
             Assert.Contains("<hr>", html);
-            Assert.Contains("<a href=\"balooba\">Embedded 1</a>", html);
-            Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
+            Assert.Contains("<img src=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\" alt=\"cat\" />", html);
+            Assert.Contains("<p><strong>Bold Text</strong></p><p><em>Italic Text</em></p><p><u>Underline Text</u></p>", html);
         }
 
         [Fact]
@@ -1071,11 +1072,16 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<RichTextModel>();
             var html = await htmlrenderer.ToHtml(res.First().RichText);
             //Assert
-            Assert.Contains("<h1>Some heading</h1>", html);
-            Assert.Contains("<h2>Some subheading</h2>", html);
-            Assert.Contains("<div><h2>Embedded 1</h2></div>", html);
+            Assert.Contains("<h1>Heading 1</h1>", html);
+            Assert.Contains("<h2>Heading 2</h2>", html);
             Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
-            Assert.Contains("<p><strong>Some bold</strong></p><p><em>Some italics</em></p><p><u>Some underline</u></p>", html);
+            Assert.Contains("<ul><li><p>Unordered List</p></li>", html);
+            Assert.Contains("<ol><li><p>With Nested Ordered</p></li>", html);
+            Assert.Contains("<blockquote><p>A quote</p></blockquote>", html);
+            Assert.Contains("<a href=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\">Asset Hyp<em>erlink</em></a>", html);
+            Assert.Contains("<hr>", html);
+            Assert.Contains("<img src=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\" alt=\"cat\" />", html);
+            Assert.Contains("<p><strong>Bold Text</strong></p><p><em>Italic Text</em></p><p><u>Underline Text</u></p>", html);
         }
 
         private ContentfulClient GetClientWithEnvironment(string env = "special")

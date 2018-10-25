@@ -12,24 +12,24 @@ namespace Contentful.Core.Models
     /// </summary>
     public class HtmlRenderer
     {
-        private readonly ContentRenderererCollection _contentRenderererCollection;
+        private readonly ContentRendererCollection _contentRendererCollection;
 
         /// <summary>
         /// Initializes a new instance of HtmlRenderer.
         /// </summary>
         public HtmlRenderer()
         {
-            _contentRenderererCollection = new ContentRenderererCollection();
-            _contentRenderererCollection.AddRenderers(new List<IContentRenderer> {
-                new ParagraphRenderer(_contentRenderererCollection),
-                new HyperlinkContentRenderer(_contentRenderererCollection),
+            _contentRendererCollection = new ContentRendererCollection();
+            _contentRendererCollection.AddRenderers(new List<IContentRenderer> {
+                new ParagraphRenderer(_contentRendererCollection),
+                new HyperlinkContentRenderer(_contentRendererCollection),
                 new TextRenderer(),
                 new HorizontalRulerContentRenderer(),
-                new HeadingRenderer(_contentRenderererCollection),
-                new ListContentRenderer(_contentRenderererCollection),
-                new ListItemContentRenderer(_contentRenderererCollection),
-                new QuoteContentRenderer(_contentRenderererCollection),
-                new AssetRenderer(),
+                new HeadingRenderer(_contentRendererCollection),
+                new ListContentRenderer(_contentRendererCollection),
+                new ListItemContentRenderer(_contentRendererCollection),
+                new QuoteContentRenderer(_contentRendererCollection),
+                new AssetRenderer(_contentRendererCollection),
                 new NullContentRenderer()
             });
         }
@@ -44,7 +44,7 @@ namespace Contentful.Core.Models
             var sb = new StringBuilder();
             foreach (var content in doc.Content)
             {
-                var renderer = _contentRenderererCollection.GetRendererForContent(content);
+                var renderer = _contentRendererCollection.GetRendererForContent(content);
                 sb.Append(await renderer.RenderAsync(content));
             }
 
@@ -57,14 +57,14 @@ namespace Contentful.Core.Models
         /// <param name="renderer"></param>
         public void AddRenderer(IContentRenderer renderer)
         {
-            _contentRenderererCollection.AddRenderer(renderer);
+            _contentRendererCollection.AddRenderer(renderer);
         }
     }
 
     /// <summary>
     /// A collection of renderers.
     /// </summary>
-    public class ContentRenderererCollection
+    public class ContentRendererCollection
     {
         readonly List<IContentRenderer> _renderers = new List<IContentRenderer>();
 
@@ -134,15 +134,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class ParagraphRenderer : IContentRenderer
     {
-        private readonly ContentRenderererCollection _renderererCollection;
+        private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
         /// Initializes a new PragraphRenderer
         /// </summary>
         /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public ParagraphRenderer(ContentRenderererCollection renderererCollection)
+        public ParagraphRenderer(ContentRendererCollection rendererCollection)
         {
-            _renderererCollection = renderererCollection;
+            _rendererCollection = rendererCollection;
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in paragraph.Content)
             {
-                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
                 sb.Append(renderer.Render(subContent));
             }
 
@@ -197,15 +197,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class HeadingRenderer : IContentRenderer
     {
-        private readonly ContentRenderererCollection _renderererCollection;
+        private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
         /// Initializes a new HeadingRenderer.
         /// </summary>
-        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public HeadingRenderer(ContentRenderererCollection renderererCollection)
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public HeadingRenderer(ContentRendererCollection rendererCollection)
         {
-            _renderererCollection = renderererCollection;
+            _rendererCollection = rendererCollection;
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in heading.Content)
             {
-                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
                 sb.Append(renderer.Render(subContent));
             }
 
@@ -339,6 +339,17 @@ namespace Contentful.Core.Models
     /// </summary>
     public class AssetRenderer : IContentRenderer
     {
+        private readonly ContentRendererCollection _rendererCollection;
+
+        /// <summary>
+        /// Initializes a new AssetRenderer.
+        /// </summary>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public AssetRenderer(ContentRendererCollection rendererCollection)
+        {
+            _rendererCollection = rendererCollection;
+        }
+
         /// <summary>
         /// The order of this renderer in the collection.
         /// </summary>
@@ -351,7 +362,7 @@ namespace Contentful.Core.Models
         /// <returns>Returns true if the content is an asset, otherwise false.</returns>
         public bool SupportsContent(IContent content)
         {
-            return content is Asset;
+            return content is AssetStructure;
         }
 
         /// <summary>
@@ -361,14 +372,30 @@ namespace Contentful.Core.Models
         /// <returns>The html img or a tag.</returns>
         public string Render(IContent content)
         {
-            var asset = content as Asset;
+            var assetStructure = content as AssetStructure;
+            var asset = assetStructure.Data.Target;
+            var nodeType = assetStructure.NodeType;
             var sb = new StringBuilder();
-            if(asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
+            if(nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
             {
                 sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
             }else
             {
-                sb.Append($"<a href=\"{asset.File.Url}\">{asset.Title}</a>");
+                sb.Append($"<a href=\"{asset.File.Url}\">");
+
+                if (assetStructure.Content != null && assetStructure.Content.Any())
+                {
+                    foreach (var subContent in assetStructure.Content)
+                    {
+                        var renderer = _rendererCollection.GetRendererForContent(subContent);
+                        sb.Append(renderer.Render(subContent));
+                    }
+                }
+                else
+                {
+                    sb.Append(asset.Title);
+                }
+                sb.Append("</a>");
             }
 
             return sb.ToString();
@@ -390,15 +417,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class HyperlinkContentRenderer : IContentRenderer
     {
-        private readonly ContentRenderererCollection _renderererCollection;
+        private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
         /// Initializes a new HyperlinkContentRenderer.
         /// </summary>
-        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public HyperlinkContentRenderer(ContentRenderererCollection renderererCollection)
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public HyperlinkContentRenderer(ContentRendererCollection rendererCollection)
         {
-            _renderererCollection = renderererCollection;
+            _rendererCollection = rendererCollection;
         }
 
         /// <summary>
@@ -430,7 +457,7 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in link.Content)
             {
-                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
                 sb.Append(renderer.Render(subContent));
             }
 
@@ -496,15 +523,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class ListContentRenderer : IContentRenderer
     {
-        private readonly ContentRenderererCollection _renderererCollection;
+        private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
         /// Initializes a new ListContentRenderer.
         /// </summary>
-        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public ListContentRenderer(ContentRenderererCollection renderererCollection)
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public ListContentRenderer(ContentRendererCollection rendererCollection)
         {
-            _renderererCollection = renderererCollection;
+            _rendererCollection = rendererCollection;
         }
 
         /// <summary>
@@ -532,7 +559,7 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in list.Content)
             {
-                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
                 sb.Append(renderer.Render(subContent));
             }
 
@@ -567,15 +594,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class ListItemContentRenderer : IContentRenderer
     {
-        private readonly ContentRenderererCollection _renderererCollection;
+        private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
         /// Initializes a new ListItemContentRenderer.
         /// </summary>
         /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public ListItemContentRenderer(ContentRenderererCollection renderererCollection)
+        public ListItemContentRenderer(ContentRendererCollection rendererCollection)
         {
-            _renderererCollection = renderererCollection;
+            _rendererCollection = rendererCollection;
         }
 
         /// <summary>
@@ -598,7 +625,7 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in listItem.Content)
             {
-                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
                 sb.Append(renderer.Render(subContent));
             }
 
@@ -633,15 +660,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class QuoteContentRenderer : IContentRenderer
     {
-        private readonly ContentRenderererCollection _renderererCollection;
+        private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
         /// Initializes a new QuoteContentRenderer.
         /// </summary>
-        /// <param name="renderererCollection">The collection of renderer to use for sub-content.</param>
-        public QuoteContentRenderer(ContentRenderererCollection renderererCollection)
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public QuoteContentRenderer(ContentRendererCollection rendererCollection)
         {
-            _renderererCollection = renderererCollection;
+            _rendererCollection = rendererCollection;
         }
 
         /// <summary>
@@ -664,7 +691,7 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in quote.Content)
             {
-                var renderer = _renderererCollection.GetRendererForContent(subContent);
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
                 sb.Append(renderer.Render(subContent));
             }
 

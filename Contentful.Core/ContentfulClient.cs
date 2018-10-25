@@ -314,7 +314,7 @@ namespace Contentful.Core
                     {
                         prop = type?.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
                         p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
-                        if (prop == null)
+                        if (prop == null && linkToken["linkType"]?.ToString() != "Asset")
                         {
                             //the property does not exist in the entry. Skip it in resolving references.
                             continue;
