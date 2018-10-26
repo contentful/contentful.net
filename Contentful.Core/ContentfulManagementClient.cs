@@ -2431,24 +2431,143 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null)
+        /// <summary>
+        /// Gets a collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for the specified organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
+        public async Task<ContentfulCollection<OrganizationMembership>> GetOrganizationMemberships(string organizationId, string queryString = null, CancellationToken cancellationToken = default)
         {
-            return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId).ConfigureAwait(false);
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships{queryString}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<OrganizationMembership>>(Serializer);
+            var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<OrganizationMembership>(Serializer));
+            collection.Items = memberships;
+
+            return collection;
         }
 
-        private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null)
+        /// <summary>
+        /// Creates a membership in an <see cref="Organization"/>.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to create a membership in.</param>
+        /// <param name="role">The role the membership should have for that organization.</param>
+        /// <param name="email">The email address of the membership.</param>
+        /// <param name="suppressInvitation">Whether or not to suppress the invitation email.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<OrganizationMembership> CreateOrganizationMembership(string organizationId, string role, string email, bool suppressInvitation, CancellationToken cancellationToken = default)
         {
-            return await SendHttpRequest(url, HttpMethod.Put, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId).ConfigureAwait(false);
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+
+            var res = await PostAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships", ConvertObjectToJsonStringContent(new { role, email, suppressInvitation }), cancellationToken, null, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<OrganizationMembership>(Serializer);
         }
 
-        private async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancellationToken, int? version = null)
+        /// <summary>
+        /// Gets a single <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
+        /// </summary>
+        /// <param name="membershipId">The id of the membership to get.</param>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.SpaceMembership"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="spaceMembershipId">spaceMembershipId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<OrganizationMembership> GetOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default)
         {
-            return await SendHttpRequest(url, HttpMethod.Delete, _options.ManagementApiKey, cancellationToken, version: version).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(membershipId))
+            {
+                throw new ArgumentException("The id of the organization membership must be set", nameof(membershipId));
+            }
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<OrganizationMembership>(Serializer);
         }
 
-        private async Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken, int? version = null)
+        /// <summary>
+        /// Updates a <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
+        /// </summary>
+        /// <param name="role">The role to set for the membership.</param>
+        /// <param name="membershipId">The id of the membership to update.</param>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.OrganizationMembership"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<OrganizationMembership> UpdateOrganizationMembership(string role, string membershipId, string organizationId, CancellationToken cancellationToken = default)
         {
-            return await SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken, version: version).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(membershipId))
+            {
+                throw new ArgumentException("The id of the organization membership must be set.", nameof(membershipId));
+            }
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+
+            var res = await PutAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}",
+                ConvertObjectToJsonStringContent(new { role }), cancellationToken, null, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<OrganizationMembership>(Serializer);
+        }
+
+        /// <summary>
+        /// Deletes a <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
+        /// </summary>
+        /// <param name="membershipId">The id of the organization membership to delete.</param>
+        /// <param name="organizationId">The id of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <exception cref="ArgumentException">The <see name="membershipId">membershipId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(membershipId))
+            {
+                throw new ArgumentException("The id of the space membership must be set", nameof(membershipId));
+            }
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
+
+            var res = await DeleteAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+        }
+
+        private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
+        {
+            return await SendHttpRequest(url, HttpMethod.Post, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId, additionalHeaders: additionalHeaders).ConfigureAwait(false);
+        }
+
+        private async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
+        {
+            return await SendHttpRequest(url, HttpMethod.Put, _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId, additionalHeaders: additionalHeaders).ConfigureAwait(false);
+        }
+
+        private async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancellationToken, int? version = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
+        {
+            return await SendHttpRequest(url, HttpMethod.Delete, _options.ManagementApiKey, cancellationToken, version: version, additionalHeaders: additionalHeaders).ConfigureAwait(false);
+        }
+
+        private async Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken, int? version = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
+        {
+            return await SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken, version: version, additionalHeaders: additionalHeaders).ConfigureAwait(false);
         }
 
         private string ConvertObjectToJsonString(object ob)
