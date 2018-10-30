@@ -6,15 +6,18 @@
   <ItemGroup>
     <None Remove="JsonFiles\ApiKey.json" />
     <None Remove="JsonFiles\ApiUsage.json" />
+    <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
     <None Remove="JsonFiles\SampleContentTypeFields.json" />
     <None Remove="JsonFiles\SampleEnvironment.json" />
+    <None Remove="JsonFiles\SampleOrgMembershipsCollection.json" />
     <None Remove="JsonFiles\SampleUser.json" />
     <None Remove="JsonFiles\UsagePeriods.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
@@ -33,6 +36,7 @@
     <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />
     <EmbeddedResource Include="JsonFiles\SampleEnvironment.json" />
     <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
+    <EmbeddedResource Include="JsonFiles\SampleOrgMembershipsCollection.json" />
     <EmbeddedResource Include="JsonFiles\SampleUser.json" />
     <EmbeddedResource Include="JsonFiles\TokensCollection.json" />
     <EmbeddedResource Include="JsonFiles\RevokedToken.json" />

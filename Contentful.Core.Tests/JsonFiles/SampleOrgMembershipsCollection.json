@@ -1,0 +1,41 @@
+{
+  "total": 2,
+  "limit": 25,
+  "skip": 0,
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "role": "admin",
+      "sys": {
+        "type": "OrganizationMembership",
+        "id": "7uqvFPPLzgtVaezGvjA9U6",
+        "version": 1,
+        "createdAt": "2013-04-11T20:04:37Z",
+        "updatedAt": "2017-09-20T08:51:45Z",
+        "user": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1ElgCn1mi1UHSBLTP2v4TD"
+          }
+        },
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1ElgCn1mi1UHSBLTP2v4TD"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1ElgCn1mi1UHSBLTP2v4TD"
+          }
+        }
+      }
+    }
+  ]
+}

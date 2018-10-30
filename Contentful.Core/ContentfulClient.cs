@@ -47,6 +47,7 @@ namespace Contentful.Core
             }
             ResolveEntriesSelectively = _options.ResolveEntriesSelectively;
             SerializerSettings.Converters.Add(new AssetJsonConverter());
+            SerializerSettings.Converters.Add(new ContentJsonConverter());
             SerializerSettings.TypeNameHandling = TypeNameHandling.All;
         }
 
@@ -249,7 +250,12 @@ namespace Contentful.Core
         {
             var id = ((JValue) entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
 
-            if(id == null)
+            if (id == null)
+            {
+                id = ((JValue)entryToken.SelectToken("$.data.target.sys.id"))?.Value?.ToString();
+            }
+
+            if (id == null)
             {
                 //No id token present, not possible to resolve links. Probably because the sys property has been excluded with a select statement.
                 return;
@@ -269,7 +275,6 @@ namespace Contentful.Core
             }
             
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
-
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {
@@ -309,7 +314,7 @@ namespace Contentful.Core
                     {
                         prop = type?.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
                         p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
-                        if (prop == null)
+                        if (prop == null && linkToken["linkType"]?.ToString() != "Asset")
                         {
                             //the property does not exist in the entry. Skip it in resolving references.
                             continue;

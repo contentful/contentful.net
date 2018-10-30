@@ -10,6 +10,8 @@ using Contentful.Core.Models;
 using Contentful.Core.Search;
 using System.Threading;
 using System.Reflection;
+using System.Text;
+using System.Collections.Generic;
 
 namespace Contentful.Core.Tests
 {
@@ -1016,6 +1018,72 @@ namespace Contentful.Core.Tests
             Assert.Equal("https://cdn.contentful.com/spaces/564/environments/special/sync?initial=true", path);
         }
 
+        [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithRichTextField()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
+            _client.ContentTypeResolver = new RichTextResolver();
+            //Act
+            var res = await _client.GetEntries<RichTextModel>();
+
+            //Assert
+            Assert.Single(res);
+            Assert.NotNull(res.First().RichText);
+        }
+
+        [Fact]
+        public async Task TurningRichTextIntoHtmlShouldYieldCorrectResult()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
+            _client.ContentTypeResolver = new RichTextResolver();
+
+            var htmlrenderer = new HtmlRenderer();
+            htmlrenderer.AddRenderer(new RichTextContentRenderer() { Order = 10 });
+            htmlrenderer.AddRenderer(new RichTextContentRendererLinks() { Order = 10 });
+            //Act
+            var res = await _client.GetEntries<RichTextModel>();
+            var html = await htmlrenderer.ToHtml(res.First().RichText);
+            //Assert
+            Assert.Contains("<h1>Heading 1</h1>", html); 
+            Assert.Contains("<h2>Heading 2</h2>", html);
+            Assert.Contains("<a href=\"Entry Hyperlink\">Embedded 1</a>", html);
+            Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
+            Assert.Contains("<ul><li><p>Unordered List</p></li>", html);
+            Assert.Contains("<ol><li><p>With Nested Ordered</p></li>", html);
+            Assert.Contains("<blockquote><p>A quote</p></blockquote>", html);
+            Assert.Contains("<a href=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\">Asset Hyp<em>erlink</em></a>", html);
+            Assert.Contains("<hr>", html);
+            Assert.Contains("<img src=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\" alt=\"cat\" />", html);
+            Assert.Contains("<p><strong>Bold Text</strong></p><p><em>Italic Text</em></p><p><u>Underline Text</u></p>", html);
+        }
+
+        [Fact]
+        public async Task TurningRichTextContentIntoHtmlShouldYieldCorrectResultWithSelectiveResolving()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
+            _client.ContentTypeResolver = new RichTextResolver();
+            _client.ResolveEntriesSelectively = true;
+            var htmlrenderer = new HtmlRenderer();
+            htmlrenderer.AddRenderer(new RichTextContentRenderer() { Order = 10 });
+            //Act
+            var res = await _client.GetEntries<RichTextModel>();
+            var html = await htmlrenderer.ToHtml(res.First().RichText);
+            //Assert
+            Assert.Contains("<h1>Heading 1</h1>", html);
+            Assert.Contains("<h2>Heading 2</h2>", html);
+            Assert.Contains("<div><h2>Embedded 2</h2></div>", html);
+            Assert.Contains("<ul><li><p>Unordered List</p></li>", html);
+            Assert.Contains("<ol><li><p>With Nested Ordered</p></li>", html);
+            Assert.Contains("<blockquote><p>A quote</p></blockquote>", html);
+            Assert.Contains("<a href=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\">Asset Hyp<em>erlink</em></a>", html);
+            Assert.Contains("<hr>", html);
+            Assert.Contains("<img src=\"//images.ctfassets.net/jd7yc4wnatx3/4j1JCmvF6MqQymaMqi6OSu/d0013ff28dd2db0371315ea7e63a6e0b/cat.jpg\" alt=\"cat\" />", html);
+            Assert.Contains("<p><strong>Bold Text</strong></p><p><em>Italic Text</em></p><p><u>Underline Text</u></p>", html);
+        }
+
         private ContentfulClient GetClientWithEnvironment(string env = "special")
         {
             var httpClient = new HttpClient(_handler);
@@ -1028,6 +1096,65 @@ namespace Contentful.Core.Tests
             };
             var client = new ContentfulClient(httpClient, options);
             return client;
+        }
+
+        public class RichTextContentRenderer : IContentRenderer
+        {
+            public int Order { get; set; }
+
+            public bool SupportsContent(IContent content)
+            {
+                return content is EntryStructure && (content as EntryStructure).Data.Target is RichTextModel && (content as EntryStructure).NodeType == "embedded-entry-block";
+            } 
+
+            public string Render(IContent content)
+            {
+                var model = (content as EntryStructure).Data.Target as RichTextModel;
+
+                var sb = new StringBuilder();
+
+                sb.Append("<div>");
+
+                sb.Append($"<h2>{model.Body}</h2>");
+
+                sb.Append("</div>");
+
+                return sb.ToString();
+            }
+
+            public Task<string> RenderAsync(IContent content)
+            {
+                return Task.FromResult(Render(content));
+            }
+        }
+
+        public class RichTextContentRendererLinks : IContentRenderer
+        {
+            public int Order { get; set; }
+
+            public bool SupportsContent(IContent content)
+            {
+                return content is EntryStructure && 
+                    (content as EntryStructure).Data.Target is RichTextModel && 
+                    (content as EntryStructure).NodeType == "entry-hyperlink";
+            }
+
+            public string Render(IContent content)
+            {
+                var link = (content as EntryStructure);
+                var model = (content as EntryStructure).Data.Target as RichTextModel;
+
+                var sb = new StringBuilder();
+
+                sb.Append($"<a href=\"{(link.Content.FirstOrDefault() as Text).Value}\">{model.Body}</a>");
+
+                return sb.ToString();
+            }
+
+            public Task<string> RenderAsync(IContent content)
+            {
+                return Task.FromResult(Render(content));
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Net.Http;
 using Contentful.Core;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Http;
+using Contentful.Core.Models;
 
 namespace Contentful.AspNetCore
 {
@@ -41,6 +42,8 @@ namespace Contentful.AspNetCore
                 var factory = sp.GetService<IHttpClientFactory>();
                 return new ContentfulManagementClient(factory.CreateClient(HttpClientName), options);
             });
+            services.AddTransient<HtmlRenderer>();
+
             return services;
         }
 
@@ -65,6 +68,8 @@ namespace Contentful.AspNetCore
                 var client = sp.GetService<HttpClient>();
                 return new ContentfulManagementClient(client, options);
             });
+            services.AddTransient<HtmlRenderer>();
+
             return services;
         }
     }

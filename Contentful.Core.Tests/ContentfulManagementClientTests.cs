@@ -4004,7 +4004,8 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Collection(res,
-                    (t) => {
+                    (t) =>
+                    {
                         Assert.Equal("2018-06-15 00:00:00", t.StartDate.ToString());
                         Assert.Equal("2018-07-14 00:00:00", t.EndDate.ToString());
                         Assert.Equal("20_1ElgCn1mi1UHSBLTP2v4TD", t.SystemProperties.Id);
@@ -4043,7 +4044,8 @@ namespace Contentful.Core.Tests
                                 (x) => Assert.Equal(1778, x)
                             );
                     },
-                    (t) => {
+                    (t) =>
+                    {
                         Assert.Equal("2018-06-15 00:00:00", t.StartDate.ToString());
                         Assert.Equal("2018-07-14 00:00:00", t.EndDate.ToString());
                         Assert.Equal("20", t.SystemProperties.UsagePeriod.SystemProperties.Id);
@@ -4084,6 +4086,112 @@ namespace Contentful.Core.Tests
                             );
                     }
                 );
+        }
+
+        public async Task OrganizationMembershipsShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleOrgMembershipsCollection.json");
+
+            //Act
+            var res = await _client.GetOrganizationMemberships("123");
+
+            //Assert
+            Assert.Equal(2, res.Total);
+            Assert.Equal("admin", res.First().Role);
+        }
+
+        [Fact]
+        public async Task CreateOrganizationMembershipShouldCallCorrectUrlWithData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleOrgMembershipsCollection.json");
+
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrganizationMembership("666", "member", "bob@sob.com", false);
+
+            //Assert
+            Assert.Equal(HttpMethod.Post, method);
+            Assert.Equal("https://api.contentful.com/organizations/666/organization_memberships", url);
+            Assert.Equal(@"{""role"":""member"",""email"":""bob@sob.com"",""suppressInvitation"":false}", contentSet);
+
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task UpdateOrganizationMembershipShouldThrowForEntryIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleOrgMembershipsCollection.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateOrganizationMembership("something", id, "org"));
+
+            //Assert
+            Assert.Equal($"The id of the organization membership must be set.{Environment.NewLine}Parameter name: membershipId", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("afas23")]
+        [InlineData("234")]
+        [InlineData("bbs")]
+        public async Task UpdateOrganizationMembershipShouldCallCorrectUrlWithData(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleOrgMembershipsCollection.json");
+            
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.UpdateOrganizationMembership("bob",id,"orgolonio");
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/organizations/orgolonio/organization_memberships/{id}", url);
+            Assert.Equal(@"{""role"":""bob""}", contentSet);
+        }
+
+        [Theory]
+        [InlineData("adf-2345", "F2f")]
+        [InlineData("453", "fdadf")]
+        [InlineData("agf", "canberra")]
+        public async Task DeletingOrganizationMembershipShouldCallCorrectUrl(string id, string orgId)
+        {
+            //Arrange
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.Response = new HttpResponseMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            await _client.DeleteOrganizationMembership(id, orgId);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://api.contentful.com/organizations/{orgId}/organization_memberships/{id}", requestUrl);
         }
 
         private ContentfulManagementClient GetClientWithEnvironment(string env = "special")

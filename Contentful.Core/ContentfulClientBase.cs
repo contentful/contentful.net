@@ -200,8 +200,10 @@ namespace Contentful.Core
         /// <param name="version">The version of the content.</param>
         /// <param name="contentTypeId">The contenttype id header.</param>
         /// <param name="organisationId">The organisation it header.</param>
+        /// <param name="additionalHeaders">Any additional headers to send with the request.</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null, int? version = null, string contentTypeId = null, string organisationId = null)
+        protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null, 
+            int? version = null, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -222,7 +224,14 @@ namespace Contentful.Core
             if (!string.IsNullOrEmpty(organisationId))
             {
                 httpRequestMessage.Headers.Add("X-Contentful-Organization", organisationId);
+            }
 
+            if(additionalHeaders != null)
+            {
+                foreach(var header in additionalHeaders)
+                {
+                    httpRequestMessage.Headers.Add(header.Key, header.Value);
+                }
             }
 
             httpRequestMessage.Content = content;
