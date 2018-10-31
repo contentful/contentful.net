@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -3960,6 +3961,134 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetUsagePeriodsShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"UsagePeriods.json");
+
+            //Act
+            var res = await _client.GetUsagePeriods("some-id");
+
+            //Assert
+            Assert.Collection(res,
+                    (t) => {
+                        Assert.Equal("07/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Null(t.EndDate);
+                        Assert.Equal("4", t.SystemProperties.Id);
+                    },
+                    (t) => {
+                        Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("3", t.SystemProperties.Id);
+                    },
+                    (t) => {
+                        Assert.Equal("05/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("06/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("2", t.SystemProperties.Id);
+                    },
+                    (t) => {
+                        Assert.Equal("04/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("05/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("1", t.SystemProperties.Id);
+                    }
+                );
+        }
+
+        [Fact]
+        public async Task GetResourceUsageShouldSerializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ApiUsage.json");
+
+            //Act
+            var res = await _client.GetResourceUsage("some-id", "organization");
+
+            //Assert
+            Assert.Collection(res,
+                    (t) =>
+                    {
+                        Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("20_1ElgCn1mi1UHSBLTP2v4TD", t.SystemProperties.Id);
+                        Assert.Equal("daily", t.Interval);
+                        Assert.Equal("apiRequests", t.UnitOfMeasure);
+                        Assert.Collection(t.Usage,
+                                (x) => Assert.Equal(6442, x),
+                                (x) => Assert.Equal(5952, x),
+                                (x) => Assert.Equal(8713, x),
+                                (x) => Assert.Equal(1998, x),
+                                (x) => Assert.Equal(5209, x),
+                                (x) => Assert.Equal(2894, x),
+                                (x) => Assert.Equal(1144, x),
+                                (x) => Assert.Equal(2152, x),
+                                (x) => Assert.Equal(4305, x),
+                                (x) => Assert.Equal(4534, x),
+                                (x) => Assert.Equal(1832, x),
+                                (x) => Assert.Equal(5979, x),
+                                (x) => Assert.Equal(6189, x),
+                                (x) => Assert.Equal(954, x),
+                                (x) => Assert.Equal(4847, x),
+                                (x) => Assert.Equal(3953, x),
+                                (x) => Assert.Equal(9094, x),
+                                (x) => Assert.Equal(1800, x),
+                                (x) => Assert.Equal(5044, x),
+                                (x) => Assert.Equal(1232, x),
+                                (x) => Assert.Equal(920, x),
+                                (x) => Assert.Equal(2396, x),
+                                (x) => Assert.Equal(9551, x),
+                                (x) => Assert.Equal(4350, x),
+                                (x) => Assert.Equal(2809, x),
+                                (x) => Assert.Equal(5496, x),
+                                (x) => Assert.Equal(9442, x),
+                                (x) => Assert.Equal(7301, x),
+                                (x) => Assert.Equal(4349, x),
+                                (x) => Assert.Equal(1778, x)
+                            );
+                    },
+                    (t) =>
+                    {
+                        Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("20", t.SystemProperties.UsagePeriod.SystemProperties.Id);
+                        Assert.Equal("20_1ElgCn1mi1UHSBLTP2v5TD", t.SystemProperties.Id);
+                        Assert.Equal("daily", t.Interval);
+                        Assert.Equal("apiRequests", t.UnitOfMeasure);
+                        Assert.Collection(t.Usage,
+                                (x) => Assert.Equal(6444, x),
+                                (x) => Assert.Equal(5955, x),
+                                (x) => Assert.Equal(8716, x),
+                                (x) => Assert.Equal(1998, x),
+                                (x) => Assert.Equal(5209, x),
+                                (x) => Assert.Equal(2894, x),
+                                (x) => Assert.Equal(1144, x),
+                                (x) => Assert.Equal(2152, x),
+                                (x) => Assert.Equal(4305, x),
+                                (x) => Assert.Equal(4534, x),
+                                (x) => Assert.Equal(1832, x),
+                                (x) => Assert.Equal(5979, x),
+                                (x) => Assert.Equal(6189, x),
+                                (x) => Assert.Equal(954, x),
+                                (x) => Assert.Equal(4847, x),
+                                (x) => Assert.Equal(3953, x),
+                                (x) => Assert.Equal(9094, x),
+                                (x) => Assert.Equal(1800, x),
+                                (x) => Assert.Equal(5044, x),
+                                (x) => Assert.Equal(1232, x),
+                                (x) => Assert.Equal(920, x),
+                                (x) => Assert.Equal(2396, x),
+                                (x) => Assert.Equal(9551, x),
+                                (x) => Assert.Equal(4350, x),
+                                (x) => Assert.Equal(2809, x),
+                                (x) => Assert.Equal(5496, x),
+                                (x) => Assert.Equal(9442, x),
+                                (x) => Assert.Equal(7301, x),
+                                (x) => Assert.Equal(4349, x),
+                                (x) => Assert.Equal(1778, x)
+                            );
+                    }
+                );
+        }
+
         public async Task OrganizationMembershipsShouldDeserializeCorrectly()
         {
             //Arrange

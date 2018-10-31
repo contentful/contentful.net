@@ -125,5 +125,15 @@ namespace Contentful.Core.Models
         /// The link to the environment of the resource.
         /// </summary>
         public ContentfulEnvironment Environment { get; set; }
+
+        /// <summary>
+        /// The organization the resource links to. Will only be present for certain management API calls.
+        /// </summary>
+        public Organization Organization { get; set; }
+
+        /// <summary>
+        /// The usage period the resource links to. Will only be present for certain management API calls.
+        /// </summary>
+        public UsagePeriod UsagePeriod { get; set; }
     }
 }

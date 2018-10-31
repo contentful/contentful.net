@@ -2432,6 +2432,28 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.UsagePeriod"/> for an organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to get usage periods for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UsagePeriod"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<UsagePeriod>> GetUsagePeriods(string organizationId, CancellationToken cancellationToken = default)
+        {
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "usage-insights" });
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usage_periods", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            var collection = jsonObject.ToObject<ContentfulCollection<UsagePeriod>>(Serializer);
+            var periods = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<UsagePeriod>(Serializer));
+            collection.Items = periods;
+            return collection;
+        }
+
+        /// <summary>
         /// Gets a collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for the specified organization.
         /// </summary>
         /// <param name="organizationId">The id of the organization.</param>
@@ -2446,9 +2468,34 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
             var collection = jsonObject.ToObject<ContentfulCollection<OrganizationMembership>>(Serializer);
             var memberships = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<OrganizationMembership>(Serializer));
             collection.Items = memberships;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a collection of <see cref="Contentful.Core.Models.Management.ApiUsage"/> for an organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to get usage for.</param>
+        /// <param name="type">The type of resource to get usage for, organization or space.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiUsage"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ApiUsage>> GetResourceUsage(string organizationId, string type, string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "usage-insights" });
+
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usages/{type}{queryString}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<ApiUsage>>(Serializer);
+            var apiUsage = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiUsage>(Serializer));
+            collection.Items = apiUsage;
 
             return collection;
         }
@@ -2468,14 +2515,15 @@ namespace Contentful.Core
             var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
 
             var res = await PostAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships", ConvertObjectToJsonStringContent(new { role, email, suppressInvitation }), cancellationToken, null, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
-
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-
+            var collection = jsonObject.ToObject<ContentfulCollection<ApiUsage>>(Serializer);
+            var apiUsage = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ApiUsage>(Serializer));
+            collection.Items = apiUsage;
             return jsonObject.ToObject<OrganizationMembership>(Serializer);
         }
-
+        
         /// <summary>
         /// Gets a single <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
         /// </summary>

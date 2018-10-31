@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="JsonFiles\ApiKey.json" />
+    <None Remove="JsonFiles\ApiUsage.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
@@ -12,6 +13,7 @@
     <None Remove="JsonFiles\SampleEnvironment.json" />
     <None Remove="JsonFiles\SampleOrgMembershipsCollection.json" />
     <None Remove="JsonFiles\SampleUser.json" />
+    <None Remove="JsonFiles\UsagePeriods.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
@@ -28,6 +30,8 @@
     <EmbeddedResource Include="JsonFiles\OrganizationsCollection.json" />
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
+    <EmbeddedResource Include="JsonFiles\ApiUsage.json" />
+    <EmbeddedResource Include="JsonFiles\UsagePeriods.json" />
     <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
     <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />
     <EmbeddedResource Include="JsonFiles\SampleEnvironment.json" />
