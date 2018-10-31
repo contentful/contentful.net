@@ -996,5 +996,25 @@ namespace Contentful.Core
         /// <exception cref="System.ArgumentException">The <see name="membershipId">membershipId</see> parameter was null or empty.</exception>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task DeleteOrganizationMembership(string membershipId, string organizationId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a collection of all <see cref="Contentful.Core.Models.Management.UsagePeriod"/> for an organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to get usage periods for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.UsagePeriod"/>.</returns>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<UsagePeriod>> GetUsagePeriods(string organizationId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a collection of <see cref="Contentful.Core.Models.Management.ApiUsage"/> for an organization.
+        /// </summary>
+        /// <param name="organizationId">The id of the organization to get usage for.</param>
+        /// <param name="type">The type of resource to get usage for, organization or space.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiUsage"/>.</returns>
+        /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<ApiUsage>> GetResourceUsage(string organizationId, string type, string queryString = null, CancellationToken cancellationToken = default);
     }
 }

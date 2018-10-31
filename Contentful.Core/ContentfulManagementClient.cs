@@ -2441,7 +2441,7 @@ namespace Contentful.Core
         public async Task<ContentfulCollection<UsagePeriod>> GetUsagePeriods(string organizationId, CancellationToken cancellationToken = default)
         {
             var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "usage-insights" });
-            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usage_periods", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usage_periods", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2452,9 +2452,6 @@ namespace Contentful.Core
             collection.Items = periods;
             return collection;
         }
-
-
-
 
         /// <summary>
         /// Gets a collection of <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for the specified organization.
@@ -2484,14 +2481,15 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="organizationId">The id of the organization to get usage for.</param>
         /// <param name="type">The type of resource to get usage for, organization or space.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiUsage"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ApiUsage>> GetResourceUsage(string organizationId, string type, CancellationToken cancellationToken = default)
+        public async Task<ContentfulCollection<ApiUsage>> GetResourceUsage(string organizationId, string type, string queryString = null, CancellationToken cancellationToken = default)
         {
             var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "usage-insights" });
 
-            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usages/{type}", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/usages/{type}{queryString}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
