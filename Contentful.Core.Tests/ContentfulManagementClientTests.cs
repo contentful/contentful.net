@@ -6,6 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -3971,23 +3972,23 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Collection(res,
                     (t) => {
-                        Assert.Equal("2018-07-15 00:00:00", t.StartDate.ToString());
+                        Assert.Equal("07/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Null(t.EndDate);
                         Assert.Equal("4", t.SystemProperties.Id);
                     },
                     (t) => {
-                        Assert.Equal("2018-06-15 00:00:00", t.StartDate.ToString());
-                        Assert.Equal("2018-07-14 00:00:00", t.EndDate.ToString());
+                        Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("3", t.SystemProperties.Id);
                     },
                     (t) => {
-                        Assert.Equal("2018-05-15 00:00:00", t.StartDate.ToString());
-                        Assert.Equal("2018-06-14 00:00:00", t.EndDate.ToString());
+                        Assert.Equal("05/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("06/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("2", t.SystemProperties.Id);
                     },
                     (t) => {
-                        Assert.Equal("2018-04-15 00:00:00", t.StartDate.ToString());
-                        Assert.Equal("2018-05-14 00:00:00", t.EndDate.ToString());
+                        Assert.Equal("04/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("05/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("1", t.SystemProperties.Id);
                     }
                 );
@@ -4006,8 +4007,8 @@ namespace Contentful.Core.Tests
             Assert.Collection(res,
                     (t) =>
                     {
-                        Assert.Equal("2018-06-15 00:00:00", t.StartDate.ToString());
-                        Assert.Equal("2018-07-14 00:00:00", t.EndDate.ToString());
+                        Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("20_1ElgCn1mi1UHSBLTP2v4TD", t.SystemProperties.Id);
                         Assert.Equal("daily", t.Interval);
                         Assert.Equal("apiRequests", t.UnitOfMeasure);
@@ -4046,8 +4047,8 @@ namespace Contentful.Core.Tests
                     },
                     (t) =>
                     {
-                        Assert.Equal("2018-06-15 00:00:00", t.StartDate.ToString());
-                        Assert.Equal("2018-07-14 00:00:00", t.EndDate.ToString());
+                        Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
+                        Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("20", t.SystemProperties.UsagePeriod.SystemProperties.Id);
                         Assert.Equal("20_1ElgCn1mi1UHSBLTP2v5TD", t.SystemProperties.Id);
                         Assert.Equal("daily", t.Interval);
