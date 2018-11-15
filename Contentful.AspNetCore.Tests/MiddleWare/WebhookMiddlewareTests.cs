@@ -1,5 +1,6 @@
 ﻿using Contentful.AspNetCore.MiddleWare;
 using Contentful.Core.Models;
+using Contentful.Core.Models.Management;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -19,7 +20,7 @@ namespace Contentful.AspNetCore.Tests.MiddleWare
             //Arrange
             var consumerBuilder = new ConsumerBuilder();
             var called = false;
-            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", "Entry", "publish", (s) => { called = true; return new { Result = "Ok" }; });
+            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", SystemWebhookTopics.Entry, SystemWebhookActions.Publish, (s) => { called = true; return new { Result = "Ok" }; });
             var middleware = new WebhookMiddleware(null, consumerBuilder.Build());
             var context = new DefaultHttpContext();
             context.Request.Headers.Add("X-Contentful-Topic", new Microsoft.Extensions.Primitives.StringValues("ContentManagement.Entry.publish"));
@@ -39,7 +40,7 @@ namespace Contentful.AspNetCore.Tests.MiddleWare
             var consumerBuilder = new ConsumerBuilder();
             var called = false;
             var hookEntry = new Entry<dynamic>();
-            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", "Entry", "publish", (s) => { called = true; hookEntry = s; return new { Result = "Ok" }; });
+            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", SystemWebhookTopics.Entry, SystemWebhookActions.Publish, (s) => { called = true; hookEntry = s; return new { Result = "Ok" }; });
             var middleware = new WebhookMiddleware(null, consumerBuilder.Build());
             var context = new DefaultHttpContext();
 
@@ -89,8 +90,8 @@ namespace Contentful.AspNetCore.Tests.MiddleWare
             var secondCalled = false;
             var hookEntry = new Entry<dynamic>();
             var secondEntry = new Entry<dynamic>();
-            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", "Entry", "publish", (s) => { called = true; hookEntry = s; return new { Result = "Ok" }; });
-            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", "Entry", "publish", (s) => { secondCalled = true; secondEntry = s; return new { Result = "Ok" }; });
+            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", SystemWebhookTopics.Entry, SystemWebhookActions.Publish, (s) => { called = true; hookEntry = s; return new { Result = "Ok" }; });
+            consumerBuilder.AddConsumer<Entry<dynamic>>("Test", SystemWebhookTopics.Entry, SystemWebhookActions.Publish, (s) => { secondCalled = true; secondEntry = s; return new { Result = "Ok" }; });
             var middleware = new WebhookMiddleware(null, consumerBuilder.Build());
             var context = new DefaultHttpContext();
 
