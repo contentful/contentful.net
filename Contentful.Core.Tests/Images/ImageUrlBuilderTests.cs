@@ -171,19 +171,20 @@ namespace Contentful.Core.Tests.Images
         }
 
         [Theory]
-        [InlineData(ImageFocusArea.Bottom)]
-        [InlineData(ImageFocusArea.Bottom_Left)]
-        [InlineData(ImageFocusArea.Face)]
-        [InlineData(ImageFocusArea.Faces)]
-        [InlineData(ImageFocusArea.Top)]
-        public void AddingFocusAreaShouldSetCorrectQueryString(ImageFocusArea focusArea)
+        [InlineData(ImageFocusArea.Bottom, "?f=bottom")]
+        [InlineData(ImageFocusArea.Bottom_Left, "?f=bottom_left")]
+        [InlineData(ImageFocusArea.Face, "?f=face")]
+        [InlineData(ImageFocusArea.Faces, "?f=faces")]
+        [InlineData(ImageFocusArea.Top, "?f=top")]
+        [InlineData(ImageFocusArea.Default, "")]
+        public void AddingFocusAreaShouldSetCorrectQueryString(ImageFocusArea focusArea, string expected)
         {
             //Arrange
             var builder = new ImageUrlBuilder();
             //Act
             var result = builder.SetFocusArea(focusArea).Build();
             //Assert
-            Assert.Equal($"?f={focusArea.ToString().ToLower()}", result);
+            Assert.Equal(expected, result);
         }
 
         [Theory]
