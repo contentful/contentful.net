@@ -53,6 +53,19 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public void CreatingAContentfulClientWithoutOptionsShouldThrowArgumentException()
+        {
+            //Arrange
+            var httpClient = new HttpClient(_handler);
+
+            //Act
+            var ex = Assert.Throws<ArgumentException>(() => new ContentfulClient(httpClient, options: null));
+
+            //Assert
+            Assert.Equal($"The ContentfulOptions cannot be null.{Environment.NewLine}Parameter name: options", ex.Message);
+        }
+
+        [Fact]
         public async Task CreatingAContentfulClientAndMakingCallShouldAddUserAgentHeader()
         {
             //Arrange
