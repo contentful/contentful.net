@@ -326,6 +326,18 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task DeletingAContentTypeShouldThrowForEmptyId()
+        {
+            //Arrange
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeleteContentType(""));
+
+            //Assert
+            Assert.Equal("contentTypeId", ex.Message);
+        }
+
+        [Fact]
         public async Task ActivatingContentTypeShouldThrowForEmptyId()
         {
             //Arrange
