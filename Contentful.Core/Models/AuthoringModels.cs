@@ -12,6 +12,11 @@ namespace Contentful.Core.Models
     public class Document
     {
         /// <summary>
+        /// The data for the document node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
+        /// <summary>
         /// The type of the node.
         /// </summary>
         public string NodeType { get; set; }
@@ -27,6 +32,11 @@ namespace Contentful.Core.Models
     /// </summary>
     public class Text : IContent
     {
+        /// <summary>
+        /// The data for the text node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
         /// <summary>
         /// The type of the node.
         /// </summary>
@@ -83,7 +93,7 @@ namespace Contentful.Core.Models
     /// <summary>
     /// Represents a mark for a text node.
     /// </summary>
-    public class Mark : IContent
+    public class Mark
     {
         /// <summary>
         /// The type of mark.
@@ -96,6 +106,11 @@ namespace Contentful.Core.Models
     /// </summary>
     public class Paragraph : IContent
     {
+        /// <summary>
+        /// The data for the paragraph node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
         /// <summary>
         /// The type of node.
         /// </summary>
@@ -112,6 +127,11 @@ namespace Contentful.Core.Models
     /// </summary>
     public class Heading : IContent
     {
+        /// <summary>
+        /// The data for the heading node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
         /// <summary>
         /// The type of node.
         /// </summary>
@@ -161,6 +181,11 @@ namespace Contentful.Core.Models
     public class List : IContent
     {
         /// <summary>
+        /// The data for the list node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
+        /// <summary>
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
@@ -176,6 +201,11 @@ namespace Contentful.Core.Models
     /// </summary>
     public class ListItem : IContent
     {
+        /// <summary>
+        /// The data for the list item node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
         /// <summary>
         /// The type of node.
         /// </summary>
@@ -193,6 +223,11 @@ namespace Contentful.Core.Models
     public class Quote : IContent
     {
         /// <summary>
+        /// The data for the quote node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
+        /// <summary>
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
@@ -208,6 +243,11 @@ namespace Contentful.Core.Models
     /// </summary>
     public class HorizontalRuler : IContent
     {
+        /// <summary>
+        /// The data for the heading node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
         /// <summary>
         /// The type of node.
         /// </summary>
@@ -316,9 +356,21 @@ namespace Contentful.Core.Models
     public class CustomNode : IContent
     {
         /// <summary>
+        /// The data for the custom node.
+        /// </summary>
+        public EmptyNodeData Data { get; set; }
+
+        /// <summary>
         /// The JSON data of the node.
         /// </summary>
         public JObject JObject { get; set; }
+    }
+
+    /// <summary>
+    /// Represents an empty node data structure for nodes where the data property is empty.
+    /// </summary>
+    public class EmptyNodeData
+    {
     }
 
     /// <summary>
