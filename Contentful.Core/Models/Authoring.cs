@@ -220,7 +220,7 @@ namespace Contentful.Core.Models
         /// <returns>Returns true if the content is a heading, otherwise false.</returns>
         public bool SupportsContent(IContent content)
         {
-            return content is Heading;
+            return content is Heading1 || content is Heading2 || content is Heading3 || content is Heading4 || content is Heading5 || content is Heading6;
         }
 
         /// <summary>
@@ -230,9 +230,33 @@ namespace Contentful.Core.Models
         /// <returns>The p-tag as a string.</returns>
         public string Render(IContent content)
         {
-            var heading = content as Heading;
+            var headingSize = 1;
+
+            switch (content)
+            {
+                case Heading1 _:
+                    break;
+                case Heading2 _:
+                    headingSize = 2;
+                    break;
+                case Heading3 _:
+                    headingSize = 3;
+                    break;
+                case Heading4 _:
+                    headingSize = 4;
+                    break;
+                case Heading5 _:
+                    headingSize = 5;
+                    break;
+                case Heading6 _:
+                    headingSize = 6;
+                    break;
+            }
+
+            var heading = content as IHeading;
+
             var sb = new StringBuilder();
-            sb.Append($"<h{heading.HeadingSize}>");
+            sb.Append($"<h{headingSize}>");
 
             foreach (var subContent in heading.Content)
             {
@@ -240,7 +264,7 @@ namespace Contentful.Core.Models
                 sb.Append(renderer.Render(subContent));
             }
 
-            sb.Append($"</h{heading.HeadingSize}>");
+            sb.Append($"</h{headingSize}>");
             return sb.ToString();
         }
 

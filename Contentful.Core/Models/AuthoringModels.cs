@@ -17,6 +17,11 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
         /// The list of content this document contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -31,6 +36,11 @@ namespace Contentful.Core.Models
         /// The type of the node.
         /// </summary>
         public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
 
         /// <summary>
         /// The textual value.
@@ -102,15 +112,20 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
         /// The list of content this paragraph contains.
         /// </summary>
         public List<IContent> Content { get; set; }
     }
 
     /// <summary>
-    /// Represents a heading content node.
+    /// Represents a heading1 content node.
     /// </summary>
-    public class Heading : IContent
+    public class Heading1 : IContent, IHeading
     {
         /// <summary>
         /// The type of node.
@@ -118,9 +133,114 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
-        /// The size of the heading.
+        /// The additional data of the node.
         /// </summary>
-        public int HeadingSize { get; set; }
+        public object Data { get; set; }
+
+        /// <summary>
+        /// The list of content this heading contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a heading2 content node.
+    /// </summary>
+    public class Heading2 : IContent, IHeading
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
+        /// The list of content this heading contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a heading3 content node.
+    /// </summary>
+    public class Heading3 : IContent, IHeading
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
+        /// The list of content this heading contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a heading4 content node.
+    /// </summary>
+    public class Heading4 : IContent, IHeading
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
+        /// The list of content this heading contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a heading5 content node.
+    /// </summary>
+    public class Heading5 : IContent, IHeading
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
+        /// The list of content this heading contains.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a heading6 content node.
+    /// </summary>
+    public class Heading6 : IContent, IHeading
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -166,6 +286,11 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
         /// The list of content this paragraph contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -180,6 +305,11 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
 
         /// <summary>
         /// The list of content this paragraph contains.
@@ -198,6 +328,11 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
+
+        /// <summary>
         /// The list of content this paragraph contains.
         /// </summary>
         public List<IContent> Content { get; set; }
@@ -212,6 +347,11 @@ namespace Contentful.Core.Models
         /// The type of node.
         /// </summary>
         public string NodeType { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public object Data { get; set; }
     }
 
     /// <summary>
@@ -327,5 +467,16 @@ namespace Contentful.Core.Models
     public interface IContent
     {
 
+    }
+
+    /// <summary>
+    /// Interface that marks an IContent as a heading.
+    /// </summary>
+    public interface IHeading
+    {
+        /// <summary>
+        /// The list of content this heading contains.
+        /// </summary>
+        List<IContent> Content { get; set; }
     }
 }

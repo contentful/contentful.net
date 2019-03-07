@@ -1041,7 +1041,6 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<RichTextModel>();
 
             //Assert
-            Assert.Single(res);
             Assert.NotNull(res.First().RichText);
         }
 
@@ -1057,7 +1056,7 @@ namespace Contentful.Core.Tests
             htmlrenderer.AddRenderer(new RichTextContentRendererLinks() { Order = 10 });
             //Act
             var res = await _client.GetEntries<RichTextModel>();
-            var html = await htmlrenderer.ToHtml(res.First().RichText);
+            var html = await htmlrenderer.ToHtml(res.Skip(1).First().RichText);
             //Assert
             Assert.Contains("<h1>Heading 1</h1>", html); 
             Assert.Contains("<h2>Heading 2</h2>", html);
@@ -1083,7 +1082,7 @@ namespace Contentful.Core.Tests
             htmlrenderer.AddRenderer(new RichTextContentRenderer() { Order = 10 });
             //Act
             var res = await _client.GetEntries<RichTextModel>();
-            var html = await htmlrenderer.ToHtml(res.First().RichText);
+            var html = await htmlrenderer.ToHtml(res.Skip(1).First().RichText);
             //Assert
             Assert.Contains("<h1>Heading 1</h1>", html);
             Assert.Contains("<h2>Heading 2</h2>", html);

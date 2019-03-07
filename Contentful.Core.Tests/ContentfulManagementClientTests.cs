@@ -738,6 +738,62 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task CreateOrUpdateEntryShouldCallCorrectUrlWithDataForRichText()
+        {
+            //Arrange
+            var doc = new Document()
+            {
+                NodeType = "document",
+                Content = new List<IContent>()
+                {
+                    new Paragraph()
+                    {
+                        NodeType = "paragraph",
+                        Content = new List<IContent>()
+                        {
+                            new Text()
+                            {
+                                Value = "Hello!"
+                            }
+                        }
+                    }
+                }
+            };
+            var entry = new ManagementEntry
+            {
+                Field34 = new Dictionary<string, string>()
+                {
+                    { "en-US", "banana" }
+                },
+                RichText = new Dictionary<string, Document>()
+                {
+                    { "en-US", doc }
+                }
+            };
+            var contentTypeHeader = "";
+            var contentSet = "";
+            var requestUrl = "";
+            var versionHeader = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            var res = await _client.CreateOrUpdateEntry(entry, "532", contentTypeId: "Bryan Fury", version: 45);
+            //Assert
+            Assert.Equal("Bryan Fury", contentTypeHeader);
+            Assert.Equal("45", versionHeader);
+            Assert.Equal("https://api.contentful.com/spaces/666/entries/532", requestUrl);
+            Assert.Contains(@"""field34"":{""en-US"":""banana""}", contentSet);
+            Assert.Contains(@"""richText"":{""en-US"":{""nodeType"":""document"",""data"":null,""content"":null}}", contentSet);
+        }
+
+        [Fact]
         public async Task UpdateEntryForLocaleShouldSetValuesCorrectly()
         {
             //Arrange

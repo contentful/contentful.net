@@ -51,15 +51,9 @@ namespace Contentful.Core.Configuration
                 return jObject.ToObject(typeinfo, serializer);
             }
 
-            if (type.StartsWith("heading"))
+            if(type == null)
             {
-                var sizeString = type.Split("-".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)[1];
-                var size = 1;
-                int.TryParse(sizeString, out size);
-
-                var heading = jObject.ToObject<Heading>(serializer);
-                heading.HeadingSize = size;
-                return heading;
+                return new CustomNode { JObject = jObject };
             }
 
             switch (type)
@@ -83,6 +77,18 @@ namespace Contentful.Core.Configuration
                     return jObject.ToObject<List>(serializer);
                 case "list-item":
                     return jObject.ToObject<ListItem>(serializer);
+                case "heading-1":
+                    return jObject.ToObject<Heading1>(serializer);
+                case "heading-2":
+                    return jObject.ToObject<Heading2>(serializer);
+                case "heading-3":
+                    return jObject.ToObject<Heading3>(serializer);
+                case "heading-4":
+                    return jObject.ToObject<Heading4>(serializer);
+                case "heading-5":
+                    return jObject.ToObject<Heading5>(serializer);
+                case "heading-6":
+                    return jObject.ToObject<Heading6>(serializer);
                 case "hr":
                     return jObject.ToObject<HorizontalRuler>();
                 case "entry-hyperlink":
