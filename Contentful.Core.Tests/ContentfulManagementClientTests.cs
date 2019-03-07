@@ -790,7 +790,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("45", versionHeader);
             Assert.Equal("https://api.contentful.com/spaces/666/entries/532", requestUrl);
             Assert.Contains(@"""field34"":{""en-US"":""banana""}", contentSet);
-            Assert.Contains(@"""richText"":{""en-US"":{""nodeType"":""document"",""data"":null,""content"":null}}", contentSet);
+            Assert.Contains(@"""richText"":{""en-US"":{""nodeType"":""document"",""data"":null,""content"":[{""nodeType"":""paragraph"",""data"":null,""content"":[{""nodeType"":null,""data"":null,""value"":""Hello!"",""marks"":null}]}", contentSet);
         }
 
         [Fact]
