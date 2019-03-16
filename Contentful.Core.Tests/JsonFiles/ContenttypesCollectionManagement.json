@@ -94,7 +94,49 @@
           "type": "Link",
           "localized": false,
           "required": false,
-          "validations": [],
+          "validations": [
+            {
+              "nodes": {
+                "entry-hyperlink": [
+                  {
+                    "linkContentType": [
+                      "bob"
+                    ],
+                    "message": "bob"
+                  }
+                ],
+                "embedded-entry-block": [
+                  {
+                    "size": {
+                      "min": 2,
+                      "max": 4
+                    },
+                    "message": "bob2"
+                  },
+                  {
+                    "linkContentType": [
+                      "bob"
+                    ],
+                    "message": "bob3"
+                  }
+                ],
+                "embedded-entry-inline": [
+                  {
+                    "size": {
+                      "max": 8
+                    },
+                    "message": "bob4"
+                  },
+                  {
+                    "linkContentType": [
+                      "bob"
+                    ],
+                    "message": "bob5"
+                  }
+                ]
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false,
           "linkType": "Asset"

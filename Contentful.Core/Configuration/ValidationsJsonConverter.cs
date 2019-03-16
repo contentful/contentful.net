@@ -34,7 +34,7 @@ namespace Contentful.Core.Configuration
         {
             var jsonObject = JObject.Load(reader);
 
-            if (jsonObject.TryGetValue("size", out JToken jToken))
+            if (jsonObject.TryGetValue("size", out var jToken))
             {
                 return new SizeValidator(
                     jToken["min"].ToNullableInt(),
@@ -124,6 +124,26 @@ namespace Contentful.Core.Configuration
 				}
 				return new ImageSizeValidator(minWidth, maxWidth, minHeight, maxHeight, jsonObject["message"]?.ToString());
 			}
+
+            if (jsonObject.TryGetValue("nodes", out jToken))
+            {
+                var validator = new NodesValidator();
+
+                if (jToken["entry-hyperlink"] != null)
+                {
+                    validator.EntryHyperlink = jToken["entry-hyperlink"].ToObject<IEnumerable<IFieldValidator>>(serializer);
+                }
+                if (jToken["embedded-entry-block"] != null)
+                {
+                    validator.EmbeddedEntryBlock = jToken["embedded-entry-block"].ToObject<IEnumerable<IFieldValidator>>(serializer);
+                }
+                if (jToken["embedded-entry-inline"] != null)
+                {
+                    validator.EmbeddedEntryInline = jToken["embedded-entry-inline"].ToObject<IEnumerable<IFieldValidator>>(serializer);
+                }
+
+                return validator;
+            }
 
             return Activator.CreateInstance(objectType);
         }
