@@ -484,4 +484,55 @@ namespace Contentful.Core.Models.Management
 			return new { assetImageDimensions = new { width = new { min = MinWidth, max = MaxWidth }, height = new { min = MinHeight, max = MaxHeight } }, message = Message };
 		}
 	}
+
+    /// <summary>
+    /// Represents a validator that validates the nodes of a rich text field.
+    /// </summary>
+    public class NodesValidator : IFieldValidator
+    {
+        /// <summary>
+        /// A list of validations applied to entry hyper links.
+        /// </summary>
+        [JsonProperty("entry-hyperlink")]
+        public IEnumerable<IFieldValidator> EntryHyperlink { get; set; }
+        /// <summary>
+        /// A list of validations applied to embedded entry blocks.
+        /// </summary>
+        [JsonProperty("embedded-entry-block")]
+        public IEnumerable<IFieldValidator> EmbeddedEntryBlock { get; set; }
+        /// <summary>
+        /// A list of validations applied to inline embedded entries.
+        /// </summary>
+        [JsonProperty("embedded-entry-inline")]
+        public IEnumerable<IFieldValidator> EmbeddedEntryInline { get; set; }
+
+
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
+        public object CreateValidator()
+        {
+            return new { nodes = new Nodes(this) };
+        }
+    }
+
+    internal class Nodes
+    {
+        public Nodes(NodesValidator validator)
+        {
+            EntryHyperlink = validator.EntryHyperlink;
+            EmbeddedEntryBlock = validator.EmbeddedEntryBlock;
+            EmbeddedEntryInline = validator.EmbeddedEntryInline;
+        }
+
+        [JsonProperty("entry-hyperlink")]
+        public IEnumerable<IFieldValidator> EntryHyperlink { get; set; }
+
+        [JsonProperty("embedded-entry-block")]
+        public IEnumerable<IFieldValidator> EmbeddedEntryBlock { get; set; }
+
+        [JsonProperty("embedded-entry-inline")]
+        public IEnumerable<IFieldValidator> EmbeddedEntryInline { get; set; }
+    }
 }

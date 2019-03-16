@@ -429,6 +429,9 @@ namespace Contentful.Core.Tests
             Assert.Equal($"https://api.contentful.com/spaces/666/public/content_types", requestUrl);
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
+            Assert.Equal(8, ((res.First().Fields.Last().Validations.First() as NodesValidator).EmbeddedEntryInline.First() as SizeValidator).Max);
+            Assert.Equal(2, ((res.First().Fields.Last().Validations.First() as NodesValidator).EmbeddedEntryBlock.First() as SizeValidator).Min);
+            Assert.Equal(4, ((res.First().Fields.Last().Validations.First() as NodesValidator).EmbeddedEntryBlock.First() as SizeValidator).Max);
         }
 
         [Fact]

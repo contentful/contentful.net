@@ -185,5 +185,26 @@ namespace Contentful.Core.Tests.Models.Management
             //Assert
             Assert.Equal($@"{{""assetFileSize"":{{""min"":{expectedMin},""max"":{expectedMax}}},""message"":""{message}""}}", json);
         }
+
+        [Fact]
+        public void NodesValidatorShouldReturnCorrectJson()
+        {
+            //Arrange
+            var validator = new NodesValidator();
+            validator.EmbeddedEntryBlock = new List<IFieldValidator>() {
+                new SizeValidator(2,4)
+            };
+            validator.EmbeddedEntryInline = new List<IFieldValidator>() {
+                new SizeValidator(8, null)
+            };
+            validator.EntryHyperlink = new List<IFieldValidator>() {
+                new SizeValidator(null, 3)
+            };
+            //Act
+            var created = validator.CreateValidator();
+            var json = JsonConvert.SerializeObject(created);
+            //Assert
+            Assert.Equal(@"{""nodes"":{""entry-hyperlink"":[{""size"":{""min"":null,""max"":3},""message"":null}],""embedded-entry-block"":[{""size"":{""min"":2,""max"":4},""message"":null}],""embedded-entry-inline"":[{""size"":{""min"":8,""max"":null},""message"":null}]}}", json);
+        }
     }
 }
