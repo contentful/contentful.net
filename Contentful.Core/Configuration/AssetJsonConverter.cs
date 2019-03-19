@@ -66,6 +66,12 @@ namespace Contentful.Core.Configuration
                 asset.DescriptionLocalized = jObject.SelectToken("$.fields.description")?.ToObject<Dictionary<string, string>>();
                 asset.FilesLocalized = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
             }
+
+            var existing = serializer.ReferenceResolver.ResolveReference(serializer, asset.SystemProperties.Id) as Asset;
+
+            if (existing != null)
+                return existing;
+
             if (!serializer.ReferenceResolver.IsReferenced(serializer, asset))
             {
                 serializer.ReferenceResolver.AddReference(serializer, asset.SystemProperties.Id, asset);
