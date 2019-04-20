@@ -93,10 +93,10 @@ or:
 
 ```csharp
 var httpClient = new HttpClient();
-var options = new ContentfulOptions()
+var options = new ContentfulOptions
 {
     DeliveryApiKey = "<content_delivery_api_key>",
-    PreviewApiKey, "<content_preview_api_key>"
+    PreviewApiKey = "<content_preview_api_key>",
     SpaceId = "<space_id>"
 }
 var client = new ContentfulClient(httpClient, options);
