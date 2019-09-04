@@ -3,10 +3,8 @@ using Contentful.Core.Search;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Contentful.Core.Models.Management
 {
@@ -21,6 +19,173 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         /// <returns>The object to serialize.</returns>
         object CreateValidator();
+    }
+
+
+
+    public enum EnabledNodeTypeRestrictions
+    {
+        [Description("heading-1")]
+        BLOCKS_HEADING_1,
+        [Description("heading-2")]
+        BLOCKS_HEADING_2,
+        [Description("heading-3")]
+        BLOCKS_HEADING_3,
+        [Description("heading-4")]
+        BLOCKS_HEADING_4,
+        [Description("heading-5")]
+        BLOCKS_HEADING_5,
+        [Description("heading-6")]
+        BLOCKS_HEADING_6,
+        [Description("paragraph")]
+        BLOCKS_PARAGRAPH,
+        [Description("blockquote")]
+        BLOCKS_QUOTE,
+        [Description("hr")]
+        BLOCKS_HR,
+        [Description("ordered-list")]
+        BLOCKS_OL_LIST,
+        [Description("unordered-list")]
+        BLOCKS_UL_LIST,
+        [Description("list-item")]
+        BLOCKS_LIST_ITEM,
+        [Description("embedded-entry-block")]
+        BLOCKS_EMBEDDED_ENTRY,
+        [Description("embedded-asset-block")]
+        BLOCKS_EMBEDDED_ASSET,
+        [Description("embedded-entry-inline")]
+        INLINES_EMBEDDED_ENTRY,
+        [Description("hyperlink")]
+        INLINES_HYPERLINK,
+        [Description("asset-hyperlink")]
+        INLINES_ASSET_HYPERLINK,
+        [Description("entry-hyperlink")]
+        INLINES_ENTRY_HYPERLINK
+    }
+
+
+    public enum EnabledMarkRestrictions
+    {
+        bold,
+        italic,
+        underline,
+        code
+    }
+
+    /// <summary>
+    /// Represents a validator that validates the EnabledMarks property.
+    /// </summary>
+    /// <summary>
+    /// Represents a validator that validates the Enabled marks />
+    /// </summary>
+    public class EnabledNodeTypesValidator : IFieldValidator
+    {
+
+        public static Dictionary<string, EnabledNodeTypeRestrictions> map;
+
+        static EnabledNodeTypesValidator()
+        {
+            map = new Dictionary<string, EnabledNodeTypeRestrictions>();
+
+
+            Type type = new EnabledNodeTypeRestrictions().GetType();
+            var values = System.Enum.GetValues(type);
+
+            foreach (int val in values)
+            {
+                EnabledNodeTypeRestrictions item = (EnabledNodeTypeRestrictions)val;
+
+                var memberInfo = type.GetMember(type.GetEnumName(val));
+                var descriptionAttribute = memberInfo[0]
+                    .GetCustomAttributes(typeof(DescriptionAttribute), false)
+                    .FirstOrDefault() as DescriptionAttribute;
+
+                map.Add(descriptionAttribute.Description, item);
+            }
+        }
+
+
+        /// <summary>
+        /// The marks to validate against.
+        /// </summary>
+        public List<EnabledNodeTypeRestrictions> EnabledNodeTypes { get; set; }
+
+        /// <summary>
+        /// The custom error message that should be displayed.
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="EnabledNodeTypesValidator"/>.
+        /// </summary>
+        /// <param name="enabledNodeTypes">The node types to validate against.</param>
+        /// <param name="message">The custom error message for this validation.</param>
+        public EnabledNodeTypesValidator(IEnumerable<EnabledNodeTypeRestrictions> enabledNodeTypes, string message = null)
+        {
+            EnabledNodeTypes = enabledNodeTypes?.ToList();
+            Message = message;
+        }
+
+
+        public static string fromEnum(EnabledNodeTypeRestrictions item)
+        {
+            return map.FirstOrDefault(x => x.Value == item).Key;
+        }
+
+        public static EnabledNodeTypeRestrictions toEnum(string item)
+        {
+                return map[item];       
+        }
+
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
+        public object CreateValidator()
+        {
+            return new { enabledNodeTypes = EnabledNodeTypes.Select(c => fromEnum(c)?.ToLower()), message = Message };
+        }
+    }
+
+
+
+    /// <summary>
+    /// Represents a validator that validates the EnabledMarks property.
+    /// </summary>
+    /// <summary>
+    /// Represents a validator that validates the Enabled marks />
+    /// </summary>
+    public class EnabledMarksValidator : IFieldValidator
+    {
+        /// <summary>
+        /// The marks to validate against.
+        /// </summary>
+        public List<EnabledMarkRestrictions> EnabledMarks { get; set; }
+
+        /// <summary>
+        /// The custom error message that should be displayed.
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="EnabledMarksValidator"/>.
+        /// </summary>
+        /// <param name="enabledMarks">The marks to validate against.</param>
+        /// <param name="message">The custom error message for this validation.</param>
+        public EnabledMarksValidator(IEnumerable<EnabledMarkRestrictions> enabledMarks, string message = null)
+        {
+            EnabledMarks = enabledMarks?.ToList();
+            Message = message;
+        }
+
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
+        public object CreateValidator()
+        {
+            return new { enabledMarks = EnabledMarks.Select(c => c.ToString()?.ToLower()), message = Message };
+        }
     }
 
     /// <summary>
@@ -307,43 +472,43 @@ namespace Contentful.Core.Models.Management
     /// Represents a validator that ensures that the field value is within a certain date range.
     /// </summary>  
     public class DateRangeValidator : IFieldValidator
-	{
-		private string _min;
+    {
+        private string _min;
 
-		/// <summary>
-		/// The minimum allowed date.
-		/// </summary>
-		public DateTime? Min
-		{
-			get
-			{
+        /// <summary>
+        /// The minimum allowed date.
+        /// </summary>
+        public DateTime? Min
+        {
+            get
+            {
                 if (DateTime.TryParse(_min, out DateTime parsed))
                     return (DateTime?)parsed;
 
                 return null;
-			}
-		}
+            }
+        }
 
-		private string _max;
+        private string _max;
 
-		/// <summary>
-		/// The maximum allowed date.
-		/// </summary>
-		public DateTime? Max
-		{
-			get
-			{
+        /// <summary>
+        /// The maximum allowed date.
+        /// </summary>
+        public DateTime? Max
+        {
+            get
+            {
                 if (DateTime.TryParse(_max, out DateTime parsed))
                     return (DateTime?)parsed;
 
                 return null;
-			}
-		}
+            }
+        }
 
-		/// <summary>
-		/// The custom error message that should be displayed.
-		/// </summary>
-		public string Message { get; set; }
+        /// <summary>
+        /// The custom error message that should be displayed.
+        /// </summary>
+        public string Message { get; set; }
 
 
         /// <summary>
@@ -353,137 +518,137 @@ namespace Contentful.Core.Models.Management
         /// <param name="max">The maximum date of the range.</param>
         /// <param name="message">The custom error message for this validation.</param>
         public DateRangeValidator(string min, string max, string message = null)
-		{
-			_min = min;
-			_max = max;
+        {
+            _min = min;
+            _max = max;
             Message = message;
-		}
+        }
 
         /// <summary>
         /// Creates a representation of this validator that can be easily serialized.
         /// </summary>
         /// <returns>The object to serialize.</returns>
 		public object CreateValidator()
-		{
-			return new { dateRange = new { min = _min, max = _max }, message = Message };
-		}
-	}
+        {
+            return new { dateRange = new { min = _min, max = _max }, message = Message };
+        }
+    }
 
     /// <summary>
     /// Represents a validator that ensures that the media file size is within a certain size range.
     /// </summary>      
     public class FileSizeValidator : IFieldValidator
-	{
-		private const int BYTES_IN_KB = 1024;
-		private const int BYTES_IN_MB = 1048576;
-		/// <summary>
-		/// The minimum allowed size of the file.
-		/// </summary>
-		public int? Min { get; set; }
+    {
+        private const int BYTES_IN_KB = 1024;
+        private const int BYTES_IN_MB = 1048576;
+        /// <summary>
+        /// The minimum allowed size of the file.
+        /// </summary>
+        public int? Min { get; set; }
 
-		/// <summary>
-		/// The maximum allowed size of the file.
-		/// </summary>
-		public int? Max { get; set; }
-		/// <summary>
-		/// The custom error message that should be displayed.
-		/// </summary>
-		public string Message { get; set; }
+        /// <summary>
+        /// The maximum allowed size of the file.
+        /// </summary>
+        public int? Max { get; set; }
+        /// <summary>
+        /// The custom error message that should be displayed.
+        /// </summary>
+        public string Message { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of <see cref="FileSizeValidator" />.
-		/// </summary>
-		/// <param name="min">The minimum size of the file.</param>
-		/// <param name="max">The maximum size of the file.</param>
-		/// <param name="minUnit">The unit measuring the minimum file size.</param>
-		/// <param name="maxUnit">The unit measuring the maximum file size.</param>
-		/// <param name="message">The custom error message for this validation.</param>
-		public FileSizeValidator(int? min, int? max, string minUnit = SystemFileSizeUnits.Bytes, string maxUnit = SystemFileSizeUnits.Bytes, string message = null)
-		{
+        /// <summary>
+        /// Initializes a new instance of <see cref="FileSizeValidator" />.
+        /// </summary>
+        /// <param name="min">The minimum size of the file.</param>
+        /// <param name="max">The maximum size of the file.</param>
+        /// <param name="minUnit">The unit measuring the minimum file size.</param>
+        /// <param name="maxUnit">The unit measuring the maximum file size.</param>
+        /// <param name="message">The custom error message for this validation.</param>
+        public FileSizeValidator(int? min, int? max, string minUnit = SystemFileSizeUnits.Bytes, string maxUnit = SystemFileSizeUnits.Bytes, string message = null)
+        {
             Min = GetCalculatedByteSize(min, minUnit);
             Max = GetCalculatedByteSize(max, maxUnit);
             Message = message;
-		}
+        }
 
         /// <summary>
         /// Creates a representation of this validator that can be easily serialized.
         /// </summary>
         /// <returns>The object to serialize.</returns>
 		public object CreateValidator()
-		{
-			return new { assetFileSize = new { min = Min, max = Max }, message = Message };
-		}
+        {
+            return new { assetFileSize = new { min = Min, max = Max }, message = Message };
+        }
 
 
-		private int? GetCalculatedByteSize(int? value, string unit)
-		{
-			if (value != null)
-			{
-				if (unit == SystemFileSizeUnits.KB)
-					value = value * BYTES_IN_KB;
-				if (unit == SystemFileSizeUnits.MB)
-					value = value * BYTES_IN_MB;
-			}
-			return value;
-		}
-	}
-    
+        private int? GetCalculatedByteSize(int? value, string unit)
+        {
+            if (value != null)
+            {
+                if (unit == SystemFileSizeUnits.KB)
+                    value = value * BYTES_IN_KB;
+                if (unit == SystemFileSizeUnits.MB)
+                    value = value * BYTES_IN_MB;
+            }
+            return value;
+        }
+    }
+
     /// <summary>
     /// Represents a validator that ensures that the image dimensions are within a certain range.
     /// </summary>   
     public class ImageSizeValidator : IFieldValidator
-	{
-		/// <summary>
-		/// The minimum allowed width of the image (in px).
-		/// </summary>
-		public int? MinWidth { get; set; }
+    {
+        /// <summary>
+        /// The minimum allowed width of the image (in px).
+        /// </summary>
+        public int? MinWidth { get; set; }
 
-		/// <summary>
-		/// The maximum allowed width of the image (in px).
-		/// </summary>
-		public int? MaxWidth { get; set; }
-		/// <summary>
-		/// The minimum allowed height of the iamge (in px).
-		/// </summary>
-		int? MinHeight { get; set; }
+        /// <summary>
+        /// The maximum allowed width of the image (in px).
+        /// </summary>
+        public int? MaxWidth { get; set; }
+        /// <summary>
+        /// The minimum allowed height of the iamge (in px).
+        /// </summary>
+        int? MinHeight { get; set; }
 
-		/// <summary>
-		/// The maximum allowed height of the image (in px).
-		/// </summary>
-		public int? MaxHeight { get; set; }
+        /// <summary>
+        /// The maximum allowed height of the image (in px).
+        /// </summary>
+        public int? MaxHeight { get; set; }
 
-		/// <summary>
-		/// The custom error message that should be displayed.
-		/// </summary>
-		public string Message { get; set; }
+        /// <summary>
+        /// The custom error message that should be displayed.
+        /// </summary>
+        public string Message { get; set; }
 
 
-		/// <summary>
-		/// Initializes a new instance of <see cref="ImageSizeValidator" />.
-		/// </summary>
-		/// <param name="minWidth">The minimum width of the image.</param>
-		/// <param name="maxWidth">The maximum width of the image.</param>
-		/// <param name="minHeight">The minimum height of the image.</param>
-		/// <param name="maxHeight">The maximum height of the image.</param>
-		/// <param name="message">The custom error message for this validation.</param>
-		public ImageSizeValidator(int? minWidth, int? maxWidth, int? minHeight, int? maxHeight, string message = null)
-		{
+        /// <summary>
+        /// Initializes a new instance of <see cref="ImageSizeValidator" />.
+        /// </summary>
+        /// <param name="minWidth">The minimum width of the image.</param>
+        /// <param name="maxWidth">The maximum width of the image.</param>
+        /// <param name="minHeight">The minimum height of the image.</param>
+        /// <param name="maxHeight">The maximum height of the image.</param>
+        /// <param name="message">The custom error message for this validation.</param>
+        public ImageSizeValidator(int? minWidth, int? maxWidth, int? minHeight, int? maxHeight, string message = null)
+        {
             MinWidth = minWidth;
             MaxWidth = maxWidth;
             MinHeight = minHeight;
             MaxHeight = maxHeight;
             Message = message;
-		}
+        }
 
         /// <summary>
         /// Creates a representation of this validator that can be easily serialized.
         /// </summary>
         /// <returns>The object to serialize.</returns>
 		public object CreateValidator()
-		{
-			return new { assetImageDimensions = new { width = new { min = MinWidth, max = MaxWidth }, height = new { min = MinHeight, max = MaxHeight } }, message = Message };
-		}
-	}
+        {
+            return new { assetImageDimensions = new { width = new { min = MinWidth, max = MaxWidth }, height = new { min = MinHeight, max = MaxHeight } }, message = Message };
+        }
+    }
 
     /// <summary>
     /// Represents a validator that validates the nodes of a rich text field.

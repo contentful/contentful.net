@@ -42,6 +42,7 @@ namespace Contentful.Core.Configuration
                     jsonObject["message"]?.ToString());
             }
 
+
             if (jsonObject.TryGetValue("range", out jToken))
             {
                 return new RangeValidator(
@@ -143,6 +144,21 @@ namespace Contentful.Core.Configuration
                 }
 
                 return validator;
+            }
+
+            if (jsonObject.TryGetValue("enabledMarks", out jToken))
+            {
+                var types = jToken.Values<string>();
+                return new EnabledMarksValidator(types.Select(c => (EnabledMarkRestrictions)Enum.Parse(typeof(EnabledMarkRestrictions), c, true)),
+                    jsonObject["message"]?.ToString());
+            }
+
+
+            if (jsonObject.TryGetValue("enabledNodeTypes", out jToken))
+            {
+                var types = jToken.Values<string>();
+                return new EnabledNodeTypesValidator(types.Select(c => EnabledNodeTypesValidator.toEnum(c)),
+                    jsonObject["message"]?.ToString());
             }
 
             return Activator.CreateInstance(objectType);
