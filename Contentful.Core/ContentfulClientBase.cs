@@ -89,15 +89,16 @@ namespace Contentful.Core
         /// <returns></returns>
         protected async Task CreateExceptionForFailedRequest(HttpResponseMessage res)
         {
-            var jsonError = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var sys = jsonError.SelectToken("$.sys").ToObject<SystemProperties>();
-            var errorDetails = jsonError.SelectToken("$.details")?.ToObject<ErrorDetails>();
-            var message = jsonError.SelectToken("$.message")?.ToString();
+            var responseContent = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var jsonError = string.IsNullOrEmpty(responseContent) ? null : JObject.Parse(responseContent);
+            var sys = jsonError?.SelectToken("$.sys").ToObject<SystemProperties>();
+            var errorDetails = jsonError?.SelectToken("$.details")?.ToObject<ErrorDetails>();
+            var message = jsonError?.SelectToken("$.message")?.ToString();
             var statusCode = (int)res.StatusCode;
 
             if (string.IsNullOrEmpty(message))
             {
-                message = GetGenericErrorMessageForStatusCode(statusCode, sys.Id);
+                message = GetGenericErrorMessageForStatusCode(statusCode, sys?.Id);
             }
 
             if(errorDetails != null)
@@ -118,6 +119,18 @@ namespace Contentful.Core
                 };
 
                 throw rateLimitException;
+            }
+
+            if(statusCode == 504)
+            {
+                var gatewayTimeoutException = new GatewayTimeoutException()
+                {
+                    RequestId = jsonError?.SelectToken("$.requestId")?.ToString(),
+                    ErrorDetails = errorDetails,
+                    SystemProperties = sys
+                };
+
+                throw gatewayTimeoutException;
             }
 
             var ex = new ContentfulException(statusCode, message)
@@ -184,6 +197,11 @@ namespace Contentful.Core
             if(statusCode == 502)
             {
                 return "The requested space is hibernated.";
+            }
+
+            if(statusCode == 504)
+            {
+                return "Gateway timeout.";
             }
 
             return "An error occurred.";
