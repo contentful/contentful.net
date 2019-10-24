@@ -21,54 +21,26 @@ namespace Contentful.Core.Models.Management
         object CreateValidator();
     }
 
-
-
-    public enum EnabledNodeTypeRestrictions
-    {
-        [Description("heading-1")]
-        BLOCKS_HEADING_1,
-        [Description("heading-2")]
-        BLOCKS_HEADING_2,
-        [Description("heading-3")]
-        BLOCKS_HEADING_3,
-        [Description("heading-4")]
-        BLOCKS_HEADING_4,
-        [Description("heading-5")]
-        BLOCKS_HEADING_5,
-        [Description("heading-6")]
-        BLOCKS_HEADING_6,
-        [Description("paragraph")]
-        BLOCKS_PARAGRAPH,
-        [Description("blockquote")]
-        BLOCKS_QUOTE,
-        [Description("hr")]
-        BLOCKS_HR,
-        [Description("ordered-list")]
-        BLOCKS_OL_LIST,
-        [Description("unordered-list")]
-        BLOCKS_UL_LIST,
-        [Description("list-item")]
-        BLOCKS_LIST_ITEM,
-        [Description("embedded-entry-block")]
-        BLOCKS_EMBEDDED_ENTRY,
-        [Description("embedded-asset-block")]
-        BLOCKS_EMBEDDED_ASSET,
-        [Description("embedded-entry-inline")]
-        INLINES_EMBEDDED_ENTRY,
-        [Description("hyperlink")]
-        INLINES_HYPERLINK,
-        [Description("asset-hyperlink")]
-        INLINES_ASSET_HYPERLINK,
-        [Description("entry-hyperlink")]
-        INLINES_ENTRY_HYPERLINK
-    }
-
-
+    /// <summary>
+    /// Enumeration for the possible rich text marks.
+    /// </summary>
     public enum EnabledMarkRestrictions
     {
+        /// <summary>
+        /// Bold.
+        /// </summary>
         bold,
+        /// <summary>
+        /// Italic.
+        /// </summary>
         italic,
+        /// <summary>
+        /// Underline.
+        /// </summary>
         underline,
+        /// <summary>
+        /// Code.
+        /// </summary>
         code
     }
 
@@ -81,34 +53,10 @@ namespace Contentful.Core.Models.Management
     public class EnabledNodeTypesValidator : IFieldValidator
     {
 
-        public static Dictionary<string, EnabledNodeTypeRestrictions> map;
-
-        static EnabledNodeTypesValidator()
-        {
-            map = new Dictionary<string, EnabledNodeTypeRestrictions>();
-
-
-            Type type = new EnabledNodeTypeRestrictions().GetType();
-            var values = System.Enum.GetValues(type);
-
-            foreach (int val in values)
-            {
-                EnabledNodeTypeRestrictions item = (EnabledNodeTypeRestrictions)val;
-
-                var memberInfo = type.GetMember(type.GetEnumName(val));
-                var descriptionAttribute = memberInfo[0]
-                    .GetCustomAttributes(typeof(DescriptionAttribute), false)
-                    .FirstOrDefault() as DescriptionAttribute;
-
-                map.Add(descriptionAttribute.Description, item);
-            }
-        }
-
-
         /// <summary>
         /// The marks to validate against.
         /// </summary>
-        public List<EnabledNodeTypeRestrictions> EnabledNodeTypes { get; set; }
+        public List<string> EnabledNodeTypes { get; set; }
 
         /// <summary>
         /// The custom error message that should be displayed.
@@ -118,23 +66,13 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Initializes a new instance of <see cref="EnabledNodeTypesValidator"/>.
         /// </summary>
-        /// <param name="enabledNodeTypes">The node types to validate against.</param>
+        /// <param name="enabledNodeTypes">The node types to validate against in string format.</param>
         /// <param name="message">The custom error message for this validation.</param>
-        public EnabledNodeTypesValidator(IEnumerable<EnabledNodeTypeRestrictions> enabledNodeTypes, string message = null)
+        public EnabledNodeTypesValidator(IEnumerable<string> enabledNodeTypes, string message = null)
         {
-            EnabledNodeTypes = enabledNodeTypes?.ToList();
+            EnabledNodeTypes = enabledNodeTypes?
+                .ToList();
             Message = message;
-        }
-
-
-        public static string fromEnum(EnabledNodeTypeRestrictions item)
-        {
-            return map.FirstOrDefault(x => x.Value == item).Key;
-        }
-
-        public static EnabledNodeTypeRestrictions toEnum(string item)
-        {
-                return map[item];       
         }
 
         /// <summary>
@@ -143,7 +81,7 @@ namespace Contentful.Core.Models.Management
         /// <returns>The object to serialize.</returns>
         public object CreateValidator()
         {
-            return new { enabledNodeTypes = EnabledNodeTypes.Select(c => fromEnum(c)?.ToLower()), message = Message };
+            return new { enabledNodeTypes = EnabledNodeTypes?.Select(c => c?.ToLower()), message = Message };
         }
     }
 
@@ -450,6 +388,49 @@ namespace Contentful.Core.Models.Management
         public object CreateValidator()
         {
             return new { regexp = new { pattern = Expression, flags = Flags }, message = Message };
+        }
+    }
+
+    /// <summary>
+    /// Represents a validator that validates a field value to prohibit a certain regular expression.
+    /// </summary>
+    public class ProhibitRegexValidator : IFieldValidator
+    {
+        /// <summary>
+        /// The expression to use.
+        /// </summary>
+        public string Expression { get; set; }
+
+        /// <summary>
+        /// The flags to apply to the regular expression.
+        /// </summary>
+        public string Flags { get; set; }
+
+        /// <summary>
+        /// The custom error message that should be displayed.
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="ProhibitRegexValidator"/>.
+        /// </summary>
+        /// <param name="expression">The regular expression to validate against.</param>
+        /// <param name="flags">The flags to apply to the regular expression.</param>
+        /// <param name="message">The custom error message for this validation.</param>
+        public ProhibitRegexValidator(string expression, string flags, string message = null)
+        {
+            Expression = expression;
+            Flags = flags;
+            Message = message;
+        }
+
+        /// <summary>
+        /// Creates a representation of this validator that can be easily serialized.
+        /// </summary>
+        /// <returns>The object to serialize.</returns>
+        public object CreateValidator()
+        {
+            return new { prohibitRegexp = new { pattern = Expression, flags = Flags }, message = Message };
         }
     }
 

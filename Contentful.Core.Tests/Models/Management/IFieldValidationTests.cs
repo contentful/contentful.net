@@ -206,5 +206,51 @@ namespace Contentful.Core.Tests.Models.Management
             //Assert
             Assert.Equal(@"{""nodes"":{""entry-hyperlink"":[{""size"":{""min"":null,""max"":3},""message"":null}],""embedded-entry-block"":[{""size"":{""min"":2,""max"":4},""message"":null}],""embedded-entry-inline"":[{""size"":{""min"":8,""max"":null},""message"":null}]}}", json);
         }
+
+        [Theory]
+        [InlineData(new[] { SystemNodeTypes.BLOCKS_HEADING_2, 
+            SystemNodeTypes.BLOCKS_HEADING_3, SystemNodeTypes.BLOCKS_HEADING_4 }, 
+            null,
+            @"{""enabledNodeTypes"":[""heading-2"",""heading-3"",""heading-4""],""message"":null}")]
+        [InlineData(new[] { SystemNodeTypes.BLOCKS_EMBEDDED_ASSET,
+            SystemNodeTypes.BLOCKS_EMBEDDED_ENTRY, SystemNodeTypes.BLOCKS_HR },
+            "massage-message",
+            @"{""enabledNodeTypes"":[""embedded-asset-block"",""embedded-entry-block"",""hr""],""message"":""massage-message""}")]
+        public void EnabledNodeTypesValidatorShouldReturnCorrectJson(IEnumerable<string> vals, string message, string expected)
+        {
+            //Arrange
+            var validator = new EnabledNodeTypesValidator(vals, message);
+
+            //Act
+            var created = validator.CreateValidator();
+            var json = JsonConvert.SerializeObject(created);
+
+            //Assert
+            Assert.Equal(expected, json);
+        }
+
+        [Fact]
+        public void ProhibitRegexValidatorShouldReturnCorrectJson()
+        {
+            //Arrange
+            var validator = new ProhibitRegexValidator("foo", "g", "Babas message");
+            //Act
+            var created = validator.CreateValidator();
+            var json = JsonConvert.SerializeObject(created);
+            //Assert
+            Assert.Equal($@"{{""prohibitRegexp"":{{""pattern"":""foo"",""flags"":""g""}},""message"":""Babas message""}}", json);
+        }
+
+        [Fact]
+        public void RegexValidatorShouldReturnCorrectJson()
+        {
+            //Arrange
+            var validator = new RegexValidator("foo", "g", "Babas message");
+            //Act
+            var created = validator.CreateValidator();
+            var json = JsonConvert.SerializeObject(created);
+            //Assert
+            Assert.Equal($@"{{""regexp"":{{""pattern"":""foo"",""flags"":""g""}},""message"":""Babas message""}}", json);
+        }
     }
 }

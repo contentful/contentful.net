@@ -82,6 +82,11 @@ namespace Contentful.Core.Configuration
                 return new RegexValidator(jToken["pattern"]?.ToString(), jToken["flags"]?.ToString(), jsonObject["message"]?.ToString());
             }
 
+            if (jsonObject.TryGetValue("prohibitRegexp", out jToken))
+            {
+                return new ProhibitRegexValidator(jToken["pattern"]?.ToString(), jToken["flags"]?.ToString(), jsonObject["message"]?.ToString());
+            }
+
             if (jsonObject.TryGetValue("unique", out jToken))
             {
                 return new UniqueValidator();
@@ -157,7 +162,7 @@ namespace Contentful.Core.Configuration
             if (jsonObject.TryGetValue("enabledNodeTypes", out jToken))
             {
                 var types = jToken.Values<string>();
-                return new EnabledNodeTypesValidator(types.Select(c => EnabledNodeTypesValidator.toEnum(c)),
+                return new EnabledNodeTypesValidator(types,
                     jsonObject["message"]?.ToString());
             }
 
