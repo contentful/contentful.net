@@ -42,6 +42,7 @@ namespace Contentful.Core.Configuration
                     jsonObject["message"]?.ToString());
             }
 
+
             if (jsonObject.TryGetValue("range", out jToken))
             {
                 return new RangeValidator(
@@ -79,6 +80,11 @@ namespace Contentful.Core.Configuration
             if (jsonObject.TryGetValue("regexp", out jToken))
             {
                 return new RegexValidator(jToken["pattern"]?.ToString(), jToken["flags"]?.ToString(), jsonObject["message"]?.ToString());
+            }
+
+            if (jsonObject.TryGetValue("prohibitRegexp", out jToken))
+            {
+                return new ProhibitRegexValidator(jToken["pattern"]?.ToString(), jToken["flags"]?.ToString(), jsonObject["message"]?.ToString());
             }
 
             if (jsonObject.TryGetValue("unique", out jToken))
@@ -143,6 +149,21 @@ namespace Contentful.Core.Configuration
                 }
 
                 return validator;
+            }
+
+            if (jsonObject.TryGetValue("enabledMarks", out jToken))
+            {
+                var types = jToken.Values<string>();
+                return new EnabledMarksValidator(types.Select(c => (EnabledMarkRestrictions)Enum.Parse(typeof(EnabledMarkRestrictions), c, true)),
+                    jsonObject["message"]?.ToString());
+            }
+
+
+            if (jsonObject.TryGetValue("enabledNodeTypes", out jToken))
+            {
+                var types = jToken.Values<string>();
+                return new EnabledNodeTypesValidator(types,
+                    jsonObject["message"]?.ToString());
             }
 
             return Activator.CreateInstance(objectType);

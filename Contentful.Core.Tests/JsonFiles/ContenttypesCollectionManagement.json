@@ -2,7 +2,7 @@
   "sys": {
     "type": "Array"
   },
-  "total": 4,
+  "total": 5,
   "skip": 0,
   "limit": 100,
   "items": [
@@ -505,6 +505,135 @@
           "localized": false,
           "required": false,
           "validations": [],
+          "disabled": false,
+          "omitted": false
+        }
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "u4vv676b8z52"
+          }
+        },
+        "id": "journeyArticle",
+        "type": "ContentType",
+        "createdAt": "2019-06-19T14:40:59.804Z",
+        "updatedAt": "2019-07-12T17:50:36.860Z",
+        "environment": {
+          "sys": {
+            "id": "minimal",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 33,
+        "publishedAt": "2019-07-12T17:50:36.860Z",
+        "firstPublishedAt": "2019-06-19T14:41:00.312Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "0ZMx32pBrMAwzlN3M6lytc"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "66x1gzWGQ4DHYrBfTsdJEG"
+          }
+        },
+        "publishedCounter": 17,
+        "version": 34,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "66x1gzWGQ4DHYrBfTsdJEG"
+          }
+        }
+      },
+      "displayField": "pageTitle",
+      "name": "Journey Article",
+      "description": "Article format for journeys. ",
+      "fields": [
+        {
+          "id": "articleCopy",
+          "name": "Article Copy",
+          "type": "RichText",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "nodes": {}
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+      
+        {
+          "id": "contactInformation",
+          "name": "Contact Information",
+          "type": "RichText",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "nodes": {}
+            },
+            {
+              "enabledMarks": [
+                "bold",
+                "italic",
+                "underline"
+              ],
+              "message": "Only bold, italic, and underline marks are allowed"
+            },
+            {
+              "enabledNodeTypes": [
+                "heading-1",
+                "heading-2",
+                "heading-3",
+                "heading-4",
+                "heading-5",
+                "heading-6"
+              ],
+              "message": "Only heading 1, heading 2, heading 3, heading 4, heading 5, and heading 6 nodes are allowed"
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "articleSources",
+          "name": "Article Sources",
+          "type": "RichText",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "nodes": {}
+            },
+            {
+              "enabledNodeTypes": [
+                "ordered-list",
+                "unordered-list",
+                "hr",
+                "blockquote",
+                "embedded-entry-block",
+                "embedded-asset-block",
+                "hyperlink",
+                "entry-hyperlink",
+                "embedded-entry-inline"
+              ],
+              "message": "Only ordered list, unordered list, horizontal rule, quote, block entry, asset, link to Url, link to entry, and inline entry nodes are allowed"
+            }
+          ],
           "disabled": false,
           "omitted": false
         }
