@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -56,12 +55,13 @@ namespace Contentful.Core.Tests
             Assert.Equal("Bearer 564", authHeader);
             Assert.StartsWith($"sdk contentful.csharp/{version}", userAgent);
         }
-        
+
         [Fact]
         public async Task CreateContentTypeShouldSerializeRequestCorrectly()
         {
             //Arrange
-            _handler.Response = new HttpResponseMessage() {
+            _handler.Response = new HttpResponseMessage()
+            {
                 Content = new StringContent("{}")
             };
             var contentType = new ContentType()
@@ -219,9 +219,8 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
             //Act
             var res = await _client.GetContentTypes();
-
             //Assert
-            Assert.Equal(4, res.Count());
+            Assert.Equal(5, res.Count());
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
         }
@@ -341,7 +340,7 @@ namespace Contentful.Core.Tests
         public async Task ActivatingContentTypeShouldThrowForEmptyId()
         {
             //Arrange
-            
+
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.ActivateContentType("", 34));
 
@@ -425,7 +424,7 @@ namespace Contentful.Core.Tests
             var res = await _client.GetActivatedContentTypes();
 
             //Assert
-            Assert.Equal(4, res.Count());
+            Assert.Equal(5, res.Count());
             Assert.Equal($"https://api.contentful.com/spaces/666/public/content_types", requestUrl);
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
@@ -1442,7 +1441,7 @@ namespace Contentful.Core.Tests
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagementUnprocessed.json"));
             _handler.Responses.Enqueue(GetResponseFromFile(@"SampleAssetManagement.json"));
-            
+
             //Act
             var res = await _client.ProcessAssetUntilCompleted("123", 3, "en-US");
 
@@ -1888,7 +1887,7 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal("Testhook", res.Name);
             Assert.Equal("https://robertlinde.se/", res.Url);
-            Assert.Collection(res.Topics, 
+            Assert.Collection(res.Topics,
                 (t) => Assert.Equal("Asset.archive", t),
                 (t) => Assert.Equal("Asset.unarchive", t),
                 (t) => Assert.Equal("ContentType.create", t),
@@ -1897,7 +1896,7 @@ namespace Contentful.Core.Tests
                 (t) => Assert.Equal("Entry.unpublish", t));
             Assert.Collection(res.Filters,
                 (f) => Assert.IsType(typeof(EqualsConstraint), f),
-                (f) => Assert.IsType(typeof(InConstraint),(f as NotConstraint).ConstraintToInvert)
+                (f) => Assert.IsType(typeof(InConstraint), (f as NotConstraint).ConstraintToInvert)
                 );
             Assert.Collection(res.Headers, (h) => { Assert.Equal("bob", h.Key); Assert.Equal("uncle", h.Value); });
         }
@@ -2215,7 +2214,7 @@ namespace Contentful.Core.Tests
                 SystemProperties = new SystemProperties()
             };
             role.SystemProperties.Id = id;
-            
+
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateRole(role));
 
@@ -2352,7 +2351,7 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleSnapshot.json");
-            
+
             //Act
             var res = await _client.GetSnapshotForEntry("123", "wed");
 
@@ -2975,8 +2974,9 @@ namespace Contentful.Core.Tests
             var res = await _client.GetAllManagementTokens();
 
             //Assert
-            
-            Assert.Collection(res, (c) => {
+
+            Assert.Collection(res, (c) =>
+            {
                 Assert.Equal(SystemManagementScopes.Manage, c.Scopes.First());
                 Assert.Equal(1, c.Scopes.Count);
                 Assert.Null(c.Token);
@@ -3047,7 +3047,7 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                 contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
             };
 
             //Act
@@ -3075,7 +3075,7 @@ namespace Contentful.Core.Tests
             var res = await client.GetContentTypes();
 
             //Assert
-            Assert.Equal(4, res.Count());
+            Assert.Equal(5, res.Count());
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
             Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types", path);
@@ -3594,7 +3594,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await client.CreateOrUpdateAsset(new ManagementAsset { SystemProperties = new SystemProperties { Id="325" } });
+            var res = await client.CreateOrUpdateAsset(new ManagementAsset { SystemProperties = new SystemProperties { Id = "325" } });
 
             //Assert
             Assert.Equal("https://api.contentful.com/spaces/564/environments/special/assets/325", path);
@@ -3879,7 +3879,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-           await client.DeleteExtension("sbth");
+            await client.DeleteExtension("sbth");
 
             //Assert
             Assert.Equal("https://api.contentful.com/spaces/564/environments/special/extensions/sbth", path);
@@ -3890,19 +3890,21 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"EnvironmentsCollection.json");
-            
+
             //Act
             var res = await _client.GetEnvironments();
 
             //Assert
             Assert.Equal(2, res.Total);
             Assert.Collection(res,
-                (e) => {
+                (e) =>
+                {
                     Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
                     Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
                     Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
                 },
-                (e) => {
+                (e) =>
+                {
                     Assert.Equal("queued", e.SystemProperties.Status.SystemProperties.Id);
                     Assert.Equal("Link", e.SystemProperties.Status.SystemProperties.Type);
                     Assert.Equal("Status", e.SystemProperties.Status.SystemProperties.LinkType);
@@ -4042,22 +4044,26 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Collection(res,
-                    (t) => {
+                    (t) =>
+                    {
                         Assert.Equal("07/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Null(t.EndDate);
                         Assert.Equal("4", t.SystemProperties.Id);
                     },
-                    (t) => {
+                    (t) =>
+                    {
                         Assert.Equal("06/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("07/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("3", t.SystemProperties.Id);
                     },
-                    (t) => {
+                    (t) =>
+                    {
                         Assert.Equal("05/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("06/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("2", t.SystemProperties.Id);
                     },
-                    (t) => {
+                    (t) =>
+                    {
                         Assert.Equal("04/15/2018 00:00:00", t.StartDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("05/14/2018 00:00:00", t.EndDate.Value.ToString(CultureInfo.InvariantCulture));
                         Assert.Equal("1", t.SystemProperties.Id);
@@ -4222,7 +4228,7 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"SampleOrgMembershipsCollection.json");
-            
+
             var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
@@ -4234,7 +4240,7 @@ namespace Contentful.Core.Tests
             };
 
             //Act
-            var res = await _client.UpdateOrganizationMembership("bob",id,"orgolonio");
+            var res = await _client.UpdateOrganizationMembership("bob", id, "orgolonio");
 
             //Assert
             Assert.Equal(HttpMethod.Put, method);
