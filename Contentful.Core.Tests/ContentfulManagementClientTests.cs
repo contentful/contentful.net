@@ -425,7 +425,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(5, res.Count());
-            Assert.Equal($"https://api.contentful.com/spaces/666/public/content_types", requestUrl);
+            Assert.Equal($"https://api.contentful.com/spaces/666/public/content_types/", requestUrl);
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
             Assert.Equal(8, ((res.First().Fields.Last().Validations.First() as NodesValidator).EmbeddedEntryInline.First() as SizeValidator).Max);
@@ -3078,7 +3078,29 @@ namespace Contentful.Core.Tests
             Assert.Equal(5, res.Count());
             Assert.Equal("someName", res.First().Name);
             Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
-            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types", path);
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/", path);
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentAndQueryContentTypesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContenttypesCollectionManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.GetContentTypes("?limit=1000", "564");
+
+            //Assert
+            Assert.Equal(5, res.Count());
+            Assert.Equal("someName", res.First().Name);
+            Assert.Equal(8, (res.First().Fields.First().Validations.First() as SizeValidator).Max);
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/content_types/?limit=1000", path);
         }
 
         [Fact]
@@ -3198,7 +3220,7 @@ namespace Contentful.Core.Tests
             await client.GetActivatedContentTypes();
 
             //Assert
-            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/public/content_types", path);
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/public/content_types/", path);
         }
 
         [Fact]
