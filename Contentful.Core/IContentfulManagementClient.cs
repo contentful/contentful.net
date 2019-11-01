@@ -302,6 +302,15 @@ namespace Contentful.Core
         Task<IEnumerable<ContentType>> GetActivatedContentTypes(string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get all activated content types of a space.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space to get the activated content types of. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        Task<IEnumerable<ContentType>> GetActivatedContentTypes(string queryString, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Gets a collection of all <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
