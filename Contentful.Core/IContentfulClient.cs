@@ -113,7 +113,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The assetId parameter was null or emtpy.</exception>
-        Task<Asset> GetAsset(string assetId, string queryString, CancellationToken cancellationToken = default);
+        Task<Asset> GetAsset(string assetId, string queryString = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
