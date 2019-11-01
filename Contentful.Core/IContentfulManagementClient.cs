@@ -411,6 +411,15 @@ namespace Contentful.Core
         Task<IEnumerable<ContentType>> GetContentTypes(string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get all content types of a space.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space to get the content types of. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        Task<IEnumerable<ContentType>> GetContentTypes(string queryString, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Gets a <see cref="Contentful.Core.Models.Management.EditorInterface"/> for a specific <seealso cref="ContentType"/>.
         /// </summary>
         /// <param name="contentTypeId">The id of the content type.</param>

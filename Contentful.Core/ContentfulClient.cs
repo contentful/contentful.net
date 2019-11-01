@@ -472,7 +472,18 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/", cancellationToken).ConfigureAwait(false);
+            return await GetContentTypes(null, cancellationToken);
+        }
+
+        /// <summary>
+        /// Get all content types of a space.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        public async Task<IEnumerable<ContentType>> GetContentTypes(string queryString, CancellationToken cancellationToken = default)
+        {
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{queryString}", cancellationToken).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));

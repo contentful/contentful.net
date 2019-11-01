@@ -158,6 +158,13 @@ namespace Contentful.Core
         Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get all content types of a space.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        Task<IEnumerable<ContentType>> GetContentTypes(string queryString, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Get all locales of an environment.
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
