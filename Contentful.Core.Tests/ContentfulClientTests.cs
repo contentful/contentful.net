@@ -211,6 +211,18 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GatewayTimeoutExceptionShouldBeThrownCorrectly()
+        {
+            //Arrange
+            var response = new HttpResponseMessage();
+            response.Content = new StringContent("");
+            response.StatusCode = (HttpStatusCode)504;
+            _handler.Response = response;
+            //Act
+            await Assert.ThrowsAsync<GatewayTimeoutException>(async () => await _client.GetEntry<TestEntryModel>("12"));
+        }
+
+        [Fact]
         public async Task SettingPreviewApiShouldUseCorrectApiKey()
         {
             //Arrange
