@@ -96,7 +96,7 @@ namespace Contentful.AspNetCore.MiddleWare
 
             using (var reader = new StreamReader(context.Request.Body))
             {
-                bodyString = reader.ReadToEnd();
+                bodyString = await reader.ReadToEndAsync();
             }
 
                 foreach (var consumer in foundConsumers.Select(c => c))
