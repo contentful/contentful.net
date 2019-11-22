@@ -3969,6 +3969,72 @@ namespace Contentful.Core.Tests
             Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task CloneEnvironmentShouldThrowIfIdNotSet(string s)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CloneEnvironment(s, "", ""));
+            //Assert
+            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task CloneEnvironmenShouldThrowIfNameNotSet(string s)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CloneEnvironment("pop", s, ""));
+            //Assert
+            Assert.Equal($"You must provide a name for the environment.{Environment.NewLine}Parameter name: name", ex.Message);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task CloneEnvironmenShouldThrowISourceNotSet(string s)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CloneEnvironment("pop", "bop", s));
+            //Assert
+            Assert.Equal($"You must provide an id for the source environment.{Environment.NewLine}Parameter name: sourceEnvironmentId", ex.Message);
+        }
+
+        [Fact]
+        public async Task CloneEnvironmentShouldCallCorrectUrlWithCorrectData()
+        {
+            //Arrange
+
+            _handler.Response = GetResponseFromFile(@"SampleEnvironment.json");
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            var header = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                header = request.Headers.GetValues("X-Contentful-Source-Environment").First();
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.CloneEnvironment("bob", "pop", "canasta");
+            //Assert
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal("canasta", header);
+            Assert.Equal("https://api.contentful.com/spaces/666/environments/bob", requestUrl);
+        }
+
         [Fact]
         public async Task CreateEnvironmentByIdShouldCallCorrectUrlWithCorrectData()
         {
