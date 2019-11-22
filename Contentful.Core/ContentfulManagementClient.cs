@@ -2411,6 +2411,44 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Clones a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
+        /// </summary>
+        /// <param name="id">The id of the environment to create.</param>
+        /// <param name="name">The name of the environment to create.</param>
+        /// <param name="sourceEnvironmentId">The id of the environment to clone.</param>
+        /// <param name="spaceId">The id of the space to create an environment in. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
+        /// <exception cref="ArgumentException">The required arguments were not provided.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulEnvironment> CloneEnvironment(string id, string name, string sourceEnvironmentId, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("You must provide an id for the environment.", nameof(id));
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("You must provide a name for the environment.", nameof(name));
+            }
+
+            if (string.IsNullOrEmpty(sourceEnvironmentId))
+            {
+                throw new ArgumentException("You must provide an id for the source environment.", nameof(sourceEnvironmentId));
+            }
+            var sourceHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-source-environment", new[] { sourceEnvironmentId });
+
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(new { name }), cancellationToken, null, additionalHeaders: new[] { sourceHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ContentfulEnvironment>(Serializer);
+        }
+
+        /// <summary>
         /// Gets a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
         /// </summary>
         /// <param name="id">The id of the environment to get.</param>
