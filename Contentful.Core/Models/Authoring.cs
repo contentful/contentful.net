@@ -400,12 +400,16 @@ namespace Contentful.Core.Models
             var asset = assetStructure.Data.Target;
             var nodeType = assetStructure.NodeType;
             var sb = new StringBuilder();
-            if(nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
+            if (nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
             {
                 sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
-            }else
-            {
-                sb.Append($"<a href=\"{asset.File.Url}\">");
+            }
+            else
+            {                
+                if (asset.File != null)
+                {
+                    sb.Append($"<a href=\"{asset.File.Url}\">");
+                }
 
                 if (assetStructure.Content != null && assetStructure.Content.Any())
                 {
@@ -419,7 +423,11 @@ namespace Contentful.Core.Models
                 {
                     sb.Append(asset.Title);
                 }
-                sb.Append("</a>");
+
+                if (asset.File != null)
+                {
+                    sb.Append("</a>");
+                }
             }
 
             return sb.ToString();
