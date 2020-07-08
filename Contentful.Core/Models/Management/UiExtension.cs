@@ -14,7 +14,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Common system managed metadata properties.
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("sys")]
         public SystemProperties SystemProperties { get; set; }
 
         /// <summary>
