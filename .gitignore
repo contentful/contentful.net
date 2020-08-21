@@ -13,3 +13,4 @@ Backup/
 *.nuget.props
 *.nuget.targets
 *.orig
+.ionide/

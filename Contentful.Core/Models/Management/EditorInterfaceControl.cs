@@ -25,6 +25,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The widget namespace. Can be either "editor-builtin", "builtin", "builtin-sidebar", "app" or "extension"
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string WidgetNamespace { get; set; }
 
         /// <summary>

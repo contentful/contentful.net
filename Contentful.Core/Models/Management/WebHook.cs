@@ -40,7 +40,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The custom http headers to pass with the webhook.
         /// </summary>
-        public List<KeyValuePair<string,string>> Headers { get; set; }
+        public List<WebhookHeader> Headers { get; set; }
 
         /// <summary>
         /// The topics that trigger this webhook.

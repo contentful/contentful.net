@@ -1861,6 +1861,65 @@ namespace Contentful.Core.Tests
         }
 
         [Theory]
+        [InlineData("654")]
+        [InlineData("123")]
+        [InlineData("bill")]
+        public async Task CreateOrUpdateWebhookShouldCallCorrectUrlWithDataAndTransformationWithNullBody(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleWebHook.json");
+
+            var webhook = new Webhook()
+            {
+                SystemProperties = new SystemProperties()
+            };
+            webhook.SystemProperties.Id = id;
+            webhook.Name = "Canabanana";
+            webhook.Url = "http://www.imdb.com/name/nm0000549/";
+            webhook.HttpBasicPassword = "Roger";
+            webhook.HttpBasicUsername = "Wilco";
+            webhook.Topics = new List<string>()
+            {
+                "Asset.create",
+                "Entry.*"
+            };
+
+            var transform = new WebhookTransformation
+            {
+                ContentType = TransformationContentTypes.ContentfulManagementPlusJsonAndCharset,
+                Method = HttpMethods.PUT
+            };
+
+            webhook.Transformation = transform;
+
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateWebhook(webhook);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal($"https://api.contentful.com/spaces/666/webhook_definitions/{id}", url);
+            Assert.Contains(@"""name"":""Canabanana""", contentSet);
+            Assert.Contains(@"""url"":""http://www.imdb.com/name/nm0000549/""", contentSet);
+            Assert.Contains(@"""httpBasicUsername"":""Wilco""", contentSet);
+            Assert.Contains(@"""httpBasicPassword"":""Roger""", contentSet);
+            Assert.Contains(@"""Asset.create""", contentSet);
+            Assert.Contains(@"""Entry.*""", contentSet);
+            Assert.Contains(@"""transformation""", contentSet);
+            Assert.Contains(@"""contentType""", contentSet);
+            Assert.Contains(@"""application/vnd.contentful.management.v1+json; charset=utf-8""", contentSet);
+        }
+
+        [Theory]
         [InlineData("")]
         [InlineData(null)]
         public async Task GetWebhookShouldThrowIfNoIdSet(string id)
@@ -1885,20 +1944,19 @@ namespace Contentful.Core.Tests
             var res = await _client.GetWebhook("ertg");
 
             //Assert
-            Assert.Equal("Testhook", res.Name);
-            Assert.Equal("https://robertlinde.se/", res.Url);
+            Assert.Equal("pops", res.Name);
+            Assert.Equal("https://robertlinde.se", res.Url);
             Assert.Collection(res.Topics,
-                (t) => Assert.Equal("Asset.archive", t),
-                (t) => Assert.Equal("Asset.unarchive", t),
-                (t) => Assert.Equal("ContentType.create", t),
-                (t) => Assert.Equal("ContentType.save", t),
-                (t) => Assert.Equal("Entry.publish", t),
-                (t) => Assert.Equal("Entry.unpublish", t));
-            Assert.Collection(res.Filters,
-                (f) => Assert.IsType(typeof(EqualsConstraint), f),
-                (f) => Assert.IsType(typeof(InConstraint), (f as NotConstraint).ConstraintToInvert)
-                );
-            Assert.Collection(res.Headers, (h) => { Assert.Equal("bob", h.Key); Assert.Equal("uncle", h.Value); });
+                (t) => Assert.Equal("ContentType.*", t),
+                (t) => Assert.Equal("Entry.*", t));
+
+            Assert.Collection(res.Headers, (h) => { 
+                Assert.Equal("pip", h.Key); Assert.Null(h.Value); Assert.True(h.Secret); 
+                },
+                (h) => {
+                    Assert.Equal("cus", h.Key); Assert.Equal("nobo", h.Value); Assert.Null(h.Secret);
+                }
+            );
         }
 
         [Theory]

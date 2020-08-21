@@ -24,6 +24,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The body of the webhook transformation.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Body { get; set; }
     }
 

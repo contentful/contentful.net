@@ -33,7 +33,7 @@ namespace Contentful.Core.Configuration
                 return HttpMethods.POST;
             }
 
-            var jObject = JObject.Load(reader);
+            var jObject = JToken.Load(reader);
             var stringmethod = jObject.Value<string>();
 
             return Enum.Parse(typeof(HttpMethods), stringmethod);
@@ -84,10 +84,26 @@ namespace Contentful.Core.Configuration
                 return TransformationContentTypes.ContentfulManagementPlusJson;
             }
 
-            var jObject = JObject.Load(reader);
+            var jObject = JToken.Load(reader);
             var stringcontenttype = jObject.Value<string>();
 
-            return Enum.Parse(typeof(TransformationContentTypes), stringcontenttype);
+            switch (stringcontenttype)
+            {
+                case "application/vnd.contentful.management.v1+json" :
+                    return TransformationContentTypes.ContentfulManagementPlusJson;
+                case "application/vnd.contentful.management.v1+json; charset=utf-8":
+                    return TransformationContentTypes.ContentfulManagementPlusJsonAndCharset;
+                case "application/json":
+                    return TransformationContentTypes.ApplicationJson;
+                case "application/json; charset=utf-8":
+                    return TransformationContentTypes.ApplicationJsonAndCharset;
+                case "application/x-www-form-urlencoded":
+                    return TransformationContentTypes.FormEncoded;
+                case "application/x-www-form-urlencoded; charset=utf-8":
+                    return TransformationContentTypes.FormEncodedAndCharset;
+                default:
+                    throw new ArgumentException("Unsupported content type");
+            }
         }
 
         /// <summary>
