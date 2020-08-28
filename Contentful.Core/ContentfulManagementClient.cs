@@ -2138,6 +2138,9 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<UiExtension> CreateExtension(UiExtension extension, string spaceId = null, CancellationToken cancellationToken = default)
         {
+            // The api does not accept a sys object in the extension creation.
+            extension.SystemProperties = null;
+
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions",
                 ConvertObjectToJsonStringContent(extension), cancellationToken, null).ConfigureAwait(false);
 
@@ -2165,8 +2168,12 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the extension must be set.", nameof(extension));
             }
 
+            var id = extension.SystemProperties?.Id;
+            // The api does not accept a sys object in the extension creation.
+            extension.SystemProperties = null;
+
             var res = await PutAsync(
-                $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions/{extension.SystemProperties.Id}",
+                $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}extensions/{id}",
                 ConvertObjectToJsonStringContent(extension), cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);

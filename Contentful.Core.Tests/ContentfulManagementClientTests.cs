@@ -2863,11 +2863,19 @@ namespace Contentful.Core.Tests
                 },
                 Name = "trul"
             };
+            var contentSet = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
 
             //Act
             var res = await _client.CreateExtension(ext);
 
+
+
             //Assert
+            Assert.DoesNotContain("sys", contentSet);
             Assert.Equal("trul", res.Name);
             Assert.Equal(2, res.FieldTypes.Count);
             Assert.Collection(res.FieldTypes,
@@ -2906,10 +2914,17 @@ namespace Contentful.Core.Tests
                 }
             };
 
+            var contentSet = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
             //Act
             var res = await _client.CreateExtension(ext);
 
             //Assert
+            Assert.DoesNotContain("sys", contentSet);
             Assert.Equal("trul", res.Name);
             Assert.Equal(2, res.FieldTypes.Count);
             Assert.Collection(res.FieldTypes,
@@ -2931,11 +2946,17 @@ namespace Contentful.Core.Tests
                 },
                 Name = "trul"
             };
+            var contentSet = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
 
             //Act
             var res = await _client.CreateOrUpdateExtension(ext);
 
             //Assert
+            Assert.DoesNotContain("sys", contentSet);
             Assert.Equal("trul", res.Name);
             Assert.Equal(2, res.FieldTypes.Count);
             Assert.Collection(res.FieldTypes,
