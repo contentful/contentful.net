@@ -2372,6 +2372,8 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("Seven Tips From Ernest Hemingway on How to Write Fiction", res.First().Fields["title"]["en-US"]);
+            Assert.Equal("6U1xjMul1TRT2e1CiRwtLG", res.First().SystemProperties.Id);
+            Assert.Equal("A96usFSlY4G0W4kwAqswk", res.First().EntityProperties.Id);
         }
 
         [Theory]
@@ -2416,6 +2418,8 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal("Somethi", res.Fields["field1"]["en-US"]);
             Assert.Equal("2ReMHJhXoAcy4AyamgsgwQ", res.Fields["field4"]["en-US"].sys.id.ToString());
+            Assert.Equal("7u6sWOXikwxwr3cMrWddcl", res.SystemProperties.Id);
+            Assert.Equal("42BwcCt4TeeskG0eq8S2CQ", res.EntityProperties.Id);
         }
 
         [Fact]
@@ -2435,6 +2439,8 @@ namespace Contentful.Core.Tests
             Assert.False(list[0].Snapshot.Fields.Any(c => c.Name == "test"));
             Assert.True(list[1].Snapshot.Fields.Any(c => c.Name == "test" && c.Omitted == true));
             Assert.True(list[2].Snapshot.Fields.Any(c => c.Name == "test" && c.Omitted == false));
+            Assert.Equal("2pQBFoHZk5rMfGK1lSADTT", list[1].SystemProperties.Id);
+            Assert.Equal("7b9PdWRHmlYce1YvZDOZdx", list[2].SystemProperties.Id);
         }
 
         [Theory]

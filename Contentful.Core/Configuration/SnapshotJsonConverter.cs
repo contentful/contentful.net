@@ -46,7 +46,7 @@ namespace Contentful.Core.Configuration
 
             snapshot.SystemProperties = jObject["sys"].ToObject<SystemProperties>();
             snapshot.Fields = fields.ToObject<Dictionary<string, Dictionary<string, dynamic>>>();
-
+            snapshot.EntityProperties = jObject.SelectToken("$.snapshot.sys").ToObject<SystemProperties>();
             return snapshot;
         }
 

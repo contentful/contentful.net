@@ -19,6 +19,11 @@ namespace Contentful.Core.Models.Management
         public SystemProperties SystemProperties { get; set; }
 
         /// <summary>
+        /// The systemproperties of the snapshotted entity.
+        /// </summary>
+        public SystemProperties EntityProperties { get; set; }
+
+        /// <summary>
         /// The fields of the <see cref="Entry{T}"/> in all languages.
         /// </summary>
         public Dictionary<string, Dictionary<string, dynamic>> Fields { get; set; }
