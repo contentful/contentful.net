@@ -342,16 +342,49 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(2, list.Count);
             Assert.Equal(0, list.First().Author.Count);
-            Assert.Equal(1, list.First().Category.Count);
+            Assert.Equal(0, list.First().Category.Count);
 
-            Assert.Equal(1, list.Last().Author.Count);
-            Assert.Equal(2, list.Last().Category.Count);
+            Assert.Equal(0, list.Last().Author.Count);
+            Assert.Equal(0, list.Last().Category.Count);
 
             Assert.Null(list.Last().FeaturedImage);
 
-            Assert.Collection(res.Errors, 
-                (e) => { Assert.Equal("AssetId4", e.Details.Id); }, 
-                (e) => { Assert.Equal("EntryId2", e.Details.Id); });
+            Assert.Collection(res.Errors,
+                (e) => { Assert.Equal("AssetId4", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId2", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId3", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId6", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId4", e.Details.Id); }
+                );
+        }
+
+        [Fact]
+        public async Task GetEntriesShouldSkipMissingIncludesForInterface()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludesMissingEntries.json");
+
+            //Act
+            var res = await _client.GetEntries<TestModelWithIncludesInterface>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.Equal(2, list.Count);
+            Assert.Equal(0, list.First().Author.Count);
+            Assert.Equal(0, list.First().Category.Count);
+
+            Assert.Equal(0, list.Last().Author.Count);
+            Assert.Equal(0, list.Last().Category.Count);
+
+            Assert.Null(list.Last().FeaturedImage);
+
+            Assert.Collection(res.Errors,
+                (e) => { Assert.Equal("AssetId4", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId2", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId3", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId6", e.Details.Id); },
+                (e) => { Assert.Equal("EntryId4", e.Details.Id); }
+                );
         }
 
         [Fact]

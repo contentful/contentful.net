@@ -19,6 +19,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// Encapsulates the details of the error.
         /// </summary>
+        [JsonProperty("details")]
         public ContentfulErrorDetails Details { get; set; }
     }
 
@@ -30,16 +31,19 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The type of error.
         /// </summary>
+        [JsonProperty("type")]
         public string Type { get; set; }
 
         /// <summary>
         /// The type of link causing the error.
         /// </summary>
+        [JsonProperty("linkType")]
         public string LinkType { get; set; }
 
         /// <summary>
         /// The id of the resource causing issues.
         /// </summary>
+        [JsonProperty("id")]
         public string Id { get; set; }
     }
 }

@@ -188,6 +188,12 @@ namespace Contentful.Core
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var processedIds = new HashSet<string>();
+            var errors = json.SelectToken("$.errors");
+            if (errors == null)
+            {
+                // the errors array was not present, create it.
+                json.Add("errors", new JArray());
+            }
             foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
                 ResolveLinks(json, item, processedIds, typeof(T));
@@ -350,6 +356,34 @@ namespace Contentful.Core
                     if (errorToken != null)
                     {
                         var itemToSkip = grandParent.Parent is JProperty ? grandParent.Parent : grandParent;
+                        itemToSkip.Remove();
+                    }
+                    else
+                    {
+                        // The include is missing and not present in errors. Possibly because the includes parameter is set to too low a value.
+                        // We skip it to make sure it can still deserialize the entire structure, but also add it to the errors.
+
+                        var itemToSkip = grandParent.Parent is JProperty ? grandParent.Parent : grandParent;
+
+                        var errors = json.SelectToken("$.errors");
+                        var newError = new ContentfulError
+                        {
+                            SystemProperties = new SystemProperties
+                            {
+                                Id = "notResolvable",
+                                Type = "error"
+                            },
+                            Details = new ContentfulErrorDetails
+                            {
+                                Type = "Link",
+                                LinkType = itemToSkip.SelectToken("$..sys.linkType").Value<string>(),
+                                Id = itemToSkip.SelectToken("$..sys.id").Value<string>()
+                            }
+                        };
+                       
+
+                        (errors as JArray).Add(JObject.FromObject(newError));
+
                         itemToSkip.Remove();
                     }
                 }
