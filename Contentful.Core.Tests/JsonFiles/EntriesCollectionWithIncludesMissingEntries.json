@@ -51,6 +51,13 @@
             }
           }
         ],
+        "pop": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "EntryId2"
+          }
+        },
         "tags": [
           "writing",
           "hemingway"

@@ -115,7 +115,19 @@ namespace Contentful.Core.Tests
         public List<Category> Category { get; set; }
     }
 
-    public class Author
+    public class TestModelWithIncludesInterface
+    {
+        public string Title { get; set; }
+        public string Slug { get; set; }
+
+
+        public Asset FeaturedImage { get; set; }
+        public List<IMarker> Author { get; set; }
+        public List<Category> Category { get; set; }
+        public IMarker Pop { get; set; }
+    }
+
+    public class Author : IMarker
     {
         public SystemProperties SystemProperties { get; set; }
  
