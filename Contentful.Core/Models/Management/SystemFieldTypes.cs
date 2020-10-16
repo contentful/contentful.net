@@ -59,5 +59,10 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         public const string Object = "Object";
 
+        /// <summary>
+        /// An rich text document.
+        /// </summary>
+        public const string RichText = "RichText";
+
     }
 }
