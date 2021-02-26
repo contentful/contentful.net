@@ -25,6 +25,11 @@ namespace Contentful.Core.Models.Management
         public const string Space = "Space";
 
         /// <summary>
+        /// A reference to a tag.
+        /// </summary>
+        public const string Tag = "Tag";
+
+        /// <summary>
         /// A reference to a contenttype.
         /// </summary>
         public const string ContentType = "ContentType";

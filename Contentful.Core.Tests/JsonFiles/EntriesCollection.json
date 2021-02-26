@@ -30,7 +30,15 @@
         "locale": "en-US"
       },
       "metadata": {
-        "tags": ["bob"]
+        "tags": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Tag",
+              "id": "bob"
+            }
+          }
+        ]
       },
       "fields": {
         "title": "Home & Kitchen",

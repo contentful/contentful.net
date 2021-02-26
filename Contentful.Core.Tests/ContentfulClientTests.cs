@@ -100,7 +100,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("SoSo Wall Clock", res.ProductName);
             Assert.Equal("soso-wall-clock", res.Slug);
             Assert.Equal("bleh", res.Metadata);
-            Assert.Equal("bob", res.SystemMetadata.Tags[0]);
+            Assert.Equal("bob", res.SystemMetadata.Tags[0].Sys.Id);
         }
 
         [Fact]
@@ -118,6 +118,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Sys.Id);
             Assert.Equal(4, res.Sys.Revision);
             Assert.Equal("n9r7gd2bwvqt", res.Sys.Space.SystemProperties.Id);
+            Assert.Equal("bob", res.SystemMetadata.Tags[0].Sys.Id);
         }
 
         [Fact]

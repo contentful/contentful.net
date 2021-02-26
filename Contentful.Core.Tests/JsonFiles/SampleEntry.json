@@ -22,7 +22,15 @@
     "locale": "en-US"
   },
   "metadata": {
-    "tags": [ "bob" ]
+    "tags": [
+      {
+        "sys": {
+          "type": "Link",
+          "linkType": "Tag",
+          "id": "bob"
+        }
+      }
+    ]
   },
   "fields": {
     "productName": "SoSo Wall Clock",
