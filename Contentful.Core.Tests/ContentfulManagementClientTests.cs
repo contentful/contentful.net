@@ -4445,6 +4445,96 @@ namespace Contentful.Core.Tests
             Assert.Equal($"https://api.contentful.com/organizations/{orgId}/organization_memberships/{id}", requestUrl);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task CreateContentTagShouldThrowForIdNotSet(string id)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentTag.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentTag("something", id));
+
+            //Assert
+            Assert.Equal($"The id of the content tag must be set.{Environment.NewLine}Parameter name: id", ex.Message);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task CreateContentTagShouldThrowForNameNotSet(string name)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentTag.json");
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentTag(name, "something"));
+
+            //Assert
+            Assert.Equal($"The name of the content tag must be set.{Environment.NewLine}Parameter name: name", ex.Message);
+        }
+
+        [Fact]
+        public async Task CreateContentShouldCallCorrectUrlAndReturnCorrectData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentTag.json");
+            var contentSet = "";
+            var url = "";
+            var method = HttpMethod.Trace;
+            var headerSet = false;
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                headerSet = request.Headers.GetValues("X-Contentful-Version").First() == "5";
+                method = request.Method;
+                url = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateContentTag("badabing", "bob", version: 5);
+
+            //Assert
+            Assert.True(headerSet);
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/tags/bob", url);
+            Assert.Contains(@"""name"":""badabing""", contentSet);
+            Assert.Contains(@"""id"":""bob""", contentSet);
+            Assert.Equal("NY Campaign", res.Name);
+            Assert.Equal("nyCampaign", res.SystemProperties.Id);
+        }
+
+        [Fact]
+        public async Task GetContentTagCollectionShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentTagCollection.json");
+
+            //Act
+            var res = await _client.GetContentTagsCollection();
+
+            //Assert
+            Assert.Equal(1, res.Total);
+            Assert.Equal(1, res.Count());
+            Assert.Equal("NY Campaign", res.First().Name);
+            Assert.Equal("nyCampaign", res.First().SystemProperties.Id);
+        }
+
+        [Fact]
+        public async Task GetContentTagShouldDeserializeCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentTag.json");
+
+            //Act
+            var res = await _client.GetContentTag("id");
+
+            //Assert
+            Assert.Equal("NY Campaign", res.Name);
+            Assert.Equal("nyCampaign", res.SystemProperties.Id);
+        }
+
         private ContentfulManagementClient GetClientWithEnvironment(string env = "special")
         {
             var httpClient = new HttpClient(_handler);

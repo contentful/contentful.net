@@ -9,6 +9,8 @@
     <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
+    <None Remove="JsonFiles\SampleContentTag.json" />
+    <None Remove="JsonFiles\SampleContentTagCollection.json" />
     <None Remove="JsonFiles\SampleContentTypeFields.json" />
     <None Remove="JsonFiles\SampleEnvironment.json" />
     <None Remove="JsonFiles\SampleOrgMembershipsCollection.json" />
@@ -31,6 +33,8 @@
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
     <EmbeddedResource Include="JsonFiles\ApiUsage.json" />
+    <EmbeddedResource Include="JsonFiles\SampleContentTagCollection.json" />
+    <EmbeddedResource Include="JsonFiles\SampleContentTag.json" />
     <EmbeddedResource Include="JsonFiles\UsagePeriods.json" />
     <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
     <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />

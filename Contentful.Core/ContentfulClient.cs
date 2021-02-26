@@ -130,8 +130,10 @@ namespace Contentful.Core
 
             //move the sys object beneath the fields to make serialization more logical for the end user.
             var sys = json.SelectToken("$.sys");
+            var metadata = json.SelectToken("$.metadata");
             var fields = json.SelectToken("$.fields");
             fields["sys"] = sys;
+            fields["$metadata"] = metadata;
             ob = fields.ToObject<T>(Serializer);
             
             return ob;
@@ -187,6 +189,9 @@ namespace Contentful.Core
             IEnumerable<T> entries;
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            ReplaceMetaData(json);
+
             var processedIds = new HashSet<string>();
             var errors = json.SelectToken("$.errors");
             if (errors == null)

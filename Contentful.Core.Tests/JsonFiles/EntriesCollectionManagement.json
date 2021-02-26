@@ -53,9 +53,15 @@
           }
         }
       },
+      "metadata": {
+        "tags": [ "nobby" ]
+      },
       "fields": {
         "field1": {
           "en-US": "Somethi"
+        },
+        "metadata": {
+          "en-US": "meta and data"
         },
         "field2": {
           "en-US": {

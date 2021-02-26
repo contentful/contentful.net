@@ -345,5 +345,24 @@ namespace Contentful.Core
 
             return clone;
         }
+
+        protected void ReplaceMetaData(JObject jsonObject)
+        {
+            foreach (var item in jsonObject.SelectTokens("$.items[*]").OfType<JObject>())
+            {
+                if (item.TryGetValue("metadata", out var val))
+                {
+                    val.Parent.Replace(new JProperty("$metadata", val));
+                }
+            }
+
+            foreach (var item in jsonObject.SelectTokens("$.includes.Entry[*]").OfType<JObject>())
+            {
+                if (item.TryGetValue("metadata", out var val))
+                {
+                    val.Parent.Replace(new JProperty("$metadata", val));
+                }
+            }
+        }
     }
 }
