@@ -78,6 +78,9 @@ namespace Contentful.Core.Tests
         public string ProductName { get; set; }
         public string Slug { get; set; }
         public string Title { get; set; }
+        public string Metadata { get; set; }
+        [JsonProperty("$metadata")]
+        public ContentfulMetadata SystemMetadata { get; set; }
     }
 
     public class RichTextModel  : IContent

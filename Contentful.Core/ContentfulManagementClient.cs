@@ -471,6 +471,8 @@ namespace Contentful.Core
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
+            ReplaceMetaData(jsonObject);
+
             var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
 
             if (!isContentfulResource)
@@ -2664,6 +2666,108 @@ namespace Contentful.Core
             var alphaHeader = new KeyValuePair<string, IEnumerable<string>>("x-contentful-enable-alpha-feature", new[] { "organization-user-management-api" });
 
             var res = await DeleteAsync($"{_directApiUrl}organizations/{organizationId}/organization_memberships/{membershipId}", cancellationToken, additionalHeaders: new[] { alphaHeader }.ToList()).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets all content tags in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{ContentTag}"/> of content tags.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<ContentTag>> GetContentTagsCollection(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags{queryString}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var collection = jsonObject.ToObject<ContentfulCollection<ContentTag>>(Serializer);
+            var tags = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<ContentTag>(Serializer));
+            collection.Items = tags;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a content tag by the specified id.
+        /// </summary>
+        /// <param name="contentTagId">The id of the asset to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="contentTagId">contentTagId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentTag> GetContentTag(string contentTagId, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(contentTagId))
+            {
+                throw new ArgumentException(nameof(contentTagId));
+            }
+
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags/{contentTagId}", cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return jsonObject.ToObject<ContentTag>(Serializer);
+        }
+
+        /// <summary>
+        /// Creates or updates a Content Tag. Updates if a content tag with the same id already exists.
+        /// </summary>
+        /// <param name="name">The name of the content tag</param>
+        /// <param name="id">The name of the content tag</param>
+        /// <param name="spaceId">The id of the space to create or update the content tag in. Will default to the one set when creating the client.</param>
+        /// <param name="version">The last version known of the content tag. Must be set for existing content tag. Should be null if a new one is created.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the id or the name is not set.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentTag> CreateOrUpdateContentTag(string name, string id, string spaceId = null, int? version = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("The name of the content tag must be set.", nameof(name));
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("The id of the content tag must be set.", nameof(id));
+            }
+
+            var res = await PutAsync(
+                $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags/{id}",
+                ConvertObjectToJsonStringContent(new { name, sys = new { id, type = "tag" }  }), cancellationToken, version).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return json.ToObject<ContentTag>(Serializer);
+        }
+
+        /// <summary>
+        /// Deletes a <see cref="Contentful.Core.Models.Management.ContentTag"/> by the specified id.
+        /// </summary>
+        /// <param name="id">The id of the content tag.</param>
+        /// <param name="version">The last version known of the content tag.</param>
+        /// <param name="spaceId">The id of the space to delete the content tag in. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
+        public async Task DeleteContentTag(string id, int? version, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException(nameof(id));
+            }
+
+            var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags/{id}", cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }

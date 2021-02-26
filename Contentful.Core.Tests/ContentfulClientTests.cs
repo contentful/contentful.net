@@ -99,6 +99,8 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal("SoSo Wall Clock", res.ProductName);
             Assert.Equal("soso-wall-clock", res.Slug);
+            Assert.Equal("bleh", res.Metadata);
+            Assert.Equal("bob", res.SystemMetadata.Tags[0]);
         }
 
         [Fact]

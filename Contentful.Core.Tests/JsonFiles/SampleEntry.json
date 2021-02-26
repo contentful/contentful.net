@@ -21,8 +21,12 @@
     },
     "locale": "en-US"
   },
+  "metadata": {
+    "tags": [ "bob" ]
+  },
   "fields": {
     "productName": "SoSo Wall Clock",
+    "metadata": "bleh",
     "slug": "soso-wall-clock",
     "productDescription": "The newly released SoSo Clock from Lemnos marries simple, clean design and bold, striking features. Its saturated marigold face is a lively pop of color to white or grey walls, but would also pair nicely with navy and maroon. Where most clocks feature numbers at the border of the clock, the SoSo brings them in tight to the middle, leaving a wide space between the numbers and the slight frame. The hour hand provides a nice interruption to the black and yellow of the clock - it is featured in a brilliant white. Despite its bold color and contrast, the SoSo maintains a clean, pure aesthetic that is suitable to a variety of contemporary interiors.",
     "sizetypecolor": "10\" x 2.2\"",

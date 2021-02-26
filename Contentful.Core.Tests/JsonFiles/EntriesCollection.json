@@ -29,8 +29,12 @@
         },
         "locale": "en-US"
       },
+      "metadata": {
+        "tags": ["bob"]
+      },
       "fields": {
         "title": "Home & Kitchen",
+        "metadata":  "Some thing",
         "icon": {
           "sys": {
             "type": "Link",

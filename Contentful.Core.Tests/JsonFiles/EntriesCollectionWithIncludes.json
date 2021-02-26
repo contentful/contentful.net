@@ -29,9 +29,13 @@
         },
         "locale": "en-US"
       },
+      "metadata": {
+        "tags": [ "bob" ]
+      },
       "fields": {
         "title": "Seven Tips From Ernest Hemingway on How to Write Fiction",
         "slug": "seven-tips-from-ernest-hemingway-on-how-to-write-fiction",
+        "metadata": "smetadata",
         "author": [
           {
             "sys": {
@@ -82,9 +86,13 @@
         },
         "locale": "en-US"
       },
+      "metadata": {
+        "tags": [ "bob" ]
+      },
       "fields": {
         "title": "Down the Rabbit Hole",
         "slug": "down-the-rabbit-hole",
+        "metadata": "betadata",
         "author": [
           {
             "sys": {
@@ -158,9 +166,13 @@
           },
           "locale": "en-US"
         },
+        "metadata": {
+          "tags": [ "nobby" ]
+        },
         "fields": {
           "name": "Mike Springer",
           "website": "https://plus.google.com/+openculture/posts",
+          "metadata":  "some data",
           "profilePhoto": {
             "sys": {
               "type": "Link",

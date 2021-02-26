@@ -1,0 +1,38 @@
+﻿{
+  "name": "NY Campaign",
+  "sys": {
+    "type": "Tag",
+    "id": "nyCampaign",
+    "version": 1,
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "yadj1kx9rmg0"
+      }
+    },
+    "environment": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Environment",
+        "id": "staging"
+      }
+    },
+    "createdAt": "2015-05-18T11:29:46.809Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7BslKh9TdKGOK41VmLDjFZ"
+      }
+    },
+    "updatedAt": "2015-05-18T11:29:46.809Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4FLrUHftHW3v2BLi9fzfjU"
+      }
+    }
+  }
+}

@@ -1048,5 +1048,50 @@ namespace Contentful.Core
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ApiUsage"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<ContentfulCollection<ApiUsage>> GetResourceUsage(string organizationId, string type, string queryString = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets all content tags in a <see cref="Space"/>.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{ContentTag}"/> of content tags.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<ContentTag>> GetContentTagsCollection(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a content tag by the specified id.
+        /// </summary>
+        /// <param name="contentTagId">The id of the asset to get.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
+        /// <exception cref="ArgumentException">The <see name="contentTagId">contentTagId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentTag> GetContentTag(string contentTagId, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates or updates a Content Tag. Updates if a content tag with the same id already exists.
+        /// </summary>
+        /// <param name="name">The name of the content tag</param>
+        /// <param name="id">The name of the content tag</param>
+        /// <param name="spaceId">The id of the space to create or update the content tag in. Will default to the one set when creating the client.</param>
+        /// <param name="version">The last version known of the content tag. Must be set for existing content tag. Should be null if a new one is created.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the id or the name is not set.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentTag> CreateOrUpdateContentTag(string name, string id, string spaceId = null, int? version = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes a <see cref="Contentful.Core.Models.Management.ContentTag"/> by the specified id.
+        /// </summary>
+        /// <param name="id">The id of the content tag.</param>
+        /// <param name="version">The last version known of the content tag.</param>
+        /// <param name="spaceId">The id of the space to delete the content tag in. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
+        Task DeleteContentTag(string id, int? version, string spaceId = null, CancellationToken cancellationToken = default);
     }
 }
