@@ -7,6 +7,22 @@ using System.Threading.Tasks;
 
 namespace Contentful.Core.Models
 {
+    public class HtmlRendererOptions
+    {
+        /// <summary>
+        /// Options for rendering list items
+        /// </summary>
+        public ListItemContentRendererOptions ListItemOptions { get; set; } = new ListItemContentRendererOptions();
+    }
+
+    public class ListItemContentRendererOptions
+    {
+        /// <summary>
+        /// Contentful wraps content in list items in p tags. If rendering these is undesirable, set to true
+        /// </summary>
+        public bool OmitParagraphTagsInsideListItems { get; set; }
+    }
+
     /// <summary>
     /// Renderer that turns a document into HTML.
     /// </summary>
@@ -17,8 +33,13 @@ namespace Contentful.Core.Models
         /// <summary>
         /// Initializes a new instance of HtmlRenderer.
         /// </summary>
-        public HtmlRenderer()
+        public HtmlRenderer() : this(new HtmlRendererOptions())
         {
+        }
+        
+        public HtmlRenderer(HtmlRendererOptions options)
+        {
+            options = options ?? new HtmlRendererOptions();
             _contentRendererCollection = new ContentRendererCollection();
             _contentRendererCollection.AddRenderers(new List<IContentRenderer> {
                 new ParagraphRenderer(_contentRendererCollection),
@@ -27,7 +48,7 @@ namespace Contentful.Core.Models
                 new HorizontalRulerContentRenderer(),
                 new HeadingRenderer(_contentRendererCollection),
                 new ListContentRenderer(_contentRendererCollection),
-                new ListItemContentRenderer(_contentRendererCollection),
+                new ListItemContentRenderer(_contentRendererCollection, options.ListItemOptions),
                 new QuoteContentRenderer(_contentRendererCollection),
                 new AssetRenderer(_contentRendererCollection),
                 new NullContentRenderer()
@@ -41,6 +62,9 @@ namespace Contentful.Core.Models
         /// <returns>An HTML string.</returns>
         public async Task<string> ToHtml(Document doc)
         {
+            if (!(doc?.Content?.Any() ?? false))
+                return await Task.Run(() => "");
+            
             var sb = new StringBuilder();
             foreach (var content in doc.Content)
             {
@@ -619,14 +643,17 @@ namespace Contentful.Core.Models
     public class ListItemContentRenderer : IContentRenderer
     {
         private readonly ContentRendererCollection _rendererCollection;
+        private readonly ListItemContentRendererOptions _options;
 
         /// <summary>
         /// Initializes a new ListItemContentRenderer.
         /// </summary>
         /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
-        public ListItemContentRenderer(ContentRendererCollection rendererCollection)
+        /// <param name="options">Options for rendering list items</param>
+        public ListItemContentRenderer(ContentRendererCollection rendererCollection, ListItemContentRendererOptions options)
         {
             _rendererCollection = rendererCollection;
+            _options = options ?? new ListItemContentRendererOptions();
         }
 
         /// <summary>
@@ -649,8 +676,21 @@ namespace Contentful.Core.Models
 
             foreach (var subContent in listItem.Content)
             {
-                var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                if (_options.OmitParagraphTagsInsideListItems && subContent is Paragraph)
+                {
+                    // Ignore paragraphs in list items
+                    var pContent = subContent as Paragraph;
+                    foreach (var pSubContent in pContent.Content)
+                    {
+                        var renderer = _rendererCollection.GetRendererForContent(pSubContent);
+                        sb.Append(renderer.Render(pSubContent));
+                    }
+                }
+                else
+                {
+                    var renderer = _rendererCollection.GetRendererForContent(subContent);
+                    sb.Append(renderer.Render(subContent));
+                }
             }
 
             sb.Append($"</li>");
