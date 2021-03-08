@@ -291,6 +291,11 @@ namespace Contentful.Core
             {
                 var propName = (linkToken.Parent.Parent.Ancestors().FirstOrDefault(a => a is JProperty) as JProperty)?.Name;
                 var isRichTextPath = linkToken.Path.EndsWith("data.target.sys");
+                if (isRichTextPath)
+                {
+                    propName = linkToken.Path.Substring(linkToken.Path.LastIndexOf(".fields.") + 8);
+                    propName = propName.Substring(0, propName.IndexOf("."));
+                }
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;
                 if (processedIds.Contains(linkId))
@@ -325,7 +330,7 @@ namespace Contentful.Core
                     {
                         prop = type?.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
                         p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
-                        if (prop == null && linkToken["linkType"]?.ToString() != "Asset" && !isRichTextPath)
+                        if (prop == null && linkToken["linkType"]?.ToString() != "Asset")
                         {
                             //the property does not exist in the entry. Skip it in resolving references.
                             continue;
