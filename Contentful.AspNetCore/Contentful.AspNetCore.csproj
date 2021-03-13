@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/contentful/contentful.net</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <Version>6.0.1</Version>
-    <AssemblyVersion>6.0.1.0</AssemblyVersion>
+    <Version>6.0.2</Version>
+    <AssemblyVersion>6.0.2.0</AssemblyVersion>
     <RepositoryUrl>https://github.com/contentful/contentful.net</RepositoryUrl>
-    <FileVersion>6.0.0.0</FileVersion>
+    <FileVersion>6.0.2.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.5\Contentful.AspNetCore.xml</DocumentationFile>
@@ -25,7 +25,7 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="contentful.csharp" Version="6.0.1" />
+    <PackageReference Include="contentful.csharp" Version="6.0.2" />
     <PackageReference Include="gitlink" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
