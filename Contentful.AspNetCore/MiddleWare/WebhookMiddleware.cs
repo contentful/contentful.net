@@ -174,6 +174,17 @@ namespace Contentful.AspNetCore.MiddleWare
         /// <param name="consumer">The consumer that will be called if the name, action and topic matches.</param>
         /// <param name="preRequestVerification">Consumer specific verification of the request.</param>
         void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, object> consumer, Func<HttpContext, bool> preRequestVerification = null);
+
+        /// <summary>
+        /// Adds a consumer to the middleware pipeline.
+        /// </summary>
+        /// <typeparam name="T">The type the consumer expects.</typeparam>
+        /// <param name="name">The name of the webhook. * can be used as a wildcard.</param>
+        /// <param name="topicType">The type of topics to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="topicAction">The actions to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="consumer">The consumer that will be called if the name, action and topic matches.</param>
+        /// <param name="preRequestVerification">Consumer specific verification of the request.</param>
+        void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, Task<object>> consumer, Func<HttpContext, bool> preRequestVerification = null);
     }
 
     /// <summary>
@@ -203,7 +214,23 @@ namespace Contentful.AspNetCore.MiddleWare
             Delegate consumerDelegate = consumer;
             _consumers.Add(Tuple.Create(tuple, consumerDelegate, preRequestVerification));
         }
-        
+
+        /// <summary>
+        /// Adds a consumer to the middleware pipeline.
+        /// </summary>
+        /// <typeparam name="T">The type the consumer expects.</typeparam>
+        /// <param name="name">The name of the webhook. * can be used as a wildcard.</param>
+        /// <param name="topicType">The type of topics to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="topicAction">The actions to trigger this consumer for. * can be used as a wildcard.</param>
+        /// <param name="consumer">The consumer that will be called if the name, action and topic matches.</param>
+        /// <param name="preRequestVerification">Consumer specific verification of the request.</param>
+        public void AddConsumer<T>(string name, string topicType, string topicAction, Func<T, Task<object>> consumer, Func<HttpContext, bool> preRequestVerification = null)
+        {
+            var tuple = Tuple.Create(name, topicType, topicAction);
+            Delegate consumerDelegate = consumer;
+            _consumers.Add(Tuple.Create(tuple, consumerDelegate, preRequestVerification));
+        }
+
         /// <summary>
         /// Helper method to turn the list of consumers into a lookup.
         /// </summary>
