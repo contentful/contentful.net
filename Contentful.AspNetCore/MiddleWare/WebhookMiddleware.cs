@@ -130,6 +130,10 @@ namespace Contentful.AspNetCore.MiddleWare
                     try
                     {
                         returnedObject = consumer.Item1.DynamicInvoke(serializedObject);
+                        if(returnedObject is Task<object>)
+                        {
+                            returnedObject = (returnedObject as Task<object>).GetAwaiter().GetResult();
+                        }
                         responses.Add(returnedObject);
                     }
                     catch (Exception ex)

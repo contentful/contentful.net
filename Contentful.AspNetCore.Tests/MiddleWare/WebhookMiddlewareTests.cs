@@ -128,6 +128,7 @@ namespace Contentful.AspNetCore.Tests.MiddleWare
             Assert.True(called);
             Assert.Equal("123", hookEntry.SystemProperties.Id);
             Assert.Equal("Hello", hookEntry.Fields.Title["en-US"].ToString());
+            Assert.True(context.Response.StatusCode == 200);
         }
 
         [Fact]
