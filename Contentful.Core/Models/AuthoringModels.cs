@@ -19,7 +19,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this document contains.
@@ -40,7 +40,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The textual value.
@@ -114,7 +114,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this paragraph contains.
@@ -135,7 +135,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -156,7 +156,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -177,7 +177,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -198,7 +198,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -219,7 +219,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -240,7 +240,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this heading contains.
@@ -288,7 +288,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this paragraph contains.
@@ -309,7 +309,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this paragraph contains.
@@ -330,7 +330,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
 
         /// <summary>
         /// The list of content this paragraph contains.
@@ -351,7 +351,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The additional data of the node.
         /// </summary>
-        public object Data { get; set; }
+        public GenericStructureData Data { get; set; }
     }
 
     /// <summary>
@@ -416,6 +416,17 @@ namespace Contentful.Core.Models
         /// The entry this hyperlink targets
         /// </summary>
         public IContent Target { get; set; }
+    }
+
+    /// <summary>
+    /// Represents the data property of the generic node tpes
+    /// </summary>
+    public class GenericStructureData
+    {
+        /// <summary>
+        /// The entry this hyperlink targets
+        /// </summary>
+        public object Target { get; set; }
     }
 
     /// <summary>
