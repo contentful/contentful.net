@@ -152,7 +152,6 @@ namespace Contentful.Core
         public async Task<ContentfulCollection<T>> GetEntriesByType<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default)
         {
             var builder = queryBuilder ?? new QueryBuilder<T>();
-
             builder.ContentTypeIs(contentTypeId);
 
             return await GetEntries<T>(builder, cancellationToken).ConfigureAwait(false);

@@ -44,6 +44,17 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void AddingSameContentTypeMultipleTimesShouldYieldCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.ContentTypeIs("123").ContentTypeIs("123").Build();
+            //Assert
+            Assert.Equal("?content_type=123", result);
+        }
+
+        [Fact]
         public void FullTextSearchShouldAddCorrectQueryString()
         {
             //Arrange

@@ -2718,17 +2718,51 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// Creates or updates a Content Tag. Updates if a content tag with the same id already exists.
+        /// Creates a Content Tag.
         /// </summary>
         /// <param name="name">The name of the content tag</param>
         /// <param name="id">The name of the content tag</param>
+        /// <param name="version">The last version known of the content tag. Must be set for existing content tag.</param>
         /// <param name="spaceId">The id of the space to create or update the content tag in. Will default to the one set when creating the client.</param>
-        /// <param name="version">The last version known of the content tag. Must be set for existing content tag. Should be null if a new one is created.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id or the name is not set.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentTag> CreateOrUpdateContentTag(string name, string id, string spaceId = null, int? version = null, CancellationToken cancellationToken = default)
+        public async Task<ContentTag> CreateContentTag(string name, string id, bool publiclyVisible, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("The name of the content tag must be set.", nameof(name));
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("The id of the content tag must be set.", nameof(id));
+            }
+
+            var res = await PutAsync(
+                $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags/{id}",
+                ConvertObjectToJsonStringContent(new { name, sys = new { id, type = "tag", visibility = publiclyVisible ? "public" : "private" } }), cancellationToken, null).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            return json.ToObject<ContentTag>(Serializer);
+        }
+
+        /// <summary>
+        /// Updates a Content Tag.
+        /// </summary>
+        /// <param name="name">The name of the content tag</param>
+        /// <param name="id">The name of the content tag</param>
+        /// <param name="version">The last version known of the content tag. Must be set for existing content tag.</param>
+        /// <param name="spaceId">The id of the space to create or update the content tag in. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the id or the name is not set.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentTag> UpdateContentTag(string name, string id,  int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
