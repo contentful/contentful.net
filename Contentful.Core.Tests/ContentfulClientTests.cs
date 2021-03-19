@@ -1093,6 +1093,19 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWithAFieldCalledFields()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextFieldCalledFields.json");
+            _client.ContentTypeResolver = new RichTextResolver();
+            //Act
+            var res = await _client.GetEntries<RichTextModel>();
+
+            //Assert
+            Assert.NotNull(res.First().Fields);
+        }
+
+        [Fact]
         public async Task TurningRichTextIntoHtmlShouldYieldCorrectResult()
         {
             //Arrange

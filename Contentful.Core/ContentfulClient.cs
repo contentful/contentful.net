@@ -152,7 +152,6 @@ namespace Contentful.Core
         public async Task<ContentfulCollection<T>> GetEntriesByType<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default)
         {
             var builder = queryBuilder ?? new QueryBuilder<T>();
-
             builder.ContentTypeIs(contentTypeId);
 
             return await GetEntries<T>(builder, cancellationToken).ConfigureAwait(false);
@@ -211,7 +210,7 @@ namespace Contentful.Core
                 var token = entryTokens[i];
                 var grandParent = token.Parent.Parent;
 
-                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
+                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry" || token.Parent.Path.EndsWith(".fields.fields"))
                 {
                     continue;
                 }

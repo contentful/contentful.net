@@ -33,6 +33,11 @@ namespace Contentful.Core.Search
         /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
         public QueryBuilder<T> ContentTypeIs(string contentTypeId)
         {
+            if(_querystringValues.Any(c => c.Key == "content_type" && c.Value == contentTypeId)) {
+                // the builder already contains this content type, do not add it again.
+                return this;
+            }
+
             _querystringValues.Add(new KeyValuePair<string, string>("content_type", contentTypeId));
             return this;
         }
