@@ -88,6 +88,7 @@ namespace Contentful.Core.Tests
         public SystemProperties Sys { get; set; }
         public string Title { get; set; }
         public Document RichText { get; set; }
+        public Document Fields { get; set; }
         public string Body { get; set; }
     }
 

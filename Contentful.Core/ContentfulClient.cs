@@ -210,7 +210,7 @@ namespace Contentful.Core
                 var token = entryTokens[i];
                 var grandParent = token.Parent.Parent;
 
-                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry")
+                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry" || token.Parent.Path.EndsWith(".fields.fields"))
                 {
                     continue;
                 }
