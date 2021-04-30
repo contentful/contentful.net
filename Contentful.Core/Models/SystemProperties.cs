@@ -92,6 +92,11 @@ namespace Contentful.Core.Models
         public User PublishedBy { get; set; }
 
         /// <summary>
+        /// When the resource was last published. Will only be present for management API calls.
+        /// </summary>
+        public DateTime? PublishedAt { get; set; }
+
+        /// <summary>
         /// The number of times the resource has been published. Will only be present for management API calls.
         /// </summary>
         public int? PublishCounter { get; set; }

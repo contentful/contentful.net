@@ -1268,12 +1268,13 @@ namespace Contentful.Core
         /// Gets all webhooks for a <see cref="Space"/>.
         /// </summary>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Webhook>> GetWebhooksCollection(string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulCollection<Webhook>> GetWebhooksCollection(string spaceId = null, string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/webhook_definitions{queryString}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
