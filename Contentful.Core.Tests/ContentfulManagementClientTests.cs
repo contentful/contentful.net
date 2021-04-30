@@ -1691,6 +1691,31 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetAllWebhooksShouldDeserializeCorrectlyWithQueryString()
+        {
+            //Arrange
+            var url = "";
+            _handler.Response = GetResponseFromFile(@"WebhookCollection.json");
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                url = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.GetWebhooksCollection(queryString: "?skip=3&take=7");
+
+            //Assert
+            Assert.Equal(1, res.Total);
+            Assert.Equal(1, res.Count());
+            Assert.Equal("https://api.contentful.com/spaces/666/webhook_definitions?skip=3&take=7", url);
+            Assert.Equal("Testhook", res.First().Name);
+            Assert.Equal(2, res.First().Filters.Count);
+            Assert.IsType(typeof(EqualsConstraint), res.First().Filters.First());
+            Assert.IsType(typeof(InConstraint), (res.First().Filters.Last() as NotConstraint).ConstraintToInvert);
+            Assert.Equal("https://robertlinde.se/", res.First().Url);
+        }
+
+        [Fact]
         public async Task CreateWebhookShouldCallCorrectUrlWithData()
         {
             //Arrange
