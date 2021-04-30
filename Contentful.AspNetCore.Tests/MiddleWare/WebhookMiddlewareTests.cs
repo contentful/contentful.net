@@ -127,6 +127,7 @@ namespace Contentful.AspNetCore.Tests.MiddleWare
 
             //Assert
             Assert.True(called);
+            Assert.True(hasHeader);
             Assert.Equal("123", hookEntry.SystemProperties.Id);
             Assert.Equal("Hello", hookEntry.Fields.Title["en-US"].ToString());
         }
