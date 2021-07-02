@@ -180,6 +180,44 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task RateLimitWithRetryShouldRetainQuerystring()
+        {
+            //Arrange
+            _handler = new FakeMessageHandler();
+            var httpClient = new HttpClient(_handler);
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "123",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                MaxNumberOfRateLimitRetries = 3
+            });
+
+            var response = GetResponseFromFile(@"ErrorRateLimit.json");
+            response.StatusCode = (HttpStatusCode)429;
+            response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+
+            _handler.Response = response;
+            var qb = QueryBuilder<TestEntryModel>.New.Include(4).Limit(40);
+            var query = qb.Build();
+            var numberOfTimesCalled = 0;
+            _handler.VerificationBeforeSend = () => { 
+                numberOfTimesCalled++;
+            };
+            _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg;
+                Assert.Equal(msg.RequestUri.Query, query + "&content_type=ff");
+            };
+            
+            //Act
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntriesByType("ff", qb));
+            //Assert
+            Assert.Equal(1, ex.SecondsUntilNextRequest);
+            //1 request + 3 retries
+            Assert.Equal(4, numberOfTimesCalled);
+        }
+
+        [Fact]
         public async Task RateLimitWithRetryShouldStopCallingOnSuccess()
         {
             //Arrange
