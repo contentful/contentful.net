@@ -26,7 +26,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// String representation of the widget, e.g. inline HTML.
         /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("srcdoc", NullValueHandling = NullValueHandling.Ignore)]
         public string SrcDoc { get; set; }
 
         /// <summary>
