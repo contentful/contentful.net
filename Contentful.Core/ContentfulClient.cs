@@ -288,13 +288,9 @@ namespace Contentful.Core
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {
-                var propName = (linkToken.Parent.Parent.Ancestors().FirstOrDefault(a => a is JProperty) as JProperty)?.Name;
-                var isRichTextPath = linkToken.Path.EndsWith("data.target.sys");
-                if (isRichTextPath)
-                {
-                    propName = linkToken.Path.Substring(linkToken.Path.LastIndexOf(".fields.") + 8);
-                    propName = propName.Substring(0, propName.IndexOf("."));
-                }
+                var propName = linkToken.Path.Substring(linkToken.Path.LastIndexOf(".fields.") + 8);
+                propName = propName.Substring(0, propName.IndexOf("."));
+
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;
                 if (processedIds.Contains(linkId))

@@ -9,6 +9,7 @@
     <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
+    <None Remove="JsonFiles\EntriesMultipleLocale.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
     <None Remove="JsonFiles\SampleContentTag.json" />
     <None Remove="JsonFiles\SampleContentTagCollection.json" />
@@ -24,6 +25,7 @@
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesMultipleLocale.json" />
     <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesMissingEntries.json" />

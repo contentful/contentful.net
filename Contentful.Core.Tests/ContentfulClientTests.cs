@@ -445,6 +445,24 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyWihtMultipleLocales()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesMultipleLocale.json");
+
+            //Act
+            _client.ContentTypeResolver = new TestLocalizedResolver();
+            _client.ResolveEntriesSelectively = true;
+            var res = await _client.GetEntries<MainContainerLocalized>();
+            var list = res.ToList();
+
+            //Assert
+            Assert.NotNull(list[0].Items["en-US"][0].Items["en-US"][0]);
+            Assert.Equal(1, list[0].Items["en-US"][0].Items["en-US"].Count);
+            Assert.Equal(1, list.Count());
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyWithNestedAssetInArray()
         {
             //Arrange

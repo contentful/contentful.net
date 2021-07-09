@@ -202,6 +202,11 @@ namespace Contentful.Core.Tests
         public List<Container> Items { get; set; }
     }
 
+    public class MainContainerLocalized
+    {
+        public Dictionary<string, List<ContainerLocalized>> Items { get; set; }
+    }
+
     public class MainContainerArray
     {
         public Container[] Items { get; set; }
@@ -212,9 +217,19 @@ namespace Contentful.Core.Tests
         public List<Item> Items { get; set; }
     }
 
+    public class ContainerLocalized
+    {
+        public Dictionary<string, List<IMarker>> Items { get; set; }
+    }
+
     public class Item
     {
         public Asset Media { get; set; }
+    }
+    
+    public class ItemLocalized: IMarker
+    {
+        public Dictionary<string, Asset> Media { get; set; }
     }
 
 
@@ -241,11 +256,6 @@ namespace Contentful.Core.Tests
         public SelfReferencer[] SubCategories { get; set; }
     }
 
-    public class Footer
-    {
-        public string Key { get; set; }
-    }
-
     public interface IMarker
     {
 
@@ -263,7 +273,23 @@ namespace Contentful.Core.Tests
             { "2PqfXUJwE8qSYKuM0U6w8M", typeof(TestEntryModel) },
             { "sFzTZbSuM8coEwygeUYes", typeof(TestCompany) },
             { "events", typeof(ContentfulEvent) },
-            { "page", typeof(TestNestedSharedItem) }
+            { "page", typeof(TestNestedSharedItem) },
+        };
+
+        public Type Resolve(string contentTypeId)
+        {
+            return _types.TryGetValue(contentTypeId, out var type) ? type : null;
+        }
+    }
+
+    public class TestLocalizedResolver : IContentTypeResolver
+    {
+        public Dictionary<string, Type> _types = new Dictionary<string, Type>()
+        {
+
+            { "page", typeof(MainContainerLocalized) },
+            { "itemModule", typeof(ItemLocalized) },
+            { "container", typeof(ContainerLocalized) },
         };
 
         public Type Resolve(string contentTypeId)
