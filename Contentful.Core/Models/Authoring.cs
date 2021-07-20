@@ -30,6 +30,11 @@ namespace Contentful.Core.Models
     {
         private readonly ContentRendererCollection _contentRendererCollection;
 
+        public ContentRendererCollection Renderers
+        {
+            get { return _contentRendererCollection; }
+        }
+
         /// <summary>
         /// Initializes a new instance of HtmlRenderer.
         /// </summary>
