@@ -30,6 +30,9 @@ namespace Contentful.Core.Models
     {
         private readonly ContentRendererCollection _contentRendererCollection;
 
+        /// <summary>
+        /// Returns a reference to the internal content renderer collection.
+        /// </summary>
         public ContentRendererCollection Renderers
         {
             get { return _contentRendererCollection; }
