@@ -349,6 +349,13 @@ namespace Contentful.Core.Models
         public string NodeType { get; set; }
 
         /// <summary>
+        /// This property is added although a horizontal ruler can't really contain any content, but 
+        /// some client side libraries depend on the property to exist.
+        /// It is not used by the renderer.
+        /// </summary>
+        public List<IContent> Content { get; set; }
+
+        /// <summary>
         /// The additional data of the node.
         /// </summary>
         public GenericStructureData Data { get; set; }
