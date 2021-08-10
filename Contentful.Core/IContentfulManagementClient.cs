@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Contentful.Core.Models;
+﻿using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Contentful.Core
 {
@@ -158,7 +158,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Entry{T}"/>.</returns>
         Task<Entry<dynamic>> CreateEntryForLocale(object entry, string id, string contentTypeId, string locale = null, string spaceId = null, CancellationToken cancellationToken = default);
-        
+
 
         /// <summary>
         /// Updates an entry fields for a certain locale using the values from the provided object.
@@ -447,16 +447,17 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         Task<ContentfulCollection<T>> GetEntriesForLocale<T>(QueryBuilder<T> queryBuilder, string locale = null, string spaceId = null, CancellationToken cancellationToken = default);
-        
 
-            /// <summary>
-            /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
-            /// </summary>
-            /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
-            /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
-            /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-            /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-            Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
@@ -464,9 +465,10 @@ namespace Contentful.Core
         /// </summary>
         /// <typeparam name="T">The <see cref="IContentfulResource"/> to serialize the response into.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, CancellationToken cancellationToken = default);
+        Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get a single entry by the specified id.
@@ -722,7 +724,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Locale"/>.</returns>
         Task<Locale> UpdateLocale(Locale locale, string spaceId = null, CancellationToken cancellationToken = default);
-        
+
         /// <summary>
         /// Updates a role in a <see cref="Space"/>.
         /// </summary>

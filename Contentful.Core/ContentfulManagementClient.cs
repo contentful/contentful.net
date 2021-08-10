@@ -206,7 +206,7 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}content_types/{contentType.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { name = contentType.Name, description = contentType.Description, displayField = contentType.DisplayField, fields = contentType.Fields }), 
+                ConvertObjectToJsonStringContent(new { name = contentType.Name, description = contentType.Description, displayField = contentType.DisplayField, fields = contentType.Fields }),
                 cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
@@ -411,7 +411,7 @@ namespace Contentful.Core
                 locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
 
-            var entries = await GetEntriesCollection<JObject>(queryBuilder?.Build(), cancellationToken);
+            var entries = await GetEntriesCollection<JObject>(queryBuilder?.Build(), spaceId, cancellationToken);
 
             var items = entries.Items.Select(j => ReconstructJsonObject(j).ToObject<T>()).ToList();
 
@@ -429,7 +429,7 @@ namespace Contentful.Core
             JObject ReconstructJsonObject(JObject oldObject)
             {
                 var newObject = new JObject(new JProperty("sys", oldObject["sys"]));
-                foreach(var child in oldObject.Children<JProperty>().Where(p => p.Name != "sys"))
+                foreach (var child in oldObject.Children<JProperty>().Where(p => p.Name != "sys"))
                 {
                     var value = child.Value[locale];
                     newObject.Add(child.Name, value);
@@ -445,11 +445,12 @@ namespace Contentful.Core
         /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default)
+        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(QueryBuilder<T> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default)
         {
-            return await GetEntriesCollection<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return await GetEntriesCollection<T>(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -458,12 +459,13 @@ namespace Contentful.Core
         /// </summary>
         /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulCollection<T>> GetEntriesCollection<T>(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default)
         {
-            var res = await GetAsync($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}entries{queryString}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -651,7 +653,7 @@ namespace Contentful.Core
             var contentType = await GetContentType(entryToUpdate.SystemProperties.ContentType.SystemProperties.Id);
             var allFieldIds = contentType.Fields.Select(f => f.Id);
 
-            if(string.IsNullOrEmpty(locale))
+            if (string.IsNullOrEmpty(locale))
             {
                 locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
@@ -661,9 +663,9 @@ namespace Contentful.Core
 
             foreach (var fieldId in allFieldIds)
             {
-                if(jsonEntry[fieldId] != null)
+                if (jsonEntry[fieldId] != null)
                 {
-                    if(fieldsToUpdate[fieldId] == null)
+                    if (fieldsToUpdate[fieldId] == null)
                     {
                         fieldsToUpdate.Add(fieldId, new JObject(new JProperty(locale, null)));
                     }
@@ -672,7 +674,7 @@ namespace Contentful.Core
                 }
             }
 
-            var updatedEntry = await CreateOrUpdateEntry(entryToUpdate,spaceId: spaceId, version: entryToUpdate.SystemProperties.Version, cancellationToken: cancellationToken);
+            var updatedEntry = await CreateOrUpdateEntry(entryToUpdate, spaceId: spaceId, version: entryToUpdate.SystemProperties.Version, cancellationToken: cancellationToken);
 
             return updatedEntry;
         }
@@ -1045,7 +1047,7 @@ namespace Contentful.Core
             var processedAsset = await GetAsset(assetId, spaceId, cancellationToken);
             var delay = 0;
             var completed = false;
-            
+
             while (completed == false && delay < maxDelay)
             {
                 await Task.Delay(delay);
@@ -1058,7 +1060,7 @@ namespace Contentful.Core
                 {
                     return processedAsset;
                 }
-                
+
                 delay += 200;
             }
 
@@ -1782,7 +1784,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the space membership id must be set", nameof(spaceMembership));
             }
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}", 
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/space_memberships/{spaceMembership.SystemProperties.Id}",
                 ConvertObjectToJsonStringContent(spaceMembership), cancellationToken, null).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
@@ -1869,7 +1871,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-           
+
             return jsonObject.ToObject<ApiKey>(Serializer);
         }
 
@@ -1940,7 +1942,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the api key must be set.", nameof(id));
             }
 
-            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{id}", ConvertObjectToJsonStringContent(new { name, description }), 
+            var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/api_keys/{id}", ConvertObjectToJsonStringContent(new { name, description }),
                 cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
@@ -2102,7 +2104,8 @@ namespace Contentful.Core
 
             var createdAsset = await CreateOrUpdateAsset(asset);
 
-            foreach (var file in createdAsset.Files) {
+            foreach (var file in createdAsset.Files)
+            {
 
                 await ProcessAsset(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, file.Key);
             }
@@ -2150,7 +2153,7 @@ namespace Contentful.Core
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            
+
             return jsonObject.ToObject<UiExtension>(Serializer);
         }
 
@@ -2596,7 +2599,7 @@ namespace Contentful.Core
             collection.Items = apiUsage;
             return jsonObject.ToObject<OrganizationMembership>(Serializer);
         }
-        
+
         /// <summary>
         /// Gets a single <see cref="Contentful.Core.Models.Management.OrganizationMembership"/> for a space.
         /// </summary>
@@ -2763,7 +2766,7 @@ namespace Contentful.Core
         /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id or the name is not set.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentTag> UpdateContentTag(string name, string id,  int version, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<ContentTag> UpdateContentTag(string name, string id, int version, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -2777,7 +2780,7 @@ namespace Contentful.Core
 
             var res = await PutAsync(
                 $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags/{id}",
-                ConvertObjectToJsonStringContent(new { name, sys = new { id, type = "tag" }  }), cancellationToken, version).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new { name, sys = new { id, type = "tag" } }), cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
