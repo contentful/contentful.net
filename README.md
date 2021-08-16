@@ -10,9 +10,9 @@
   </a>
 </p>
 
-# contentful.net - Contentful .NET SDK
+# contentful.net - Contentful .NET Library
 
-> .NET SDK for the Contentful [Content Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/), [Content Preview API](https://www.contentful.com/developers/docs/references/content-preview-api/) and the [Contentful Management API](https://www.contentful.com/developers/docs/references/content-management-api/). It helps you to easily access your Content stored in Contentful with your .NET applications.
+> .NET library for the Contentful [Content Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/), [Content Preview API](https://www.contentful.com/developers/docs/references/content-preview-api/) and the [Contentful Management API](https://www.contentful.com/developers/docs/references/content-management-api/). It helps you to easily access your Content stored in Contentful with your .NET applications.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Maintained-green.svg" alt="This repository is actively maintained" /> &nbsp;
@@ -34,11 +34,11 @@
 
 <!-- TOC -->
 
-- [contentful.net - Contentful .NET Delivery SDK](#contentfulnet---contentful-net-sdk)
+- [contentful.net - Contentful .NET Delivery library](#contentfulnet---contentful-net-library)
   - [Core Features](#core-features)
   - [Getting started](#getting-started)
     - [Your first request](#your-first-request)
-  - [Using the SDK with the Preview API](#using-the-sdk-with-the-preview-api)
+  - [Using the library with the Preview API](#using-the-library-with-the-preview-api)
   - [Authentication](#authentication)
   - [Further documentation](#further-documentation)
   - [Reach out to us](#reach-out-to-us)
@@ -64,7 +64,7 @@
 
 ## Getting started
 
-We recommend you use the NuGet Package Manager to add the SDK to your .NET Application using one of the following options:
+We recommend you use the NuGet Package Manager to add the library to your .NET Application using one of the following options:
 
 - In Visual Studio, open Package Manager Console window and run the following command:
 
@@ -183,9 +183,9 @@ contentType.Fields = new List<Field>()
 await managementClient.CreateOrUpdateContentType(contentType);
 ```
 
-## Using the SDK with the Preview API
+## Using the library with the Preview API
 
-This SDK can also be used with the Preview API. Make sure you have a preview API key configured and set `UsePreviewAPI` on your client.
+This library can also be used with the Preview API. Make sure you have a preview API key configured and set `UsePreviewAPI` on your client.
 
 ```csharp
 var httpClient = new HttpClient();
