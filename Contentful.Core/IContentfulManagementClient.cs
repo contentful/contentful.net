@@ -20,7 +20,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space to activate the content type in. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
-        Task<ContentType> ActivateContentType(string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentType> ActivateContentType(string contentTypeId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Archives an asset by the specified id.
@@ -30,7 +30,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> archived.</returns>
-        Task<ManagementAsset> ArchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ManagementAsset> ArchiveAsset(string assetId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Archives an entry by the specified id.
@@ -40,7 +40,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
-        Task<Entry<dynamic>> ArchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<Entry<dynamic>> ArchiveEntry(string entryId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates an <see cref="Contentful.Core.Models.Management.ApiKey"/> in a space.
@@ -63,7 +63,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Contentful.Core.Models.Management.ApiKey"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ApiKey> UpdateApiKey(string id, string name, string description, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ApiKey> UpdateApiKey(string id, string name, string description, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a locale in the specified <see cref="Space"/>.
@@ -145,7 +145,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the entry. Must be set when updating an entry.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated entry.</returns>
-        Task<T> CreateOrUpdateEntry<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = null, CancellationToken cancellationToken = default);
+        Task<T> CreateOrUpdateEntry<T>(T entry, string id, string spaceId = null, string contentTypeId = null, int? version = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates an entry with values for a certain locale from the provided object.
@@ -179,7 +179,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the webhook.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created <see cref="Contentful.Core.Models.Management.Webhook"/>.</returns>
-        Task<Webhook> CreateOrUpdateWebhook(Webhook webhook, string spaceId = null, int? version = null, CancellationToken cancellationToken = default);
+        Task<Webhook> CreateOrUpdateWebhook(Webhook webhook, string spaceId = null, int? version = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Creates a role in a <see cref="Space"/>.
@@ -234,7 +234,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the asset.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        Task DeleteAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task DeleteAsset(string assetId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes a <see cref="ContentType"/> by the specified id.
@@ -252,7 +252,7 @@ namespace Contentful.Core
         /// <param name="version">The last known version of the entry.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        Task DeleteEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task DeleteEntry(string entryId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes a locale by the specified id.
@@ -653,7 +653,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> published.</returns>
-        Task<ManagementAsset> PublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ManagementAsset> PublishAsset(string assetId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Publishes an entry by the specified id.
@@ -663,7 +663,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
-        Task<Entry<dynamic>> PublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<Entry<dynamic>> PublishEntry(string entryId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Unarchives an asset by the specified id.
@@ -673,7 +673,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> unarchived.</returns>
-        Task<ManagementAsset> UnarchiveAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ManagementAsset> UnarchiveAsset(string assetId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Unarchives an entry by the specified id.
@@ -683,7 +683,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
-        Task<Entry<dynamic>> UnarchiveEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<Entry<dynamic>> UnarchiveEntry(string entryId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Unpublishes an asset by the specified id.
@@ -693,7 +693,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Contentful.Core.Models.Management.ManagementAsset"/> unpublished.</returns>
-        Task<ManagementAsset> UnpublishAsset(string assetId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ManagementAsset> UnpublishAsset(string assetId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Unpublishes an entry by the specified id.
@@ -703,7 +703,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
-        Task<Entry<dynamic>> UnpublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<Entry<dynamic>> UnpublishEntry(string entryId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates a <see cref="Contentful.Core.Models.Management.EditorInterface"/> for a specific <see cref="ContentType"/>.
@@ -714,7 +714,7 @@ namespace Contentful.Core
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into a <see cref="Contentful.Core.Models.Management.EditorInterface"/>.</returns>
-        Task<EditorInterface> UpdateEditorInterface(EditorInterface editorInterface, string contentTypeId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<EditorInterface> UpdateEditorInterface(EditorInterface editorInterface, string contentTypeId, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates a locale in the specified <see cref="Space"/>.
@@ -761,7 +761,7 @@ namespace Contentful.Core
         /// <param name="organisation">The organisation to update a space for. Not required if the account belongs to only one organisation.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The updated <see cref="Space"/></returns>
-        Task<Space> UpdateSpaceName(string id, string name, int version, string organisation = null, CancellationToken cancellationToken = default);
+        Task<Space> UpdateSpaceName(string id, string name, int? version = default, string organisation = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets an upload <see cref="SystemProperties"/> by the specified id.
@@ -825,7 +825,7 @@ namespace Contentful.Core
         /// <param name="version">The last version known of the extension. Must be set for existing extensions. Should be null if one is created.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.UiExtension"/>.</returns>
-        Task<UiExtension> CreateOrUpdateExtension(UiExtension extension, string spaceId = null, int? version = null, CancellationToken cancellationToken = default);
+        Task<UiExtension> CreateOrUpdateExtension(UiExtension extension, string spaceId = null, int? version = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a single <see cref="Contentful.Core.Models.Management.UiExtension"/> for a space.
@@ -922,7 +922,7 @@ namespace Contentful.Core
         /// <returns>The created <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/>.</returns>
         /// <exception cref="System.ArgumentException">The required arguments were not provided.</exception>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentfulEnvironment> CreateOrUpdateEnvironment(string id, string name, int? version = null, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentfulEnvironment> CreateOrUpdateEnvironment(string id, string name, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Clones a <see cref="Contentful.Core.Models.Management.ContentfulEnvironment"/> for a space.
@@ -1097,7 +1097,7 @@ namespace Contentful.Core
         /// <returns>The created or updated <see cref="Contentful.Core.Models.Management.ContentTag"/>.</returns>
         /// <exception cref="ArgumentException">Thrown if the id or the name is not set.</exception>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<ContentTag> UpdateContentTag(string name, string id, int version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<ContentTag> UpdateContentTag(string name, string id, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -1109,6 +1109,6 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
-        Task DeleteContentTag(string id, int? version, string spaceId = null, CancellationToken cancellationToken = default);
+        Task DeleteContentTag(string id, int? version = default, string spaceId = null, CancellationToken cancellationToken = default);
     }
 }
