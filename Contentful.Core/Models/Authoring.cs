@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,9 +53,12 @@ namespace Contentful.Core.Models
             _contentRendererCollection.AddRenderers(new List<IContentRenderer> {
                 new ParagraphRenderer(_contentRendererCollection),
                 new HyperlinkContentRenderer(_contentRendererCollection),
-                new TextRenderer(),
+                new TextRenderer(true),
                 new HorizontalRulerContentRenderer(),
                 new HeadingRenderer(_contentRendererCollection),
+                new TableRenderer(_contentRendererCollection),
+                new TableRowRenderer(_contentRendererCollection),
+                new TableCellRenderer(_contentRendererCollection),
                 new ListContentRenderer(_contentRendererCollection),
                 new ListItemContentRenderer(_contentRendererCollection, options.ListItemOptions),
                 new QuoteContentRenderer(_contentRendererCollection),
@@ -225,6 +229,195 @@ namespace Contentful.Core.Models
     }
 
     /// <summary>
+    /// A renderer for a table.
+    /// </summary>
+    public class TableRenderer : IContentRenderer
+    {
+        private readonly ContentRendererCollection _rendererCollection;
+
+        /// <summary>
+        /// Initializes a new TableRenderer
+        /// </summary>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public TableRenderer(ContentRendererCollection rendererCollection)
+        {
+            _rendererCollection = rendererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a table, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is Table;
+        }
+
+        /// <summary>
+        /// Renders the content to an html table-tag.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The table-tag as a string.</returns>
+        public string Render(IContent content)
+        {
+            var table = content as Table;
+            var sb = new StringBuilder();
+            sb.Append("<table>");
+
+            foreach (var subContent in table.Content)
+            {
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append("</table>");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
+    }
+
+    /// <summary>
+    /// A renderer for a table row.
+    /// </summary>
+    public class TableRowRenderer : IContentRenderer
+    {
+        private readonly ContentRendererCollection _rendererCollection;
+
+        /// <summary>
+        /// Initializes a new TableRowRenderer
+        /// </summary>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public TableRowRenderer(ContentRendererCollection rendererCollection)
+        {
+            _rendererCollection = rendererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a table row, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is TableRow;
+        }
+
+        /// <summary>
+        /// Renders the content to an html tr-tag.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The table row-tag as a string.</returns>
+        public string Render(IContent content)
+        {
+            var tableRow = content as TableRow;
+            var sb = new StringBuilder();
+            sb.Append("<tr>");
+
+            foreach (var subContent in tableRow.Content)
+            {
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append("</tr>");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
+    }
+
+    /// <summary>
+    /// A renderer for a table cell.
+    /// </summary>
+    public class TableCellRenderer : IContentRenderer
+    {
+        private readonly ContentRendererCollection _rendererCollection;
+
+        /// <summary>
+        /// Initializes a new TableCellRenderer
+        /// </summary>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public TableCellRenderer(ContentRendererCollection rendererCollection)
+        {
+            _rendererCollection = rendererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a table cell, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is TableCell;
+        }
+
+        /// <summary>
+        /// Renders the content to an html td-tag.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The table cell-tag as a string.</returns>
+        public string Render(IContent content)
+        {
+            var tableCell = content as TableCell;
+            var sb = new StringBuilder();
+            sb.Append("<td>");
+
+            foreach (var subContent in tableCell.Content)
+            {
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append("</td>");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
+    }
+
+    /// <summary>
     /// A renderer for a heading.
     /// </summary>
     public class HeadingRenderer : IContentRenderer
@@ -316,10 +509,15 @@ namespace Contentful.Core.Models
     /// </summary>
     public class TextRenderer : IContentRenderer
     {
+        public TextRenderer(bool htmlEncodeOutput = false)
+        {
+            HtmlEncodeOutput = htmlEncodeOutput;
+        }
         /// <summary>
         /// The order of this renderer in the collection.
         /// </summary>
         public int Order { get; set; } = 100;
+        public bool HtmlEncodeOutput { get; }
 
         /// <summary>
         /// Whether or not this renderer supports the provided content.
@@ -349,12 +547,20 @@ namespace Contentful.Core.Models
                 }
             }
 
-            sb.Append(text.Value);
+            if (HtmlEncodeOutput)
+            {
+                sb.Append(WebUtility.HtmlEncode(text.Value));
+            }
+            else
+            {
+                sb.Append(text.Value);
+            }
 
             if (text.Marks != null)
             {
-                foreach (var mark in text.Marks)
+                for (var i = text.Marks.Count - 1; i >= 0; i--)
                 {
+                    var mark = text.Marks[i];
                     sb.Append($"</{MarkToHtmlTag(mark)}>");
                 }
             }

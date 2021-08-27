@@ -89,6 +89,12 @@ namespace Contentful.Core.Configuration
                     return jObject.ToObject<Heading5>(serializer);
                 case "heading-6":
                     return jObject.ToObject<Heading6>(serializer);
+                case "table":
+                    return jObject.ToObject<Table>(serializer);
+                case "table-row":
+                    return jObject.ToObject<TableRow>(serializer);
+                case "table-cell":
+                    return jObject.ToObject<TableCell>(serializer);
                 case "hr":
                     return jObject.ToObject<HorizontalRuler>();
                 case "entry-hyperlink":

@@ -8,6 +8,7 @@
     <None Remove="JsonFiles\ApiUsage.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
+    <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\EntriesMultipleLocale.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
@@ -21,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />

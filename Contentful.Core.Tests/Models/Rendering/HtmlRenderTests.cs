@@ -32,6 +32,84 @@ namespace Contentful.Core.Tests.Models.Rendering
             Assert.Equal(string.Empty, emptyResult);
         }
 
+        [Fact]
+        public async Task MarksShouldRenderToCorrectHTmlOutput()
+        {
+            //Arrange
+            var renderer = new HtmlRenderer();
+            var doc = new Document
+            {
+                Content = new List<IContent>
+                    {
+                        new Paragraph
+                        {
+                            Content = new List<IContent>
+                            {
+                                new Text
+                                {
+                                    Value = "Hello friends!",
+                                    Marks = new List<Mark>
+                                    {
+                                        new Mark
+                                        {
+                                            Type = "bold"
+                                        },
+                                        new Mark
+                                        {
+                                            Type = "italic"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+            };
+
+            //Act
+            var html = await renderer.ToHtml(doc);
+            //Assert
+            Assert.Equal("<p><strong><em>Hello friends!</em></strong></p>", html);
+        }
+
+        [Fact]
+        public async Task TextShouldRenderEscapedToCorrectHTmlOutput()
+        {
+            //Arrange
+            var renderer = new HtmlRenderer();
+            var doc = new Document
+            {
+                Content = new List<IContent>
+                    {
+                        new Paragraph
+                        {
+                            Content = new List<IContent>
+                            {
+                                new Text
+                                {
+                                    Value = "Hello friends!<script>alert(0)</script>",
+                                    Marks = new List<Mark>
+                                    {
+                                        new Mark
+                                        {
+                                            Type = "bold"
+                                        },
+                                        new Mark
+                                        {
+                                            Type = "italic"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+            };
+
+            //Act
+            var html = await renderer.ToHtml(doc);
+            //Assert
+            Assert.Equal("<p><strong><em>Hello friends!&lt;script&gt;alert(0)&lt;/script&gt;</em></strong></p>", html);
+        }
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
