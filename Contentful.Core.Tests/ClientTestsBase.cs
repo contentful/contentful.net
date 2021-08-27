@@ -92,6 +92,11 @@ namespace Contentful.Core.Tests
         public string Body { get; set; }
     }
 
+    public class TableModel : IContent
+    {
+        public Document Blab { get; set; }
+    }
+
     public class TestCategory : IMarker, IContent
     {
         public string Title { get; set; }

@@ -650,7 +650,7 @@ namespace Contentful.Core
         public async Task<Entry<dynamic>> UpdateEntryForLocale(object entry, string id, string locale = null, string spaceId = null, CancellationToken cancellationToken = default)
         {
             var entryToUpdate = await GetEntry(id, spaceId);
-            var contentType = await GetContentType(entryToUpdate.SystemProperties.ContentType.SystemProperties.Id);
+            var contentType = await GetContentType(entryToUpdate.SystemProperties.ContentType.SystemProperties.Id, spaceId);
             var allFieldIds = contentType.Fields.Select(f => f.Id);
 
             if (string.IsNullOrEmpty(locale))

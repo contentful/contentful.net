@@ -1,0 +1,194 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "metadata": {
+        "tags": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "45345"
+          }
+        },
+        "id": "534556",
+        "type": "Entry",
+        "createdAt": "2017-05-09T11:38:42.245Z",
+        "updatedAt": "2021-08-27T07:54:29.197Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "borg"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "blab": {
+          "nodeType": "document",
+          "data": {},
+          "content": [
+            {
+              "nodeType": "paragraph",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "text",
+                  "value": "",
+                  "marks": [],
+                  "data": {}
+                }
+              ]
+            },
+            {
+              "nodeType": "table",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "table-row",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "table-cell",
+                      "data": {},
+                      "content": [
+                        {
+                          "nodeType": "paragraph",
+                          "data": {},
+                          "content": [
+                            {
+                              "nodeType": "text",
+                              "value": "Cell1",
+                              "marks": [],
+                              "data": {}
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "table-cell",
+                      "data": {},
+                      "content": [
+                        {
+                          "nodeType": "paragraph",
+                          "data": {},
+                          "content": [
+                            {
+                              "nodeType": "text",
+                              "value": "Cell2",
+                              "marks": [],
+                              "data": {}
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "table-cell",
+                      "data": {},
+                      "content": [
+                        {
+                          "nodeType": "paragraph",
+                          "data": {},
+                          "content": [
+                            {
+                              "nodeType": "text",
+                              "value": "Cell3",
+                              "marks": [],
+                              "data": {}
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nodeType": "table-row",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "table-cell",
+                      "data": {},
+                      "content": [
+                        {
+                          "nodeType": "paragraph",
+                          "data": {},
+                          "content": [
+                            {
+                              "nodeType": "text",
+                              "value": "Cell4",
+                              "marks": [],
+                              "data": {}
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "table-cell",
+                      "data": {},
+                      "content": [
+                        {
+                          "nodeType": "paragraph",
+                          "data": {},
+                          "content": [
+                            {
+                              "nodeType": "text",
+                              "value": "Cell5",
+                              "marks": [],
+                              "data": {}
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nodeType": "table-cell",
+                      "data": {},
+                      "content": [
+                        {
+                          "nodeType": "paragraph",
+                          "data": {},
+                          "content": [
+                            {
+                              "nodeType": "text",
+                              "value": "Cell6",
+                              "marks": [],
+                              "data": {}
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "includes": {
+    "Asset": [
+    ]
+  }
+}
