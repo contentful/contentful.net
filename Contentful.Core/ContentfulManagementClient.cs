@@ -827,7 +827,7 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Contentful.Core.Models.Management.ManagementAsset"/>.</returns>
         /// <exception cref="Contentful.Core.Errors.ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(QueryBuilder<Asset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulCollection<ManagementAsset>> GetAssetsCollection(QueryBuilder<ManagementAsset> queryBuilder, string spaceId = null, CancellationToken cancellationToken = default)
         {
             return await GetAssetsCollection(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
         }
@@ -2102,12 +2102,12 @@ namespace Contentful.Core
                 file.Value.UploadReference = upload;
             }
 
-            var createdAsset = await CreateOrUpdateAsset(asset);
+            var createdAsset = await CreateOrUpdateAsset(asset, spaceId);
 
             foreach (var file in createdAsset.Files)
             {
 
-                await ProcessAsset(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, file.Key);
+                await ProcessAsset(createdAsset.SystemProperties.Id, createdAsset.SystemProperties.Version ?? 1, file.Key, spaceId);
             }
 
             return createdAsset;
