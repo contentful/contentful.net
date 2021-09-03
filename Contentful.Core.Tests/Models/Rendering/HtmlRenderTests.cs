@@ -141,5 +141,26 @@ namespace Contentful.Core.Tests.Models.Rendering
             //Assert
             Assert.Equal(expectedResult, result);
         }
+
+        [Fact]
+        public void AssetShouldRenderEmptyLinkWithNoFile()
+        {
+            //Arrange
+            var renderer = new AssetRenderer(null);
+            var assetStructure = new AssetStructure
+            {
+                Content = new List<IContent>(),
+                Data = new AssetStructureData
+                {
+                    Target = new Asset()
+                },
+                NodeType = ""
+            };
+
+            //Act
+            var html = renderer.Render(assetStructure);
+            //Assert
+            Assert.Equal("<a></a>", html);
+        }
     }
 }

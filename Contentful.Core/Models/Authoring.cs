@@ -643,7 +643,8 @@ namespace Contentful.Core.Models
                 sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
             }else
             {
-                sb.Append($"<a href=\"{asset.File.Url}\">");
+                var url = asset.File?.Url;
+                sb.Append(string.IsNullOrEmpty(url)? "<a>" : $"<a href=\"{asset.File.Url}\">");
 
                 if (assetStructure.Content != null && assetStructure.Content.Any())
                 {
