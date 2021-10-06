@@ -1200,8 +1200,8 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<TableModel>();
             var html = await htmlrenderer.ToHtml(res.First().Blab);
             //Assert
-            Assert.Contains("<table><tr><td><p>Cell1</p></td><td><p>Cell2</p></td><td><p>Cell3</p></td></tr><tr><td><p>Cell4</p></td><td><p>Cell5</p></td><td><p>Cell6</p></td></tr></table>", html);
-           }
+            Assert.Contains("<table><tr><th><p>Cell1</p></th><th><p>Cell2</p></th><th><p>Cell3</p></th></tr><tr><td><p>Cell4</p></td><td><p>Cell5</p></td><td><p>Cell6</p></td></tr></table>", html);
+        }
 
         [Fact]
         public async Task TurningRichTextContentIntoHtmlShouldYieldCorrectResultWithSelectiveResolving()

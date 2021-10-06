@@ -404,6 +404,27 @@ namespace Contentful.Core.Models
     }
 
     /// <summary>
+    /// Represents a header of a table content node.
+    /// </summary>
+    public class TableHeader : IContent
+    {
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public string NodeType { get; set; }
+
+        /// <summary>
+        /// The content of the table row
+        /// </summary>
+        public List<IContent> Content { get; set; }
+
+        /// <summary>
+        /// The additional data of the node.
+        /// </summary>
+        public GenericStructureData Data { get; set; }
+    }
+
+    /// <summary>
     /// Represents a cell of a table row content node.
     /// </summary>
     public class TableCell : IContent

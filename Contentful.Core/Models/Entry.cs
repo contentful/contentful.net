@@ -19,6 +19,12 @@ namespace Contentful.Core.Models
         public SystemProperties SystemProperties { get; set; }
 
         /// <summary>
+        /// The system managed metadata of an entry.
+        /// </summary>
+        [JsonProperty("$metadata")]
+        public ContentfulMetadata Metadata { get; set; }
+
+        /// <summary>
         /// The fields of the entry deserialized to the type T.
         /// </summary>
         public T Fields { get; set; }

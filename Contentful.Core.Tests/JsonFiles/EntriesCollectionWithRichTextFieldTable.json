@@ -65,7 +65,7 @@
                   "data": {},
                   "content": [
                     {
-                      "nodeType": "table-cell",
+                      "nodeType": "table-header-cell",
                       "data": {},
                       "content": [
                         {
@@ -83,7 +83,7 @@
                       ]
                     },
                     {
-                      "nodeType": "table-cell",
+                      "nodeType": "table-header-cell",
                       "data": {},
                       "content": [
                         {
@@ -101,7 +101,7 @@
                       ]
                     },
                     {
-                      "nodeType": "table-cell",
+                      "nodeType": "table-header-cell",
                       "data": {},
                       "content": [
                         {

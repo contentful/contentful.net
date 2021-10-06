@@ -519,7 +519,7 @@ namespace Contentful.Core
             }
 
             var res = await PostAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}entries",
-                ConvertObjectToJsonStringContent(new { fields = entry.Fields }), cancellationToken, null, contentTypeId).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new { fields = entry.Fields, metadata = entry.Metadata }), cancellationToken, null, contentTypeId).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -565,7 +565,7 @@ namespace Contentful.Core
             }
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}entries/{entry.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { fields = entry.Fields }), cancellationToken, version, contentTypeId).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new { fields = entry.Fields, metadata = entry.Metadata }), cancellationToken, version, contentTypeId).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 

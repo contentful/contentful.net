@@ -59,6 +59,7 @@ namespace Contentful.Core.Models
                 new TableRenderer(_contentRendererCollection),
                 new TableRowRenderer(_contentRendererCollection),
                 new TableCellRenderer(_contentRendererCollection),
+                new TableHeaderRenderer(_contentRendererCollection),
                 new ListContentRenderer(_contentRendererCollection),
                 new ListItemContentRenderer(_contentRendererCollection, options.ListItemOptions),
                 new QuoteContentRenderer(_contentRendererCollection),
@@ -340,6 +341,69 @@ namespace Contentful.Core.Models
             }
 
             sb.Append("</tr>");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The rendered string.</returns>
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
+    }
+
+    /// <summary>
+    /// A renderer for a table header.
+    /// </summary>
+    public class TableHeaderRenderer : IContentRenderer
+    {
+        private readonly ContentRendererCollection _rendererCollection;
+
+        /// <summary>
+        /// Initializes a new TableHeaderRenderer
+        /// </summary>
+        /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
+        public TableHeaderRenderer(ContentRendererCollection rendererCollection)
+        {
+            _rendererCollection = rendererCollection;
+        }
+
+        /// <summary>
+        /// The order of this renderer in the collection.
+        /// </summary>
+        public int Order { get; set; } = 100;
+
+        /// <summary>
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a table header, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is TableHeader;
+        }
+
+        /// <summary>
+        /// Renders the content to an html th-tag.
+        /// </summary>
+        /// <param name="content">The content to render.</param>
+        /// <returns>The table header-tag as a string.</returns>
+        public string Render(IContent content)
+        {
+            var tableHeader = content as TableHeader;
+            var sb = new StringBuilder();
+            sb.Append("<th>");
+
+            foreach (var subContent in tableHeader.Content)
+            {
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
+                sb.Append(renderer.Render(subContent));
+            }
+
+            sb.Append("</th>");
             return sb.ToString();
         }
 

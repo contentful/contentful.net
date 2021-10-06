@@ -30,7 +30,15 @@
         "locale": "en-US"
       },
       "metadata": {
-        "tags": [ "bob" ]
+        "tags": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Tag",
+              "id": "nyCampaign"
+            }
+          }
+        ]
       },
       "fields": {
         "title": "Seven Tips From Ernest Hemingway on How to Write Fiction",
@@ -87,7 +95,15 @@
         "locale": "en-US"
       },
       "metadata": {
-        "tags": [ "bob" ]
+        "tags": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Tag",
+              "id": "nyCampaign"
+            }
+          }
+        ]
       },
       "fields": {
         "title": "Down the Rabbit Hole",
@@ -167,7 +183,15 @@
           "locale": "en-US"
         },
         "metadata": {
-          "tags": [ "nobby" ]
+          "tags": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Tag",
+                "id": "nyCampaign"
+              }
+            }
+          ]
         },
         "fields": {
           "name": "Mike Springer",
