@@ -290,6 +290,11 @@ namespace Contentful.Core
             {
                 var propName = linkToken.Path.Substring(linkToken.Path.LastIndexOf(".fields.") + 8);
                 propName = propName.Substring(0, propName.IndexOf("."));
+                //remove any [] from propname if it's a collection property
+                if (propName.IndexOf("[") > 0)
+                {
+                    propName = propName.Substring(0, propName.IndexOf("["));
+                }
 
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;
