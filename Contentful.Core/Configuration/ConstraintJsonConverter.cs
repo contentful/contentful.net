@@ -93,7 +93,7 @@ namespace Contentful.Core.Configuration
                 var inConstraint = new InConstraint();
 
                 inConstraint.Property = jObject["in"][0]["doc"]?.ToString();
-                inConstraint.ValueToEqual = jObject["in"][1]?.ToString();
+                inConstraint.ValueToEqual = jObject["in"][1]?.ToObject<string[]>();
 
                 return inConstraint;
             }
