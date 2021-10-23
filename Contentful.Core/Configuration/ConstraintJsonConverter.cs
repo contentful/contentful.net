@@ -93,7 +93,7 @@ namespace Contentful.Core.Configuration
                 var inConstraint = new InConstraint();
 
                 inConstraint.Property = jObject["in"][0]["doc"]?.ToString();
-                inConstraint.ValueToEqual = jObject["in"][1]?.ToObject<string[]>();
+                inConstraint.ValuesToEqual = jObject["in"][1]?.ToObject<string[]>();
 
                 return inConstraint;
             }
@@ -141,7 +141,7 @@ namespace Contentful.Core.Configuration
             }
             if (constraint is InConstraint)
             {
-                return new { @in = new dynamic[] { new { doc = (constraint as InConstraint).Property }, (constraint as InConstraint).ValueToEqual } };
+                return new { @in = new dynamic[] { new { doc = (constraint as InConstraint).Property }, (constraint as InConstraint).ValuesToEqual } };
             }
 
             return null;

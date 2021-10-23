@@ -89,9 +89,9 @@ namespace Contentful.Core.Models.Management
         public string Property { get; set; }
 
         /// <summary>
-        /// The value that must exist in the property.
+        /// The values that must exist in the property.
         /// </summary>
-        public string[] ValueToEqual { get; set; }
+        public string[] ValuesToEqual { get; set; }
     }
 
     /// <summary>
