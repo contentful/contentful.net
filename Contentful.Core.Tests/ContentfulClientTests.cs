@@ -104,6 +104,22 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntryShouldSerializeResponseToEntryCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
+            
+            //Act
+            var res = await _client.GetEntry<Entry<TestEntryModel>>("12");
+
+            //Assert
+            Assert.Equal("SoSo Wall Clock", res.Fields.ProductName);
+            Assert.Equal("soso-wall-clock", res.Fields.Slug);
+            Assert.Contains("bleh", res.Fields.Metadata);
+            Assert.Equal("bob", res.Metadata.Tags[0].Sys.Id);
+        }
+        
+        [Fact]
         public async Task GetEntryShouldSerializeResponseToArbitraryModelWithSystemPropertiesCorrectly()
         {
             //Arrange

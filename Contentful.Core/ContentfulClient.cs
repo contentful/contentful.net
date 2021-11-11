@@ -124,18 +124,28 @@ namespace Contentful.Core
 
             var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries/{entryId}{queryString}", cancellationToken).ConfigureAwait(false);
 
-            var ob = default(T);
-
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-            //move the sys object beneath the fields to make serialization more logical for the end user.
-            var sys = json.SelectToken("$.sys");
-            var metadata = json.SelectToken("$.metadata");
-            var fields = json.SelectToken("$.fields");
-            fields["sys"] = sys;
-            fields["$metadata"] = metadata;
-            ob = fields.ToObject<T>(Serializer);
-            
+            JToken entry;
+
+            //if T is Entry<U> then deserialize the object as is, so that the Fields property is the deserialization of the entry
+            //otherwise move the sys object beneath the fields to make serialization more logical for the end user.
+            var shouldCompact = !(typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(Entry<>));
+
+            if(shouldCompact)
+            {
+                entry = json.SelectToken("$.fields");
+            }
+            else
+            {
+                entry = json;
+            }
+
+            entry["sys"] = json.SelectToken("$.sys");
+            entry["$metadata"] = json.SelectToken("$.metadata");
+
+            var ob = entry.ToObject<T>(Serializer);
+        
             return ob;
         }
 
