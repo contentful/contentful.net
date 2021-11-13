@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/contentful/contentful.net</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <Version>6.0.16</Version>
-    <AssemblyVersion>6.0.16.0</AssemblyVersion>
+    <Version>6.0.17</Version>
+    <AssemblyVersion>6.0.17.0</AssemblyVersion>
     <RepositoryUrl>https://github.com/contentful/contentful.net</RepositoryUrl>
-    <FileVersion>6.0.16.0</FileVersion>
+    <FileVersion>6.0.17.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.5\Contentful.AspNetCore.xml</DocumentationFile>
