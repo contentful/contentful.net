@@ -1,4 +1,5 @@
 ﻿using Contentful.Core.Models.Management;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,5 +62,11 @@ namespace Contentful.Core.Models
         /// The validations that should be applied to the field.
         /// </summary>
         public List<IFieldValidator> Validations { get; set; }
+
+        /// <summary>
+        /// The default value of the field. It is a dictionary of "locale":"value". For example "en-US": "some default value".
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, object> DefaultValue { get; set; }
     }
 }

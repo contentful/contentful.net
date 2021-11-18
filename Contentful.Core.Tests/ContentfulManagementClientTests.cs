@@ -80,7 +80,12 @@ namespace Contentful.Core.Tests
                     Required = true,
                     Localized = false,
                     Disabled = false,
-                    Omitted = false
+                    Omitted = false,
+                    DefaultValue = new Dictionary<string, object>
+                    {
+                        { "en-US", "defaulto" },
+                        { "sv-SE", "Swedish defaulto" }
+                    }
                 },
                 new Field()
                 {
@@ -237,7 +242,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateContentType(contentType));
 
             //Assert
-            Assert.Equal($"The id of the content type must be set.{Environment.NewLine}Parameter name: contentType", ex.Message);
+            Assert.Equal($"The id of the content type must be set. (Parameter 'contentType')", ex.Message);
         }
 
         [Fact]
@@ -1015,7 +1020,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateEntry(entry, contentTypeId: ""));
             //Assert
-            Assert.Equal($"The content type id must be set.{Environment.NewLine}Parameter name: contentTypeId", ex.Message);
+            Assert.Equal($"The content type id must be set. (Parameter 'contentTypeId')", ex.Message);
         }
 
         [Fact]
@@ -1956,7 +1961,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhook(id));
 
             //Assert
-            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set. (Parameter 'webhookId')", ex.Message);
         }
 
         [Fact]
@@ -2033,7 +2038,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetails("some", id));
 
             //Assert
-            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set. (Parameter 'webhookId')", ex.Message);
         }
 
         [Theory]
@@ -2048,7 +2053,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetails(id, "some"));
 
             //Assert
-            Assert.Equal($"The id of the webhook call must be set.{Environment.NewLine}Parameter name: callId", ex.Message);
+            Assert.Equal($"The id of the webhook call must be set. (Parameter 'callId')", ex.Message);
         }
 
         [Theory]
@@ -2063,7 +2068,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookCallDetailsCollection(id));
 
             //Assert
-            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set. (Parameter 'webhookId')", ex.Message);
         }
 
         [Fact]
@@ -2093,7 +2098,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetWebhookHealth(id));
 
             //Assert
-            Assert.Equal($"The id of the webhook must be set.{Environment.NewLine}Parameter name: webhookId", ex.Message);
+            Assert.Equal($"The id of the webhook must be set. (Parameter 'webhookId')", ex.Message);
         }
 
         [Fact]
@@ -2413,7 +2418,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntry(id, "something"));
 
             //Assert
-            Assert.Equal($"The id of the snapshot must be set.{Environment.NewLine}Parameter name: snapshotId", ex.Message);
+            Assert.Equal($"The id of the snapshot must be set. (Parameter 'snapshotId')", ex.Message);
         }
 
         [Theory]
@@ -2428,7 +2433,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntry("something", id));
 
             //Assert
-            Assert.Equal($"The id of the entry must be set.{Environment.NewLine}Parameter name: entryId", ex.Message);
+            Assert.Equal($"The id of the entry must be set. (Parameter 'entryId')", ex.Message);
         }
 
         [Fact]
@@ -2480,7 +2485,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetAllSnapshotsForContentType(id));
 
             //Assert
-            Assert.Equal($"The id of the content type must be set.{Environment.NewLine}Parameter name: contentTypeId", ex.Message);
+            Assert.Equal($"The id of the content type must be set. (Parameter 'contentTypeId')", ex.Message);
         }
 
         [Theory]
@@ -2603,7 +2608,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetSnapshotForEntry("something", id));
 
             //Assert
-            Assert.Equal($"The id of the entry must be set.{Environment.NewLine}Parameter name: entryId", ex.Message);
+            Assert.Equal($"The id of the entry must be set. (Parameter 'entryId')", ex.Message);
         }
 
         [Theory]
@@ -2787,7 +2792,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateApiKey(id, "Key sharp2", "This is the desc again", 5));
 
             //Assert
-            Assert.Equal($"The id of the api key must be set.{Environment.NewLine}Parameter name: id", ex.Message);
+            Assert.Equal($"The id of the api key must be set. (Parameter 'id')", ex.Message);
         }
 
         [Fact]
@@ -3008,7 +3013,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateExtension(ext));
 
             //Assert
-            Assert.Equal($"The id of the extension must be set.{Environment.NewLine}Parameter name: extension", ex.Message);
+            Assert.Equal($"The id of the extension must be set. (Parameter 'extension')", ex.Message);
         }
 
         [Theory]
@@ -4076,7 +4081,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateOrUpdateEnvironment(s, ""));
             //Assert
-            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+            Assert.Equal($"You must provide an id for the environment. (Parameter 'id')", ex.Message);
         }
 
         [Theory]
@@ -4090,7 +4095,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CloneEnvironment(s, "", ""));
             //Assert
-            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+            Assert.Equal($"You must provide an id for the environment. (Parameter 'id')", ex.Message);
         }
 
         [Theory]
@@ -4104,7 +4109,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CloneEnvironment("pop", s, ""));
             //Assert
-            Assert.Equal($"You must provide a name for the environment.{Environment.NewLine}Parameter name: name", ex.Message);
+            Assert.Equal($"You must provide a name for the environment. (Parameter 'name')", ex.Message);
         }
 
         [Theory]
@@ -4118,7 +4123,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CloneEnvironment("pop", "bop", s));
             //Assert
-            Assert.Equal($"You must provide an id for the source environment.{Environment.NewLine}Parameter name: sourceEnvironmentId", ex.Message);
+            Assert.Equal($"You must provide an id for the source environment. (Parameter 'sourceEnvironmentId')", ex.Message);
         }
 
         [Fact]
@@ -4177,7 +4182,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.GetEnvironment(s));
             //Assert
-            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+            Assert.Equal($"You must provide an id for the environment. (Parameter 'id')", ex.Message);
         }
 
         [Fact]
@@ -4206,7 +4211,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeleteEnvironment(s));
             //Assert
-            Assert.Equal($"You must provide an id for the environment.{Environment.NewLine}Parameter name: id", ex.Message);
+            Assert.Equal($"You must provide an id for the environment. (Parameter 'id')", ex.Message);
         }
 
         [Fact]
@@ -4415,7 +4420,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.UpdateOrganizationMembership("something", id, "org"));
 
             //Assert
-            Assert.Equal($"The id of the organization membership must be set.{Environment.NewLine}Parameter name: membershipId", ex.Message);
+            Assert.Equal($"The id of the organization membership must be set. (Parameter 'membershipId')", ex.Message);
         }
 
         [Theory]
@@ -4482,7 +4487,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateContentTag("something", id, false));
 
             //Assert
-            Assert.Equal($"The id of the content tag must be set.{Environment.NewLine}Parameter name: id", ex.Message);
+            Assert.Equal($"The id of the content tag must be set. (Parameter 'id')", ex.Message);
         }
 
         [Theory]
@@ -4497,7 +4502,7 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.CreateContentTag(name, "something", false));
 
             //Assert
-            Assert.Equal($"The name of the content tag must be set.{Environment.NewLine}Parameter name: name", ex.Message);
+            Assert.Equal($"The name of the content tag must be set. (Parameter 'name')", ex.Message);
         }
 
         [Fact]

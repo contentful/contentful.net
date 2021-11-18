@@ -62,7 +62,7 @@ namespace Contentful.Core.Tests
             var ex = Assert.Throws<ArgumentException>(() => new ContentfulClient(httpClient, options: null));
 
             //Assert
-            Assert.Equal($"The ContentfulOptions cannot be null.{Environment.NewLine}Parameter name: options", ex.Message);
+            Assert.Equal($"The ContentfulOptions cannot be null. (Parameter 'options')", ex.Message);
         }
 
         [Fact]
@@ -818,7 +818,7 @@ namespace Contentful.Core.Tests
             //Act
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.SyncNextResult(""));
             //Assert
-            Assert.Equal($"nextPageUrl must be specified.{Environment.NewLine}Parameter name: nextSyncOrPageUrl", ex.Message);
+            Assert.Equal($"nextPageUrl must be specified. (Parameter 'nextSyncOrPageUrl')", ex.Message);
         }
 
         [Fact]
@@ -853,7 +853,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntry.json");
             _handler.Delay = 3000;
             //Act
-            var ex = await Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.GetEntry<Entry<dynamic>>("123", "", source.Token));
+            var ex = await Assert.ThrowsAsync<TaskCanceledException>(async () => await _client.GetEntry<Entry<dynamic>>("123", "", source.Token));
 
             //Assert
             Assert.Equal("The operation was canceled.",ex.Message);
