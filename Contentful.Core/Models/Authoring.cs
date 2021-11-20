@@ -189,10 +189,10 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content asynchronously.
+        /// Renders the content to an html p-tag.
         /// </summary>
         /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
+        /// <returns>The p-tag as a string.</returns>
         public async Task<string> RenderAsync(IContent content)
         {
             var paragraph = content as Paragraph;
@@ -242,7 +242,7 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content asynchronously.
+        /// Renders the content to an html table-tag.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table-tag as a string.</returns>
@@ -296,7 +296,7 @@ namespace Contentful.Core.Models
 
 
         /// <summary>
-        /// Renders the content asynchronously.
+        /// Renders the content to an html tr-tag.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table row-tag as a string.</returns>
@@ -349,7 +349,7 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content asynchronously.
+        /// Renders the content to an html th-tag.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table header-tag as a string.</returns>
@@ -403,7 +403,7 @@ namespace Contentful.Core.Models
 
 
         /// <summary>
-        /// Renders the content asynchronously.
+        /// Renders the content to an html td-tag.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table cell-tag as a string.</returns>
@@ -456,7 +456,7 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content asynchronously.
+        /// Renders the content to an html h-tag.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The p-tag as a string.</returns>
