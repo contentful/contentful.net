@@ -143,7 +143,7 @@ namespace Contentful.Core.Tests.Models.Rendering
         }
 
         [Fact]
-        public void AssetShouldRenderEmptyLinkWithNoFile()
+        public async Task AssetShouldRenderEmptyLinkWithNoFile()
         {
             //Arrange
             var renderer = new AssetRenderer(null);
@@ -158,7 +158,7 @@ namespace Contentful.Core.Tests.Models.Rendering
             };
 
             //Act
-            var html = renderer.Render(assetStructure);
+            var html = await renderer.RenderAsync(assetStructure);
             //Assert
             Assert.Equal("<a></a>", html);
         }

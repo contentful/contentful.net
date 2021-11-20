@@ -1,6 +1,4 @@
-﻿using Contentful.Core.Models.Management;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -48,7 +46,7 @@ namespace Contentful.Core.Models
         
         public HtmlRenderer(HtmlRendererOptions options)
         {
-            options = options ?? new HtmlRendererOptions();
+            options ??= new HtmlRendererOptions();
             _contentRendererCollection = new ContentRendererCollection();
             _contentRendererCollection.AddRenderers(new List<IContentRenderer> {
                 new ParagraphRenderer(_contentRendererCollection),
@@ -156,13 +154,6 @@ namespace Contentful.Core.Models
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns></returns>
-        string Render(IContent content);
-
-        /// <summary>
-        /// Renders the provided content as a string.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns></returns>
         Task<string> RenderAsync(IContent content);
     }
 
@@ -198,11 +189,11 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to an html p-tag.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
-        /// <returns>The p-tag as a string.</returns>
-        public string Render(IContent content)
+        /// <returns>The rendered string.</returns>
+        public async Task<string> RenderAsync(IContent content)
         {
             var paragraph = content as Paragraph;
             var sb = new StringBuilder();
@@ -211,21 +202,11 @@ namespace Contentful.Core.Models
             foreach (var subContent in paragraph.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append("</p>");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -261,11 +242,11 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to an html table-tag.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table-tag as a string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var table = content as Table;
             var sb = new StringBuilder();
@@ -274,21 +255,11 @@ namespace Contentful.Core.Models
             foreach (var subContent in table.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(renderer.RenderAsync(subContent));
             }
 
             sb.Append("</table>");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -323,12 +294,13 @@ namespace Contentful.Core.Models
             return content is TableRow;
         }
 
+
         /// <summary>
-        /// Renders the content to an html tr-tag.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table row-tag as a string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var tableRow = content as TableRow;
             var sb = new StringBuilder();
@@ -337,21 +309,11 @@ namespace Contentful.Core.Models
             foreach (var subContent in tableRow.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append("</tr>");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -387,11 +349,11 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to an html th-tag.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table header-tag as a string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var tableHeader = content as TableHeader;
             var sb = new StringBuilder();
@@ -400,21 +362,11 @@ namespace Contentful.Core.Models
             foreach (var subContent in tableHeader.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append("</th>");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -449,12 +401,13 @@ namespace Contentful.Core.Models
             return content is TableCell;
         }
 
+
         /// <summary>
-        /// Renders the content to an html td-tag.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The table cell-tag as a string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var tableCell = content as TableCell;
             var sb = new StringBuilder();
@@ -463,21 +416,11 @@ namespace Contentful.Core.Models
             foreach (var subContent in tableCell.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append("</td>");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -513,11 +456,11 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to an html h-tag.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The p-tag as a string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var headingSize = 1;
 
@@ -550,21 +493,11 @@ namespace Contentful.Core.Models
             foreach (var subContent in heading.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append($"</h{headingSize}>");
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -594,11 +527,16 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to a string.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The content as a string.</returns>
-        public string Render(IContent content)
+        public Task<string> RenderAsync(IContent content)
+        {
+            return Task.FromResult(Render(content));
+        }
+        
+        private string Render(IContent content)
         {
             var text = content as Text;
             var sb = new StringBuilder();
@@ -648,16 +586,6 @@ namespace Contentful.Core.Models
 
             return "span";
         }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
-        }
     }
 
     /// <summary>
@@ -692,30 +620,31 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to a string.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The html img or a tag.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var assetStructure = content as AssetStructure;
             var asset = assetStructure.Data.Target;
             var nodeType = assetStructure.NodeType;
             var sb = new StringBuilder();
-            if(nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
+            if (nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
             {
                 sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
-            }else
+            }
+            else
             {
                 var url = asset.File?.Url;
-                sb.Append(string.IsNullOrEmpty(url)? "<a>" : $"<a href=\"{asset.File.Url}\">");
+                sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{asset.File.Url}\">");
 
                 if (assetStructure.Content != null && assetStructure.Content.Any())
                 {
                     foreach (var subContent in assetStructure.Content)
                     {
                         var renderer = _rendererCollection.GetRendererForContent(subContent);
-                        sb.Append(renderer.Render(subContent));
+                        sb.Append(await renderer.RenderAsync(subContent));
                     }
                 }
                 else
@@ -726,16 +655,6 @@ namespace Contentful.Core.Models
             }
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -771,11 +690,11 @@ namespace Contentful.Core.Models
         }
 
         /// <summary>
-        /// Renders the content to a string.
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The a tag as a string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var link = content as Hyperlink;
             var sb = new StringBuilder();
@@ -785,22 +704,12 @@ namespace Contentful.Core.Models
             foreach (var subContent in link.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append("</a>");
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -813,16 +722,6 @@ namespace Contentful.Core.Models
         /// The order of this renderer in the collection.
         /// </summary>
         public int Order { get; set; } = 500;
-
-        /// <summary>
-        /// Renders the content to a string.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>An empty string.</returns>
-        public string Render(IContent content)
-        {
-            return "";
-        }
 
         /// <summary>
         /// Whether or not this renderer supports the provided content.
@@ -838,10 +737,10 @@ namespace Contentful.Core.Models
         /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
+        /// <returns>An empty string.</returns>
         public Task<string> RenderAsync(IContent content)
         {
-            return Task.FromResult(Render(content));
+            return Task.FromResult(string.Empty);
         }
     }
 
@@ -864,36 +763,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The order of this renderer in the collection.
         /// </summary>
-        public int Order { get; set; } = 100;
-
-        /// <summary>
-        /// Renders the content to a string.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The list as a ul or ol HTML string.</returns>
-        public string Render(IContent content)
-        {
-            var list = content as List;
-            var listTagType = "ul";
-            if(list.NodeType == "ordered-list")
-            {
-                listTagType = "ol";
-            }
-
-            var sb = new StringBuilder();
-
-            sb.Append($"<{listTagType}>");
-
-            foreach (var subContent in list.Content)
-            {
-                var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
-            }
-
-            sb.Append($"</{listTagType}>");
-
-            return sb.ToString();
-        }
+        public int Order { get; set; } = 100; 
 
         /// <summary>
         /// Whether or not this renderer supports the provided content.
@@ -909,10 +779,29 @@ namespace Contentful.Core.Models
         /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
+        /// <returns>The list as a ul or ol HTML string.</returns>
+        public async Task<string> RenderAsync(IContent content)
         {
-            return Task.FromResult(Render(content));
+            var list = content as List;
+            var listTagType = "ul";
+            if (list.NodeType == "ordered-list")
+            {
+                listTagType = "ol";
+            }
+
+            var sb = new StringBuilder();
+
+            sb.Append($"<{listTagType}>");
+
+            foreach (var subContent in list.Content)
+            {
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
+                sb.Append(await renderer.RenderAsync(subContent));
+            }
+
+            sb.Append($"</{listTagType}>");
+
+            return sb.ToString();
         }
     }
 
@@ -941,11 +830,21 @@ namespace Contentful.Core.Models
         public int Order { get; set; } = 100;
 
         /// <summary>
-        /// Renders the content to a string.
+        /// Whether or not this renderer supports the provided content.
+        /// </summary>
+        /// <param name="content">The content to evaluate.</param>
+        /// <returns>Returns true if the content is a list, otherwise false.</returns>
+        public bool SupportsContent(IContent content)
+        {
+            return content is ListItem;
+        }
+
+        /// <summary>
+        /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
         /// <returns>The list as an li HTML string.</returns>
-        public string Render(IContent content)
+        public async Task<string> RenderAsync(IContent content)
         {
             var listItem = content as ListItem;
 
@@ -962,39 +861,19 @@ namespace Contentful.Core.Models
                     foreach (var pSubContent in pContent.Content)
                     {
                         var renderer = _rendererCollection.GetRendererForContent(pSubContent);
-                        sb.Append(renderer.Render(pSubContent));
+                        sb.Append(await renderer.RenderAsync(pSubContent));
                     }
                 }
                 else
                 {
                     var renderer = _rendererCollection.GetRendererForContent(subContent);
-                    sb.Append(renderer.Render(subContent));
+                    sb.Append(await renderer.RenderAsync(subContent));
                 }
             }
 
             sb.Append($"</li>");
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// Whether or not this renderer supports the provided content.
-        /// </summary>
-        /// <param name="content">The content to evaluate.</param>
-        /// <returns>Returns true if the content is a list, otherwise false.</returns>
-        public bool SupportsContent(IContent content)
-        {
-            return content is ListItem;
-        }
-
-        /// <summary>
-        /// Renders the content asynchronously.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
-        {
-            return Task.FromResult(Render(content));
         }
     }
 
@@ -1020,30 +899,6 @@ namespace Contentful.Core.Models
         public int Order { get; set; } = 100;
 
         /// <summary>
-        /// Renders the content to a string.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>The list as a quote HTML string.</returns>
-        public string Render(IContent content)
-        {
-            var quote = content as Quote;
-
-            var sb = new StringBuilder();
-
-            sb.Append($"<blockquote>");
-
-            foreach (var subContent in quote.Content)
-            {
-                var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.Render(subContent));
-            }
-
-            sb.Append($"</blockquote>");
-
-            return sb.ToString();
-        }
-
-        /// <summary>
         /// Whether or not this renderer supports the provided content.
         /// </summary>
         /// <param name="content">The content to evaluate.</param>
@@ -1057,10 +912,24 @@ namespace Contentful.Core.Models
         /// Renders the content asynchronously.
         /// </summary>
         /// <param name="content">The content to render.</param>
-        /// <returns>The rendered string.</returns>
-        public Task<string> RenderAsync(IContent content)
+        /// <returns>The list as a quote HTML string.</returns>
+        public async Task<string> RenderAsync(IContent content)
         {
-            return Task.FromResult(Render(content));
+            var quote = content as Quote;
+
+            var sb = new StringBuilder();
+
+            sb.Append($"<blockquote>");
+
+            foreach (var subContent in quote.Content)
+            {
+                var renderer = _rendererCollection.GetRendererForContent(subContent);
+                sb.Append(await renderer.RenderAsync(subContent));
+            }
+
+            sb.Append($"</blockquote>");
+
+            return sb.ToString();
         }
     }
 
@@ -1073,16 +942,6 @@ namespace Contentful.Core.Models
         /// The order of this renderer in the collection.
         /// </summary>
         public int Order { get; set; } = 100;
-
-        /// <summary>
-        /// Renders the content to a string.
-        /// </summary>
-        /// <param name="content">The content to render.</param>
-        /// <returns>An horizontal ruler HTML tag.</returns>
-        public string Render(IContent content)
-        {
-            return "<hr>";
-        }
 
         /// <summary>
         /// Whether or not this renderer supports the provided content.
@@ -1101,7 +960,7 @@ namespace Contentful.Core.Models
         /// <returns>The rendered string.</returns>
         public Task<string> RenderAsync(IContent content)
         {
-            return Task.FromResult(Render(content));
+            return Task.FromResult("<hr>");
         }
     }
 }
