@@ -28,6 +28,7 @@
     <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <EmbeddedResource Include="JsonFiles\EntriesMultipleLocale.json" />
+    <EmbeddedResource Include="JsonFiles\EmbargoAssetKey.json" />
     <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesMissingEntries.json" />

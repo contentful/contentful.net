@@ -1,5 +1,6 @@
 ﻿using Contentful.Core.Configuration;
 using Contentful.Core.Errors;
+using Contentful.Core.Extensions;
 using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
 using Contentful.Core.Search;
@@ -617,7 +618,7 @@ namespace Contentful.Core
                 locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
 
-            var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
+            var jsonEntry = JObject.Parse(entry.ConvertObjectToJsonString());
             var jsonToCreate = new JObject();
             foreach (var prop in jsonEntry.Children().Where(p => p is JProperty).Cast<JProperty>())
             {
@@ -658,7 +659,7 @@ namespace Contentful.Core
                 locale = (await GetLocalesCollection(spaceId, cancellationToken)).FirstOrDefault(c => c.Default).Code;
             }
 
-            var jsonEntry = JObject.Parse(ConvertObjectToJsonString(entry));
+            var jsonEntry = JObject.Parse(entry.ConvertObjectToJsonString());
             var fieldsToUpdate = (entryToUpdate.Fields as JObject);
 
             foreach (var fieldId in allFieldIds)
@@ -2830,26 +2831,9 @@ namespace Contentful.Core
             return await SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken, version: version, additionalHeaders: additionalHeaders).ConfigureAwait(false);
         }
 
-        private string ConvertObjectToJsonString(object ob)
-        {
-            var resolver = new CamelCasePropertyNamesContractResolver();
-            resolver.NamingStrategy.OverrideSpecifiedNames = false;
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = resolver,
-            };
-
-            settings.Converters.Add(new ExtensionJsonConverter());
-
-            var serializedObject = JsonConvert.SerializeObject(ob, settings);
-
-            return serializedObject;
-        }
-
         private StringContent ConvertObjectToJsonStringContent(object ob)
         {
-            var serializedObject = ConvertObjectToJsonString(ob);
+            var serializedObject = ob.ConvertObjectToJsonString();
             return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
         }
     }

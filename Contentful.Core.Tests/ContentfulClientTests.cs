@@ -1244,6 +1244,35 @@ namespace Contentful.Core.Tests
             Assert.Contains("<p><strong>Bold Text</strong></p><p><em>Italic Text</em></p><p><u>Underline Text</u></p>", html);
         }
 
+        [Fact]
+        public void CreateEmbargoedAssetThrowsWhenPastDateIsUsed()
+        {
+            // Arrange
+            var client = GetClientWithEnvironment();
+            var past = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            
+            // Act
+
+            // Assert
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.CreateEmargoedAssetKey(past));
+        }
+
+        [Fact]
+        public async Task CreateEmbargoedAssetKeyShouldReturnCorrectKey()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EmbargoAssetKey.json");
+            var expiry = DateTimeOffset.UtcNow.AddHours(10);
+            
+            //Act
+            var res = await _client.CreateEmargoedAssetKey(expiry);
+
+            //Assert
+            Assert.Equal(expiry.DateTime,res.ExpiresAtUtc);
+            Assert.Equal("c2VjcmV0",res.Secret);
+            Assert.Equal("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE6MSJ9.eyJleHAiOjE2Mzc2MjM4MDAsInN1YiI6InRlc3RzcGFjZXZhbHVlIiwiYXVkIjoiYWRuIiwianRpIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwiY3RmOnVucHViIjp0cnVlfQ.BHtBHdrInzu3KtGxTJ7FLxGF0WN9HEdJ9C5CeB3hx7g", res.Policy);
+        }
+
         private ContentfulClient GetClientWithEnvironment(string env = "special")
         {
             var httpClient = new HttpClient(_handler);
