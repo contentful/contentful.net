@@ -14,6 +14,7 @@ using Contentful.Core.Errors;
 using Newtonsoft.Json;
 using System.Collections;
 using Contentful.Core.Models.Management;
+using Contentful.Core.Extensions;
 
 namespace Contentful.Core
 {
@@ -61,7 +62,7 @@ namespace Contentful.Core
         /// <param name="usePreviewApi">Whether or not to use the Preview API for requests.
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false):
+        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false) :
             this(httpClient, new ContentfulOptions()
             {
                 DeliveryApiKey = deliveryApiKey,
@@ -132,7 +133,7 @@ namespace Contentful.Core
             //otherwise move the sys object beneath the fields to make serialization more logical for the end user.
             var shouldCompact = !(typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(Entry<>));
 
-            if(shouldCompact)
+            if (shouldCompact)
             {
                 entry = json.SelectToken("$.fields");
             }
@@ -145,7 +146,7 @@ namespace Contentful.Core
             entry["$metadata"] = json.SelectToken("$.metadata");
 
             var ob = entry.ToObject<T>(Serializer);
-        
+
             return ob;
         }
 
@@ -212,7 +213,7 @@ namespace Contentful.Core
             {
                 ResolveLinks(json, item, processedIds, typeof(T));
             }
-            
+
             var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
 
             for (var i = entryTokens.Count - 1; i >= 0; i--)
@@ -220,7 +221,7 @@ namespace Contentful.Core
                 var token = entryTokens[i];
                 var grandParent = token.Parent.Parent;
 
-                if(grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry" || token.Parent.Path.EndsWith(".fields.fields"))
+                if (grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry" || token.Parent.Path.EndsWith(".fields.fields"))
                 {
                     continue;
                 }
@@ -246,14 +247,14 @@ namespace Contentful.Core
 
         private void ResolveContentTypes(JContainer container)
         {
-            if(ContentTypeResolver == null || container["$type"] != null)
+            if (ContentTypeResolver == null || container["$type"] != null)
             {
                 return;
             }
 
             var contentType = container["sys"]?["contentType"]?["sys"]?["id"]?.ToString();
 
-            if(contentType == null)
+            if (contentType == null)
             {
                 return;
             }
@@ -268,7 +269,7 @@ namespace Contentful.Core
 
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
-            var id = ((JValue) entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
+            var id = ((JValue)entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
 
             if (id == null)
             {
@@ -283,7 +284,7 @@ namespace Contentful.Core
 
             ResolveContentTypes(entryToken);
 
-            if(entryToken["$type"] != null)
+            if (entryToken["$type"] != null)
             {
                 type = Type.GetType(entryToken["$type"].Value<string>());
             }
@@ -293,7 +294,7 @@ namespace Contentful.Core
                 entryToken.AddFirst(new JProperty("$id", new JValue(id)));
                 processedIds.Add(id);
             }
-            
+
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
@@ -400,7 +401,7 @@ namespace Contentful.Core
                                 Id = itemToSkip.SelectToken("$..sys.id").Value<string>()
                             }
                         };
-                       
+
 
                         (errors as JArray).Add(JObject.FromObject(newError));
 
@@ -479,6 +480,37 @@ namespace Contentful.Core
             collection.Items = assets;
             return collection;
         }
+
+        /// <summary>
+        /// Creates a key for signing embargoed asset requests.
+        /// </summary>
+        /// <param name="timeOffset">The point in time when the token should expire.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An instance of <see cref="EmbargoedAssetKey"/> with properties for signing embargoed asset urls.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The <see name="timeOffset">timeOffset</see> parameter was in the past or more than 48 hours in the future.</exception>
+        public async Task<EmbargoedAssetKey> CreateEmargoedAssetKey(DateTimeOffset timeOffset, CancellationToken cancellationToken = default)
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            if (timeOffset < now)
+            {
+                throw new ArgumentOutOfRangeException("The asset key expiration must be in the future.", nameof(timeOffset));
+            }
+
+           //Should test that timeOffset is less than 48 hours in the future.
+           //but for now we will let the api handle it since we don't have a clear mock of current time.
+
+            var expiresAt = timeOffset.ToUnixTimeSeconds();
+            //note that unlike some other api methods, the asset embargo key always requires an environment id.
+            var res = await Post($"{_baseUrl}{_options.SpaceId}/{(EnvironmentsBase == string.Empty ? "environments/master/" : EnvironmentsBase)}asset_keys", new { expiresAt }, cancellationToken).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var assetKey = jsonObject.ToObject<EmbargoedAssetKey>(Serializer);
+            assetKey.ExpiresAtUtc = timeOffset.UtcDateTime;
+            return assetKey;
+        }
+
 
         /// <summary>
         /// Gets the <see cref="Space"/> for this client.
@@ -599,7 +631,7 @@ namespace Contentful.Core
 
             var syncToken = nextSyncOrPageUrl.Substring(nextSyncOrPageUrl.LastIndexOf('=') + 1);
 
-            var query = BuildSyncQuery(syncToken:syncToken);
+            var query = BuildSyncQuery(syncToken: syncToken);
 
             var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
 
@@ -703,6 +735,13 @@ namespace Contentful.Core
         private async Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken)
         {
             return await SendHttpRequest(url, HttpMethod.Get, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task<HttpResponseMessage> Post(string url, object body, CancellationToken cancellationToken)
+        {
+            var bodyJson = body.ConvertObjectToJsonString();
+            var bodyContent = new StringContent(bodyJson, Encoding.UTF8, "application/json");
+            return await SendHttpRequest(url, HttpMethod.Post, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken, bodyContent).ConfigureAwait(false);
         }
     }
 }
