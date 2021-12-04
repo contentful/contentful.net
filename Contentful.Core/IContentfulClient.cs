@@ -135,6 +135,16 @@ namespace Contentful.Core
         Task<ContentfulCollection<Asset>> GetAssets(string queryString = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Creates a key for signing embargoed asset requests.
+        /// </summary>
+        /// <param name="timeOffset">The point in time when the token should expire.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An instance of <see cref="EmbargoedAssetKey"/> with properties for signing embargoed asset urls.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The <see name="timeOffset">timeOffset</see> parameter was in the past or more than 48 hours in the future.</exception>
+        Task<EmbargoedAssetKey> CreateEmargoedAssetKey(DateTimeOffset timeOffset, CancellationToken cancellationToken = default);
+        
+        /// <summary>
         /// Gets the <see cref="Space"/> for this client.
         /// </summary>
         /// <returns>The <see cref="Space"/>.</returns>
