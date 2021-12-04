@@ -1109,7 +1109,11 @@ namespace Contentful.Core
             }
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}assets/{asset.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { fields = new { title = asset.Title, description = asset.Description, file = asset.Files } }), cancellationToken, version).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(new { 
+                    fields = new { title = asset.Title, description = asset.Description, file = asset.Files } ,
+                    metadata = asset.Metadata
+                }
+                ), cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 

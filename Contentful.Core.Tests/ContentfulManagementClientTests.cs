@@ -1203,6 +1203,7 @@ namespace Contentful.Core.Tests
             Assert.Equal(2290561, res.First().Files["en-US"].Details.Size);
             Assert.Equal(2940, res.First().Files["en-US"].Details.Image.Width);
             Assert.Equal("Alice in Wonderland", res.Last().Title["en-US"]);
+            Assert.Equal("tag1", res.First().Metadata.Tags.First().Sys.Id);
         }
 
         [Theory]
@@ -1382,6 +1383,9 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal("Ernest Hemingway (1950)", res.Title["en-US"]);
             Assert.Equal("Hemingway in the cabin of his boat Pilar, off the coast of Cuba", res.Description["en-US"]);
+            Assert.Equal("tag1", res.Metadata.Tags.First().Sys.Id);
+            Assert.Equal("Tag", res.Metadata.Tags.First().Sys.LinkType);
+            Assert.Equal("Link", res.Metadata.Tags.First().Sys.Type);
         }
 
         [Theory]

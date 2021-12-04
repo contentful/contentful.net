@@ -7,6 +7,24 @@
   "limit": 100,
   "items": [
     {
+      "metadata": {
+        "tags": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Tag",
+              "id": "tag1"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Tag",
+              "id": "tag2"
+            }
+          }
+        ]
+      },
       "sys": {
         "space": {
           "sys": {

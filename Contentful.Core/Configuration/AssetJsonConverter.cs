@@ -47,6 +47,7 @@ namespace Contentful.Core.Configuration
             }
 
             asset.SystemProperties = jObject.SelectToken("$.sys")?.ToObject<SystemProperties>();
+            asset.Metadata = jObject.SelectToken("$.metadata")?.ToObject<ContentfulMetadata>();
 
             if (!string.IsNullOrEmpty(asset.SystemProperties.Locale))
             {

@@ -33,5 +33,10 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         [JsonProperty("file")]
         public Dictionary<string,File> Files { get; set; }
+
+        /// <summary>
+        /// The system managed metadata of an entry.
+        /// </summary>
+        public ContentfulMetadata Metadata { get; set; }
     }
 }

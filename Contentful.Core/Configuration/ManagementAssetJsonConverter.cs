@@ -42,7 +42,7 @@ namespace Contentful.Core.Configuration
             asset.Description = jObject.SelectToken("$.fields.description")?.ToObject<Dictionary<string, string>>();
             asset.Files = jObject.SelectToken("$.fields.file")?.ToObject<Dictionary<string, File>>();
             asset.SystemProperties = jObject.SelectToken("$.sys")?.ToObject<SystemProperties>();
-
+            asset.Metadata = jObject.SelectToken("$.metadata")?.ToObject<ContentfulMetadata>();
             return asset;
         }
 
