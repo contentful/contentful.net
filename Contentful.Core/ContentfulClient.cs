@@ -489,7 +489,7 @@ namespace Contentful.Core
         /// <returns>An instance of <see cref="EmbargoedAssetKey"/> with properties for signing embargoed asset urls.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <see name="timeOffset">timeOffset</see> parameter was in the past or more than 48 hours in the future.</exception>
-        public async Task<EmbargoedAssetKey> CreateEmargoedAssetKey(DateTimeOffset timeOffset, CancellationToken cancellationToken = default)
+        public async Task<EmbargoedAssetKey> CreateEmbargoedAssetKey(DateTimeOffset timeOffset, CancellationToken cancellationToken = default)
         {
             var now = DateTimeOffset.UtcNow;
 

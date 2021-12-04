@@ -1254,7 +1254,7 @@ namespace Contentful.Core.Tests
             // Act
 
             // Assert
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.CreateEmargoedAssetKey(past));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.CreateEmbargoedAssetKey(past));
         }
 
         [Fact]
@@ -1265,7 +1265,7 @@ namespace Contentful.Core.Tests
             var expiry = DateTimeOffset.UtcNow.AddHours(10);
             
             //Act
-            var res = await _client.CreateEmargoedAssetKey(expiry);
+            var res = await _client.CreateEmbargoedAssetKey(expiry);
 
             //Assert
             Assert.Equal(expiry.DateTime,res.ExpiresAtUtc);
