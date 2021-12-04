@@ -255,7 +255,7 @@ namespace Contentful.Core.Models
             foreach (var subContent in table.Content)
             {
                 var renderer = _rendererCollection.GetRendererForContent(subContent);
-                sb.Append(renderer.RenderAsync(subContent));
+                sb.Append(await renderer.RenderAsync(subContent));
             }
 
             sb.Append("</table>");
