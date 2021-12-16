@@ -631,6 +631,9 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal("ihavenoidea", res.Title);
+            Assert.Equal("tag1", res.Metadata.Tags.First().Sys.Id);
+            Assert.Equal("Tag", res.Metadata.Tags.First().Sys.LinkType);
+            Assert.Equal("Link", res.Metadata.Tags.First().Sys.Type);
             Assert.Null(res.Description);
             Assert.NotNull(res.File);
         }
@@ -660,6 +663,7 @@ namespace Contentful.Core.Tests
             Assert.Equal(12, res.Count());
             Assert.Equal("Playsam Streamliner", res.First().Title);
             Assert.Equal("Merchandise photo", res.First().Description);
+            Assert.Equal("tag1", res.First().Metadata.Tags.First().Sys.Id);
         }
 
         [Fact]

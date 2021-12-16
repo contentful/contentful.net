@@ -46,5 +46,10 @@ namespace Contentful.Core.Models
         /// Information about the file in respective language.
         /// </summary>
         public Dictionary<string, File> FilesLocalized { get; set; }
+
+        /// <summary>
+        /// The system managed metadata of an entry.
+        /// </summary>
+        public ContentfulMetadata Metadata { get; set; }
     }
 }
