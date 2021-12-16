@@ -758,7 +758,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"InitialSyncNoNextPage.json");
 
             //Act
-            var res = await _client.SyncInitial();
+            var res = await _client.SyncInitial(limit: 32);
 
             //Assert
             Assert.Null(res.NextPageUrl);

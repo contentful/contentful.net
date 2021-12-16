@@ -610,7 +610,7 @@ namespace Contentful.Core
                 throw new ArgumentException("A content type can only be specified at the initial sync and only if the sync type is Entry. Here the synctype was " + syncType);
             }
 
-            var query = BuildSyncQuery(syncType, contentTypeId, true);
+            var query = BuildSyncQuery(syncType, contentTypeId, true, limit: limit);
 
             var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
 
