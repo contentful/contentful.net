@@ -189,9 +189,10 @@ namespace Contentful.Core
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="limit">Limits the number of items returned on each page of the sync result.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default);
+        Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default, int? limit = null);
 
         /// <summary>
         /// Syncs the delta changes since the last sync or the next page of an incomplete sync. 
@@ -214,9 +215,10 @@ namespace Contentful.Core
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="limit">Limits the number of items returned on each page of the sync result.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default);
+        Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default, int? limit = null);
 
         /// <summary>
         /// Returns whether or not the client is using the preview API.

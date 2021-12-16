@@ -100,6 +100,32 @@
                   "data": {
                     "target": {
                       "sys": {
+                        "id": "49rofLvvxCOiIMIi6mk8ai",
+                        "type": "Link",
+                        "linkType": "Entry"
+                      }
+                    }
+                  },
+                  "content": [
+                    {
+                      "data": {},
+                      "marks": [],
+                      "value": "entry hyperlink",
+                      "nodeType": "text"
+                    }
+                  ],
+                  "nodeType": "entry-hyperlink"
+                },
+                {
+                  "data": {},
+                  "marks": [],
+                  "value": ", an ",
+                  "nodeType": "text"
+                },
+                {
+                  "data": {
+                    "target": {
+                      "sys": {
                         "id": "4j1JCmvF6MqQymaMqi6OSu",
                         "type": "Link",
                         "linkType": "Asset"

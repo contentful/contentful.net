@@ -768,6 +768,44 @@ namespace Contentful.Core.Tests
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
         }
 
+        [Theory]
+        [InlineData(SyncType.DeletedEntry)]
+        [InlineData(SyncType.DeletedAsset)]
+        [InlineData(SyncType.All)]
+        [InlineData(SyncType.Asset)]
+        [InlineData(SyncType.Deletion)]
+        public async Task SyncInitialShouldThrowIfContentTypeIsUsedWithIncorrectSyncType(SyncType syncType)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"InitialSyncNoNextPage.json");
+
+            //Act
+
+            //Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.SyncInitial(syncType, "blob"));
+        }
+
+        [Fact]
+        public async Task SyncInitialShouldNotThrowIfContentTypeIsUsedWithCorrectSyncType()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"InitialSyncNoNextPage.json");
+
+            //Act
+            var res = await _client.SyncInitial(SyncType.Entry, "bob");
+
+            //Assert
+            Assert.Null(res.NextPageUrl);
+            Assert.Equal("https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=sometoken", res.NextSyncUrl);
+            Assert.Equal(12, res.Assets.Count());
+            Assert.Equal(9, res.Entries.Count());
+            Assert.Equal(0, res.DeletedAssets.Count());
+            Assert.Equal(0, res.DeletedEntries.Count());
+            Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Entries.First().SystemProperties.Id);
+            Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
+            Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
+        }
+
         [Fact]
         public async Task SyncInitialDeletionsShouldSerializeIntoSyncResultCorrectly()
         {

@@ -600,10 +600,16 @@ namespace Contentful.Core
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="limit">Limits the number of items returned on each page of the sync result.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default)
+        public async Task<SyncResult> SyncInitial(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default, int? limit = null)
         {
+            if (!string.IsNullOrEmpty(contentTypeId) && syncType != SyncType.Entry)
+            {
+                throw new ArgumentException("A content type can only be specified at the initial sync and only if the sync type is Entry. Here the synctype was " + syncType);
+            }
+
             var query = BuildSyncQuery(syncType, contentTypeId, true);
 
             var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
@@ -650,11 +656,12 @@ namespace Contentful.Core
         /// <param name="syncType">The optional type of items that should be synced.</param>
         /// <param name="contentTypeId">The content type ID to filter entries by. Only applicable when the syncType is <see cref="SyncType.Entry"/>.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="limit">Limits the number of items returned on each page of the sync result.</param>
         /// <returns>A <see cref="SyncResult"/> containing all synced resources.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default)
+        public async Task<SyncResult> SyncInitialRecursive(SyncType syncType = SyncType.All, string contentTypeId = "", CancellationToken cancellationToken = default, int? limit = null)
         {
-            var syncResult = await SyncInitial(syncType, contentTypeId).ConfigureAwait(false);
+            var syncResult = await SyncInitial(syncType, contentTypeId, cancellationToken, limit).ConfigureAwait(false);
 
             while (!string.IsNullOrEmpty(syncResult.NextPageUrl))
             {
@@ -692,7 +699,7 @@ namespace Contentful.Core
             return syncResult;
         }
 
-        private string BuildSyncQuery(SyncType syncType = SyncType.All, string contentTypeId = null, bool initial = false, string syncToken = null)
+        private string BuildSyncQuery(SyncType syncType = SyncType.All, string contentTypeId = null, bool initial = false, string syncToken = null, int? limit = null)
         {
             var querystringValues = new List<KeyValuePair<string, string>>();
 
@@ -714,6 +721,12 @@ namespace Contentful.Core
             if (!string.IsNullOrEmpty(syncToken))
             {
                 querystringValues.Add(new KeyValuePair<string, string>("sync_token", syncToken));
+            }
+
+            if (limit.HasValue)
+            {
+                querystringValues.Add(new KeyValuePair<string, string>("limit", limit.Value.ToString()));
+
             }
 
             var query = new StringBuilder();
