@@ -299,6 +299,12 @@ namespace Contentful.Core
             //Walk through and add any included entries as direct links.
             foreach (var linkToken in links)
             {
+                var linkType = ((JValue)linkToken["linkType"]).Value.ToString();
+                if (linkType == "CrossSpaceEntry")
+                {
+                    break;
+                }
+
                 var propName = linkToken.Path.Substring(linkToken.Path.LastIndexOf(".fields.") + 8);
                 propName = propName.Substring(0, propName.IndexOf("."));
                 //remove any [] from propname if it's a collection property
