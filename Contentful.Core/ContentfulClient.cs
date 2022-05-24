@@ -397,8 +397,8 @@ namespace Contentful.Core
                             Details = new ContentfulErrorDetails
                             {
                                 Type = "Link",
-                                LinkType = itemToSkip.SelectToken("$..sys.linkType").Value<string>(),
-                                Id = itemToSkip.SelectToken("$..sys.id").Value<string>()
+                                LinkType = itemToSkip.SelectToken("$..sys.linkType")?.Value<string>(),
+                                Id = itemToSkip.SelectToken("$..sys.id")?.Value<string>()
                             }
                         };
 

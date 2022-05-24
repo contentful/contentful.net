@@ -10,9 +10,6 @@ jobs:
           command: dotnet build
       - run:
           name: Unit tests
-          command: | 
+          command: |
             dotnet test Contentful.AspNetCore.Tests
             dotnet test Contentful.Core.Tests
-      - run:
-          name: E2E tests
-          command: ./e2e-tests.sh
