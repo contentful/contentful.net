@@ -198,11 +198,16 @@ namespace Contentful.Core.Images
 
                 if(format != "jpg")
                 {
-                    var quality = _querystringValues.FirstOrDefault(c => c.Key == "q");
                     var progressive = _querystringValues.FirstOrDefault(c => c.Key == "fl" && c.Value == "progressive");
 
-                    _querystringValues.Remove(quality);
                     _querystringValues.Remove(progressive);
+                }
+                
+                if(format != "jpg" && format != "webp")
+                {
+                    var quality = _querystringValues.FirstOrDefault(c => c.Key == "q");
+
+                    _querystringValues.Remove(quality);
                 }
             }
         }
