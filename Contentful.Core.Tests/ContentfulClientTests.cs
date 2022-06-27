@@ -381,7 +381,7 @@ namespace Contentful.Core.Tests
             Assert.Equal("Mike Springer", list.First().Author.First().Name);
             Assert.Equal("Lewis Carroll", list.Last().Author.First().Name);
             Assert.Equal("Mike Springer", list.First().Author.First().ProfilePhoto.Title);
-            Assert.Equal(1, list.First().Author.First().CreatedEntries.Count);
+            Assert.Single(list.First().Author.First().CreatedEntries);
             Assert.Equal("contentful wyam logo", list.First().Author.First().Test.Field4.Title);
             Assert.Equal("Literature", list.Last().Category.First().Title);
         }
@@ -398,11 +398,11 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(2, list.Count);
-            Assert.Equal(0, list.First().Author.Count);
-            Assert.Equal(0, list.First().Category.Count);
+            Assert.Empty(list.First().Author);
+            Assert.Empty(list.First().Category);
 
-            Assert.Equal(0, list.Last().Author.Count);
-            Assert.Equal(0, list.Last().Category.Count);
+            Assert.Empty(list.Last().Author);
+            Assert.Empty(list.Last().Category);
 
             Assert.Null(list.Last().FeaturedImage);
 
@@ -427,11 +427,11 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(2, list.Count);
-            Assert.Equal(0, list.First().Author.Count);
-            Assert.Equal(0, list.First().Category.Count);
+            Assert.Empty(list.First().Author);
+            Assert.Empty(list.First().Category);
 
-            Assert.Equal(0, list.Last().Author.Count);
-            Assert.Equal(0, list.Last().Category.Count);
+            Assert.Empty(list.Last().Author);
+            Assert.Empty(list.Last().Category);
 
             Assert.Null(list.Last().FeaturedImage);
 
@@ -457,7 +457,7 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.NotNull(list[0].Items[0].Items[0].Media.File);
             Assert.Equal("test.container.item1.media", list[0].Items[0].Items[0].Media.Title);
-            Assert.Equal(1, list.Count());
+            Assert.Single(list);
         }
 
         [Fact]
@@ -474,8 +474,8 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.NotNull(list[0].Items["en-US"][0].Items["en-US"][0]);
-            Assert.Equal(1, list[0].Items["en-US"][0].Items["en-US"].Count);
-            Assert.Equal(1, list.Count());
+            Assert.Single(list[0].Items["en-US"][0].Items["en-US"]);
+            Assert.Single(list);
         }
 
         [Fact]
@@ -491,7 +491,7 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.NotNull(list[0].Items[0].Items[0].Media.File);
             Assert.Equal("test.container.item1.media", list[0].Items[0].Items[0].Media.Title);
-            Assert.Equal(1, list.Count());
+            Assert.Single(list);
         }
 
         [Fact]
@@ -536,7 +536,7 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEntries<Author>();
             var list = res.ToList();
             //Assert
-            Assert.Equal(1, list.Count);
+            Assert.Single(list);
             Assert.Equal("Lewis Carroll", list.Last().Name);
         }
 
@@ -765,8 +765,8 @@ namespace Contentful.Core.Tests
             Assert.Equal("https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=sometoken", res.NextSyncUrl);
             Assert.Equal(12, res.Assets.Count());
             Assert.Equal(9, res.Entries.Count());
-            Assert.Equal(0, res.DeletedAssets.Count());
-            Assert.Equal(0, res.DeletedEntries.Count());
+            Assert.Empty(res.DeletedAssets);
+            Assert.Empty(res.DeletedEntries);
             Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Entries.First().SystemProperties.Id);
             Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
@@ -803,8 +803,8 @@ namespace Contentful.Core.Tests
             Assert.Equal("https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=sometoken", res.NextSyncUrl);
             Assert.Equal(12, res.Assets.Count());
             Assert.Equal(9, res.Entries.Count());
-            Assert.Equal(0, res.DeletedAssets.Count());
-            Assert.Equal(0, res.DeletedEntries.Count());
+            Assert.Empty(res.DeletedAssets);
+            Assert.Empty(res.DeletedEntries);
             Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Entries.First().SystemProperties.Id);
             Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
@@ -822,10 +822,10 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Null(res.NextPageUrl);
             Assert.Equal("https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=nono", res.NextSyncUrl);
-            Assert.Equal(0, res.Assets.Count());
-            Assert.Equal(0, res.Entries.Count());
-            Assert.Equal(1, res.DeletedAssets.Count());
-            Assert.Equal(0, res.DeletedEntries.Count());
+            Assert.Empty(res.Assets);
+            Assert.Empty(res.Entries);
+            Assert.Single(res.DeletedAssets);
+            Assert.Empty(res.DeletedEntries);
 
         }
 
@@ -841,10 +841,10 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Null(res.NextPageUrl);
             Assert.Equal("https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=nexttoken", res.NextSyncUrl);
-            Assert.Equal(1, res.Assets.Count());
-            Assert.Equal(1, res.Entries.Count());
-            Assert.Equal(0, res.DeletedAssets.Count());
-            Assert.Equal(0, res.DeletedEntries.Count());
+            Assert.Single(res.Assets);
+            Assert.Single(res.Entries);
+            Assert.Empty(res.DeletedAssets);
+            Assert.Empty(res.DeletedEntries);
             Assert.Equal("6dbjWqNd9SqccegcqYq224", res.Entries.First().SystemProperties.Id);
             Assert.Equal("Whisk Beater - updated and improved!", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("Smisk slagare", res.Entries.First().Fields.productName.sv.ToString());
@@ -880,8 +880,8 @@ namespace Contentful.Core.Tests
             Assert.Equal("https://cdn.contentful.com/spaces/n9r7gd2bwvqt/sync?sync_token=sometoken", res.NextSyncUrl);
             Assert.Equal(48, res.Assets.Count());
             Assert.Equal(36, res.Entries.Count());
-            Assert.Equal(0, res.DeletedAssets.Count());
-            Assert.Equal(0, res.DeletedEntries.Count());
+            Assert.Empty(res.DeletedAssets);
+            Assert.Empty(res.DeletedEntries);
             Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Entries.First().SystemProperties.Id);
             Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
@@ -1013,7 +1013,7 @@ namespace Contentful.Core.Tests
             _client.ResolveEntriesSelectively = false;
 
             //Assert
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.NotNull(res.First().Shared);
             Assert.NotNull(res.First().Shared.Field1);
         }
@@ -1031,7 +1031,7 @@ namespace Contentful.Core.Tests
             _client.ResolveEntriesSelectively = false;
 
             //Assert
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.NotNull((res.First() as TestNestedSharedItem).Shared);
             Assert.NotNull((res.First() as TestNestedSharedItem).Shared.Field1);
         }

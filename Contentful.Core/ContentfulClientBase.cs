@@ -33,7 +33,7 @@ namespace Contentful.Core
 
         internal string EnvironmentsBase => string.IsNullOrEmpty(_options.Environment) ? "" : $"environments/{_options.Environment}/";
 
-        internal JsonSerializer Serializer => JsonSerializer.Create(SerializerSettings);
+        public JsonSerializer Serializer => JsonSerializer.Create(SerializerSettings);
 
         /// <summary>
         /// Gets or sets the settings that should be used for deserialization.

@@ -272,7 +272,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The target entry for the block.
         /// </summary>
-        public ReferenceProperties Target { get; set; }
+        public Reference Target { get; set; }
     }
 
     /// <summary>

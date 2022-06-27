@@ -1047,6 +1047,20 @@ namespace Contentful.Core.Tests
             Assert.Equal("Somethi", res.Fields.field1["en-US"].ToString());
         }
 
+        [Fact]
+        public async Task GetEntryShouldReturnCorrectObjectWithMetaData()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            var res = await _client.GetEntry("43");
+            //Assert
+            Assert.Equal("42BwcCt4TeeskG0eq8S2CQ", res.SystemProperties.Id);
+            Assert.Equal("Somethi", res.Fields.field1["en-US"].ToString());
+            Assert.Equal("nyCampaign", res.Metadata.Tags.First().Sys.Id);
+        }
+
         [Theory]
         [InlineData("777")]
         [InlineData("456")]
@@ -1593,7 +1607,7 @@ namespace Contentful.Core.Tests
             var res = await _client.GetLocalesCollection();
 
             //Assert
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.Equal(1, res.Total);
             Assert.Equal("U.S. English", res.First().Name);
             Assert.Equal("en-US", res.First().Code);
@@ -1691,11 +1705,11 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(1, res.Total);
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.Equal("Testhook", res.First().Name);
             Assert.Equal(2, res.First().Filters.Count);
-            Assert.IsType(typeof(EqualsConstraint), res.First().Filters.First());
-            Assert.IsType(typeof(InConstraint), (res.First().Filters.Last() as NotConstraint).ConstraintToInvert);
+            Assert.IsType<EqualsConstraint>(res.First().Filters.First());
+            Assert.IsType<InConstraint>((res.First().Filters.Last() as NotConstraint).ConstraintToInvert);
             Assert.Equal("https://robertlinde.se/", res.First().Url);
         }
 
@@ -1715,12 +1729,12 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(1, res.Total);
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.Equal("https://api.contentful.com/spaces/666/webhook_definitions?skip=3&take=7", url);
             Assert.Equal("Testhook", res.First().Name);
             Assert.Equal(2, res.First().Filters.Count);
-            Assert.IsType(typeof(EqualsConstraint), res.First().Filters.First());
-            Assert.IsType(typeof(InConstraint), (res.First().Filters.Last() as NotConstraint).ConstraintToInvert);
+            Assert.IsType<EqualsConstraint>(res.First().Filters.First());
+            Assert.IsType<InConstraint>((res.First().Filters.Last() as NotConstraint).ConstraintToInvert);
             Assert.Equal("https://robertlinde.se/", res.First().Url);
         }
 
@@ -2470,9 +2484,9 @@ namespace Contentful.Core.Tests
             Assert.Equal(3, list.Count);
             Assert.Equal(12, list.First().Snapshot.Fields.Count);
             Assert.Equal(13, list[1].Snapshot.Fields.Count);
-            Assert.False(list[0].Snapshot.Fields.Any(c => c.Name == "test"));
-            Assert.True(list[1].Snapshot.Fields.Any(c => c.Name == "test" && c.Omitted == true));
-            Assert.True(list[2].Snapshot.Fields.Any(c => c.Name == "test" && c.Omitted == false));
+            Assert.DoesNotContain(list[0].Snapshot.Fields, c => c.Name == "test");
+            Assert.Contains(list[1].Snapshot.Fields, c => c.Name == "test" && c.Omitted == true);
+            Assert.Contains(list[2].Snapshot.Fields, c => c.Name == "test" && c.Omitted == false);
             Assert.Equal("2pQBFoHZk5rMfGK1lSADTT", list[1].SystemProperties.Id);
             Assert.Equal("7b9PdWRHmlYce1YvZDOZdx", list[2].SystemProperties.Id);
         }
@@ -2868,7 +2882,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(1, res.Total);
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.Equal("trul", res.First().Name);
         }
 
@@ -3097,7 +3111,7 @@ namespace Contentful.Core.Tests
             Assert.Collection(res, (c) =>
             {
                 Assert.Equal(SystemManagementScopes.Manage, c.Scopes.First());
-                Assert.Equal(1, c.Scopes.Count);
+                Assert.Single(c.Scopes);
                 Assert.Null(c.Token);
                 Assert.Equal("My Token", c.Name);
             });
@@ -4373,6 +4387,7 @@ namespace Contentful.Core.Tests
                 );
         }
 
+        [Fact]
         public async Task OrganizationMembershipsShouldDeserializeCorrectly()
         {
             //Arrange
@@ -4606,7 +4621,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(1, res.Total);
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
             Assert.Equal("NY Campaign", res.First().Name);
             Assert.Equal("nyCampaign", res.First().SystemProperties.Id);
         }

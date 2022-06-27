@@ -45,6 +45,17 @@
       }
     }
   },
+  "metadata": {
+    "tags": [
+      {
+        "sys": {
+          "type": "Link",
+          "linkType": "Tag",
+          "id": "nyCampaign"
+        }
+      }
+    ]
+  },
   "fields": {
     "field2": {
       "en-US": {

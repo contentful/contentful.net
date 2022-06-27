@@ -26,6 +26,11 @@ namespace Contentful.Core
         /// Gets or sets the settings that should be used for deserialization.
         /// </summary>
         JsonSerializerSettings SerializerSettings { get; set; }
+        
+        /// <summary>
+        /// Gets the serializer used by this client to deserialize content.
+        /// </summary>
+        public JsonSerializer Serializer { get; }
 
         /// <summary>
         /// If set the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.

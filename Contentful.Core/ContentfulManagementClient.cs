@@ -700,7 +700,14 @@ namespace Contentful.Core
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
-            return JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false)).ToObject<Entry<dynamic>>(Serializer);
+            var jObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            if (jObject.TryGetValue("metadata", out var val))
+            {
+                val.Parent.Replace(new JProperty("$metadata", val));
+            }
+
+            return jObject.ToObject<Entry<dynamic>>(Serializer);
         }
 
         /// <summary>
