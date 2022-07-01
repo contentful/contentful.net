@@ -43,6 +43,20 @@ namespace Contentful.Core
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="entryId">The ID of the entry.</param>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A ContentfulResult with the deserialized Result and an Etag string, which is the e-tag returned from the server. Store this and pass it with
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
+        Task<ContentfulResult<T>> GetEntry<T>(string entryId, string etag, string queryString = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get a single entry by the specified ID.
+        /// </summary>
+        /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
+        /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
+        /// <param name="entryId">The ID of the entry.</param>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
@@ -92,11 +106,36 @@ namespace Contentful.Core
         /// </summary>
         /// <typeparam name="T">The class to serialize the response into. If you want the metadata to 
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulResult<ContentfulCollection<T>>> GetEntries<T>(string etag, string queryString = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
+        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
+        /// </summary>
+        /// <typeparam name="T">The class to serialize the response into. If you want the metadata to 
+        /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<ContentfulCollection<T>> GetEntries<T>(string queryString = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a single <see cref="Asset"/> by the specified ID.
+        /// </summary>
+        /// <param name="assetId">The ID of the asset.</param>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The assetId parameter was null or emtpy.</exception>
+        Task<ContentfulResult<Asset>> GetAsset(string assetId, string etag, string queryString = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a single <see cref="Asset"/> by the specified ID.
@@ -119,6 +158,16 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The assetId parameter was null or emtpy.</exception>
         Task<Asset> GetAsset(string assetId, string queryString = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// </summary>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Asset"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulResult<ContentfulCollection<Asset>>> GetAssets(string etag, string queryString = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
@@ -148,13 +197,34 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <see name="timeOffset">timeOffset</see> parameter was in the past or more than 48 hours in the future.</exception>
         Task<EmbargoedAssetKey> CreateEmbargoedAssetKey(DateTimeOffset timeOffset, CancellationToken cancellationToken = default);
-        
+
         /// <summary>
         /// Gets the <see cref="Space"/> for this client.
         /// </summary>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Space"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulResult<Space>> GetSpace(string etag, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets the <see cref="Space"/> for this client.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Space"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<Space> GetSpace(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a <see cref="ContentType"/> by the specified ID.
+        /// </summary>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The contentTypeId parameter was null or empty</exception>
+        Task<ContentfulResult<ContentType>> GetContentType(string etag, string contentTypeId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a <see cref="ContentType"/> by the specified ID.
@@ -169,6 +239,16 @@ namespace Contentful.Core
         /// <summary>
         /// Get all content types of a space.
         /// </summary>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        Task<ContentfulResult<IEnumerable<ContentType>>> GetContentTypes(string etag, string queryString, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get all content types of a space.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default);
 
@@ -176,8 +256,17 @@ namespace Contentful.Core
         /// Get all content types of a space.
         /// </summary>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         Task<IEnumerable<ContentType>> GetContentTypes(string queryString, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get all locales of an environment.
+        /// </summary>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
+        Task<ContentfulResult<IEnumerable<Locale>>> GetLocales(string etag, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get all locales of an environment.

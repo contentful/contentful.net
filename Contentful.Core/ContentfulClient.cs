@@ -111,19 +111,26 @@ namespace Contentful.Core
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
         /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
         /// <param name="entryId">The ID of the entry.</param>
+        /// <param name="etag">The e-tag to compare the server response to. If they match a null result will be returned.</param>
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
+        /// <returns>A ContentfulResult with the deserialized Result and an Etag string, which is the e-tag returned from the server. Store this and pass it with
+        /// the next request to avoid unecessary calls if the content hasn't changed.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
-        public async Task<T> GetEntry<T>(string entryId, string queryString = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulResult<T>> GetEntry<T>(string entryId, string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries/{entryId}{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries/{entryId}{queryString}", etag, cancellationToken).ConfigureAwait(false);
+
+            if(!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<T>(res.Headers?.ETag?.Tag, default(T));
+            }
 
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -147,7 +154,25 @@ namespace Contentful.Core
 
             var ob = entry.ToObject<T>(Serializer);
 
-            return ob;
+            return new ContentfulResult<T>(res.Headers?.ETag?.Tag ,ob);
+        }
+
+        /// <summary>
+        /// Get a single entry by the specified ID.
+        /// </summary>
+        /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
+        /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
+        /// <param name="entryId">The ID of the entry.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
+        public async Task<T> GetEntry<T>(string entryId, string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var ob = await GetEntry<T>(entryId, "", queryString, cancellationToken);
+
+            return ob.Result;
         }
 
         /// <summary>
@@ -182,19 +207,14 @@ namespace Contentful.Core
             return await GetEntries<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
-        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
-        /// </summary>
-        /// <typeparam name="T">The class to serialize the response into. If you want the metadata to 
-        /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
-        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
-        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
-        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
-        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntries<T>(string queryString = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulResult<ContentfulCollection<T>>> GetEntries<T>(string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag.Tag == etag)
+            {
+                return new ContentfulResult<ContentfulCollection<T>>(res.Headers?.ETag?.Tag, null);
+            }
 
             IEnumerable<T> entries;
 
@@ -242,7 +262,24 @@ namespace Contentful.Core
 
             collection.IncludedEntries = json.SelectTokens("$.includes.Entry[*]")?.Select(t => t.ToObject<Entry<dynamic>>(Serializer));
 
-            return collection;
+            return new ContentfulResult<ContentfulCollection<T>>(res.Headers?.ETag?.Tag, collection);
+        }
+
+        /// <summary>
+        /// Gets all the entries of a space, filtered by an optional querystring. A simpler approach than 
+        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
+        /// </summary>
+        /// <typeparam name="T">The class to serialize the response into. If you want the metadata to 
+        /// be included in the serialized response use the <see cref="Entry{T}"/> class as a type parameter.</typeparam>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<T>> GetEntries<T>(string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var res = await GetEntries<T>("", queryString, cancellationToken);
+
+            return res.Result;
         }
 
         private void ResolveContentTypes(JContainer container)
@@ -434,21 +471,41 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
-        public async Task<Asset> GetAsset(string assetId, string queryString = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulResult<Asset>> GetAsset(string assetId, string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(assetId))
             {
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{assetId}{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{assetId}{queryString}", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<Asset>(res.Headers?.ETag?.Tag, null);
+            }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var asset = jsonObject.ToObject<Asset>(Serializer);
 
-            return asset;
+            return new ContentfulResult<Asset>(res.Headers?.ETag?.Tag, asset);
         }
 
+        /// <summary>
+        /// Gets a single <see cref="Asset"/> by the specified ID.
+        /// </summary>
+        /// <param name="assetId">The ID of the asset.</param>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
+        public async Task<Asset> GetAsset(string assetId, string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var asset = await GetAsset(assetId, "", queryString, cancellationToken).ConfigureAwait(false);
+
+            return asset.Result;
+        }
 
         /// <summary>
         /// Gets all assets of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
@@ -470,15 +527,34 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Asset>> GetAssets(string queryString = null, CancellationToken cancellationToken = default)
+        public async Task<ContentfulResult<ContentfulCollection<Asset>>> GetAssets(string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{queryString}", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<ContentfulCollection<Asset>>(res.Headers?.ETag?.Tag, null);
+            }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>(Serializer);
             var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>(Serializer)); ;
             collection.Items = assets;
-            return collection;
+            return new ContentfulResult<ContentfulCollection<Asset>>(res.Headers?.ETag?.Tag, collection);
+        }
+
+        /// <summary>
+        /// Gets all assets of a space, filtered by an optional queryString. A simpler approach than 
+        /// to construct a query manually is to use the <see cref="QueryBuilder{T}"/> class.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<Asset>> GetAssets(string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var collection = await GetAssets("", queryString, cancellationToken);
+            return collection.Result;
         }
 
         /// <summary>
@@ -511,6 +587,27 @@ namespace Contentful.Core
             return assetKey;
         }
 
+        /// <summary>
+        /// Gets the <see cref="Space"/> for this client.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Space"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulResult<Space>> GetSpace(string etag, CancellationToken cancellationToken = default)
+        {
+            var res = await Get($"{_baseUrl}{_options.SpaceId}", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<Space>(res.Headers?.ETag?.Tag, null);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var space = jsonObject.ToObject<Space>(Serializer);
+
+            return new ContentfulResult<Space>(res.Headers?.ETag?.Tag, space);
+        }
+
 
         /// <summary>
         /// Gets the <see cref="Space"/> for this client.
@@ -520,12 +617,37 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<Space> GetSpace(CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{_baseUrl}{_options.SpaceId}", cancellationToken).ConfigureAwait(false);
+            var res = await GetSpace("", cancellationToken);
+
+            return res.Result;
+        }
+
+        /// <summary>
+        /// Gets a <see cref="ContentType"/> by the specified ID.
+        /// </summary>
+        /// <param name="contentTypeId">The ID of the content type.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into a <see cref="ContentType"/>.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
+        public async Task<ContentfulResult<ContentType>> GetContentType(string etag, string contentTypeId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                throw new ArgumentException(nameof(contentTypeId));
+            }
+
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{contentTypeId}", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<ContentType>(res.Headers?.ETag?.Tag, null);
+            }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var space = jsonObject.ToObject<Space>(Serializer);
+            var contentType = jsonObject.ToObject<ContentType>(Serializer);
 
-            return space;
+            return new ContentfulResult<ContentType>(res.Headers?.ETag?.Tag, contentType);
         }
 
         /// <summary>
@@ -538,17 +660,9 @@ namespace Contentful.Core
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
         public async Task<ContentType> GetContentType(string contentTypeId, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(contentTypeId))
-            {
-                throw new ArgumentException(nameof(contentTypeId));
-            }
+            var contentType = await GetContentType("", contentTypeId, cancellationToken);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{contentTypeId}", cancellationToken).ConfigureAwait(false);
-
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentType = jsonObject.ToObject<ContentType>(Serializer);
-
-            return contentType;
+            return contentType.Result;
         }
 
         /// <summary>
@@ -567,14 +681,52 @@ namespace Contentful.Core
         /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetContentTypes(string queryString, CancellationToken cancellationToken = default)
+        public async Task<ContentfulResult<IEnumerable<ContentType>>> GetContentTypes(string etag, string queryString, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{queryString}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{queryString}", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<IEnumerable<ContentType>>(res.Headers?.ETag?.Tag, null);
+            }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
 
-            return contentTypes;
+            return new ContentfulResult<IEnumerable<ContentType>>(res.Headers?.ETag?.Tag, contentTypes);
+        }
+
+        /// <summary>
+        /// Get all content types of a space.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
+        public async Task<IEnumerable<ContentType>> GetContentTypes(string queryString, CancellationToken cancellationToken = default)
+        {
+            var contentTypes = await GetContentTypes("", queryString, cancellationToken);
+
+            return contentTypes.Result;
+        }
+
+        /// <summary>
+        /// Get all locales of an environment.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
+        public async Task<ContentfulResult<IEnumerable<Locale>>> GetLocales(string etag, CancellationToken cancellationToken = default)
+        {
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{(string.IsNullOrEmpty(EnvironmentsBase) ? "environments/master/" : EnvironmentsBase)}locales/", etag, cancellationToken).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            {
+                return new ContentfulResult<IEnumerable<Locale>> (res.Headers?.ETag?.Tag, null);
+            }
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var locales = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<Locale>(Serializer));
+
+            return new ContentfulResult<IEnumerable<Locale>>(res.Headers?.ETag?.Tag, locales);
         }
 
         /// <summary>
@@ -584,12 +736,9 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
         public async Task<IEnumerable<Locale>> GetLocales(CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{(string.IsNullOrEmpty(EnvironmentsBase) ? "environments/master/" : EnvironmentsBase)}locales/", cancellationToken).ConfigureAwait(false);
+            var locales = await GetLocales("", cancellationToken);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var locales = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<Locale>(Serializer));
-
-            return locales;
+            return locales.Result;
         }
 
         /// <summary>
@@ -612,7 +761,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncType, contentTypeId, true, limit: limit);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", "", cancellationToken).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -639,7 +788,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken: syncToken);
 
-            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", cancellationToken).ConfigureAwait(false);
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", "", cancellationToken).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -745,9 +894,14 @@ namespace Contentful.Core
             return query.ToString();
         }
 
-        private async Task<HttpResponseMessage> Get(string url, CancellationToken cancellationToken)
+        private async Task<HttpResponseMessage> Get(string url, string etag, CancellationToken cancellationToken)
         {
-            return await SendHttpRequest(url, HttpMethod.Get, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken).ConfigureAwait(false);
+            var headers = new List<KeyValuePair<string, IEnumerable<string>>>();
+            if (!string.IsNullOrEmpty(etag))
+            {
+                headers.Add(new KeyValuePair<string, IEnumerable<string>>("If-None-Match", new List<string> { etag }));
+            }
+            return await SendHttpRequest(url, HttpMethod.Get, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken, additionalHeaders: headers).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> Post(string url, object body, CancellationToken cancellationToken)

@@ -291,6 +291,10 @@ namespace Contentful.Core
         {
             if (!response.IsSuccessStatusCode)
             {
+                if(response.StatusCode == System.Net.HttpStatusCode.NotModified)
+                {
+                    return response;
+                }
                 if((int)response.StatusCode == 429 && _options.MaxNumberOfRateLimitRetries > 0)
                 {
                     //Limit retries to 10 regardless of config

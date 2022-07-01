@@ -97,7 +97,7 @@ namespace Contentful.AspNetCore.TagHelpers
 
             if (string.IsNullOrEmpty(Url))
             {
-                Asset = await _client.GetAsset(AssetId, "");
+                Asset = await _client.GetAsset(AssetId, queryString: "");
                 Url = Asset.File.Url;
             }
 

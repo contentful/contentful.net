@@ -325,6 +325,40 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntryShouldReturnCorrectEtag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetEntry<TestEntryModel>("32", etag: "\"12644936848139375022\"");
+
+            //Assert
+            Assert.Null(res.Result);
+            Assert.Equal("\"12644936848139375022\"", res.Etag);
+        }
+
+        [Fact]
+        public async Task GetEntryShouldResultForEtagMismatch()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntry.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetEntry<TestEntryModel>("32", etag: "\"453\"");
+
+            //Assert
+            Assert.Equal("SoSo Wall Clock", res.Result.ProductName);
+            Assert.Equal("soso-wall-clock", res.Result.Slug);
+            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.033Z").ToUniversalTime(), res.Result.Sys.CreatedAt);
+            Assert.Equal("2PqfXUJwE8qSYKuM0U6w8M", res.Result.Sys.ContentType.SystemProperties.Id);
+        }
+
+        [Fact]
         public async Task GetEntryShouldThrowArgumentExceptionIfNoEntryIdIsProvided()
         {
             //Arrange
@@ -589,6 +623,43 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesCollectionShouldReturnCorrectEtag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetEntries<TestEntryModel>(etag: "\"12644936848139375022\"");
+
+            //Assert
+            Assert.Null(res.Result);
+            Assert.Equal("\"12644936848139375022\"", res.Etag);
+        }
+
+        [Fact]
+        public async Task GetEntriesCollectionShouldReturnCorrectResultIfEtagMismatch()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetEntries<TestEntryModel>(etag: "\"122\"");
+
+            //Assert
+            Assert.Equal(9, res.Result.Total);
+            Assert.Equal(100, res.Result.Limit);
+            Assert.Equal(0, res.Result.Skip);
+            Assert.Equal(9, res.Result.Items.Count());
+            Assert.Equal("Home & Kitchen", res.Result.Items.First().Title);
+            Assert.Equal(DateTime.Parse("2016-11-03T10:50:05.899Z").ToUniversalTime(), res.Result.Items.First().Sys.CreatedAt);
+            Assert.Equal("6XwpTaSiiI2Ak2Ww0oi6qa", res.Result.Items.First().Sys.ContentType.SystemProperties.Id);
+        }
+
+        [Fact]
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollectionWithIncludes()
         {
             //Arrange
@@ -636,6 +707,42 @@ namespace Contentful.Core.Tests
             Assert.Equal("Link", res.Metadata.Tags.First().Sys.Type);
             Assert.Null(res.Description);
             Assert.NotNull(res.File);
+        }
+
+        [Fact]
+        public async Task GetAssetShouldReturnCorrectEtag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetAsset("32", etag: "\"12644936848139375022\"");
+
+            //Assert
+            Assert.Null(res.Result);
+            Assert.Equal("\"12644936848139375022\"", res.Etag);
+        }
+
+        [Fact]
+        public async Task GetAssetShouldReturnResultForEtagMismatch()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleAsset.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetAsset("32", etag: "\"453\"");
+
+            //Assert
+            Assert.Equal("ihavenoidea", res.Result.Title);
+            Assert.Equal("tag1", res.Result.Metadata.Tags.First().Sys.Id);
+            Assert.Equal("Tag", res.Result.Metadata.Tags.First().Sys.LinkType);
+            Assert.Equal("Link", res.Result.Metadata.Tags.First().Sys.Type);
+            Assert.Null(res.Result.Description);
+            Assert.NotNull(res.Result.File);
         }
 
         [Fact]
@@ -687,6 +794,44 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetAssetsCollectionShouldReturnCorrectEtag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetAssets(etag: "\"12644936848139375022\"");
+
+            //Assert
+            Assert.Null(res.Result);
+            Assert.Equal("\"12644936848139375022\"", res.Etag);
+        }
+
+        [Fact]
+        public async Task GetAssetsCollectionShouldReturnResultForEtagMismatch()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"AssetsCollection.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetAssets(etag: "\"453\"");
+
+            //Assert
+            Assert.Equal(12, res.Result.Total);
+            Assert.Equal(100, res.Result.Limit);
+            Assert.Equal(0, res.Result.Skip);
+            Assert.Equal(12, res.Result.Items.Count());
+            Assert.Equal("Playsam Streamliner", res.Result.Items.First().Title);
+            Assert.Equal("Merchandise photo", res.Result.Items.First().Description);
+            Assert.Equal(DateTime.Parse("2016-11-03T10:49:56.838Z").ToUniversalTime(), res.Result.Items.First().SystemProperties.CreatedAt);
+            Assert.Equal("n9r7gd2bwvqt", res.Result.Items.First().SystemProperties.Space.SystemProperties.Id);
+        }
+
+        [Fact]
         public async Task GetSpaceShouldSerializeIntoCorrectObject()
         {
             //Arrange
@@ -711,7 +856,51 @@ namespace Contentful.Core.Tests
                 Assert.Equal("Swedish", l.Name);
                 Assert.Equal("en-US", l.FallbackCode);
             });
-           
+        }
+
+        [Fact]
+        public async Task GetSpaceShouldReturnCorrectEtag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleSpace.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetSpace(etag: "\"12644936848139375022\"");
+
+            //Assert
+            Assert.Null(res.Result);
+            Assert.Equal("\"12644936848139375022\"", res.Etag);
+        }
+
+        [Fact]
+        public async Task GetSpaceShouldReturnResultForEtagMismatch()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleSpace.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetSpace(etag: "\"453\"");
+
+            //Assert
+            Assert.Equal("Products", res.Result.Name);
+            Assert.Equal("n9r7gd2bwvqt", res.Result.SystemProperties.Id);
+            Assert.Equal("Space", res.Result.SystemProperties.Type);
+            Assert.Collection(res.Result.Locales, (l) => {
+                Assert.Equal("en-US", l.Code);
+                Assert.True(l.Default);
+                Assert.Equal("U.S. English", l.Name);
+                Assert.Null(l.FallbackCode);
+            }, (l) =>
+            {
+                Assert.Equal("sv", l.Code);
+                Assert.False(l.Default);
+                Assert.Equal("Swedish", l.Name);
+                Assert.Equal("en-US", l.FallbackCode);
+            });
         }
 
         [Fact]
@@ -731,6 +920,42 @@ namespace Contentful.Core.Tests
             Assert.Equal("Description", res.Fields[2].Name);
             Assert.Equal("Link", res.Fields[4].Items.Type);
 
+        }
+
+        [Fact]
+        public async Task GetContentTypeShouldReturnCorrectEtag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetContentType(etag: "\"12644936848139375022\"", "123");
+
+            //Assert
+            Assert.Null(res.Result);
+            Assert.Equal("\"12644936848139375022\"", res.Etag);
+        }
+
+        [Fact]
+        public async Task GetContentTypeShouldReturnResultForEtagMismatch()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleContentType.json");
+            _handler.Response.Headers.Add("ETag", "W/\"12644936848139375022\"");
+            _handler.Response.StatusCode = HttpStatusCode.NotModified;
+
+            //Act
+            var res = await _client.GetContentType(etag: "\"453\"", "132");
+
+            //Assert
+            Assert.Equal("Product", res.Result.Name);
+            Assert.Equal("productName", res.Result.DisplayField);
+            Assert.Equal(12, res.Result.Fields.Count);
+            Assert.True(res.Result.Fields[0].Localized);
+            Assert.Equal("Description", res.Result.Fields[2].Name);
+            Assert.Equal("Link", res.Result.Fields[4].Items.Type);
         }
 
         [Fact]
