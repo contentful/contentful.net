@@ -37,6 +37,13 @@ namespace Contentful.Core.Configuration
             if (reader.TokenType == JsonToken.Null) {
                 return null;
             }
+
+            /// Pass through the MaxDepth due to changes in 13.0.1+ which limits to 64
+            // https://stackoverflow.com/a/68580426
+            if (serializer.MaxDepth != null)
+            {
+                reader.MaxDepth = serializer.MaxDepth;
+            }           
             
             var jObject = JObject.Load(reader);
             if (jObject.TryGetValue("$ref", out var refId))
