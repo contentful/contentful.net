@@ -343,6 +343,10 @@ namespace Contentful.Core
                 {
                     propName = propName.Substring(0, propName.IndexOf("["));
                 }
+                if(linkToken["type"]?.ToString() == "ResourceLink")
+                {
+                    continue;
+                }
 
                 var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;

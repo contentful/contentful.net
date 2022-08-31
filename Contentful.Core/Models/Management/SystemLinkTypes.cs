@@ -38,5 +38,10 @@ namespace Contentful.Core.Models.Management
         /// A reference to a status object.
         /// </summary>
         public const string Status = "Status";
+
+        /// <summary>
+        /// A reference to an entry.
+        /// </summary>
+        public const string CrossSpaceEntry = "Contentful:Entry";
     }
 }

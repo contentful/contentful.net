@@ -64,5 +64,10 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         public const string RichText = "RichText";
 
+        /// <summary>
+        /// A link to another entry in a different space.
+        /// </summary>
+        public const string ResourceLink = "ResourceLink";
+
     }
 }

@@ -385,6 +385,21 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithCrossSpaceReference()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithCrossReference.json");
+
+            //Act
+            var res = await _client.GetEntries<TestEntryModel>();
+
+            //Assert
+            Assert.Equal(9, res.Count());
+            Assert.Equal("Home & Kitchen", res.First().Title);
+            Assert.Equal("crn:contentful:::content:spaces/537643esrtg/entries/435dfgsserte", res.First().Cross.Sys.Urn);
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithSystemProperties()
         {
             //Arrange
