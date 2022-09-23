@@ -836,6 +836,9 @@ namespace Contentful.Core
         private SyncResult ParseSyncResult(string content)
         {
             var jsonObject = JObject.Parse(content);
+
+            ReplaceMetaData(jsonObject);
+
             var syncResult = jsonObject.ToObject<SyncResult>(Serializer);
             var entries =
                 jsonObject.SelectTokens("$.items[?(@.sys.type=='Entry')]").Select(c => c.ToObject<Entry<dynamic>>(Serializer));
