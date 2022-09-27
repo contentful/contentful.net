@@ -227,7 +227,7 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
                 }
             };
             tagHelper.Format = Core.Images.ImageFormat.Png;
-            tagHelper.JpgQuality = 45;
+            tagHelper.Quality = 34;
             tagHelper.ProgressiveJpg = true;
             tagHelper.Width = 50;
 
@@ -243,7 +243,7 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
 
             //Assert
             Assert.Equal("https://robertlinde.se", tagHelper.Url);
-            Assert.Equal("https://robertlinde.se?w=50&fm=png", output.Attributes["src"].Value);
+            Assert.Equal("https://robertlinde.se?w=50&q=34&fm=png", output.Attributes["src"].Value);
         }
 
         [Fact]

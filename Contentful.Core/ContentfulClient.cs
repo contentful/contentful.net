@@ -207,6 +207,13 @@ namespace Contentful.Core
             return await GetEntries<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<string> GetEntriesRaw(string queryString = null, CancellationToken cancellationToken = default)
+        {
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", null, cancellationToken).ConfigureAwait(false);
+            var resultString = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return resultString;
+        }
+
         public async Task<ContentfulResult<ContentfulCollection<T>>> GetEntries<T>(string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
             var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", etag, cancellationToken).ConfigureAwait(false);

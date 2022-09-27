@@ -47,7 +47,19 @@ namespace Contentful.Core.Images
         /// </summary>
         /// <param name="quality">The quality as a percentage between 0 and 100.</param>
         /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
+        [Obsolete("This method will be removed in an upcoming release, use the SetQuality method instead.")]
         public ImageUrlBuilder SetJpgQuality(int quality)
+        {
+            _querystringValues.Add(new KeyValuePair<string, string>("q", quality.ToString()));
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the quality of the image returned.
+        /// </summary>
+        /// <param name="quality">The quality as a percentage between 0 and 100.</param>
+        /// <returns>The <see cref="ImageUrlBuilder"/> instance.</returns>
+        public ImageUrlBuilder SetQuality(int quality)
         {
             _querystringValues.Add(new KeyValuePair<string, string>("q", quality.ToString()));
             return this;
@@ -201,13 +213,6 @@ namespace Contentful.Core.Images
                     var progressive = _querystringValues.FirstOrDefault(c => c.Key == "fl" && c.Value == "progressive");
 
                     _querystringValues.Remove(progressive);
-                }
-                
-                if(format != "jpg" && format != "webp")
-                {
-                    var quality = _querystringValues.FirstOrDefault(c => c.Key == "q");
-
-                    _querystringValues.Remove(quality);
                 }
             }
         }

@@ -59,6 +59,20 @@ namespace Contentful.Core.Tests.Images
             Assert.Equal($"?q={quality}", result);
         }
 
+        [Theory]
+        [InlineData(24)]
+        [InlineData(45)]
+        [InlineData(888)]
+        public void SettingQualityShouldSetCorrectQueryString(int quality)
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.SetQuality(quality).Build();
+            //Assert
+            Assert.Equal($"?q={quality}", result);
+        }
+
         [Fact]
         public void Setting8BitPngShouldSetCorrectQueryString()
         {
@@ -224,9 +238,20 @@ namespace Contentful.Core.Tests.Images
             //Arrange
             var builder = new ImageUrlBuilder();
             //Act
-            var result = builder.SetFormat(ImageFormat.Png).SetJpgQuality(34).UseProgressiveJpg().Build();
+            var result = builder.SetFormat(ImageFormat.Png).UseProgressiveJpg().Build();
             //Assert
             Assert.Equal("?fm=png", result);
+        }
+
+        [Fact]
+        public void SettingFormatToWebpShouldAllowForQualitySpecificValues()
+        {
+            //Arrange
+            var builder = new ImageUrlBuilder();
+            //Act
+            var result = builder.SetFormat(ImageFormat.Webp).SetQuality(34).Build();
+            //Assert
+            Assert.Equal("?fm=webp&q=34", result);
         }
 
         [Fact]

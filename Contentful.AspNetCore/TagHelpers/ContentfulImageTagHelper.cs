@@ -63,7 +63,13 @@ namespace Contentful.AspNetCore.TagHelpers
         /// <summary>
         /// The quality of the image as a value between 0 and 100.
         /// </summary>
+        [Obsolete("Use the Quality property instead")]
         public int? JpgQuality { get; set; }
+
+        /// <summary>
+        /// The quality of the image as a value between 0 and 100.
+        /// </summary>
+        public int? Quality { get; set; }
 
         /// <summary>
         /// Wether progressive JPGs should be used.
@@ -127,6 +133,11 @@ namespace Contentful.AspNetCore.TagHelpers
                 queryBuilder.SetJpgQuality(JpgQuality.Value);
             }
 
+            if (Quality.HasValue)
+            {
+                queryBuilder.SetQuality(Quality.Value);
+            }
+
             if (CornerRadius.HasValue)
             {
                 queryBuilder.SetCornerRadius(CornerRadius.Value);
@@ -180,6 +191,7 @@ namespace Contentful.AspNetCore.TagHelpers
             await output.GetChildContentAsync();
 
             output.TagName = "img";
+            string url = await BuildUrl();
             output.Attributes.Add("src", await BuildUrl());
 
             if (!context.AllAttributes.ContainsName("alt"))
@@ -251,6 +263,7 @@ namespace Contentful.AspNetCore.TagHelpers
             Width = Width > 0 ? Width : defaults.Width;
             Height = Height > 0 ? Height : defaults.Height;
             JpgQuality = JpgQuality.HasValue ? JpgQuality : defaults.JpgQuality;
+            Quality = Quality.HasValue ? Quality : defaults.Quality;
             CornerRadius = CornerRadius.HasValue ? CornerRadius : defaults.CornerRadius;
             BackgroundColor = string.IsNullOrEmpty(BackgroundColor) ? defaults.BackgroundColor : BackgroundColor;
             Url = string.IsNullOrEmpty(Url) ? defaults.Url : Url;

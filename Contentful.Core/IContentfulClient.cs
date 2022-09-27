@@ -90,6 +90,15 @@ namespace Contentful.Core
         Task<ContentfulCollection<T>> GetEntriesByType<T>(string contentTypeId, QueryBuilder<T> queryBuilder = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Gets all the entries of a space,filtered by an optional querystring.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<string> GetEntriesRaw(string queryString = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
         /// </summary>
         /// <typeparam name="T">The class to serialize the response into. If you want the metadata to 

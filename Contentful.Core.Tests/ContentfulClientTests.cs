@@ -619,6 +619,19 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesRawShouldReturnCorrectString()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
+            //Act
+            var res = await _client.GetEntriesRaw();
+
+            //Assert
+            Assert.NotEmpty(res);
+            Assert.Matches("Kitchen", res);
+        }
+
+        [Fact]
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollection()
         {
             //Arrange
