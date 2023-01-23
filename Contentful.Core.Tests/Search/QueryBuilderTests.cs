@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Contentful.Core.Search;
 using Xunit;
 using Contentful.Core.Models;
+using System.Linq.Expressions;
+using static Contentful.Core.Tests.Extensions.StringContentHelpers;
 
 namespace Contentful.Core.Tests.Search
 {
@@ -599,6 +601,59 @@ namespace Contentful.Core.Tests.Search
 
             //Assert
             Assert.Equal("?fields.test.sys.contentType.sys.id=123&fields.test.fields.field1=something", result);
+        }
+
+        [Fact]
+        public void SelectFieldsOnceBuildsCorrectSearch()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestEntry>();
+
+            //Act
+            var request = builder.SelectFields(q => new { q.Title, q.Description, q.EntryId }).Build();
+
+            //Assert
+            Assert.Equal($"?{Encoded("select", "fields.title,fields.description,fields.entryId")}", request);
+        }
+
+        [Fact]
+        public void SelectFieldsCalledMoreThanOnceThrows()
+        {
+            //Arrange
+            var builder = new QueryBuilder<TestEntry>();
+
+            //Act
+            var testCallback = () => { var result = builder.SelectFields(q => new { q.Title, q.Description, q.EntryId }).SelectFields(q => new { q.Description }).Build(); };
+
+            // Assert
+            Assert.Throws<InvalidOperationException>(testCallback);
+        }
+
+        [Fact]
+        public void SelectFields_MultipleSysSubProps_Works()
+        {
+            //Arrange
+            var builderDefaultName = new QueryBuilder<TestEntry>();
+
+            //Act
+            var request = builderDefaultName.SelectFields(q => new { q.Description, q.EntryId }, q => new { q.Id, q.ContentType }).Build();
+
+            // Assert
+            Assert.Equal($"?{Encoded("select", "fields.description,fields.entryId,sys.id,sys.contentType")}", request);
+        }
+
+        [Fact]
+        public void SelectFields_WithRichContentField_Works()
+        {
+            // Arrange
+            var builder = new QueryBuilder<TestEntry>().SelectFields(q => new { q.MastHead });
+
+            // Act
+            var request = builder.Build();
+
+            // Assert
+            Assert.Equal($"?{Encoded("select", "fields.mastHead")}", request);
+
         }
     }
 }
