@@ -324,4 +324,22 @@ namespace Contentful.Core.Tests
         public Dictionary<string, string> Field34 { get; set; }
         public Dictionary<string, Document> RichText { get; set; }
     }
+
+    public class TestEntry
+    {
+        public SystemProperties Sys { get; set; }
+
+        public string EntryId { get; set; }
+
+        public int Id { get; set; }
+
+        public string Description { get; set; }
+
+        public string Title { get; set; }
+
+        public Document MastHead { get; set; }
+
+        public Asset MainImage { get; set; }
+
+    }
 }

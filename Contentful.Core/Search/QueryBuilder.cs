@@ -1,10 +1,12 @@
 ﻿using Contentful.Core.Models;
+using Contentful.Core.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -502,6 +504,92 @@ namespace Contentful.Core.Search
             return AddFieldRestriction("links_to_asset", id, string.Empty);
         }
 
+        public QueryBuilder<T> SelectFields<TResult, TSys>(Expression<Func<T, TResult>> fieldsSelector, Expression<Func<SystemProperties, TSys>> sysSelector)
+            where TResult : class
+            where TSys : class
+        {
+            var selectionSet = fieldsSelector?.Body as NewExpression;
+            var sysSelection = sysSelector?.Body as NewExpression;
+            if (fieldsSelector != null && selectionSet == null)
+            {
+                throw new ArgumentException("You must select using a new anonymous type for selecting which fields to use", nameof(fieldsSelector));
+            }
+
+            if (sysSelector != null && sysSelection == null)
+            {
+                throw new ArgumentException("You must select using a new anonymous type for selecting which sys properties to use", nameof(sysSelector));
+            }            
+
+            if (_querystringValues.Any(q => q.Key.Equals("select", StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException("You can only specify a field selection once per query");
+            }
+
+            var fieldMembers = (selectionSet?.Arguments?.OfType<MemberExpression>() ?? Enumerable.Empty<MemberExpression>()).ToList();
+            var sysMembers = (sysSelection?.Arguments?.OfType<MemberExpression>() ?? Enumerable.Empty<MemberExpression>()).ToList();
+
+            if ((fieldMembers?.Count ?? 0) + (sysMembers?.Count ?? 0) > 100)
+            {
+                throw new InvalidOperationException("The API currently accepts a maximum of 100 fields on a request");
+            }
+
+            var merged = VisitMembersGenerator(fieldMembers, typeof(T)).Union(VisitMembersGenerator(sysMembers, typeof(SystemProperties)));
+
+            var allFields = string.Join(",", merged);
+
+            if (string.IsNullOrWhiteSpace(allFields))
+            {
+                return this;
+            }
+            _querystringValues.Add(new KeyValuePair<string, string>("select", allFields));
+            return this;
+        }
+
+        /// <summary>
+        /// Restricts the fields per entry returned, per the HTTP API spec. <para />
+        /// Will not allow more than 100 items, and will not allow this value to be added more than once
+        /// </summary>
+        /// <param name="fieldsSelector">the selector for the entry fields of the set</param>
+        /// <param name="includeEntireSysProperties">Whether to include the entire sys block on each entry</param>
+        /// <remark>The limit to the two combined sets currently is 100 fields, with a maximum field depth of 2
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
+        public QueryBuilder<T> SelectFields<TResult>(Expression<Func<T, TResult>> fieldsSelector, bool includeEntireSysProperties = false)
+            where TResult : class
+        {
+            if (fieldsSelector == null && includeEntireSysProperties)
+            {
+                _querystringValues.Add(new KeyValuePair<string, string>("select", "sys"));
+                return this;
+            }
+
+            var selectionSet = fieldsSelector?.Body as NewExpression;
+            if (fieldsSelector != null && selectionSet == null) {
+                throw new ArgumentException("You must select using a new anonymous type for selecting which fields to use", nameof(fieldsSelector));
+            }
+
+            if (_querystringValues.Any(q => q.Key.Equals("select", StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException("You can only specify a field selection once per query");
+            }            
+
+            var members = (selectionSet?.Arguments?.OfType<MemberExpression>() ?? Enumerable.Empty<MemberExpression>()).ToList();
+
+            if (members?.Count > 100)
+            {
+                throw new InvalidOperationException("The API currently accepts a maximum of 100 fields on a request");
+            }
+
+            var fields = string.Join(",", VisitMembersGenerator(members, typeof(T), includeEntireSysProperties));
+
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                return this;
+            }
+
+            _querystringValues.Add(new KeyValuePair<string, string>("select", fields));
+            return this;
+        }
+
         /// <summary>
         /// Adds the restriction for a specific field, value and operator.
         /// </summary>
@@ -514,6 +602,30 @@ namespace Contentful.Core.Search
             _querystringValues.Add(new KeyValuePair<string, string>($"{field}{@operator}", value));
             return this;
         }
+
+        private static IEnumerable<string> VisitMembersGenerator(IList<MemberExpression> members, Type sourceType, bool includeEntireSysProperties = false)
+        {
+            var visitor = new SelectVisitor(sourceType);
+
+            if (includeEntireSysProperties)
+            {
+                yield return "sys";
+            }
+
+            if (members?.Any() != true)
+            {   
+                yield break;
+            }
+
+            foreach (var expr in members)
+            {
+                visitor.Reset();
+                visitor.Visit(expr);
+                
+                yield return visitor.FieldName;
+            }
+        }
+
 
         /// <summary>
         /// Builds the query and returns the formatted querystring.
