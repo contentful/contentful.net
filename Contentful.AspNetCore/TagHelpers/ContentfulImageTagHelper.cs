@@ -130,7 +130,7 @@ namespace Contentful.AspNetCore.TagHelpers
 
             if (JpgQuality.HasValue && isJpg)
             {
-                queryBuilder.SetJpgQuality(JpgQuality.Value);
+                queryBuilder.SetQuality(JpgQuality.Value);
             }
 
             if (Quality.HasValue)

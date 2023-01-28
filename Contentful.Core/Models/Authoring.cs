@@ -582,6 +582,10 @@ namespace Contentful.Core.Models
                     return "em";
                 case "code":
                     return "code";
+                case "superscript":
+                    return "sup";
+                case "subscript":
+                    return "sub";
             }
 
             return "span";

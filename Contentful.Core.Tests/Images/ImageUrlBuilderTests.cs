@@ -49,6 +49,7 @@ namespace Contentful.Core.Tests.Images
         [InlineData(24)]
         [InlineData(45)]
         [InlineData(888)]
+        [Obsolete]
         public void SettingJpgQualityShouldSetCorrectQueryString(int quality)
         {
             //Arrange
@@ -260,7 +261,7 @@ namespace Contentful.Core.Tests.Images
             //Arrange
             var builder = new ImageUrlBuilder();
             //Act
-            var result = builder.SetFormat(ImageFormat.Jpg).SetJpgQuality(34).UseProgressiveJpg().Build();
+            var result = builder.SetFormat(ImageFormat.Jpg).SetQuality(34).UseProgressiveJpg().Build();
             //Assert
             Assert.Equal("?fm=jpg&q=34&fl=progressive", result);
         }

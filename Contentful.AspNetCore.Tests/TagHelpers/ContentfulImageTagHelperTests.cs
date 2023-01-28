@@ -177,6 +177,7 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
         }
 
         [Fact]
+        [Obsolete]
         public async Task JpgSpecificValuesShouldNotBeSetForNonJpgAsset()
         {
             //Arrange
@@ -262,7 +263,7 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
                 }
             };
 
-            tagHelper.JpgQuality = 45;
+            tagHelper.Quality = 45;
             tagHelper.ProgressiveJpg = true;
             tagHelper.Width = 50;
 
@@ -297,7 +298,7 @@ namespace Contentful.AspNetCore.Tests.TagHelpers
                 }
             };
 
-            tagHelper.JpgQuality = 45;
+            tagHelper.Quality = 45;
             tagHelper.ProgressiveJpg = true;
             tagHelper.Format = Core.Images.ImageFormat.Jpg;
             tagHelper.Width = 50;
