@@ -42,6 +42,17 @@
       }
     },
     {
+      "metadata": {
+        "tags": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Tag",
+              "id": "MyTagA"
+            }
+          }
+        ]
+      },
       "sys": {
         "space": {
           "sys": {

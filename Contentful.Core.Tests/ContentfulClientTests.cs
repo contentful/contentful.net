@@ -1023,6 +1023,8 @@ namespace Contentful.Core.Tests
             Assert.Equal("4BqrajvA8E6qwgkieoqmqO", res.Entries.First().SystemProperties.Id);
             Assert.Equal("SoSo Wall Clock", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("SåSå Väggklocka", res.Entries.First().Fields.productName.sv.ToString());
+            Assert.True(res.Entries.First().Metadata.Tags.Count == 1);
+            Assert.Equal("MyTagA", res.Entries.First().Metadata.Tags[0].Sys.Id);
         }
 
         [Theory]
@@ -1102,6 +1104,8 @@ namespace Contentful.Core.Tests
             Assert.Equal("Whisk Beater - updated and improved!", res.Entries.First().Fields.productName["en-US"].ToString());
             Assert.Equal("Smisk slagare", res.Entries.First().Fields.productName.sv.ToString());
             Assert.Equal(34250, int.Parse(res.Assets.First().Fields.file["en-US"].details.size.ToString()));
+            Assert.True(res.Entries.First().Metadata.Tags.Count == 1);
+            Assert.Equal("MyTagA", res.Entries.First().Metadata.Tags[0].Sys.Id);
         }
 
         [Fact]
