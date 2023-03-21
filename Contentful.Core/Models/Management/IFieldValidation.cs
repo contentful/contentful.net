@@ -41,7 +41,15 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Code.
         /// </summary>
-        code
+        code,
+        /// <summary>
+        /// Superscript.
+        /// </summary>
+        superscript,
+        /// <summary>
+        /// Subscript.
+        /// </summary>
+        subscript
     }
 
     /// <summary>

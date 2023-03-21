@@ -590,7 +590,10 @@
               "enabledMarks": [
                 "bold",
                 "italic",
-                "underline"
+                "underline",
+                "code",
+                "superscript",
+                "subscript"
               ],
               "message": "Only bold, italic, and underline marks are allowed"
             },
