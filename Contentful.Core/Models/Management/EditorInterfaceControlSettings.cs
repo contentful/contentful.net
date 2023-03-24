@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Contentful.Core.Models.Management
 {
@@ -50,6 +51,7 @@ namespace Contentful.Core.Models.Management
         /// The format for the date in the widget.
         /// </summary>
         [JsonProperty("format")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public EditorInterfaceDateFormat DateFormat { get; set; }
 
         /// <summary>

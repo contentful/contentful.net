@@ -562,6 +562,56 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task EditorInterfaceShouldSerializePayloadCorrectly()
+        {
+            //Arrange
+            var editorInterface = new EditorInterface()
+            {
+                Controls = new List<EditorInterfaceControl>()
+            {
+                new EditorInterfaceControl()
+                {
+                    FieldId = "field1",
+                     WidgetId = SystemWidgetIds.DatePicker,
+                    Settings = new DatePickerEditorInterfaceControlSettings()
+                    {
+                        HelpText = "Help me here!",
+                        ClockFormat = "24",
+                        DateFormat = EditorInterfaceDateFormat.dateonly
+                    }
+                },
+                new EditorInterfaceControl()
+                {
+                    FieldId = "field2",
+                    WidgetId = SystemWidgetIds.DatePicker,
+                    Settings = new DatePickerEditorInterfaceControlSettings()
+                    {
+                        HelpText = "Help me here!",
+                        ClockFormat = "12",
+                        DateFormat = EditorInterfaceDateFormat.timeZ
+                    }
+                }
+            }
+            };
+
+            var contentSet = "";
+
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            _handler.Response = GetResponseFromFile(@"EditorInterface.json");
+
+            //Act
+            var res = await _client.UpdateEditorInterface(editorInterface, "123", 1);
+
+            //Assert
+            Assert.Contains("timeZ", contentSet);
+            Assert.Contains("dateonly", contentSet);
+        }
+
+        [Fact]
         public async Task GetEntriesCollectionShouldSerializeIntoCorrectCollection()
         {
             //Arrange
