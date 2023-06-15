@@ -38,6 +38,11 @@ namespace Contentful.Core.Models.Management
         /// A reference to a status object.
         /// </summary>
         public const string Status = "Status";
+        
+        /// <summary>
+        /// An annotation reference for ContentTypes
+        /// </summary>
+        public const string Annotation = "Annotation";
 
         /// <summary>
         /// A reference to an entry.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Contentful.Core.Models.Management;
 using Newtonsoft.Json;
 
 namespace Contentful.Core.Models
@@ -16,6 +17,12 @@ namespace Contentful.Core.Models
         /// </summary>
         [JsonProperty("sys")]
         public SystemProperties SystemProperties { get; set; }
+
+        /// <summary>
+        /// Metadata properties for the content type.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public ContentTypeMetadata Metadata { get; set; }
 
         /// <summary>
         /// The name of the content type.
