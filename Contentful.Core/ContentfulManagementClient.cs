@@ -384,9 +384,11 @@ namespace Contentful.Core
             {
                 throw new ArgumentException(nameof(contentTypeId));
             }
+            // not allowed to pass sys properties on the update call for some reason
+            editorInterface.SystemProperties = null;
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}content_types/{contentTypeId}/editor_interface",
-                ConvertObjectToJsonStringContent(new { controls = editorInterface.Controls }), cancellationToken, version).ConfigureAwait(false);
+                ConvertObjectToJsonStringContent(editorInterface), cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
