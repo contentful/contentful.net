@@ -205,10 +205,17 @@ namespace Contentful.Core
                 throw new ArgumentException("The id of the content type must be set.", nameof(contentType));
             }
             var baseUrl = $"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}content_types/{contentType.SystemProperties.Id}";
-            // set sys props to null, you don't pass them on update calls
-            contentType.SystemProperties = null;
+            // clone the contenttype without sys properties to avoid mutating the original but still not send any sys props.
+            var clone = new ContentType
+            {
+                Description = contentType.Description,
+                DisplayField = contentType.DisplayField,
+                Fields = contentType.Fields,
+                Metadata = contentType.Metadata,
+                Name = contentType.Name,
+            };
             var res = await PutAsync(baseUrl,
-                ConvertObjectToJsonStringContent(contentType),
+                ConvertObjectToJsonStringContent(clone),
                 cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);

@@ -133,6 +133,55 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task CreateContentTypeShouldSerializeRequestCorrectlyWithMetadata()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage()
+            {
+                Content = new StringContent("{}")
+            };
+            var contentType = new ContentType()
+            {
+                SystemProperties = new SystemProperties()
+            };
+            contentType.SystemProperties.Id = "123";
+            contentType.Name = "Name";
+            contentType.Fields = new List<Field>()
+            {
+                new Field()
+                {
+                    Name = "Field1",
+                    Id = "field1",
+                    @Type = "Symbol",
+                    Required = true,
+                    Localized = false,
+                    Disabled = false,
+                    Omitted = false,
+                    DefaultValue = new Dictionary<string, object>
+                    {
+                        { "en-US", "defaulto" },
+                        { "sv-SE", "Swedish defaulto" }
+                    }
+                }
+            };
+            contentType.Metadata = new ContentTypeMetadata
+            {
+                Annotations = new ContentTypeMetadataAnnotation
+                {
+                    ContentType = new List<Reference> { new Reference { Sys = new ReferenceProperties() } },
+                    ContentTypeField = new { }
+                },
+            };
+
+
+            //Act
+            var res = await _client.CreateOrUpdateContentType(contentType);
+
+            //Assert
+            Assert.Null(res.Name);
+        }
+
+        [Fact]
         public async Task EditorInterfaceShouldDeserializeCorrectly()
         {
             //Arrange

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,11 +21,13 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Annotations for the content type.
         /// </summary>
+        [JsonProperty("ContentType")]
         public List<Reference> ContentType { get; set; } = new List<Reference>();
 
         /// <summary>
         /// Annotations for the content type fields.
         /// </summary>
+        [JsonProperty("ContentTypeField")]
         public dynamic ContentTypeField { get; set; }
     }
 }
