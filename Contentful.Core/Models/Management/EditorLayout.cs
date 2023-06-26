@@ -9,6 +9,7 @@ namespace Contentful.Core.Models.Management
     /// <summary>
     /// Represents how a specific field of a <see cref="ContentType"/> should be represented visually.
     /// </summary>
+    [JsonConverter(typeof(EditorLayoutGroupJsonConverter))]
     public class EditorLayoutGroup: IEditorLayoutGroupItem
     {
         /// <summary>

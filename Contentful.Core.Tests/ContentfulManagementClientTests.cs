@@ -196,6 +196,22 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task EditorInterfaceShouldDeserializeCorrectlyWithMetadata()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EditorInterfaceWithMetadata.json");
+
+            //Act
+            var res = await _client.GetEditorInterface("someid");
+
+            //Assert
+            Assert.Equal(7, res.Controls.Count);
+            Assert.Equal(2, res.EditorLayout.Count);
+            Assert.Equal(2, res.GroupControls.Count);
+            Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
+        }
+
+        [Fact]
         public async Task CreateSpaceShouldCreateCorrectObject()
         {
             //Arrange

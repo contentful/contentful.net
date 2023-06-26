@@ -1,0 +1,114 @@
+{
+  "controls": [
+    {
+      "fieldId": "field1",
+      "widgetId": "singleLine"
+    },
+    {
+      "fieldId": "field2",
+      "widgetId": "locationEditor"
+    },
+    {
+      "fieldId": "field3",
+      "widgetId": "markdown"
+    },
+    {
+      "fieldId": "field4",
+      "widgetId": "assetLinkEditor"
+    },
+    {
+      "fieldId": "field5",
+      "widgetId": "boolean",
+      "settings": {
+        "helpText": "Should the post be featured on the homepage?",
+        "trueLabel": "absolutely",
+        "falseLabel": "rather not"
+      }
+    },
+    {
+      "fieldId": "field6",
+      "widgetId": "rating",
+      "settings": {
+        "helpText": "How many do you likez?",
+        "stars": "7"
+      }
+    },
+    {
+      "fieldId": "field7",
+      "widgetId": "datePicker",
+      "settings": {
+        "helpText": "When do we should getz?",
+        "format": "time",
+        "ampm": "12"
+      }
+    }
+  ],
+  "editorLayout": [
+    {
+      "groupId": "content",
+      "name": "Content",
+      "items": [
+        { "fieldId": "title" },
+        { "fieldId": "body" }
+      ]
+    },
+    {
+      "groupId": "settings",
+      "name": "Settings",
+      "items": [
+        {
+          "groupId": "seo",
+          "name": "Seo",
+          "items": [ { "fieldId": "slug" } ]
+        }
+      ]
+    }
+  ],
+  "groupControls": [
+    {
+      "groupId": "content",
+      "widgetId": "topLevelTab",
+      "widgetNamespace": "builtin"
+    },
+    {
+      "groupId": "settings",
+      "widgetId": "topLevelTab",
+      "widgetNamespace": "builtin"
+    }
+  ],
+  "sys": {
+    "id": "default",
+    "type": "EditorInterface",
+    "version": 1,
+    "createdAt": "2016-11-23T07:37:45.356Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "testagain"
+      }
+    },
+    "updatedAt": "2016-11-23T07:37:45.357Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    }
+  }
+}

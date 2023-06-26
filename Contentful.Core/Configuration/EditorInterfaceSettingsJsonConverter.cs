@@ -9,15 +9,15 @@ using System.Text;
 namespace Contentful.Core.Configuration
 {
     /// <summary>
-    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.EditorInterface"/>.
+    /// JsonConverter for converting <see cref="Contentful.Core.Models.Management.EditorLayoutGroup"/>.
     /// </summary>
-    public class EditorInterfaceControlJsonConverter : JsonConverter
+    public class EditorLayoutGroupJsonConverter : JsonConverter
     {
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
         /// </summary>
         /// <param name="objectType">The type to convert to.</param>
-        public override bool CanConvert(Type objectType) => objectType == typeof(EditorInterfaceControl);
+        public override bool CanConvert(Type objectType) => objectType == typeof(EditorLayoutGroup);
 
         /// <summary>
         /// Gets a value indicating whether this JsonConverter can write JSON.
@@ -38,60 +38,24 @@ namespace Contentful.Core.Configuration
                 return null;
 
             var jsonObject = JObject.Load(reader);
-            var settings = new EditorInterfaceControlSettings();
-
-            var editorInterfaceControl = new EditorInterfaceControl()
+            var group = new EditorLayoutGroup();
+            group.GroupId = jsonObject["groupId"].Value<string>();
+            group.Name = jsonObject["name"].Value<string>();
+            group.Items = new List<IEditorLayoutGroupItem>();
+            foreach (var item in jsonObject["items"])
             {
-                FieldId = jsonObject["fieldId"]?.ToString(),
-                WidgetId = jsonObject["widgetId"]?.ToString()
-            };
-
-            if (jsonObject["settings"] == null)
-            {
-                return editorInterfaceControl;
-            }
-
-            if (jsonObject["widgetId"]?.ToString() == "boolean")
-            {
-                var boolSettings = new BooleanEditorInterfaceControlSettings()
+                if(item["fieldId"] != null)
                 {
-                    FalseLabel = jsonObject["settings"]?["falseLabel"]?.ToString(),
-                    TrueLabel = jsonObject["settings"]?["trueLabel"]?.ToString()
-                };
-                settings = boolSettings;
-            }
-
-            if (jsonObject["widgetId"]?.ToString() == "rating")
-            {
-                var ratingSettings = new RatingEditorInterfaceControlSettings();
-
-                var stars = 0;
-
-                if (!int.TryParse(jsonObject["settings"]?["stars"]?.ToString(), out stars))
-                {
-                    stars = 5;
+                    group.Items.Add(item.ToObject<EditorLayoutFieldItem>());
                 }
-
-                ratingSettings.NumberOfStars = stars;
-
-                settings = ratingSettings;
-            }
-
-            if (jsonObject["widgetId"]?.ToString() == "datePicker")
-            {
-                var dateSettings = new DatePickerEditorInterfaceControlSettings()
+                else
                 {
-                    ClockFormat = jsonObject["settings"]?["ampm"]?.ToString(),
-                    DateFormat = (EditorInterfaceDateFormat)Enum.Parse(typeof(EditorInterfaceDateFormat), jsonObject["settings"]?["format"]?.ToString(), true)
-                };
-                settings = dateSettings;
+                    group.Items.Add(item.ToObject<EditorLayoutGroup>());
+                }
             }
+           
 
-            settings.HelpText = jsonObject["settings"]?["helpText"]?.ToString();
-
-            editorInterfaceControl.Settings = settings;
-
-            return editorInterfaceControl;
+            return group;
         }
 
         /// <summary>
