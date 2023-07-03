@@ -31,6 +31,18 @@ namespace Contentful.Core.Models.Management
     }
 
     /// <summary>
+    /// Represents custom settings for a slugEditor widget.
+    /// </summary>
+    public class SlugEditorEditorInterfaceControlSettings : EditorInterfaceControlSettings
+    {
+        /// <summary>
+        /// The tracking field for the slug.
+        /// </summary>
+        public string TrackingFieldId { get; set; }
+
+    }
+
+    /// <summary>
     /// Represents custom settings for the star widget.
     /// </summary>
     public class RatingEditorInterfaceControlSettings : EditorInterfaceControlSettings

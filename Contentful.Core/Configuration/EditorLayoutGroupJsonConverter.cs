@@ -77,6 +77,16 @@ namespace Contentful.Core.Configuration
                 settings = ratingSettings;
             }
 
+            if (jsonObject["widgetId"]?.ToString() == "slugEditor")
+            {
+                var slugSettings = new SlugEditorEditorInterfaceControlSettings
+                {
+                    TrackingFieldId = jsonObject["settings"]?["trackingFieldId"]?.ToString()
+                };
+
+                settings = slugSettings;
+            }
+
             if (jsonObject["widgetId"]?.ToString() == "datePicker")
             {
                 var dateSettings = new DatePickerEditorInterfaceControlSettings()

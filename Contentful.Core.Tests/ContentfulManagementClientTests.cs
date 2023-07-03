@@ -191,7 +191,7 @@ namespace Contentful.Core.Tests
             var res = await _client.GetEditorInterface("someid");
 
             //Assert
-            Assert.Equal(7, res.Controls.Count);
+            Assert.Equal(8, res.Controls.Count);
             Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
         }
 
@@ -523,14 +523,15 @@ namespace Contentful.Core.Tests
             //Act
             var res = await _client.GetEditorInterface("23");
             //Assert
-            Assert.Equal(7, res.Controls.Count);
+            Assert.Equal(8, res.Controls.Count);
             Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
             Assert.IsType<RatingEditorInterfaceControlSettings>(res.Controls[5].Settings);
             Assert.Equal(7, (res.Controls[5].Settings as RatingEditorInterfaceControlSettings).NumberOfStars);
             Assert.Equal("How many do you likez?", res.Controls[5].Settings.HelpText);
             Assert.IsType<DatePickerEditorInterfaceControlSettings>(res.Controls[6].Settings);
             Assert.Equal(EditorInterfaceDateFormat.time, (res.Controls[6].Settings as DatePickerEditorInterfaceControlSettings).DateFormat);
-
+            Assert.IsType<SlugEditorEditorInterfaceControlSettings>(res.Controls[7].Settings);
+            Assert.Equal("bandana", (res.Controls[7].Settings as SlugEditorEditorInterfaceControlSettings).TrackingFieldId);
         }
 
         [Fact]
@@ -622,7 +623,7 @@ namespace Contentful.Core.Tests
             var res = await _client.UpdateEditorInterface(editorInterface, "123", 1);
 
             //Assert
-            Assert.Equal(7, res.Controls.Count);
+            Assert.Equal(8, res.Controls.Count);
             Assert.IsType<BooleanEditorInterfaceControlSettings>(res.Controls[4].Settings);
         }
 

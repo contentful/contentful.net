@@ -41,6 +41,14 @@
         "format": "time",
         "ampm": "12"
       }
+    },
+    {
+      "fieldId": "field8",
+      "widgetId": "slugEditor",
+      "settings": {
+        "helpText": "I do not knowz!",
+        "trackingFieldId": "bandana"
+      }
     }
   ],
   "sys": {
