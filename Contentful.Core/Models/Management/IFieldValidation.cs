@@ -599,7 +599,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// The minimum allowed height of the iamge (in px).
         /// </summary>
-        int? MinHeight { get; set; }
+        public int? MinHeight { get; set; }
 
         /// <summary>
         /// The maximum allowed height of the image (in px).
