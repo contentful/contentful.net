@@ -1477,6 +1477,32 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetTagsShouldReturnCorrectTags()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleTags.json");
+            //Act
+            var res = await _client.GetTags();
+
+            //Assert
+            Assert.NotNull(res.First());
+            Assert.Equal("NY Campaign", res.First().Name);
+        }
+
+        [Fact]
+        public async Task GetTagShouldReturnCorrectTag()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleTag.json");
+            //Act
+            var res = await _client.GetTag("33");
+
+            //Assert
+            Assert.Equal("NY Campaign", res.Name);
+
+        }
+
+        [Fact]
         public async Task TurningRichTextIntoHtmlShouldYieldCorrectResult()
         {
             //Arrange

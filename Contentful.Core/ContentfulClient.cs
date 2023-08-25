@@ -662,6 +662,42 @@ namespace Contentful.Core
         }
 
         /// <summary>
+        /// Get all tags of an environment.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentTag"/>.</returns>
+        public async Task<IEnumerable<ContentTag>> GetTags(string queryString = "", CancellationToken cancellationToken = default) {
+
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{queryString}", null, cancellationToken).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var tags = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentTag>(Serializer));
+
+            return tags;
+
+        }
+
+        /// <summary>
+        /// Get a tag of an environment by its id.
+        /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
+        public async Task<ContentTag> GetTag(string tagId, CancellationToken cancellationToken = default) {
+
+            if (string.IsNullOrEmpty(tagId))
+            {
+                throw new ArgumentException(nameof(tagId));
+            }
+
+            var res = await Get($"{_baseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{tagId}", null, cancellationToken).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var tag = jsonObject.ToObject<ContentTag>(Serializer);
+
+            return tag;
+        }
+
+        /// <summary>
         /// Gets a <see cref="ContentType"/> by the specified ID.
         /// </summary>
         /// <param name="contentTypeId">The ID of the content type.</param>

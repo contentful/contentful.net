@@ -285,6 +285,22 @@ namespace Contentful.Core
         Task<IEnumerable<Locale>> GetLocales(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get all tags of an environment.
+        /// </summary>
+        /// <param name="queryString">The optional querystring to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentTag"/>.</returns>
+        Task<IEnumerable<ContentTag>> GetTags(string queryString = "", CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get a tag of an environment by its id.
+        /// </summary>
+        /// <param name="tagId">The id of the tag to fetch.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentTag"/>.</returns>
+        Task<ContentTag> GetTag(string tagId, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Fetches an initial sync result of content. Note that this sync might not contain the entire result. 
         /// If the <see cref="SyncResult"/> returned contains a <see cref="SyncResult.NextPageUrl"/> that means 
         /// there are more resources to fetch. See also the <see cref="SyncInitialRecursive"/> method.

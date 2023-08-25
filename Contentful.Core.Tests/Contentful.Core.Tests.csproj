@@ -19,6 +19,8 @@
     <None Remove="JsonFiles\SampleContentTypeFields.json" />
     <None Remove="JsonFiles\SampleEnvironment.json" />
     <None Remove="JsonFiles\SampleOrgMembershipsCollection.json" />
+    <None Remove="JsonFiles\SampleTag.json" />
+    <None Remove="JsonFiles\SampleTags.json" />
     <None Remove="JsonFiles\SampleUser.json" />
     <None Remove="JsonFiles\UsagePeriods.json" />
   </ItemGroup>
@@ -44,6 +46,8 @@
     <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
     <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
     <EmbeddedResource Include="JsonFiles\ApiUsage.json" />
+    <EmbeddedResource Include="JsonFiles\SampleTag.json" />
+    <EmbeddedResource Include="JsonFiles\SampleTags.json" />
     <EmbeddedResource Include="JsonFiles\SampleContentTagCollection.json" />
     <EmbeddedResource Include="JsonFiles\SampleContentTag.json" />
     <EmbeddedResource Include="JsonFiles\UsagePeriods.json" />
