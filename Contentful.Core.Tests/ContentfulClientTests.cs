@@ -400,6 +400,45 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithCrossSpaceReferenceAndSettings()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithCrossReference.json");
+            var crossRefHeader = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                crossRefHeader = request.Headers.GetValues("x-contentful-resource-resolution").First();
+            };
+            _client.CrossSpaceResolutionSettings = new List<CrossSpaceResolutionSetting>
+            {
+                new CrossSpaceResolutionSetting
+                {
+                    SpaceId = "123",
+                    CdaToken = "666"
+                },
+                new CrossSpaceResolutionSetting
+                {
+                    SpaceId = "333",
+                    CdaToken = "999"
+                },
+                new CrossSpaceResolutionSetting
+                {
+                    SpaceId = "fdfg",
+                    CdaToken = "gf5678"
+                },
+            };
+
+            //Act
+            var res = await _client.GetEntries<TestEntryModel>();
+
+            //Assert
+            Assert.Equal(9, res.Count());
+            Assert.Equal("eyJTcGFjZXMiOnsiMTIzIjoiNjY2IiwiMzMzIjoiOTk5IiwiZmRmZyI6ImdmNTY3OCJ9fQ==", crossRefHeader);
+            Assert.Equal("Home & Kitchen", res.First().Title);
+            Assert.Equal("crn:contentful:::content:spaces/537643esrtg/entries/435dfgsserte", res.First().Cross.Sys.Urn);
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithSystemProperties()
         {
             //Arrange
