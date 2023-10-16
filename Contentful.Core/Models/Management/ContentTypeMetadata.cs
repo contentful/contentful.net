@@ -27,7 +27,7 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Annotations for the content type fields.
         /// </summary>
-        [JsonProperty("ContentTypeField")]
+        [JsonProperty("ContentTypeField", NullValueHandling = NullValueHandling.Ignore)]
         public dynamic ContentTypeField { get; set; }
     }
 }
