@@ -355,12 +355,17 @@ namespace Contentful.Core
                 {
                     propName = propName.Substring(0, propName.IndexOf("["));
                 }
-                if(linkToken["type"]?.ToString() == "ResourceLink")
+                var linkId = "";
+                var linktype = linkToken["linkType"]?.ToString();
+                if (linkToken["type"]?.ToString() == "ResourceLink")
                 {
-                    continue;
+                    linkId = ((JValue)linkToken["urn"]).Value.ToString();
+                    linkId = ParseIdFromContentfulUrn(linkId);
+                    linktype = linktype.Contains("Entry") ? "Entry" : "Asset";
+                } else {
+                    linkId = ((JValue)linkToken["id"]).Value.ToString();
                 }
 
-                var linkId = ((JValue)linkToken["id"]).Value.ToString();
                 JToken replacementToken = null;
                 if (processedIds.Contains(linkId))
                 {
@@ -369,9 +374,9 @@ namespace Contentful.Core
                         ["$ref"] = linkId
                     };
                 }
-                else if (!string.IsNullOrEmpty(linkToken["linkType"]?.ToString()))
+                else if (!string.IsNullOrEmpty(linktype))
                 {
-                    replacementToken = json.SelectTokens($"$.includes.{linkToken["linkType"]}[?(@.sys.id=='{linkId}')]").FirstOrDefault();
+                    replacementToken = json.SelectTokens($"$.includes.{linktype}[?(@.sys.id=='{linkId}')]").FirstOrDefault();
 
                     if (replacementToken == null)
                     {
@@ -394,7 +399,7 @@ namespace Contentful.Core
                     {
                         prop = type?.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
                         p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
-                        if (prop == null && linkToken["linkType"]?.ToString() != "Asset")
+                        if (prop == null && linktype?.ToString() != "Asset")
                         {
                             //the property does not exist in the entry. Skip it in resolving references.
                             continue;
@@ -451,7 +456,7 @@ namespace Contentful.Core
                             {
                                 Type = "Link",
                                 LinkType = itemToSkip.SelectToken("$..sys.linkType")?.Value<string>(),
-                                Id = itemToSkip.SelectToken("$..sys.id")?.Value<string>()
+                                Id = linkId
                             }
                         };
 
@@ -979,6 +984,13 @@ namespace Contentful.Core
             var bodyJson = body.ConvertObjectToJsonString();
             var bodyContent = new StringContent(bodyJson, Encoding.UTF8, "application/json");
             return await SendHttpRequest(url, HttpMethod.Post, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken, bodyContent).ConfigureAwait(false);
+        }
+
+        private string ParseIdFromContentfulUrn(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return s;
+            return s.Substring(s.LastIndexOf('/') + 1);
         }
     }
 }

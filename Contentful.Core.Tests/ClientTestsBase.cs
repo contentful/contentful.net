@@ -78,7 +78,7 @@ namespace Contentful.Core.Tests
         public string ProductName { get; set; }
         public string Slug { get; set; }
         public string Title { get; set; }
-        public CrossSpaceReference Cross { get; set; }
+        public Author Cross { get; set; }
         public string Metadata { get; set; }
         [JsonProperty("$metadata")]
         public ContentfulMetadata SystemMetadata { get; set; }

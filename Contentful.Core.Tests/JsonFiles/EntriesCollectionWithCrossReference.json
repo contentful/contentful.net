@@ -483,6 +483,72 @@
     }
   ],
   "includes": {
+    "Entry": [
+      {
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "SpaceId"
+            }
+          },
+          "id": "435dfgsserte",
+          "type": "Entry",
+          "createdAt": "2016-11-15T07:35:13.169Z",
+          "updatedAt": "2016-11-15T07:35:13.169Z",
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "ContentType2"
+            }
+          },
+          "locale": "en-US"
+        },
+        "metadata": {
+          "tags": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Tag",
+                "id": "nyCampaign"
+              }
+            }
+          ]
+        },
+        "fields": {
+          "name": "Mike Springer",
+          "website": "https://plus.google.com/+openculture/posts",
+          "metadata": "some data",
+          "profilePhoto": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "AssetId5"
+            }
+          },
+          "biography": "Mike Springer is a journalist living in Cambridge, Massachusetts, he writes daily for Open Culture.",
+          "createdEntries": [
+            {
+              "sys": {
+                "type": "Link",
+                "linkType": "Entry",
+                "id": "EntryId1"
+              }
+            }
+          ],
+          "test": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "Entry47"
+            }
+          }
+        }
+      }
+    ],
     "Asset": [
       {
         "sys": {
