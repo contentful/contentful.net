@@ -433,7 +433,7 @@ namespace Contentful.Core.Tests
 
             //Assert
             Assert.Equal(9, res.Count());
-            Assert.Equal("eyJTcGFjZXMiOnsiMTIzIjoiNjY2IiwiMzMzIjoiOTk5IiwiZmRmZyI6ImdmNTY3OCJ9fQ==", crossRefHeader);
+            Assert.Equal("eyJzcGFjZXMiOnsiMTIzIjoiNjY2IiwiMzMzIjoiOTk5IiwiZmRmZyI6ImdmNTY3OCJ9fQ==", crossRefHeader);
             Assert.Equal("Home & Kitchen", res.First().Title);
             Assert.Equal("Mike Springer", res.First().Cross.Name);
         }

@@ -970,7 +970,7 @@ namespace Contentful.Core
                     ((IDictionary<string, object>)exo).Add(item.SpaceId, item.CdaToken);
                 }
 
-                var headerObject = new { Spaces = exo };
+                var headerObject = new { spaces = exo };
                 var jsonString = JsonConvert.SerializeObject(headerObject);
                 var base64EncodedValue = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonString));
 
