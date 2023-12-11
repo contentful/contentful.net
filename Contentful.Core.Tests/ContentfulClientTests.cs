@@ -215,6 +215,7 @@ namespace Contentful.Core.Tests
             response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
 
             _handler.Response = response;
+
             var qb = QueryBuilder<TestEntryModel>.New.Include(4).Limit(40);
             var query = qb.Build();
             var numberOfTimesCalled = 0;

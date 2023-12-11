@@ -1,4 +1,5 @@
 ﻿using Contentful.Core.Models.Management;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -87,6 +88,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The title of the hyperlink.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
     }
 

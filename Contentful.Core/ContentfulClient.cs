@@ -228,8 +228,6 @@ namespace Contentful.Core
                 return new ContentfulResult<ContentfulCollection<T>>(res.Headers?.ETag?.Tag, null);
             }
 
-            IEnumerable<T> entries;
-
             var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             ReplaceMetaData(json);
@@ -265,10 +263,7 @@ namespace Contentful.Core
                 grandParent.Add(token.Children());
             }
 
-            entries = json.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
-
             var collection = json.ToObject<ContentfulCollection<T>>(Serializer);
-            collection.Items = entries;
 
             collection.IncludedAssets = json.SelectTokens("$.includes.Asset[*]")?.Select(t => t.ToObject<Asset>(Serializer));
 

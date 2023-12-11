@@ -45,6 +45,7 @@ namespace Contentful.Core
             }
 
             SerializerSettings.Converters.Add(new ExtensionJsonConverter());
+            SerializerSettings.Converters.Add(new ContentJsonConverter());
         }
 
         /// <summary>
@@ -556,7 +557,7 @@ namespace Contentful.Core
             };
 
             var createdEntry = await CreateEntry(entryToCreate, contentTypeId, spaceId, cancellationToken);
-            return (createdEntry.Fields as JObject).ToObject<T>();
+            return (createdEntry.Fields as JObject).ToObject<T>(Serializer);
         }
 
         /// <summary>
@@ -608,7 +609,7 @@ namespace Contentful.Core
             };
 
             var createdEntry = await CreateOrUpdateEntry(entryToCreate, spaceId, contentTypeId, version, cancellationToken);
-            return (createdEntry.Fields as JObject).ToObject<T>();
+            return (createdEntry.Fields as JObject).ToObject<T>(Serializer);
         }
 
         /// <summary>

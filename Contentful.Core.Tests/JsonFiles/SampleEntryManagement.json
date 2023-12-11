@@ -63,9 +63,7 @@
         "lon": 17.978289127349854
       }
     },
-    "field1": {
-      "en-US": "Somethi"
-    },
+    "field1": { "en-US": "Somethi" },
     "field4": {
       "en-US": {
         "sys": {
@@ -73,6 +71,26 @@
           "linkType": "Asset",
           "type": "Link"
         }
+      }
+    },
+    "richText": {
+      "en-US": {
+        "nodeType": "document",
+        "data": {},
+        "content": [
+          {
+            "nodeType": "paragraph",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "text",
+                "data": {},
+                "value": "Hello!",
+                "marks": []
+              }
+            ]
+          }
+        ]
       }
     }
   }
