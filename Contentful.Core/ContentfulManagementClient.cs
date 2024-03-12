@@ -2119,6 +2119,7 @@ namespace Contentful.Core
             upload.SystemProperties.CreatedAt = null;
             upload.SystemProperties.CreatedBy = null;
             upload.SystemProperties.Space = null;
+            upload.SystemProperties.Environment = null;
             upload.SystemProperties.LinkType = "Upload";
             foreach (var file in asset.Files)
             {
