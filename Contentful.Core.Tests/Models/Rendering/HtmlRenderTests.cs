@@ -162,5 +162,81 @@ namespace Contentful.Core.Tests.Models.Rendering
             //Assert
             Assert.Equal("<a></a>", html);
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(0)]
+        [InlineData(1)]
+        public async Task TableCellShouldBeRenderedWithoutColspanIfColspanNotGreaterThan1(int? colspan)
+        {
+            //Arrange
+            var renderer = new TableCellRenderer(null);
+            var tableCell = new TableCell
+            {
+                Content = new List<IContent>(),
+                Data = new TableCellData
+                {
+                    Colspan = colspan
+                },
+                NodeType = string.Empty
+            };
+
+            //Act
+            var html = await renderer.RenderAsync(tableCell);
+
+            //Assert
+            Assert.Equal("<td></td>", html);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(0)]
+        [InlineData(1)]
+        public async Task TableCellShouldBeRenderedWithoutRowspanIfColspanNotGreaterThan1(int? rowspan)
+        {
+            //Arrange
+            var renderer = new TableCellRenderer(null);
+            var tableCell = new TableCell
+            {
+                Content = new List<IContent>(),
+                Data = new TableCellData
+                {
+                    Rowspan = rowspan
+                },
+                NodeType = string.Empty
+            };
+
+            //Act
+            var html = await renderer.RenderAsync(tableCell);
+
+            //Assert
+            Assert.Equal("<td></td>", html);
+        }
+
+        [Theory]
+        [InlineData(2, 3, "<td rowspan=\"2\" colspan=\"3\"></td>")]
+        [InlineData(3, null, "<td rowspan=\"3\"></td>")]
+        [InlineData(1, 3, "<td colspan=\"3\"></td>")]
+        public async Task TableCellShouldBeRenderedWithCorrectRowspanAndColspan(int? rowspan, int? colspan, string expected)
+        {
+            //Arrange
+            var renderer = new TableCellRenderer(null);
+            var tableCell = new TableCell
+            {
+                Content = new List<IContent>(),
+                Data = new TableCellData
+                {
+                    Rowspan = rowspan,
+                    Colspan = colspan
+                },
+                NodeType = string.Empty
+            };
+
+            //Act
+            var html = await renderer.RenderAsync(tableCell);
+
+            //Assert
+            Assert.Equal(expected, html);
+        }
     }
 }
