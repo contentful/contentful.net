@@ -410,8 +410,13 @@ namespace Contentful.Core.Models
         public async Task<string> RenderAsync(IContent content)
         {
             var tableCell = content as TableCell;
+            var tableCellData = tableCell.Data;
+
+            var rowspanText = tableCellData.Rowspan > 1 ? $" rowspan=\"{tableCellData.Rowspan}\"" : string.Empty;
+            var colspanText = tableCellData.Colspan > 1 ? $" colspan=\"{tableCellData.Colspan}\"" : string.Empty;
+
             var sb = new StringBuilder();
-            sb.Append("<td>");
+            sb.Append($"<td{rowspanText}{colspanText}>");
 
             foreach (var subContent in tableCell.Content)
             {
