@@ -192,7 +192,7 @@ namespace Contentful.Core.Tests.Models.Rendering
         [InlineData(null)]
         [InlineData(0)]
         [InlineData(1)]
-        public async Task TableCellShouldBeRenderedWithoutRowspanIfColspanNotGreaterThan1(int? rowspan)
+        public async Task TableCellShouldBeRenderedWithoutRowspanIfRowspanNotGreaterThan1(int? rowspan)
         {
             //Arrange
             var renderer = new TableCellRenderer(null);
