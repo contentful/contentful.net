@@ -421,9 +421,9 @@ namespace Contentful.Core.Models
         public List<IContent> Content { get; set; }
 
         /// <summary>
-        /// The additional data of the node.
+        /// The additional data of the TableHeader. Can be used to set Rowspan and Colspan properties of cell
         /// </summary>
-        public GenericStructureData Data { get; set; }
+        public TableCellData Data { get; set; }
     }
 
     /// <summary>
@@ -442,9 +442,25 @@ namespace Contentful.Core.Models
         public List<IContent> Content { get; set; }
 
         /// <summary>
-        /// The additional data of the node.
+        /// The additional data of the TableCell. Can be used to set Rowspan and Colspan properties of cell
         /// </summary>
-        public GenericStructureData Data { get; set; }
+        public TableCellData Data { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a TableCell or TableHeader's additional data
+    /// </summary>
+    public class TableCellData
+    {
+        /// <summary>
+        /// The Rowspan of the cell
+        /// </summary>
+        public int? Rowspan { get; set; }
+        
+        /// <summary>
+        /// The Colspan of the cell
+        /// </summary>
+        public int? Colspan { get; set; }
     }
 
     /// <summary>
