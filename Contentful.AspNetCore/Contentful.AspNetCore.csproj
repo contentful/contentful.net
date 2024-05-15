@@ -3,7 +3,7 @@
     <Description>Official .NET SDK for the Contentful Content Delivery and Management API for ASP.NET core.</Description>
     <PackageId>contentful.aspnetcore</PackageId>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <VersionPrefix>7.5.1</VersionPrefix>
+    <VersionPrefix>7.5.2</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Contentful</Authors>
     <Copyright>Contentful GmbH.</Copyright>
@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/contentful/contentful.net</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <Version>7.5.1</Version>
-    <AssemblyVersion>7.5.1.0</AssemblyVersion>
+    <Version>7.5.2</Version>
+    <AssemblyVersion>7.5.2.0</AssemblyVersion>
     <RepositoryUrl>https://github.com/contentful/contentful.net</RepositoryUrl>
-    <FileVersion>7.5.1.0</FileVersion>
+    <FileVersion>7.5.2.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.5\Contentful.AspNetCore.xml</DocumentationFile>
@@ -25,7 +25,7 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="contentful.csharp" Version="7.5.1" />
+    <PackageReference Include="contentful.csharp" Version="7.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
