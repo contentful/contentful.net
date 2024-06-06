@@ -43,6 +43,11 @@ namespace Contentful.Core
         List<CrossSpaceResolutionSetting> CrossSpaceResolutionSettings { get; set; }
 
         /// <summary>
+        /// The base url used when calling the Contentful services. Defaults to https://cdn.contentful.com/spaces/
+        /// </summary>
+        string BaseUrl { get; set; }
+
+        /// <summary>
         /// Get a single entry by the specified ID.
         /// </summary>
         /// <typeparam name="T">The type to serialize this entry into. If you want the metadata to 
