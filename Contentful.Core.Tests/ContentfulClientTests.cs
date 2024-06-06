@@ -440,6 +440,27 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task SettingsBaseUrlShouldCallNewUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollection.json");
+            var baseUrl = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                baseUrl = request.RequestUri.ToString();
+            };
+
+            _client.BaseUrl = "https://robertlinde.se/";
+            //Act
+            var res = await _client.GetEntries<TestEntryModel>();
+
+            //Assert
+            Assert.Equal(9, res.Count());
+            Assert.Equal("https://robertlinde.se/666/entries", baseUrl);
+
+        }
+
+        [Fact]
         public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithSystemProperties()
         {
             //Arrange
