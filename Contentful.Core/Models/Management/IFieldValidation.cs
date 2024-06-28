@@ -49,7 +49,11 @@ namespace Contentful.Core.Models.Management
         /// <summary>
         /// Subscript.
         /// </summary>
-        subscript
+        subscript,
+        /// <summary>
+        /// Strikethrough.
+        /// </summary>
+        strikethrough
     }
 
     /// <summary>
