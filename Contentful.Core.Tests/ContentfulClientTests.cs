@@ -391,6 +391,25 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithCrossReference.json");
 
+            _client.CrossSpaceResolutionSettings = new List<CrossSpaceResolutionSetting>
+            {
+                new CrossSpaceResolutionSetting
+                {
+                    SpaceId = "123",
+                    CdaToken = "666"
+                },
+                new CrossSpaceResolutionSetting
+                {
+                    SpaceId = "333",
+                    CdaToken = "999"
+                },
+                new CrossSpaceResolutionSetting
+                {
+                    SpaceId = "fdfg",
+                    CdaToken = "gf5678"
+                },
+            };
+
             //Act
             var res = await _client.GetEntries<TestEntryModel>();
 
@@ -398,6 +417,21 @@ namespace Contentful.Core.Tests
             Assert.Equal(9, res.Count());
             Assert.Equal("Home & Kitchen", res.First().Title);
             Assert.Equal("Mike Springer", res.First().Cross.Name);
+        }
+
+        [Fact]
+        public async Task GetEntriesShouldSerializeCorrectlyToAnEnumerableOfArbitraryTypeWithCrossSpaceReferenceButNoSettings()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithCrossReference.json");
+
+            //Act
+            var res = await _client.GetEntries<TestEntryModelNoRef>();
+
+            //Assert
+            Assert.Equal(9, res.Count());
+            Assert.Equal("Home & Kitchen", res.First().Title);
+            Assert.Equal("crn:contentful:::content:spaces/537643esrtg/entries/435dfgsserte", res.First().Cross.Sys.Urn);
         }
 
         [Fact]
