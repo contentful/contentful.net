@@ -359,6 +359,11 @@ namespace Contentful.Core
                 var linktype = linkToken["linkType"]?.ToString();
                 if (linkToken["type"]?.ToString() == "ResourceLink")
                 {
+                    if (!CrossSpaceResolutionSettings.Any())
+                    {
+                        //There are no cross spaces configured, the client will have to handle this node by themselves.
+                        continue;
+                    }
                     linkId = ((JValue)linkToken["urn"]).Value.ToString();
                     linkId = ParseIdFromContentfulUrn(linkId);
                     linktype = linktype.Contains("Entry") ? "Entry" : "Asset";
