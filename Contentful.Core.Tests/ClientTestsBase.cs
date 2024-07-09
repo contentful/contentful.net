@@ -84,6 +84,18 @@ namespace Contentful.Core.Tests
         public ContentfulMetadata SystemMetadata { get; set; }
     }
 
+    public class TestEntryModelNoRef : IMarker
+    {
+        public SystemProperties Sys { get; set; }
+        public string ProductName { get; set; }
+        public string Slug { get; set; }
+        public string Title { get; set; }
+        public CrossSpaceReference Cross { get; set; }
+        public string Metadata { get; set; }
+        [JsonProperty("$metadata")]
+        public ContentfulMetadata SystemMetadata { get; set; }
+    }
+
     public class RichTextModel  : IContent
     {
         public SystemProperties Sys { get; set; }
