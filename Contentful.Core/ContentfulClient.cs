@@ -42,6 +42,8 @@ namespace Contentful.Core
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
 
+            _baseUrl = options.BaseUrl;
+
             if (_options.UsePreviewApi)
             {
                 BaseUrl = BaseUrl.Replace("cdn", "preview");
@@ -62,13 +64,15 @@ namespace Contentful.Core
         /// <param name="usePreviewApi">Whether or not to use the Preview API for requests.
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false) :
+        /// <param name="baseUrl">The base URL for the Contentful API. The default is the US host. Change to the EU host URL if necessary.</param>
+        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false, string baseUrl = "https://cdn.contentful.com/spaces/") :
             this(httpClient, new ContentfulOptions()
             {
                 DeliveryApiKey = deliveryApiKey,
                 SpaceId = spaceId,
                 PreviewApiKey = previewApiKey,
-                UsePreviewApi = usePreviewApi
+                UsePreviewApi = usePreviewApi,
+                BaseUrl = baseUrl
             })
         {
 
@@ -137,7 +141,7 @@ namespace Contentful.Core
 
             var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries/{entryId}{queryString}", etag, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
 
-            if(!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
+            if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
                 return new ContentfulResult<T>(res.Headers?.ETag?.Tag, default(T));
             }
@@ -164,7 +168,7 @@ namespace Contentful.Core
 
             var ob = entry.ToObject<T>(Serializer);
 
-            return new ContentfulResult<T>(res.Headers?.ETag?.Tag ,ob);
+            return new ContentfulResult<T>(res.Headers?.ETag?.Tag, ob);
         }
 
         /// <summary>
@@ -367,7 +371,9 @@ namespace Contentful.Core
                     linkId = ((JValue)linkToken["urn"]).Value.ToString();
                     linkId = ParseIdFromContentfulUrn(linkId);
                     linktype = linktype.Contains("Entry") ? "Entry" : "Asset";
-                } else {
+                }
+                else
+                {
                     linkId = ((JValue)linkToken["id"]).Value.ToString();
                 }
 
@@ -600,8 +606,8 @@ namespace Contentful.Core
                 throw new ArgumentOutOfRangeException("The asset key expiration must be in the future.", nameof(timeOffset));
             }
 
-           //Should test that timeOffset is less than 48 hours in the future.
-           //but for now we will let the api handle it since we don't have a clear mock of current time.
+            //Should test that timeOffset is less than 48 hours in the future.
+            //but for now we will let the api handle it since we don't have a clear mock of current time.
 
             var expiresAt = timeOffset.ToUnixTimeSeconds();
             //note that unlike some other api methods, the asset embargo key always requires an environment id.
@@ -681,7 +687,8 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentTag"/>.</returns>
-        public async Task<IEnumerable<ContentTag>> GetTags(string queryString = "", CancellationToken cancellationToken = default) {
+        public async Task<IEnumerable<ContentTag>> GetTags(string queryString = "", CancellationToken cancellationToken = default)
+        {
 
             var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{queryString}", null, cancellationToken, null).ConfigureAwait(false);
 
@@ -697,7 +704,8 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
-        public async Task<ContentTag> GetTag(string tagId, CancellationToken cancellationToken = default) {
+        public async Task<ContentTag> GetTag(string tagId, CancellationToken cancellationToken = default)
+        {
 
             if (string.IsNullOrEmpty(tagId))
             {
@@ -782,7 +790,7 @@ namespace Contentful.Core
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
-                return new ContentfulResult<IEnumerable<Locale>> (res.Headers?.ETag?.Tag, null);
+                return new ContentfulResult<IEnumerable<Locale>>(res.Headers?.ETag?.Tag, null);
             }
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -966,7 +974,7 @@ namespace Contentful.Core
             {
                 headers.Add(new KeyValuePair<string, IEnumerable<string>>("If-None-Match", new List<string> { etag }));
             }
-            if(crossSpaceReferences != null && crossSpaceReferences.Count > 0)
+            if (crossSpaceReferences != null && crossSpaceReferences.Count > 0)
             {
                 dynamic exo = new System.Dynamic.ExpandoObject();
 
