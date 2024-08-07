@@ -2057,11 +2057,16 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="uploadId">The id of the uploaded file.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="environmentId">The id of the environment. Defaults to "master" if not provided.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default, string environmentId = "master")
         {
-            var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
+            var endpoint = environmentId == "master"
+                ? $"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}"
+                : $"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/environments/{environmentId}/uploads/{uploadId}";
+
+            var res = await GetAsync(endpoint, cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2075,14 +2080,19 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="bytes">The bytes to upload.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="environmentId">The id of the environment. Defaults to "master" if not provided.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
-        public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null,  CancellationToken cancellationToken = default, string environmentId = "master")
         {
             var byteArrayContent = new ByteArrayContent(bytes);
             byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            
+            var endpoint = environmentId == "master"
+                ? $"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads"
+                : $"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/environments/{environmentId}/uploads";
 
-            var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", byteArrayContent, cancellationToken, null).ConfigureAwait(false);
+            var res = await PostAsync(endpoint, byteArrayContent, cancellationToken, null).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2096,11 +2106,16 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="uploadId">The id of the uploaded file.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="environmentId">The id of the environment. Defaults to "master" if not provided.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default, string environmentId = "master")
         {
-            var res = await DeleteAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
+            var endpoint = environmentId == "master"
+                ? $"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}"
+                : $"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/environments/{environmentId}/uploads/{uploadId}";
+            
+            var res = await DeleteAsync(endpoint, cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }

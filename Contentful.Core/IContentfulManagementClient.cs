@@ -768,27 +768,30 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="uploadId">The id of the uploaded file.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="environmentId">The id of the environment. Defaults to "master" if not provided.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default, string environmentId = "master");
 
         /// <summary>
         /// Uploads the specified bytes to Contentful.
         /// </summary>
         /// <param name="bytes">The bytes to upload.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="environmentId">The id of the environment. Defaults to "master" if not provided.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with an id of the created upload.</returns>
-        Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default);
+        Task<UploadReference> UploadFile(byte[] bytes, string spaceId = null, CancellationToken cancellationToken = default, string environmentId = "master");
 
         /// <summary>
         /// Gets an upload <see cref="SystemProperties"/> by the specified id.
         /// </summary>
         /// <param name="uploadId">The id of the uploaded file.</param>
         /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="environmentId">The id of the environment. Defaults to "master" if not provided.</param>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
-        Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default);
+        Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default, string environmentId = "master");
 
         /// <summary>
         /// Uploads an array of bytes and creates an asset in Contentful as well as processing that asset.
