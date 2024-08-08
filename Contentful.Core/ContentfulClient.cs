@@ -390,8 +390,13 @@ namespace Contentful.Core
                         //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
                         replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkId}')]").FirstOrDefault();
                     }
-
-
+                } 
+                else if (processedIds.Contains(linkId))
+                {
+                    replacementToken = new JObject
+                    {
+                        ["$ref"] = linkId
+                    };
                 }
 
                 var grandParent = (JObject)linkToken.Parent.Parent;
@@ -413,7 +418,7 @@ namespace Contentful.Core
                         }
                     }
 
-                    if (!processedIds.Contains(linkId))
+                    if (!scopedIds.Contains(linkId))
                     {
                         Type propType = null;
 
