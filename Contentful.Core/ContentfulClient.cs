@@ -249,7 +249,7 @@ namespace Contentful.Core
             }
             foreach (var item in json.SelectTokens("$.items[*]").OfType<JObject>())
             {
-                ResolveLinks(json, item, processedIds, typeof(T));
+                ResolveLinks(json, item, processedIds, new HashSet<string>(), typeof(T));
             }
 
             var entryTokens = json.SelectTokens("$.items[*]..fields").ToList();
@@ -319,7 +319,7 @@ namespace Contentful.Core
             }
         }
 
-        private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
+        private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, ISet<string> scopedIds, Type type)
         {
             var id = ((JValue)entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
 
@@ -346,6 +346,8 @@ namespace Contentful.Core
                 entryToken.AddFirst(new JProperty("$id", new JValue(id)));
                 processedIds.Add(id);
             }
+
+            scopedIds.Add(id);
 
             var links = entryToken.SelectTokens("$.fields..sys").ToList();
             //Walk through and add any included entries as direct links.
@@ -375,7 +377,7 @@ namespace Contentful.Core
                 }
 
                 JToken replacementToken = null;
-                if (processedIds.Contains(linkId))
+                if (scopedIds.Contains(linkId))
                 {
                     replacementToken = new JObject
                     {
@@ -432,7 +434,7 @@ namespace Contentful.Core
                             }
                         }
 
-                        ResolveLinks(json, grandParent, processedIds, propType);
+                        ResolveLinks(json, grandParent, processedIds, new HashSet<string>(scopedIds), propType);
                     }
                 }
                 else
