@@ -2946,6 +2946,57 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UploadingFileCallCorrectUrl()
+        {
+            //Arrange
+            var fileBytes = new byte[] { 12, 43, 43, 54 };
+            _handler.Response = GetResponseFromFile(@"UploadResult.json");
+            var url = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                url = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await _client.UploadFile(fileBytes);
+
+            //Assert
+            Assert.IsType<UploadReference>(res);
+            Assert.NotNull(res.SystemProperties.Id);
+            Assert.Equal("https://upload.contentful.com/spaces/666/uploads", url);
+        }
+
+        [Fact]
+        public async Task UploadingFileCallCorrectUrlWithEnvironment()
+        {
+            //Arrange
+            var fileBytes = new byte[] { 12, 43, 43, 54 };
+            _handler.Response = GetResponseFromFile(@"UploadResult.json");
+            var url = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                url = request.RequestUri.ToString();
+            };
+            _client = new ContentfulManagementClient(_httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "564",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                Environment = "pop"
+            });
+
+
+            //Act
+            var res = await _client.UploadFile(fileBytes);
+
+            //Assert
+            Assert.IsType<UploadReference>(res);
+            Assert.NotNull(res.SystemProperties.Id);
+            Assert.Equal("https://upload.contentful.com/spaces/666/environments/pop/uploads", url);
+        }
+
+        [Fact]
         public async Task GettingUploadedFileShouldYieldCorrectResult()
         {
             //Arrange

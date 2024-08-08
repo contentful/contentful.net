@@ -55,5 +55,11 @@ namespace Contentful.Core.Configuration
         /// Gets or sets the space environment to use with this client.
         /// </summary>
         public string Environment { get; set; }
+
+        /// <summary>
+        /// Gets or sets the base URL for the Contentful API.
+        /// Default is "https://cdn.contentful.com/spaces/".
+        /// </summary>
+        public string BaseUrl { get; set; } = "https://cdn.contentful.com/spaces/";
     }
 }
