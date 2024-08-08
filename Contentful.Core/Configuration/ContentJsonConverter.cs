@@ -74,6 +74,7 @@ namespace Contentful.Core.Configuration
                 case "hyperlink":
                     return jObject.ToObject<Hyperlink>(serializer);
                 case "asset-hyperlink":
+                    return jObject.ToObject<AssetHyperlink>(serializer);
                 case "embedded-asset-inline":
                 case "embedded-asset-block":
                     return jObject.ToObject<AssetStructure>(serializer);
