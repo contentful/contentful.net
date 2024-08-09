@@ -48,7 +48,6 @@ namespace Contentful.Core
             {
                 BaseUrl = BaseUrl.Replace("cdn", "preview");
             }
-            ResolveEntriesSelectively = _options.ResolveEntriesSelectively;
             SerializerSettings.Converters.Add(new AssetJsonConverter());
             SerializerSettings.Converters.Add(new ContentJsonConverter());
             SerializerSettings.TypeNameHandling = TypeNameHandling.All;
@@ -87,10 +86,7 @@ namespace Contentful.Core
         /// </summary>
         public IContentTypeResolver ContentTypeResolver { get; set; }
 
-        /// <summary>
-        /// If set the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
-        /// </summary>
-        public bool ResolveEntriesSelectively { get; set; }
+
 
         /// <summary>
         /// Settings for the spaces to resolve cross space references from.
@@ -393,8 +389,13 @@ namespace Contentful.Core
                         //This could be due to the referenced entry being part of the original request (circular reference), so scan through that as well.
                         replacementToken = json.SelectTokens($"$.items.[?(@.sys.id=='{linkId}')]").FirstOrDefault();
                     }
-
-
+                } 
+                else if (processedIds.Contains(linkId))
+                {
+                    replacementToken = new JObject
+                    {
+                        ["$ref"] = linkId
+                    };
                 }
 
                 var grandParent = (JObject)linkToken.Parent.Parent;
@@ -403,36 +404,10 @@ namespace Contentful.Core
                 {
                     grandParent.RemoveAll();
                     grandParent.Add(replacementToken.Children());
-                    PropertyInfo prop = null;
 
-                    if (ResolveEntriesSelectively)
-                    {
-                        prop = type?.GetRuntimeProperties().FirstOrDefault(p => (p.Name.Equals(propName, StringComparison.OrdinalIgnoreCase) ||
-                        p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propName));
-                        if (prop == null && linktype?.ToString() != "Asset")
-                        {
-                            //the property does not exist in the entry. Skip it in resolving references.
-                            continue;
-                        }
-                    }
-
-                    if (!processedIds.Contains(linkId))
+                    if (!scopedIds.Contains(linkId))
                     {
                         Type propType = null;
-
-                        if (ResolveEntriesSelectively)
-                        {
-                            propType = prop?.PropertyType;
-
-                            if (propType != null && propType.IsArray)
-                            {
-                                propType = propType.GetElementType();
-                            }
-                            else if (propType != null && typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(propType.GetTypeInfo()) && propType.IsConstructedGenericType)
-                            {
-                                propType = propType.GetTypeInfo().GenericTypeArguments[0];
-                            }
-                        }
 
                         ResolveLinks(json, grandParent, processedIds, new HashSet<string>(scopedIds), propType);
                     }
