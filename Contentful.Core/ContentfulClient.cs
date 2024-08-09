@@ -42,6 +42,8 @@ namespace Contentful.Core
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
 
+            _baseUrl = options.BaseUrl;
+
             if (_options.UsePreviewApi)
             {
                 BaseUrl = BaseUrl.Replace("cdn", "preview");
@@ -62,13 +64,14 @@ namespace Contentful.Core
         /// <param name="usePreviewApi">Whether or not to use the Preview API for requests.
         /// If this is set to true the preview API key needs to be used for <paramref name="deliveryApiKey"/>
         ///  </param>
-        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false) :
+        public ContentfulClient(HttpClient httpClient, string deliveryApiKey, string previewApiKey, string spaceId, bool usePreviewApi = false, string baseUrl = "https://cdn.contentful.com/spaces/") :
             this(httpClient, new ContentfulOptions()
             {
                 DeliveryApiKey = deliveryApiKey,
                 SpaceId = spaceId,
                 PreviewApiKey = previewApiKey,
-                UsePreviewApi = usePreviewApi
+                UsePreviewApi = usePreviewApi,
+                BaseUrl = baseUrl
             })
         {
 

@@ -2061,7 +2061,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
         public async Task<UploadReference> GetUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default)
         {
-            var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
+            var res = await GetAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2082,7 +2082,7 @@ namespace Contentful.Core
             var byteArrayContent = new ByteArrayContent(bytes);
             byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
 
-            var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads", byteArrayContent, cancellationToken, null).ConfigureAwait(false);
+            var res = await PostAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}uploads", byteArrayContent, cancellationToken, null).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
 
@@ -2100,7 +2100,7 @@ namespace Contentful.Core
         /// <returns>A <see cref="SystemProperties"/> with metadata of the upload.</returns>
         public async Task DeleteUpload(string uploadId, string spaceId = null, CancellationToken cancellationToken = default)
         {
-            var res = await DeleteAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
+            var res = await DeleteAsync($"{_baseUploadUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}uploads/{uploadId}", cancellationToken).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
         }
