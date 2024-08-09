@@ -669,14 +669,14 @@ namespace Contentful.Core.Models
     }
 
     /// <summary>
-    /// A renderer for an asset.
+    /// A renderer for an asset hyperlink.
     /// </summary>
     public class AssetHyperlinkRenderer : IContentRenderer
     {
         private readonly ContentRendererCollection _rendererCollection;
 
         /// <summary>
-        /// Initializes a new AssetRenderer.
+        /// Initializes a new AssetHyperlinkRenderer.
         /// </summary>
         /// <param name="rendererCollection">The collection of renderer to use for sub-content.</param>
         public AssetHyperlinkRenderer(ContentRendererCollection rendererCollection)
@@ -708,31 +708,24 @@ namespace Contentful.Core.Models
         {
             var assetStructure = content as AssetHyperlink;
             var asset = assetStructure.Data.Target;
-            var nodeType = assetStructure.NodeType;
             var sb = new StringBuilder();
-            if (nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
+
+            var url = asset.File?.Url;
+            sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{asset.File.Url}\">");
+
+            if (assetStructure.Content != null && assetStructure.Content.Any())
             {
-                sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
+                foreach (var subContent in assetStructure.Content)
+                {
+                    var renderer = _rendererCollection.GetRendererForContent(subContent);
+                    sb.Append(await renderer.RenderAsync(subContent));
+                }
             }
             else
             {
-                var url = asset.File?.Url;
-                sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{asset.File.Url}\">");
-
-                if (assetStructure.Content != null && assetStructure.Content.Any())
-                {
-                    foreach (var subContent in assetStructure.Content)
-                    {
-                        var renderer = _rendererCollection.GetRendererForContent(subContent);
-                        sb.Append(await renderer.RenderAsync(subContent));
-                    }
-                }
-                else
-                {
-                    sb.Append(asset.Title);
-                }
-                sb.Append("</a>");
+                sb.Append(asset.Title);
             }
+            sb.Append("</a>");
 
             return sb.ToString();
         }
