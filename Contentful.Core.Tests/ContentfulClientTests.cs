@@ -612,7 +612,6 @@ namespace Contentful.Core.Tests
 
             //Act
             _client.ContentTypeResolver = new TestLocalizedResolver();
-            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntries<MainContainerLocalized>();
             var list = res.ToList();
 
@@ -1301,9 +1300,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntryCollectionLoopedReferences.json");
 
             //Act
-            _client.ResolveEntriesSelectively = true;
             var entries = await _client.GetEntries<ContentfulEvent>();
-            _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => c.Image == null).ToList();
 
             //Assert
@@ -1324,9 +1321,7 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new TestResolver();
 
             //Act
-            _client.ResolveEntriesSelectively = true;
             var entries = await _client.GetEntries<IMarker>();
-            _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => (c as ContentfulEvent).Image == null).ToList();
 
             //Assert
@@ -1360,9 +1355,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"NestedSharedStructure.json");
 
             //Act
-            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntries<TestNestedSharedItem>();
-            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Single(res);
@@ -1378,9 +1371,7 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new TestResolver();
 
             //Act
-            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntries<IMarker>();
-            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Single(res);
@@ -1409,9 +1400,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithSelfreference.json");
 
             //Act
-            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntries<SelfReferencerInArray>();
-            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Equal(5, res.Count());
@@ -1645,7 +1634,7 @@ namespace Contentful.Core.Tests
             //Arrange
             _handler.Response = GetResponseFromFile(@"EntriesCollectionWithRichTextField.json");
             _client.ContentTypeResolver = new RichTextResolver();
-            _client.ResolveEntriesSelectively = true;
+            
             var htmlrenderer = new HtmlRenderer();
             htmlrenderer.AddRenderer(new RichTextContentRenderer() { Order = 10 });
             //Act
