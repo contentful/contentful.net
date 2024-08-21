@@ -33,6 +33,11 @@ namespace Contentful.Core
         public JsonSerializer Serializer { get; }
 
         /// <summary>
+        /// If set the GetEntries methods will evaluate the class to serialize into and only serialize the parts that are part of the class structure.
+        /// </summary>
+        bool ResolveEntriesSelectively { get; set; }
+
+        /// <summary>
         /// Settings for the spaces to resolve cross space references from.
         /// </summary>
         List<CrossSpaceResolutionSetting> CrossSpaceResolutionSettings { get; set; }

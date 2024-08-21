@@ -1300,7 +1300,9 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"EntryCollectionLoopedReferences.json");
 
             //Act
+            _client.ResolveEntriesSelectively = true;
             var entries = await _client.GetEntries<ContentfulEvent>();
+            _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => c.Image == null).ToList();
 
             //Assert
@@ -1321,7 +1323,9 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new TestResolver();
 
             //Act
+            _client.ResolveEntriesSelectively = true;
             var entries = await _client.GetEntries<IMarker>();
+            _client.ResolveEntriesSelectively = false;
             var nulls = entries.Where(c => (c as ContentfulEvent).Image == null).ToList();
 
             //Assert
@@ -1355,7 +1359,9 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"NestedSharedStructure.json");
 
             //Act
+            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntries<TestNestedSharedItem>();
+            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Single(res);
@@ -1371,7 +1377,9 @@ namespace Contentful.Core.Tests
             _client.ContentTypeResolver = new TestResolver();
 
             //Act
+            _client.ResolveEntriesSelectively = true;
             var res = await _client.GetEntries<IMarker>();
+            _client.ResolveEntriesSelectively = false;
 
             //Assert
             Assert.Single(res);
