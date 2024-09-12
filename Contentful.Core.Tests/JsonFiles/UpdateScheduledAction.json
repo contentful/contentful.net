@@ -1,0 +1,49 @@
+﻿{
+  "entity": {
+    "sys": {
+      "type": "Link",
+      "linkType": "Entry",
+      "id": "5KsDBWseXY6QegucYAoacS"
+    }
+  },
+  "environment": {
+    "sys": {
+      "type": "Link",
+      "linkType": "Environment",
+      "id": "staging"
+    }
+  },
+  "scheduledFor": {
+    "datetime": "2022-01-01T12:00:00.000Z",
+    "timezone": "Europe/Berlin"
+  },
+  "action": "publish",
+  "sys": {
+    "createdAt": "2020-01-01T13:00:00.000Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7BslKh9TdKGOK41VmLDjFZ"
+      }
+    },
+    "id": "3A13SXSDwO8c46NrjigFYT",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "id": "yadj1kx9rmg0"
+      }
+    },
+    "status": "scheduled",
+    "type": "ScheduledAction",
+    "updatedAt": "2020-03-11T16:00:00.000Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7BslKh9TdKGOK41VmLDjFZ"
+      }
+    },
+    "version": 2
+  }
+}
