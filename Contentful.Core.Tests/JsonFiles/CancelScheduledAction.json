@@ -1,0 +1,48 @@
+﻿{
+  "entity": {
+    "sys": {
+      "type": "Link",
+      "linkType": "Entry",
+      "id": "5KsDBWseXY6QegucYAoacS"
+    }
+  },
+  "environment": {
+    "sys": {
+      "type": "Link",
+      "linkType": "Environment",
+      "id": "staging"
+    }
+  },
+  "scheduledFor": {
+    "datetime": "2022-01-01T12:00:00.000Z",
+    "timezone": "Europe/Berlin"
+  },
+  "action": "publish",
+  "sys": {
+    "id": "3A13SXSDwO8c46NrjigFYT",
+    "type": "ScheduledAction",
+    "status": "canceled",
+    "createdAt": "2020-01-01T13:00:00.000Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7BslKh9TdKGOK41VmLDjFZ"
+      }
+    },
+    "canceledAt": "2020-01-01T13:00:00.000Z",
+    "canceledBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4FLrUHftHW3v2BLi9fzfjU"
+      }
+    },
+    "space": {
+      "sys": {
+        "type": "Link",
+        "id": "yadj1kx9rmg0"
+      }
+    }
+  }
+}

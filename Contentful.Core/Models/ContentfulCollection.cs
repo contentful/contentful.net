@@ -63,6 +63,8 @@ namespace Contentful.Core.Models
             return Items.GetEnumerator();
         }
 
+        public CursorBasedPaging Pages { get; set; }
+
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Items"/> collection
         /// </summary>
@@ -70,5 +72,11 @@ namespace Contentful.Core.Models
         {
             return GetEnumerator();
         }
+    }
+
+    public class CursorBasedPaging
+    {
+        public string Next { get; set; }
+        public string Prev { get; set; }
     }
 }
