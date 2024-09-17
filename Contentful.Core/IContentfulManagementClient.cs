@@ -1112,7 +1112,7 @@ namespace Contentful.Core
         Task DeleteContentTag(string id, int? version, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// Gets all the ScheduledActions of a space, filtered by an optional <see cref="ScheduledActionQueryBuilder"/>.
         /// </summary>
         /// <typeparam name="T">The type to serialize the response into.</typeparam>
         /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
@@ -1148,7 +1148,7 @@ namespace Contentful.Core
             CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// updates an existing scheduled action
+        /// Updates an existing scheduled action
         /// </summary>
         /// <param name="scheduledAction">The scheduled action to create</param>
         /// <param name="spaceId">Specify space id to call another space then the default</param>
@@ -1159,7 +1159,7 @@ namespace Contentful.Core
             CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// cancels an existing scheduled action
+        /// Cancels an existing scheduled action
         /// </summary>
         /// <param name="scheduledActionId">The id of the scheduled action to delete</param>
         /// <param name="environmentId">The id of the environment the scheduled action should be deleted in</param>

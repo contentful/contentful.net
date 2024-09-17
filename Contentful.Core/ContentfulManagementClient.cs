@@ -2954,7 +2954,7 @@ namespace Contentful.Core
         }
 
         /// <summary>
-        /// updates an existing scheduled action
+        /// Updates an existing scheduled action
         /// </summary>
         /// <param name="scheduledAction">The scheduled action to create</param>
         /// <param name="spaceId">Specify space id to call another space then the default</param>
@@ -2981,9 +2981,9 @@ namespace Contentful.Core
             return new
             {
                 Environment = new { sys = new { scheduledAction.Environment.SystemProperties.LinkType, scheduledAction.Environment.SystemProperties.Type, scheduledAction.Environment.SystemProperties.Id } },
-                Action = scheduledAction.Action,
+                scheduledAction.Action,
                 Entity = new { sys = new { scheduledAction.Entity.SystemProperties.Id, scheduledAction.Entity.SystemProperties.LinkType, scheduledAction.Entity.SystemProperties.Type } },
-                ScheduledFor = scheduledAction.ScheduledFor
+                scheduledAction.ScheduledFor
             };
         }
 

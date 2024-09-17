@@ -2956,7 +2956,7 @@ namespace Contentful.Core.Tests
             var fileBytes = new byte[] { 12, 43, 43, 54 };
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
             var url = "";
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 url = request.RequestUri.ToString();
             };
@@ -2977,7 +2977,7 @@ namespace Contentful.Core.Tests
             var fileBytes = new byte[] { 12, 43, 43, 54 };
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
             var url = "";
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 url = request.RequestUri.ToString();
             };
@@ -4786,10 +4786,9 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"GetScheduledActions.json");
-            var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
@@ -4812,10 +4811,9 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"GetScheduledAction.json");
-            var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
@@ -4835,10 +4833,9 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"CreateScheduledAction.json");
-            var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
@@ -4866,10 +4863,9 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"UpdateScheduledAction.json");
-            var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
@@ -4903,10 +4899,9 @@ namespace Contentful.Core.Tests
         {
             //Arrange
             _handler.Response = GetResponseFromFile(@"CancelScheduledAction.json");
-            var contentSet = "";
             var url = "";
             var method = HttpMethod.Trace;
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
