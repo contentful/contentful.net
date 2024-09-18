@@ -1,0 +1,673 @@
+{
+    "sys": {
+        "type": "Array"
+    },
+    "pages": {
+        "next": "/spaces/666/scheduled_actions?environment.sys.id=development&limit=10&pageNext=eyJKb2JJZCI6IjdLbFF3cXFBUW5BSVdKSjdYV0hSc1ciLCJKb2JTbG90IjoiMjAyNC0wOC0yN1QxNDoxNSJ9"
+    },
+    "limit": 10,
+    "items": [
+        {
+            "sys": {
+                "id": "3Kq1I1aZcRydJi24RtmWkX",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "failed",
+                "version": 5,
+                "createdAt": "2024-05-17T06:45:05.499Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "2ZmCS1gZWbbzgNYsEWPQzM"
+                    }
+                },
+                "updatedAt": "2024-05-17T07:30:05.630Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "2ZmCS1gZWbbzgNYsEWPQzM"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Release",
+                    "id": "1IgICS9jrlJbjCAcJtGkrq"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-05-17T09:30:00.000+02:00",
+                "timezone": "Europe/Paris"
+            },
+            "action": "publish",
+            "error": {
+                "sys": {
+                    "id": "ValidationFailed",
+                    "type": "Error"
+                },
+                "details": {
+                    "errors": [
+                        {
+                            "sys": {
+                                "id": "4OVwTjpnGibEq3spB5hWDx",
+                                "type": "Link",
+                                "linkType": "Entry"
+                            },
+                            "error": {
+                                "sys": {
+                                    "id": "InvalidEntry",
+                                    "type": "Error"
+                                },
+                                "details": {
+                                    "errors": [
+                                        {
+                                            "name": "required",
+                                            "path": [
+                                                "fields",
+                                                "image"
+                                            ],
+                                            "details": "The property \"image\" is required here"
+                                        }
+                                    ]
+                                },
+                                "message": "Validation error"
+                            }
+                        }
+                    ]
+                },
+                "message": "Validation error"
+            }
+        },
+        {
+            "sys": {
+                "id": "58BqprzRng5PcI9PKdpbPp",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "failed",
+                "version": 4,
+                "createdAt": "2024-05-17T06:43:56.615Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "2ZmCS1gZWbbzgNYsEWPQzM"
+                    }
+                },
+                "updatedAt": "2024-05-18T07:00:05.727Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "2ZmCS1gZWbbzgNYsEWPQzM"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "23DjdnaSWv87F5jSJlUohQ"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-05-18T09:00:00.000+02:00",
+                "timezone": "Europe/Paris"
+            },
+            "action": "publish",
+            "payload": {
+                "withReferences": {
+                    "sys.contentType.metadata.annotations.ContentType[nin]": [
+                        "Contentful:AggregateRoot"
+                    ]
+                }
+            },
+            "error": {
+                "sys": {
+                    "type": "Error",
+                    "id": "ValidationFailed"
+                },
+                "message": "Validation error",
+                "details": {
+                    "errors": [
+                        {
+                            "entity": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Entry",
+                                    "id": "4OVwTjpnGibEq3spB5hWDx"
+                                }
+                            },
+                            "error": {
+                                "sys": {
+                                    "type": "Error",
+                                    "id": "InvalidEntry"
+                                },
+                                "message": "Validation error",
+                                "details": {
+                                    "errors": [
+                                        {
+                                            "name": "required",
+                                            "path": [
+                                                "fields",
+                                                "image"
+                                            ],
+                                            "details": "The property \"image\" is required here"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                "requestId": "fbb6752d-5e63-4f69-a834-2280b764f3ca"
+            }
+        },
+        {
+            "sys": {
+                "id": "4mi0BNJJVt36hHNUGjQ9l2",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 5,
+                "createdAt": "2024-08-16T10:56:40.945Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "1kJznEW2aCU2AemeQ3CW9S"
+                    }
+                },
+                "updatedAt": "2024-08-16T11:00:05.151Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "1kJznEW2aCU2AemeQ3CW9S"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Release",
+                    "id": "7FGXE1DT9sIRtaaiQPrwgt"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-16T13:00:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "publish"
+        },
+        {
+            "sys": {
+                "id": "3iYVzVlvmMJ5azNpTI1CQ1",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 4,
+                "createdAt": "2024-08-16T10:14:16.957Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "3AeamlAnmUCDQNj3bPqOOM"
+                    }
+                },
+                "updatedAt": "2024-08-19T10:00:03.539Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "3AeamlAnmUCDQNj3bPqOOM"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "4DJAE4sSufC2Ior45g6PDe"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-19T12:00:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "publish"
+        },
+        {
+            "sys": {
+                "id": "58t1SsmQFy605nYjCIMRvt",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 4,
+                "createdAt": "2024-08-16T10:14:31.035Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "3AeamlAnmUCDQNj3bPqOOM"
+                    }
+                },
+                "updatedAt": "2024-08-25T12:00:02.630Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "3AeamlAnmUCDQNj3bPqOOM"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "4DJAE4sSufC2Ior45g6PDe"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-25T14:00:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "unpublish"
+        },
+        {
+            "sys": {
+                "id": "2LItgnVcSNaWrXIwsOqNDb",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 4,
+                "createdAt": "2024-08-27T12:59:35.018Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                },
+                "updatedAt": "2024-08-27T13:10:02.465Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "5kILkhq6VNH6Z3MUZcnTDh"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-27T15:10:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "publish"
+        },
+        {
+            "sys": {
+                "id": "7hR3fnzQncdeUFx6ic3wPi",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 4,
+                "createdAt": "2024-08-27T13:10:04.511Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                },
+                "updatedAt": "2024-08-27T13:15:02.537Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "3UgQouYCoRNLAHYSbfvXcq"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-27T15:15:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "publish"
+        },
+        {
+            "sys": {
+                "id": "MUbTA9inPHdjqckANFdow",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 4,
+                "createdAt": "2024-08-27T13:09:17.539Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                },
+                "updatedAt": "2024-08-27T13:15:02.449Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "5XxsTWa9IenDqDOXLuujjP"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-27T15:15:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "unpublish"
+        },
+        {
+            "sys": {
+                "id": "2gTVCrlw22BtDG1UPC2YyI",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "succeeded",
+                "version": 5,
+                "createdAt": "2024-08-27T13:26:44.419Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                },
+                "updatedAt": "2024-08-27T13:30:02.254Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Release",
+                    "id": "3pzwMGDyjxjUHfbx1W2gLB"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-27T15:30:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "publish"
+        },
+        {
+            "sys": {
+                "id": "7KlQwqqAQnAIWJJ7XWHRsW",
+                "type": "ScheduledAction",
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "666"
+                    }
+                },
+                "environment": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Environment",
+                        "id": "development"
+                    }
+                },
+                "status": "canceled",
+                "version": 2,
+                "createdAt": "2024-08-27T12:59:55.980Z",
+                "createdBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                },
+                "updatedAt": "2024-08-27T13:11:26.164Z",
+                "updatedBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                },
+                "canceledAt": "2024-08-27T13:11:26.164Z",
+                "canceledBy": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "User",
+                        "id": "38seI6VPVOHIHxROkmV7oE"
+                    }
+                }
+            },
+            "entity": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "5kILkhq6VNH6Z3MUZcnTDh"
+                }
+            },
+            "environment": {
+                "sys": {
+                    "type": "Link",
+                    "linkType": "Environment",
+                    "id": "development"
+                }
+            },
+            "scheduledFor": {
+                "datetime": "2024-08-27T16:15:00.000+02:00",
+                "timezone": "Europe/Copenhagen"
+            },
+            "action": "publish"
+        }
+    ]
+}

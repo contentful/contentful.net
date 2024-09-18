@@ -1127,8 +1127,9 @@ namespace Contentful.Core
             }
 
             var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}assets/{asset.SystemProperties.Id}",
-                ConvertObjectToJsonStringContent(new { 
-                    fields = new { title = asset.Title, description = asset.Description, file = asset.Files } ,
+                ConvertObjectToJsonStringContent(new
+                {
+                    fields = new { title = asset.Title, description = asset.Description, file = asset.Files },
                     metadata = asset.Metadata
                 }
                 ), cancellationToken, version).ConfigureAwait(false);
@@ -2832,6 +2833,181 @@ namespace Contentful.Core
             var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}tags/{id}", cancellationToken, version).ConfigureAwait(false);
 
             await EnsureSuccessfulResult(res).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets all the entries of a space, filtered by an optional <see cref="QueryBuilder{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type to serialize the response into.</typeparam>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<T>> GetScheduledActions<T>(ScheduledActionQueryBuilder queryBuilder, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            return await GetScheduledActions<T>(queryBuilder?.Build(), spaceId, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<ContentfulCollection<T>> GetScheduledActions<T>(string queryString = null, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(queryString))
+                queryString = "?";
+
+            if (!queryString.Contains("environment.sys.id"))
+                queryString += $"&environment.sys.id={_options.Environment}";
+
+            var requestUrl = $"{_baseUrl}{spaceId ?? _options.SpaceId}/scheduled_actions{queryString}";
+
+            return await GetScheduledActions<T>(requestUrl, cancellationToken).ConfigureAwait(false); ;
+        }
+
+        /// <summary>
+        /// Get the next or previous page in the collection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nextOrPreviousPageLink">Link to the next or previous page</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<T>> GetScheduledActions<T>(string nextOrPreviousPageLink, CancellationToken cancellationToken = default)
+        {
+            var res = await GetAsync(nextOrPreviousPageLink, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+
+            ReplaceMetaData(jsonObject);
+
+            var collection = jsonObject.ToObject<ContentfulCollection<T>>(Serializer);
+
+            var entries = jsonObject.SelectToken("$.items").ToObject<IEnumerable<T>>(Serializer);
+            collection.Items = entries;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Get specific scheduled action by id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scheduledActionId">Id of the scheduled action</param>
+        /// <returns></returns>
+        public async Task<T> GetScheduledAction<T>(string scheduledActionId, CancellationToken cancellationToken = default)
+        {
+            return await GetScheduledAction<T>(scheduledActionId, _options.Environment, _options.SpaceId, cancellationToken).ConfigureAwait(false); ;
+        }
+
+        /// <summary>
+        /// Get specific scheduled action by id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scheduledActionId">Id of the scheduled action</param>
+        /// <param name="environmentId">Specify environment</param>
+        /// <returns></returns>
+        public async Task<T> GetScheduledAction<T>(string scheduledActionId, string environmentId, CancellationToken cancellationToken = default)
+        {
+            return await GetScheduledAction<T>(scheduledActionId, environmentId, _options.SpaceId, cancellationToken).ConfigureAwait(false); ;
+        }
+
+        /// <summary>
+        /// Get specific scheduled action by id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scheduledActionId">Id of the scheduled action</param>
+        /// <param name="environmentId">Specify environment</param>
+        /// <param name="spaceId">Specify spaceId</param>
+        /// <returns></returns>
+        public async Task<T> GetScheduledAction<T>(string scheduledActionId, string environmentId, string spaceId, CancellationToken cancellationToken = default)
+        {
+            var requestUrl = $"{_baseUrl}{spaceId ?? _options.SpaceId}/scheduled_actions/{scheduledActionId}?environment.sys.id={environmentId ?? _options.Environment}";
+
+            var res = await GetAsync(requestUrl, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessfulResult(res).ConfigureAwait(false);
+
+            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var scheduledAction = jsonObject.ToObject<T>(Serializer);
+
+            return scheduledAction;
+        }
+
+        /// <summary>
+        /// Creates a scheduled action
+        /// </summary>
+        /// <param name="scheduledAction">The scheduled action to create</param>
+        /// <param name="spaceId">Specify space id to call another space then the default</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ScheduledAction"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ScheduledAction> CreateScheduledAction(ScheduledAction scheduledAction, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            var requestUrl = $"{_baseUrl}{spaceId ?? _options.SpaceId}/scheduled_actions";
+
+            var result = await PostAsync(requestUrl, ConvertObjectToJsonStringContent(GetScheduledActionRequestObject(scheduledAction)), cancellationToken, 0);
+
+            await EnsureSuccessfulResult(result).ConfigureAwait(false);
+
+            var json = JObject.Parse(await result.Content.ReadAsStringAsync().ConfigureAwait(false));
+            return json.ToObject<ScheduledAction>(Serializer);
+        }
+
+        /// <summary>
+        /// Updates an existing scheduled action
+        /// </summary>
+        /// <param name="scheduledAction">The scheduled action to create</param>
+        /// <param name="spaceId">Specify space id to call another space then the default</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ScheduledAction"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ScheduledAction> UpdateScheduledAction(ScheduledAction scheduledAction, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if(string.IsNullOrEmpty(scheduledAction.SystemProperties.Id))
+                throw new ArgumentException("The id of scheduledAction must be set.", nameof(scheduledAction.SystemProperties.Id));
+
+            var requestUrl = $"{_baseUrl}{spaceId ?? _options.SpaceId}/scheduled_actions/{scheduledAction.SystemProperties.Id}";
+
+            var result = await PutAsync(requestUrl, ConvertObjectToJsonStringContent(GetScheduledActionRequestObject(scheduledAction)), cancellationToken, scheduledAction.SystemProperties.Version);
+
+            await EnsureSuccessfulResult(result).ConfigureAwait(false);
+
+            var json = JObject.Parse(await result.Content.ReadAsStringAsync().ConfigureAwait(false));
+            return json.ToObject<ScheduledAction>(Serializer);
+        }
+
+        private object GetScheduledActionRequestObject(ScheduledAction scheduledAction)
+        {
+            return new
+            {
+                Environment = new { sys = new { scheduledAction.Environment.SystemProperties.LinkType, scheduledAction.Environment.SystemProperties.Type, scheduledAction.Environment.SystemProperties.Id } },
+                scheduledAction.Action,
+                Entity = new { sys = new { scheduledAction.Entity.SystemProperties.Id, scheduledAction.Entity.SystemProperties.LinkType, scheduledAction.Entity.SystemProperties.Type } },
+                scheduledAction.ScheduledFor
+            };
+        }
+
+        /// <summary>
+        /// cancels an existing scheduled action
+        /// </summary>
+        /// <param name="scheduledActionId">The id of the scheduled action to delete</param>
+        /// <param name="spaceId">Specify space id to call another space then the default</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ScheduledAction"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ScheduledAction> CancelScheduledAction(string scheduledActionId, string environmentId, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(scheduledActionId))
+                throw new ArgumentException("scheduledActionId of the scheduled action must be set.", nameof(scheduledActionId));
+
+            var requestUrl = $"{_baseUrl}{spaceId ?? _options.SpaceId}/scheduled_actions/{scheduledActionId}?environment.sys.id={environmentId}";
+
+            var result = await DeleteAsync(requestUrl, cancellationToken);
+
+            await EnsureSuccessfulResult(result).ConfigureAwait(false);
+
+            var json = JObject.Parse(await result.Content.ReadAsStringAsync().ConfigureAwait(false));
+            return json.ToObject<ScheduledAction>(Serializer);
         }
 
         private async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)

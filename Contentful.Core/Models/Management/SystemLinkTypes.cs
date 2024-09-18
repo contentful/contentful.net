@@ -45,6 +45,11 @@ namespace Contentful.Core.Models.Management
         public const string Annotation = "Annotation";
 
         /// <summary>
+        /// An annotation reference for Environment
+        /// </summary>
+        public const string Environment = "Environment";
+
+        /// <summary>
         /// A reference to an entry.
         /// </summary>
         public const string CrossSpaceEntry = "Contentful:Entry";

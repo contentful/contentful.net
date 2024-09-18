@@ -1110,5 +1110,64 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="contentTypeId">contentTypeId</see> parameter was null or empty</exception>
         Task DeleteContentTag(string id, int? version, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets all the ScheduledActions of a space, filtered by an optional <see cref="ScheduledActionQueryBuilder"/>.
+        /// </summary>
+        /// <typeparam name="T">The type to serialize the response into.</typeparam>
+        /// <param name="queryBuilder">The optional <see cref="QueryBuilder{T}"/> to add additional filtering to the query.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<T>> GetScheduledActions<T>(ScheduledActionQueryBuilder queryBuilder, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get the next or previous page in the collection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nextOrPreviousPageLink">Link to the next or previous page</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<T>> GetScheduledActions<T>(string nextOrPreviousPageLink, CancellationToken cancellationToken = default);
+
+        Task<T> GetScheduledAction<T>(string scheduledActionId, CancellationToken cancellationToken = default);
+        Task<T> GetScheduledAction<T>(string scheduledActionId, string environmentId, CancellationToken cancellationToken = default);
+        Task<T> GetScheduledAction<T>(string scheduledActionId, string environmentId, string spaceId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a scheduled action
+        /// </summary>
+        /// <param name="scheduledAction">The scheduled action to create</param>
+        /// <param name="spaceId">Specify space id to call another space then the default</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ScheduledAction"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ScheduledAction> CreateScheduledAction(ScheduledAction scheduledAction, string spaceId = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Updates an existing scheduled action
+        /// </summary>
+        /// <param name="scheduledAction">The scheduled action to create</param>
+        /// <param name="spaceId">Specify space id to call another space then the default</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ScheduledAction"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ScheduledAction> UpdateScheduledAction(ScheduledAction scheduledAction, string spaceId = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Cancels an existing scheduled action
+        /// </summary>
+        /// <param name="scheduledActionId">The id of the scheduled action to delete</param>
+        /// <param name="environmentId">The id of the environment the scheduled action should be deleted in</param>
+        /// <param name="spaceId">Specify space id to call another space then the default</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ScheduledAction"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ScheduledAction> CancelScheduledAction(string scheduledActionId, string environmentId, string spaceId = null,
+            CancellationToken cancellationToken = default);
     }
 }

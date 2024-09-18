@@ -6,6 +6,8 @@
   <ItemGroup>
     <None Remove="JsonFiles\ApiKey.json" />
     <None Remove="JsonFiles\ApiUsage.json" />
+    <None Remove="JsonFiles\CancelScheduledAction.json" />
+    <None Remove="JsonFiles\CreateScheduledAction.json" />
     <None Remove="JsonFiles\EditorInterfaceWithMetadata.json" />
     <None Remove="JsonFiles\EntriesCollectionWithCrossReference.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
@@ -14,6 +16,7 @@
     <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
     <None Remove="JsonFiles\EntriesMultipleLocale.json" />
     <None Remove="JsonFiles\EnvironmentsCollection.json" />
+    <None Remove="JsonFiles\GetScheduledAction.json" />
     <None Remove="JsonFiles\SampleContentTag.json" />
     <None Remove="JsonFiles\SampleContentTagCollection.json" />
     <None Remove="JsonFiles\SampleContentTypeFields.json" />
@@ -22,10 +25,15 @@
     <None Remove="JsonFiles\SampleTag.json" />
     <None Remove="JsonFiles\SampleTags.json" />
     <None Remove="JsonFiles\SampleUser.json" />
+    <None Remove="JsonFiles\UpdateScheduledAction.json" />
     <None Remove="JsonFiles\UsagePeriods.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
+    <EmbeddedResource Include="JsonFiles\CancelScheduledAction.json" />
+    <EmbeddedResource Include="JsonFiles\UpdateScheduledAction.json" />
+    <EmbeddedResource Include="JsonFiles\GetScheduledAction.json" />
+    <EmbeddedResource Include="JsonFiles\CreateScheduledAction.json" />
     <EmbeddedResource Include="JsonFiles\EditorInterfaceWithMetadata.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithCrossReference.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
@@ -98,6 +106,7 @@
     <EmbeddedResource Include="JsonFiles\WebhookHealth.json" />
     <EmbeddedResource Include="JsonFiles\WebhookCollection.json" />
     <EmbeddedResource Include="JsonFiles\WebhookCallDetails.json" />
+    <EmbeddedResource Include="JsonFiles\GetScheduledActions.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk">

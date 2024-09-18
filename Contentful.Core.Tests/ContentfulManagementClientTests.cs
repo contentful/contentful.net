@@ -11,6 +11,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using Contentful.Core.Search;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Contentful.Core.Tests
@@ -2114,10 +2116,12 @@ namespace Contentful.Core.Tests
                 (t) => Assert.Equal("ContentType.*", t),
                 (t) => Assert.Equal("Entry.*", t));
 
-            Assert.Collection(res.Headers, (h) => { 
-                Assert.Equal("pip", h.Key); Assert.Null(h.Value); Assert.True(h.Secret); 
-                },
-                (h) => {
+            Assert.Collection(res.Headers, (h) =>
+            {
+                Assert.Equal("pip", h.Key); Assert.Null(h.Value); Assert.True(h.Secret);
+            },
+                (h) =>
+                {
                     Assert.Equal("cus", h.Key); Assert.Equal("nobo", h.Value); Assert.Null(h.Secret);
                 }
             );
@@ -2952,7 +2956,7 @@ namespace Contentful.Core.Tests
             var fileBytes = new byte[] { 12, 43, 43, 54 };
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
             var url = "";
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 url = request.RequestUri.ToString();
             };
@@ -2973,7 +2977,7 @@ namespace Contentful.Core.Tests
             var fileBytes = new byte[] { 12, 43, 43, 54 };
             _handler.Response = GetResponseFromFile(@"UploadResult.json");
             var url = "";
-            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 url = request.RequestUri.ToString();
             };
@@ -4775,6 +4779,143 @@ namespace Contentful.Core.Tests
             Assert.Contains(@"""visibility"":""private""", contentSet);
             Assert.Equal("NY Campaign", res.Name);
             Assert.Equal("nyCampaign", res.SystemProperties.Id);
+        }
+
+        [Fact]
+        public async Task GetScheduledActionsShouldCallCorrectUrlAndGetCollectionResponse()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"GetScheduledActions.json");
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+            };
+
+            var queryBuilder = new ScheduledActionQueryBuilder().EnvironmentIs("master");
+
+            //Act
+            var res = await _client.GetScheduledActions<dynamic>(queryBuilder);
+
+            //Assert
+            Assert.Equal(HttpMethod.Get, method);
+            Assert.Equal("https://api.contentful.com/spaces/666/scheduled_actions?environment.sys.id=master", url);
+            Assert.True(res.Items.Any());
+            Assert.NotEmpty(res.Pages.Next);
+        }
+
+        [Fact]
+        public async Task GetScheduledActionShouldCallCorrectUrlAndGetCollectionResponse()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"GetScheduledAction.json");
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await GetClientWithEnvironment("master").GetScheduledAction<JToken>("myId");
+
+            //Assert
+            Assert.Equal(HttpMethod.Get, method);
+            Assert.Equal("https://api.contentful.com/spaces/564/scheduled_actions/myId?environment.sys.id=master", url);
+            Assert.True(res.SelectToken("$..scheduledFor") != null);
+        }
+
+        [Fact]
+        public async Task CreateScheduledActionShouldCallCorrectUrlAndGetCollectionResponse()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"CreateScheduledAction.json");
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+            };
+
+            //Act
+            var dateTime = DateTime.UtcNow;
+            var res = await GetClientWithEnvironment("master").CreateScheduledAction(
+                new ScheduledAction("publish", "123", "master",
+                    new ScheduledFor
+                    {
+                        DateTime = dateTime,
+                        Timezone = "Europe/Berlin"
+                    })
+                );
+
+            //Assert
+            Assert.Equal(HttpMethod.Post, method);
+            Assert.Equal("https://api.contentful.com/spaces/564/scheduled_actions", url);
+            Assert.Equal("2022-01-01T12:00:00.0000000Z", res.ScheduledFor.DateTime.ToString("o"));
+        }
+
+        [Fact]
+        public async Task UpdateScheduledActionShouldCallCorrectUrlAndGetCollectionResponse()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"UpdateScheduledAction.json");
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+            };
+
+            //Act
+            var dateTime = DateTime.UtcNow;
+            var scheduledAction = new ScheduledAction("publish", "123", "master",
+                new ScheduledFor
+                {
+                    DateTime = dateTime,
+                    Timezone = "Europe/Berlin"
+                });
+
+            scheduledAction.SystemProperties = new ScheduledActionSystemProperties()
+            {
+                Id = "myId"
+            };
+
+            var res = await GetClientWithEnvironment("master").UpdateScheduledAction(scheduledAction);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, method);
+            Assert.Equal("https://api.contentful.com/spaces/564/scheduled_actions/myId", url);
+            Assert.Equal("2022-01-01T12:00:00.0000000Z", res.ScheduledFor.DateTime.ToString("o"));
+            Assert.Equal(2, res.SystemProperties.Version);
+        }
+
+        [Fact]
+        public async Task CancelScheduledActionShouldCallCorrectUrlAndGetCollectionResponse()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"CancelScheduledAction.json");
+            var url = "";
+            var method = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                method = request.Method;
+                url = request.RequestUri.ToString();
+            };
+
+            //Act
+            
+            var res = await GetClientWithEnvironment("master").CancelScheduledAction("myId", "master");
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, method);
+            Assert.Equal("https://api.contentful.com/spaces/564/scheduled_actions/myId?environment.sys.id=master", url);
+            Assert.Equal("2022-01-01T12:00:00.0000000Z", res.ScheduledFor.DateTime.ToString("o"));
+            Assert.Equal("canceled", res.SystemProperties.Status);
         }
 
         [Fact]
