@@ -49,6 +49,7 @@ namespace Contentful.Core
         public string Version => InformationalVersion;
 
         private static readonly string Os = IsWindows ? "Windows" : IsMacOS ? "macOS" : "Linux";
+        private static readonly Version HttpVersion2 = new(2,0);
 
         private const string Platform = ".net";
 
@@ -224,6 +225,7 @@ namespace Contentful.Core
         {
             using var httpRequestMessage = new HttpRequestMessage
             {
+                Version = HttpVersion2,
                 RequestUri = new Uri(url),
                 Method = method
             };
@@ -345,7 +347,7 @@ namespace Contentful.Core
         private static async Task<HttpRequestMessage> CloneHttpRequest(HttpRequestMessage message)
         {
             var clone = new HttpRequestMessage(message.Method, message.RequestUri);
-
+            clone.Version = message.Version;
             // Copy the request's content (via a MemoryStream) into the cloned object
             if (message.Content != null)
             {
