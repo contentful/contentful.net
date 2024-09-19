@@ -106,9 +106,7 @@ namespace Contentful.Core
                 message += errorDetails.Errors?.ToString();
             }
 
-            IEnumerable<string> headers;
-
-            if(statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out headers))
+            if (statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out var headers))
             {
                 var rateLimitException = new ContentfulRateLimitException(message)
                 {
@@ -223,7 +221,7 @@ namespace Contentful.Core
         protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null, 
             int? version = null, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
-            var httpRequestMessage = new HttpRequestMessage()
+            using var httpRequestMessage = new HttpRequestMessage
             {
                 RequestUri = new Uri(url),
                 Method = method

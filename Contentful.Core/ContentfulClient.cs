@@ -134,7 +134,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(entryId));
             }
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries/{entryId}{queryString}", etag, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries/{entryId}{queryString}", etag, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
 
             if(!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -218,14 +218,14 @@ namespace Contentful.Core
 
         public async Task<string> GetEntriesRaw(string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", null, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", null, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
             var resultString = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
             return resultString;
         }
 
         public async Task<ContentfulResult<ContentfulCollection<T>>> GetEntries<T>(string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", etag, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}entries{queryString}", etag, cancellationToken, CrossSpaceResolutionSettings).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag.Tag == etag)
             {
@@ -496,7 +496,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(assetId));
             }
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{assetId}{queryString}", etag, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{assetId}{queryString}", etag, cancellationToken, null).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -547,7 +547,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulResult<ContentfulCollection<Asset>>> GetAssets(string etag, string queryString = null, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{queryString}", etag, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}assets/{queryString}", etag, cancellationToken, null).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -613,7 +613,7 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         public async Task<ContentfulResult<Space>> GetSpace(string etag, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{BaseUrl}{_options.SpaceId}", etag, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}", etag, cancellationToken, null).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -655,7 +655,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(contentTypeId));
             }
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{contentTypeId}", etag, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{contentTypeId}", etag, cancellationToken, null).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -675,7 +675,7 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentTag"/>.</returns>
         public async Task<IEnumerable<ContentTag>> GetTags(string queryString = "", CancellationToken cancellationToken = default) {
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{queryString}", null, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{queryString}", null, cancellationToken, null).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var tags = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentTag>(Serializer));
@@ -696,7 +696,7 @@ namespace Contentful.Core
                 throw new ArgumentException(nameof(tagId));
             }
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{tagId}", null, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{tagId}", null, cancellationToken, null).ConfigureAwait(false);
 
             var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
             var tag = jsonObject.ToObject<ContentTag>(Serializer);
@@ -737,7 +737,7 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
         public async Task<ContentfulResult<IEnumerable<ContentType>>> GetContentTypes(string etag, string queryString, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{queryString}", etag, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}content_types/{queryString}", etag, cancellationToken, null).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -770,7 +770,7 @@ namespace Contentful.Core
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locale"/>.</returns>
         public async Task<ContentfulResult<IEnumerable<Locale>>> GetLocales(string etag, CancellationToken cancellationToken = default)
         {
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{(string.IsNullOrEmpty(EnvironmentsBase) ? "environments/master/" : EnvironmentsBase)}locales/", etag, cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{(string.IsNullOrEmpty(EnvironmentsBase) ? "environments/master/" : EnvironmentsBase)}locales/", etag, cancellationToken, null).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(etag) && res.Headers?.ETag?.Tag == etag)
             {
@@ -815,7 +815,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncType, contentTypeId, true, limit: limit);
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", "", cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", "", cancellationToken, null).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
@@ -842,7 +842,7 @@ namespace Contentful.Core
 
             var query = BuildSyncQuery(syncToken: syncToken);
 
-            var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", "", cancellationToken, null).ConfigureAwait(false);
+            using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}sync{query}", "", cancellationToken, null).ConfigureAwait(false);
 
             var syncResult = ParseSyncResult(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
 
