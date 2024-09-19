@@ -305,7 +305,7 @@ namespace Contentful.Core
                             await Task.Delay(ex.SecondsUntilNextRequest * 1000).ConfigureAwait(false);
                         }
                        
-                        var clonedMessage = await CloneHttpRequest(response.RequestMessage);
+                        using var clonedMessage = await CloneHttpRequest(response.RequestMessage);
 
                         response = await _httpClient.SendAsync(clonedMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 

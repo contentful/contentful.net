@@ -3,7 +3,6 @@ using Contentful.Core.Search;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace Contentful.Core.Models.Management
@@ -466,7 +465,7 @@ namespace Contentful.Core.Models.Management
     /// </summary>  
     public class DateRangeValidator : IFieldValidator
     {
-        private string _min;
+        private readonly string _min;
 
         /// <summary>
         /// The minimum allowed date.
@@ -482,7 +481,7 @@ namespace Contentful.Core.Models.Management
             }
         }
 
-        private string _max;
+        private readonly string _max;
 
         /// <summary>
         /// The maximum allowed date.
@@ -573,7 +572,7 @@ namespace Contentful.Core.Models.Management
         }
 
 
-        private int? GetCalculatedByteSize(int? value, string unit)
+        private static int? GetCalculatedByteSize(int? value, string unit)
         {
             if (value != null)
             {
@@ -675,7 +674,7 @@ namespace Contentful.Core.Models.Management
         }
     }
 
-    internal class Nodes
+    internal sealed class Nodes
     {
         public Nodes(NodesValidator validator)
         {
