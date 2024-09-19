@@ -109,9 +109,9 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <typeparamref name="T"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The entryId parameter was null or empty.</exception>
-        public async Task<T> GetEntry<T>(string entryId, QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default)
+        public Task<T> GetEntry<T>(string entryId, QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default)
         {
-            return await GetEntry<T>(entryId, queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return GetEntry<T>(entryId, queryBuilder?.Build(), cancellationToken);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Contentful.Core
                 return new ContentfulResult<T>(res.Headers?.ETag?.Tag, default(T));
             }
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var json = await res.GetJObjectFromResponse().ConfigureAwait(false);
 
             JToken entry;
 
@@ -211,9 +211,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of items.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<T>> GetEntries<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default)
+        public Task<ContentfulCollection<T>> GetEntries<T>(QueryBuilder<T> queryBuilder, CancellationToken cancellationToken = default)
         {
-            return await GetEntries<T>(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return GetEntries<T>(queryBuilder?.Build(), cancellationToken);
         }
 
         public async Task<string> GetEntriesRaw(string queryString = null, CancellationToken cancellationToken = default)
@@ -232,7 +232,7 @@ namespace Contentful.Core
                 return new ContentfulResult<ContentfulCollection<T>>(res.Headers?.ETag?.Tag, null);
             }
 
-            var json = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var json = await res.GetJObjectFromResponse().ConfigureAwait(false);
 
             ReplaceMetaData(json);
 
@@ -475,9 +475,9 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into an <see cref="Asset"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <see name="assetId">assetId</see> parameter was null or emtpy.</exception>
-        public async Task<Asset> GetAsset(string assetId, QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default)
+        public Task<Asset> GetAsset(string assetId, QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default)
         {
-            return await GetAsset(assetId, queryBuilder?.Build(), cancellationToken);
+            return GetAsset(assetId, queryBuilder?.Build(), cancellationToken);
         }
 
         /// <summary>
@@ -503,8 +503,7 @@ namespace Contentful.Core
                 return new ContentfulResult<Asset>(res.Headers?.ETag?.Tag, null);
             }
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var asset = jsonObject.ToObject<Asset>(Serializer);
+            var asset = await res.GetObjectFromResponse<Asset>(Serializer).ConfigureAwait(false);
 
             return new ContentfulResult<Asset>(res.Headers?.ETag?.Tag, asset);
         }
@@ -532,9 +531,9 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>A <see cref="ContentfulCollection{T}"/> of <see cref="Asset"/>.</returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
-        public async Task<ContentfulCollection<Asset>> GetAssets(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default)
+        public Task<ContentfulCollection<Asset>> GetAssets(QueryBuilder<Asset> queryBuilder, CancellationToken cancellationToken = default)
         {
-            return await GetAssets(queryBuilder?.Build(), cancellationToken).ConfigureAwait(false);
+            return GetAssets(queryBuilder?.Build(), cancellationToken);
         }
 
         /// <summary>
@@ -554,7 +553,7 @@ namespace Contentful.Core
                 return new ContentfulResult<ContentfulCollection<Asset>>(res.Headers?.ETag?.Tag, null);
             }
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var jsonObject = await res.GetJObjectFromResponse().ConfigureAwait(false);
             var collection = jsonObject.ToObject<ContentfulCollection<Asset>>(Serializer);
             var assets = jsonObject.SelectTokens("$.items[*]").Select(c => c.ToObject<Asset>(Serializer)); ;
             collection.Items = assets;
@@ -599,8 +598,7 @@ namespace Contentful.Core
             //note that unlike some other api methods, the asset embargo key always requires an environment id.
             var res = await Post($"{BaseUrl}{_options.SpaceId}/{(EnvironmentsBase == string.Empty ? "environments/master/" : EnvironmentsBase)}asset_keys", new { expiresAt }, cancellationToken).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var assetKey = jsonObject.ToObject<EmbargoedAssetKey>(Serializer);
+            var assetKey = await res.GetObjectFromResponse<EmbargoedAssetKey>(Serializer).ConfigureAwait(false);
             assetKey.ExpiresAtUtc = timeOffset.UtcDateTime;
             return assetKey;
         }
@@ -620,8 +618,7 @@ namespace Contentful.Core
                 return new ContentfulResult<Space>(res.Headers?.ETag?.Tag, null);
             }
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var space = jsonObject.ToObject<Space>(Serializer);
+            var space = await res.GetObjectFromResponse<Space>(Serializer).ConfigureAwait(false);
 
             return new ContentfulResult<Space>(res.Headers?.ETag?.Tag, space);
         }
@@ -662,8 +659,7 @@ namespace Contentful.Core
                 return new ContentfulResult<ContentType>(res.Headers?.ETag?.Tag, null);
             }
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var contentType = jsonObject.ToObject<ContentType>(Serializer);
+            var contentType = await res.GetObjectFromResponse<ContentType>(Serializer).ConfigureAwait(false);
 
             return new ContentfulResult<ContentType>(res.Headers?.ETag?.Tag, contentType);
         }
@@ -677,7 +673,7 @@ namespace Contentful.Core
 
             using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{queryString}", null, cancellationToken, null).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var jsonObject = await res.GetJObjectFromResponse().ConfigureAwait(false);
             var tags = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentTag>(Serializer));
 
             return tags;
@@ -698,8 +694,7 @@ namespace Contentful.Core
 
             using var res = await Get($"{BaseUrl}{_options.SpaceId}/{EnvironmentsBase}tags/{tagId}", null, cancellationToken, null).ConfigureAwait(false);
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
-            var tag = jsonObject.ToObject<ContentTag>(Serializer);
+            var tag = await res.GetObjectFromResponse<ContentTag>(Serializer).ConfigureAwait(false);
 
             return tag;
         }
@@ -724,9 +719,9 @@ namespace Contentful.Core
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ContentType"/>.</returns>
-        public async Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default)
+        public Task<IEnumerable<ContentType>> GetContentTypes(CancellationToken cancellationToken = default)
         {
-            return await GetContentTypes(null, cancellationToken);
+            return GetContentTypes(null, cancellationToken);
         }
 
         /// <summary>
@@ -744,7 +739,7 @@ namespace Contentful.Core
                 return new ContentfulResult<IEnumerable<ContentType>>(res.Headers?.ETag?.Tag, null);
             }
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var jsonObject = await res.GetJObjectFromResponse().ConfigureAwait(false);
             var contentTypes = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<ContentType>(Serializer));
 
             return new ContentfulResult<IEnumerable<ContentType>>(res.Headers?.ETag?.Tag, contentTypes);
@@ -777,7 +772,7 @@ namespace Contentful.Core
                 return new ContentfulResult<IEnumerable<Locale>> (res.Headers?.ETag?.Tag, null);
             }
 
-            var jsonObject = JObject.Parse(await res.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var jsonObject = await res.GetJObjectFromResponse().ConfigureAwait(false);
             var locales = jsonObject.SelectTokens("$..items[*]").Select(t => t.ToObject<Locale>(Serializer));
 
             return new ContentfulResult<IEnumerable<Locale>>(res.Headers?.ETag?.Tag, locales);

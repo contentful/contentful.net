@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Contentful.Core.Extensions;
 
 namespace Contentful.Core
 {
@@ -276,6 +277,25 @@ namespace Contentful.Core
             {
                 message.Headers.Add("X-Contentful-Version", version.ToString());
             }
+        }
+
+        /// <summary>Returns an object of type T from the response, if the response is successful</summary>
+        /// <param name="response">The response to deserialize</param>
+        /// <typeparam name="T">The type that should be returned</typeparam>
+        /// <returns>The deserialized object</returns>
+        protected async Task<T> GetObjectFromResponse<T>(HttpResponseMessage response)
+        {
+            await EnsureSuccessfulResult(response).ConfigureAwait(false);
+            return await response.GetObjectFromResponse<T>(Serializer).ConfigureAwait(false);
+        }
+
+        /// <summary>Returns a JObject from the response, if the response is successful</summary>
+        /// <param name="response">The response to deserialize</param>
+        /// <returns>The deserialized JObject</returns>
+        protected async Task<JObject> GetJObjectFromResponse(HttpResponseMessage response)
+        {
+            await EnsureSuccessfulResult(response).ConfigureAwait(false);
+            return await response.GetJObjectFromResponse().ConfigureAwait(false);
         }
 
         /// <summary>

@@ -4,9 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Contentful.Core.Configuration
 {
@@ -15,6 +13,17 @@ namespace Contentful.Core.Configuration
     /// </summary>
     public class ExtensionJsonConverter : JsonConverter
     {
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver
+            {
+                NamingStrategy =
+                {
+                    OverrideSpecifiedNames = false
+                }
+            },
+        };
+
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
         /// </summary>
@@ -75,15 +84,7 @@ namespace Contentful.Core.Configuration
                 extension
             };
 
-            var resolver = new CamelCasePropertyNamesContractResolver();
-            resolver.NamingStrategy.OverrideSpecifiedNames = false;
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = resolver,
-            };
-
-            var jObject = JObject.FromObject(extensionStructure, JsonSerializer.Create(settings));
+            var jObject = JObject.FromObject(extensionStructure, JsonSerializer.Create(JsonSerializerSettings));
 
             serializer.Serialize(writer, jObject);
         }
