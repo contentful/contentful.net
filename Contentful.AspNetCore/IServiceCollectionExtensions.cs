@@ -28,17 +28,16 @@ namespace Contentful.AspNetCore
             services.AddOptions();
             services.Configure<ContentfulOptions>(configuration.GetSection("ContentfulOptions"));
             services.TryAddSingleton<HttpClient>();
-            services.AddHttpClient(HttpClientName);// TODO: When contentful.csharp has been updated, remove this line & uncomment below code to effectuate HTTP Response compression
-            // services.AddHttpClient(HttpClientName).ConfigurePrimaryHttpMessageHandler(sp =>
-            // {
-            //     var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
-            //     var handler = new HttpClientHandler();
-            //     if (options.AllowHttpResponseCompression && handler.SupportsAutomaticDecompression)
-            //     {
-            //         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            //     }
-            //     return handler;
-            // });
+            services.AddHttpClient(HttpClientName).ConfigurePrimaryHttpMessageHandler(sp =>
+            {
+                var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
+                var handler = new HttpClientHandler();
+                if (options.AllowHttpResponseCompression && handler.SupportsAutomaticDecompression)
+                {
+                    handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                }
+                return handler;
+            });
             services.TryAddTransient<IContentfulClient>((sp) => {
                 var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
                 var factory = sp.GetService<IHttpClientFactory>();
