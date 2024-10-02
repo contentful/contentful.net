@@ -10,9 +10,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Contentful.Core.Extensions;
 
 namespace Contentful.Core
 {
@@ -21,6 +21,9 @@ namespace Contentful.Core
     /// </summary>
     public abstract class ContentfulClientBase
     {
+        private static readonly string InformationalVersion = typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
+
         /// <summary>
         /// The HttpClient used for API calls.
         /// </summary>
@@ -43,12 +46,12 @@ namespace Contentful.Core
         /// <summary>
         /// Returns the current version of the package.
         /// </summary>
-        public string Version => typeof(ContentfulClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            .InformationalVersion;
+        public string Version => InformationalVersion;
 
-        private string Os => IsWindows ? "Windows" : IsMacOS ? "macOS" : "Linux";
+        private static readonly string Os = IsWindows ? "Windows" : IsMacOS ? "macOS" : "Linux";
+        private static readonly Version HttpVersion2 = new(2,0);
 
-        private string Platform => ".net";
+        private const string Platform = ".net";
 
         private static bool IsWindows
         {
@@ -105,16 +108,14 @@ namespace Contentful.Core
                 message += errorDetails.Errors?.ToString();
             }
 
-            IEnumerable<string> headers = new List<string>();
-
-            if(statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out headers))
+            if (statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out var headers))
             {
                 var rateLimitException = new ContentfulRateLimitException(message)
                 {
                     RequestId = jsonError.SelectToken("$.requestId")?.ToString(),
                     ErrorDetails = errorDetails,
                     SystemProperties = sys,
-                    SecondsUntilNextRequest = headers.FirstOrDefault() == null ? 0 : int.Parse(headers.FirstOrDefault())
+                    SecondsUntilNextRequest = int.TryParse(headers.FirstOrDefault(), out var rateLimitReset) ? rateLimitReset: 0
                 };
 
                 throw rateLimitException;
@@ -141,7 +142,7 @@ namespace Contentful.Core
             throw ex;
         }
 
-        private string GetGenericErrorMessageForStatusCode(int statusCode, string id)
+        private static string GetGenericErrorMessageForStatusCode(int statusCode, string id)
         {
             if(statusCode == 400)
             {
@@ -222,8 +223,9 @@ namespace Contentful.Core
         protected async Task<HttpResponseMessage> SendHttpRequest(string url, HttpMethod method, string authToken, CancellationToken cancellationToken, HttpContent content = null, 
             int? version = null, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
         {
-            var httpRequestMessage = new HttpRequestMessage()
+            using var httpRequestMessage = new HttpRequestMessage
             {
+                Version = HttpVersion2,
                 RequestUri = new Uri(url),
                 Method = method
             };
@@ -258,7 +260,7 @@ namespace Contentful.Core
 
         private async Task<HttpResponseMessage> SendHttpRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             response = await EnsureSuccessfulResult(response);
 
@@ -272,14 +274,30 @@ namespace Contentful.Core
         /// <param name="message">The message to add the header to.</param>
         protected void AddVersionHeader(int? version, HttpRequestMessage message)
         {
-            if (message.Headers.Contains("X-Contentful-Version"))
-            {
-                message.Headers.Remove("X-Contentful-Version");
-            }
+            message.Headers.Remove("X-Contentful-Version");
             if (version.HasValue)
             {
                 message.Headers.Add("X-Contentful-Version", version.ToString());
             }
+        }
+
+        /// <summary>Returns an object of type T from the response, if the response is successful</summary>
+        /// <param name="response">The response to deserialize</param>
+        /// <typeparam name="T">The type that should be returned</typeparam>
+        /// <returns>The deserialized object</returns>
+        protected async Task<T> GetObjectFromResponse<T>(HttpResponseMessage response)
+        {
+            await EnsureSuccessfulResult(response).ConfigureAwait(false);
+            return await response.GetObjectFromResponse<T>(Serializer).ConfigureAwait(false);
+        }
+
+        /// <summary>Returns a JObject from the response, if the response is successful</summary>
+        /// <param name="response">The response to deserialize</param>
+        /// <returns>The deserialized JObject</returns>
+        protected async Task<JObject> GetJObjectFromResponse(HttpResponseMessage response)
+        {
+            await EnsureSuccessfulResult(response).ConfigureAwait(false);
+            return await response.GetJObjectFromResponse().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -309,9 +327,9 @@ namespace Contentful.Core
                             await Task.Delay(ex.SecondsUntilNextRequest * 1000).ConfigureAwait(false);
                         }
                        
-                        var clonedMessage = await CloneHttpRequest(response.RequestMessage);
+                        using var clonedMessage = await CloneHttpRequest(response.RequestMessage);
 
-                        response = await _httpClient.SendAsync(clonedMessage).ConfigureAwait(false);
+                        response = await _httpClient.SendAsync(clonedMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
                         if (response.IsSuccessStatusCode)
                         {
@@ -326,14 +344,14 @@ namespace Contentful.Core
             return response;
         }
 
-        private async Task<HttpRequestMessage> CloneHttpRequest(HttpRequestMessage message)
+        private static async Task<HttpRequestMessage> CloneHttpRequest(HttpRequestMessage message)
         {
             var clone = new HttpRequestMessage(message.Method, message.RequestUri);
-
+            clone.Version = message.Version;
             // Copy the request's content (via a MemoryStream) into the cloned object
-            var ms = new MemoryStream();
             if (message.Content != null)
             {
+                var ms = new MemoryStream();
                 await message.Content.CopyToAsync(ms).ConfigureAwait(false);
                 ms.Position = 0;
                 clone.Content = new StreamContent(ms);
@@ -349,7 +367,7 @@ namespace Contentful.Core
             return clone;
         }
 
-        protected void ReplaceMetaData(JObject jsonObject)
+        protected static void ReplaceMetaData(JObject jsonObject)
         {
             foreach (var item in jsonObject.SelectTokens("$.items[*]").OfType<JObject>())
             {

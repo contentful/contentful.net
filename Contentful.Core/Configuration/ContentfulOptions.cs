@@ -56,5 +56,11 @@ namespace Contentful.Core.Configuration
         /// Default is "https://cdn.contentful.com/spaces/".
         /// </summary>
         public string BaseUrl { get; set; } = "https://cdn.contentful.com/spaces/";
+
+        /// <summary>
+        /// Whether to use HTTP compression for responses. Only disable if you are hosting in the same datacenter as contentful
+        /// Default is true
+        /// </summary>
+        public bool AllowHttpResponseCompression { get; set; } = true;
     }
 }

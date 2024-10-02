@@ -1,14 +1,12 @@
 ﻿using Contentful.Core.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Contentful.Core.Search
 {
-    internal class SelectVisitor : ExpressionVisitor
+    internal sealed class SelectVisitor : ExpressionVisitor
     {
         private readonly Type _sourceType;
         private readonly string _prefix;

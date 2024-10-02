@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Contentful.Core.Configuration;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using Contentful.Core;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Http;
 using Contentful.Core.Models;
 
 namespace Contentful.AspNetCore
@@ -31,7 +28,16 @@ namespace Contentful.AspNetCore
             services.AddOptions();
             services.Configure<ContentfulOptions>(configuration.GetSection("ContentfulOptions"));
             services.TryAddSingleton<HttpClient>();
-            services.AddHttpClient(HttpClientName);
+            services.AddHttpClient(HttpClientName).ConfigurePrimaryHttpMessageHandler(sp =>
+            {
+                var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
+                var handler = new HttpClientHandler();
+                if (options.AllowHttpResponseCompression && handler.SupportsAutomaticDecompression)
+                {
+                    handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                }
+                return handler;
+            });
             services.TryAddTransient<IContentfulClient>((sp) => {
                 var options = sp.GetService<IOptions<ContentfulOptions>>().Value;
                 var factory = sp.GetService<IHttpClientFactory>();
