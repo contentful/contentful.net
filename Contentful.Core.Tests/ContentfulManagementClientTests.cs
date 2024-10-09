@@ -285,6 +285,37 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task UpdatingBaseUrlShouldCallCorrectUrl()
+        {
+            //Arrange
+
+            var client = new ContentfulManagementClient(_httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "564",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                ManagementBaseUrl = "https://apa.contentful.com/spaces/"
+            });
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+            
+
+            //Act
+            await client.DeleteSpace("123");
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMethod);
+            Assert.Equal($"https://apa.contentful.com/spaces/123", requestUrl);
+        }
+
+        [Fact]
         public async Task GetContentTypesShouldDeserializeCorrectly()
         {
             //Arrange

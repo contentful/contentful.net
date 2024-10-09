@@ -52,10 +52,16 @@ namespace Contentful.Core.Configuration
         public string Environment { get; set; }
 
         /// <summary>
-        /// Gets or sets the base URL for the Contentful API.
+        /// Gets or sets the base URL for the Contentful devliery API.
         /// Default is "https://cdn.contentful.com/spaces/".
         /// </summary>
         public string BaseUrl { get; set; } = "https://cdn.contentful.com/spaces/";
+
+        /// <summary>
+        /// Gets or sets the base URL for the Contentful management API.
+        /// Default is "https://api.contentful.com/spaces/".
+        /// </summary>
+        public string ManagementBaseUrl { get; set; } = "https://api.contentful.com/spaces/";
 
         /// <summary>
         /// Whether to use HTTP compression for responses. Only disable if you are hosting in the same datacenter as contentful
