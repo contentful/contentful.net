@@ -60,7 +60,12 @@ namespace Contentful.Core.Configuration
 
             if(type == null)
             {
-                return new CustomNode { JObject = jObject };
+                var node = new CustomNode { JObject = jObject };
+                if (jObject.TryGetValue("$id", out var id))
+                {
+                    serializer.ReferenceResolver.AddReference(serializer, ((JValue)id).Value.ToString(), node);
+                }
+                return node;
             }
 
             switch (type)

@@ -274,6 +274,18 @@ namespace Contentful.Core.Tests
         public SelfReferencer[] SubCategories { get; set; }
     }
 
+    public class InlineListReferences
+    {
+        public SystemProperties Sys { get; set; }
+        public List<SubWithRichText> List { get; set; }
+    }
+
+    public class SubWithRichText
+    {
+        public Document Rich { get; set; }
+        public Document Rich2 { get; set; }
+    }
+
     public interface IMarker
     {
 

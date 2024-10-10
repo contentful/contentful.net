@@ -1,0 +1,591 @@
+﻿{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "<REDACTED>"
+          }
+        },
+        "type": "Entry",
+        "id": "<REDACTED>",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "Qualification"
+          }
+        },
+        "revision": 5,
+        "createdAt": "2024-06-26T09:46:58.508Z",
+        "updatedAt": "2024-07-22T10:11:04.888Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "locale": "en-GB"
+      },
+      "fields": {
+        "list": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5flybYVibSWDwCdo9LB90b"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3wCNFzxJGexsSqPyXTqUtq"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6TCz0WUa4FlLfNWw6r25Yp"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "<REDACTED>"
+            }
+          },
+          "type": "Entry",
+          "id": "36vM885KNLQDB23qaWra5M",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "externalNavigationLink"
+            }
+          },
+          "revision": 2,
+          "createdAt": "2024-08-19T18:18:43.881Z",
+          "updatedAt": "2024-09-09T10:21:12.360Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "displayText": "<REDACTED>",
+          "href": "<REDACTED>",
+          "openInNewTab": true
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "<REDACTED>"
+            }
+          },
+          "type": "Entry",
+          "id": "3wCNFzxJGexsSqPyXTqUtq",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "ratioRequirement"
+            }
+          },
+          "revision": 14,
+          "createdAt": "2024-07-15T13:54:30.077Z",
+          "updatedAt": "2024-09-10T08:54:53.689Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "rich": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Level",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "heading-4"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text before link ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "target": {
+                        "sys": {
+                          "id": "36vM885KNLQDB23qaWra5M",
+                          "type": "Link",
+                          "linkType": "Entry"
+                        }
+                      }
+                    },
+                    "content": [],
+                    "nodeType": "embedded-entry-inline"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ".",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text after link",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          },
+          "rich2": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Level",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "heading-4"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text before link ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "target": {
+                        "sys": {
+                          "id": "36vM885KNLQDB23qaWra5M",
+                          "type": "Link",
+                          "linkType": "Entry"
+                        }
+                      }
+                    },
+                    "content": [],
+                    "nodeType": "embedded-entry-inline"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ".",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text after link",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          }
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "<REDACTED>"
+            }
+          },
+          "type": "Entry",
+          "id": "5flybYVibSWDwCdo9LB90b",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "ratioRequirement"
+            }
+          },
+          "revision": 8,
+          "createdAt": "2024-07-12T13:17:20.720Z",
+          "updatedAt": "2024-09-10T08:54:20.640Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "rich": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Level",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "heading-4"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text before link ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "target": {
+                        "sys": {
+                          "id": "36vM885KNLQDB23qaWra5M",
+                          "type": "Link",
+                          "linkType": "Entry"
+                        }
+                      }
+                    },
+                    "content": [],
+                    "nodeType": "embedded-entry-inline"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ".",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text after link",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          },
+          "rich2": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Level",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "heading-4"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text before link ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "target": {
+                        "sys": {
+                          "id": "36vM885KNLQDB23qaWra5M",
+                          "type": "Link",
+                          "linkType": "Entry"
+                        }
+                      }
+                    },
+                    "content": [],
+                    "nodeType": "embedded-entry-inline"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ".",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text after link",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          }
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "<REDACTED>"
+            }
+          },
+          "type": "Entry",
+          "id": "6TCz0WUa4FlLfNWw6r25Yp",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "ratioRequirement"
+            }
+          },
+          "revision": 5,
+          "createdAt": "2024-07-15T13:57:45.137Z",
+          "updatedAt": "2024-08-19T18:23:07.096Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "locale": "en-GB"
+        },
+        "fields": {
+          "rich": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Level",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "heading-4"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text before link ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "target": {
+                        "sys": {
+                          "id": "36vM885KNLQDB23qaWra5M",
+                          "type": "Link",
+                          "linkType": "Entry"
+                        }
+                      }
+                    },
+                    "content": [],
+                    "nodeType": "embedded-entry-inline"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ".",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text after link",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          },
+          "rich2": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Level",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "heading-4"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text before link ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "target": {
+                        "sys": {
+                          "id": "36vM885KNLQDB23qaWra5M",
+                          "type": "Link",
+                          "linkType": "Entry"
+                        }
+                      }
+                    },
+                    "content": [],
+                    "nodeType": "embedded-entry-inline"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ".",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Text after link",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          }
+        }
+      }
+    ]
+  }
+}
