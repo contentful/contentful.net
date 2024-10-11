@@ -578,7 +578,7 @@ namespace Contentful.Core.Models
         /// <summary>
         /// The JSON data of the node.
         /// </summary>
-        public JObject JObject { get; set; }
+        public object JObject { get; set; }
     }
 
     /// <summary>

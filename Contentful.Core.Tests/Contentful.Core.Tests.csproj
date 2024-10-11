@@ -10,6 +10,7 @@
     <None Remove="JsonFiles\CreateScheduledAction.json" />
     <None Remove="JsonFiles\EditorInterfaceWithMetadata.json" />
     <None Remove="JsonFiles\EntriesCollectionWithCrossReference.json" />
+    <None Remove="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
     <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
     <EmbeddedResource Include="JsonFiles\CancelScheduledAction.json" />
+    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
     <EmbeddedResource Include="JsonFiles\UpdateScheduledAction.json" />
     <EmbeddedResource Include="JsonFiles\GetScheduledAction.json" />
     <EmbeddedResource Include="JsonFiles\CreateScheduledAction.json" />

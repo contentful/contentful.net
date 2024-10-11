@@ -1408,6 +1408,19 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task ComplexStructureWithEmbeddedReferenceInArrayIsDeserializedCorrectly()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithNestedEmbeddedEntry.json");
+
+            //Act
+            var res = await _client.GetEntries<InlineListReferences>();
+
+            //Assert
+            Assert.Single(res);
+        }
+
+        [Fact]
         public async Task SettingEnvironmentShouldYieldCorrectUrlForSingleAsset()
         {
             //Arrange
