@@ -186,6 +186,8 @@ await managementClient.CreateOrUpdateContentType(contentType);
 
 The Management API supports working with taxonomies through concept schemes and concepts. Here's how you can work with taxonomies:
 
+#### Concept Schemes
+
 ```csharp
 // Create a taxonomy concept scheme
 var conceptScheme = new TaxonomyConceptScheme
@@ -193,17 +195,78 @@ var conceptScheme = new TaxonomyConceptScheme
     Name = "Product Categories",
     Description = "Categories for our products"
 };
-var createdScheme = await managementClient.CreateTaxonomyConceptScheme(conceptScheme);
+var createdScheme = await managementClient.CreateTaxonomyConceptScheme(organizationId, conceptScheme);
 
+// Create a scheme with a specific ID
+var schemeWithId = await managementClient.CreateTaxonomyConceptSchemeWithId(organizationId, "my-scheme-id", conceptScheme);
+
+// Get a specific concept scheme
+var scheme = await managementClient.GetTaxonomyConceptScheme(organizationId, "scheme-id");
+
+// Get all concept schemes
+var schemes = await managementClient.GetTaxonomyConceptSchemes(organizationId, limit: 100);
+
+// Get total number of concept schemes
+var totalSchemes = await managementClient.GetTotalTaxonomyConceptSchemes(organizationId);
+
+// Update a concept scheme
+var patches = new List<JsonPatchOperation>
+{
+    new JsonPatchOperation { Op = "replace", Path = "/name", Value = "Updated Name" }
+};
+var updatedScheme = await managementClient.UpdateTaxonomyConceptScheme(organizationId, "scheme-id", version, patches);
+
+// Delete a concept scheme
+await managementClient.DeleteTaxonomyConceptScheme(organizationId, "scheme-id", version);
+```
+
+#### Concepts
+
+```csharp
 // Create a taxonomy concept
 var concept = new TaxonomyConcept
 {
     Name = "Electronics",
     Description = "Electronic products"
 };
-var createdConcept = await managementClient.CreateTaxonomyConcept(createdScheme.SystemProperties.Id, concept);
+var createdConcept = await managementClient.CreateTaxonomyConcept(organizationId, concept);
 
-// Add taxonomy concepts to an entry or asset
+// Create a concept with a specific ID
+var conceptWithId = await managementClient.CreateTaxonomyConceptWithId(organizationId, "my-concept-id", concept);
+
+// Get a specific concept
+var concept = await managementClient.GetTaxonomyConcept(organizationId, "concept-id");
+
+// Get all concepts
+var concepts = await managementClient.GetTaxonomyConcepts(organizationId, limit: 100);
+
+// Get concepts for a specific scheme
+var schemeConcepts = await managementClient.GetTaxonomyConcepts(organizationId, conceptScheme: "scheme-id");
+
+// Get total number of concepts
+var totalConcepts = await managementClient.GetTotalTaxonomyConcepts(organizationId);
+
+// Get concept descendants (child concepts)
+var descendants = await managementClient.GetTaxonomyConceptDescendants(organizationId, "concept-id", depth: 2);
+
+// Get concept ancestors (parent concepts)
+var ancestors = await managementClient.GetTaxonomyConceptAncestors(organizationId, "concept-id", depth: 2);
+
+// Update a concept
+var patches = new List<JsonPatchOperation>
+{
+    new JsonPatchOperation { Op = "replace", Path = "/name", Value = "Updated Name" }
+};
+var updatedConcept = await managementClient.UpdateTaxonomyConcept(organizationId, "concept-id", version, patches);
+
+// Delete a concept
+await managementClient.DeleteTaxonomyConcept(organizationId, "concept-id", version);
+```
+
+#### Using Concepts with Entries and Assets
+
+```csharp
+// Add taxonomy concepts to an entry
 var entry = new Entry<dynamic>();
 entry.Metadata = new ContentfulMetadata
 {
@@ -213,14 +276,85 @@ entry.Metadata = new ContentfulMetadata
         { 
             Sys = new ReferenceProperties
             {
-                Id = createdConcept.SystemProperties.Id,
+                Id = "concept-id",
                 LinkType = SystemLinkTypes.TaxonomyConcept
             }
         }
     }
 };
 await managementClient.CreateOrUpdateEntry(entry);
+
+// Add taxonomy concepts to an asset
+var asset = new ManagementAsset();
+asset.Metadata = new ContentfulMetadata
+{
+    Concepts = new List<Reference>
+    {
+        new Reference 
+        { 
+            Sys = new ReferenceProperties
+            {
+                Id = "concept-id",
+                LinkType = SystemLinkTypes.TaxonomyConcept
+            }
+        }
+    }
+};
+await managementClient.CreateOrUpdateAsset(asset);
 ```
+
+#### Using Concepts with Content Types
+
+You can also add taxonomy concepts to content types to enable concept-based categorization at the content type level:
+
+```csharp
+// Create a content type with taxonomy concepts
+var contentType = new ContentType();
+contentType.SystemProperties = new SystemProperties()
+{
+    Id = "product"
+};
+contentType.Name = "Product";
+contentType.Fields = new List<Field>()
+{
+    new Field()
+    {
+        Name = "Title",
+        Id = "title",
+        Type = "Text"
+    },
+    new Field()
+    {
+        Name = "Description",
+        Id = "description",
+        Type = "Text"
+    }
+};
+
+// Add taxonomy concepts to the content type
+contentType.Metadata = new ContentfulMetadata
+{
+    Concepts = new List<Reference>
+    {
+        new Reference 
+        { 
+            Sys = new ReferenceProperties
+            {
+                Id = "product-category-concept",
+                LinkType = SystemLinkTypes.TaxonomyConcept
+            }
+        }
+    }
+};
+
+await managementClient.CreateOrUpdateContentType(contentType);
+```
+
+This allows you to:
+- Categorize entire content types with specific taxonomy concepts
+- Filter and query content based on content type-level concepts
+- Maintain consistent categorization across all entries of a content type
+- Apply concept-based workflows and validations at the content type level
 
 ## Using the library with the Preview API
 
