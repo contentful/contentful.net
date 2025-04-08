@@ -1,0 +1,120 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "limit": 5,
+  "pages": {
+    "prev": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concept-schemes?pageNext=prevCursor",
+    "next": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concept-schemes?pageNext=nextCursor"
+  },
+  "items": [
+    {
+      "sys": {
+        "id": "3kZdDUXy9n0l2Xi2cq8TPc",
+        "type": "TaxonomyConceptScheme",
+        "organization": {
+          "sys": {
+            "id": "0D9ZC8rLWiw6x5qizZGiRs",
+            "type": "Link",
+            "linkType": "Organization"
+          }
+        },
+        "createdAt": "2015-05-18T11:29:46.809Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "updatedAt": "2015-05-18T11:29:46.809Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "4FLrUHftHW3v2BLi9fzfjU"
+          }
+        },
+        "version": 0
+      },
+      "uri": "https://example.com/furniture",
+      "prefLabel": {
+        "en-US": "Furniture Categories"
+      },
+      "definition": {
+        "en-US": "A hierarchical classification of furniture types"
+      },
+      "topConcepts": [
+        {
+          "id": "1Py5SjffQHkGGY3dZ02W14"
+        },
+        {
+          "id": "4Rt8WiHvQgKiGECsYeaSkY"
+        }
+      ],
+      "concepts": [
+        {
+          "id": "1Py5SjffQHkGGY3dZ02W14"
+        },
+        {
+          "id": "4Rt8WiHvQgKiGECsYeaSkY"
+        },
+        {
+          "id": "3kZdDUXy9n0l2Xi2cq8TPc"
+        }
+      ],
+      "totalConcepts": 3
+    },
+    {
+      "sys": {
+        "id": "4Rt8WiHvQgKiGECsYeaSkY",
+        "type": "TaxonomyConceptScheme",
+        "organization": {
+          "sys": {
+            "id": "0D9ZC8rLWiw6x5qizZGiRs",
+            "type": "Link",
+            "linkType": "Organization"
+          }
+        },
+        "createdAt": "2015-05-19T12:30:45.809Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "updatedAt": "2015-05-19T12:30:45.809Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "4FLrUHftHW3v2BLi9fzfjU"
+          }
+        },
+        "version": 0
+      },
+      "uri": "https://example.com/electronics",
+      "prefLabel": {
+        "en-US": "Electronics Categories"
+      },
+      "definition": {
+        "en-US": "A hierarchical classification of electronic devices"
+      },
+      "topConcepts": [
+        {
+          "id": "2Qw9YjGgThMmAeWo0k2S8i"
+        }
+      ],
+      "concepts": [
+        {
+          "id": "2Qw9YjGgThMmAeWo0k2S8i"
+        },
+        {
+          "id": "5NsQ1pDrTt3AWqOsKqCu6k"
+        }
+      ],
+      "totalConcepts": 2
+    }
+  ]
+} 

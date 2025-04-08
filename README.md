@@ -179,8 +179,47 @@ contentType.Fields = new List<Field>()
     }
 };
 
-
 await managementClient.CreateOrUpdateContentType(contentType);
+```
+
+### Working with Taxonomies
+
+The Management API supports working with taxonomies through concept schemes and concepts. Here's how you can work with taxonomies:
+
+```csharp
+// Create a taxonomy concept scheme
+var conceptScheme = new TaxonomyConceptScheme
+{
+    Name = "Product Categories",
+    Description = "Categories for our products"
+};
+var createdScheme = await managementClient.CreateTaxonomyConceptScheme(conceptScheme);
+
+// Create a taxonomy concept
+var concept = new TaxonomyConcept
+{
+    Name = "Electronics",
+    Description = "Electronic products"
+};
+var createdConcept = await managementClient.CreateTaxonomyConcept(createdScheme.SystemProperties.Id, concept);
+
+// Add taxonomy concepts to an entry or asset
+var entry = new Entry<dynamic>();
+entry.Metadata = new ContentfulMetadata
+{
+    Concepts = new List<Reference>
+    {
+        new Reference 
+        { 
+            Sys = new ReferenceProperties
+            {
+                Id = createdConcept.SystemProperties.Id,
+                LinkType = SystemLinkTypes.TaxonomyConcept
+            }
+        }
+    }
+};
+await managementClient.CreateOrUpdateEntry(entry);
 ```
 
 ## Using the library with the Preview API

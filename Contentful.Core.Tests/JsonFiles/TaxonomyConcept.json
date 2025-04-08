@@ -1,0 +1,80 @@
+{
+    "sys": {
+        "id": "test-concept-id",
+        "type": "TaxonomyConcept",
+        "organization": {
+            "sys": {
+                "id": "test-org-id",
+                "type": "Link",
+                "linkType": "Organization"
+            }
+        },
+        "createdAt": "2024-03-20T10:00:00Z",
+        "createdBy": {
+            "sys": {
+                "type": "Link",
+                "linkType": "User",
+                "id": "test-user-id"
+            }
+        },
+        "updatedAt": "2024-03-20T10:00:00Z",
+        "updatedBy": {
+            "sys": {
+                "type": "Link",
+                "linkType": "User",
+                "id": "test-user-id"
+            }
+        },
+        "version": 0
+    },
+    "uri": "",
+    "prefLabel": {
+        "en-US": "Test Concept"
+    },
+    "altLabels": {
+        "en-US": ["Alternative Label 1", "Alternative Label 2"]
+    },
+    "hiddenLabels": {
+        "en-US": ["Hidden Label 1"]
+    },
+    "notations": ["T1", "T2"],
+    "note": {
+        "en-US": ""
+    },
+    "changeNote": {
+        "en-US": ""
+    },
+    "definition": {
+        "en-US": ""
+    },
+    "editorialNote": {
+        "en-US": ""
+    },
+    "example": {
+        "en-US": ""
+    },
+    "historyNote": {
+        "en-US": ""
+    },
+    "scopeNote": {
+        "en-US": ""
+    },
+    "broader": [
+        {
+            "sys": {
+                "type": "Link",
+                "linkType": "TaxonomyConcept",
+                "id": "broader-concept-id"
+            }
+        }
+    ],
+    "related": [
+        {
+            "sys": {
+                "type": "Link",
+                "linkType": "TaxonomyConcept",
+                "id": "related-concept-id"
+            }
+        }
+    ]
+} 

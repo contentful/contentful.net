@@ -1,0 +1,88 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "limit": 100,
+  "pages": {
+    "prev": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concepts/3kZdDUXy9n0l2Xi2cq8TPc/ancestors?pagePrev=cursor123",
+    "next": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concepts/3kZdDUXy9n0l2Xi2cq8TPc/ancestors?pageNext=cursor456"
+  },
+  "items": [
+    {
+      "sys": {
+        "id": "1Py5SjffQHkGGY3dZ02W14",
+        "type": "TaxonomyConcept",
+        "organization": {
+          "sys": {
+            "id": "0D9ZC8rLWiw6x5qizZGiRs",
+            "type": "Link",
+            "linkType": "Organization"
+          }
+        },
+        "createdAt": "2015-05-18T11:29:46.809Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "updatedAt": "2015-05-18T11:29:46.809Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "4FLrUHftHW3v2BLi9fzfjU"
+          }
+        },
+        "version": 0
+      },
+      "uri": "",
+      "prefLabel": {
+        "en-US": "Furniture"
+      },
+      "altLabels": {
+        "en-US": [
+          "Home Furnishings"
+        ]
+      },
+      "hiddenLabels": {
+        "en-US": []
+      },
+      "notations": [
+        "FURN0017"
+      ],
+      "note": {
+        "en-US": ""
+      },
+      "changeNote": {
+        "en-US": ""
+      },
+      "definition": {
+        "en-US": "Items used to make a space suitable for living or working"
+      },
+      "editorialNote": {
+        "en-US": ""
+      },
+      "example": {
+        "en-US": ""
+      },
+      "historyNote": {
+        "en-US": ""
+      },
+      "scopeNote": {
+        "en-US": ""
+      },
+      "broader": [],
+      "related": [
+        {
+          "sys": {
+            "id": "2abcWINB018mASQ5Fdrkbj",
+            "type": "Link",
+            "linkType": "TaxonomyConcept"
+          }
+        }
+      ]
+    }
+  ]
+} 
