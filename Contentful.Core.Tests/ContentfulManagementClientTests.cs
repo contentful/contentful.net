@@ -5732,7 +5732,8 @@ namespace Contentful.Core.Tests
             var ex = await Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _client.GetTaxonomyConceptScheme(organizationId, conceptSchemeId));
 
-            Assert.Contains("concept scheme ID", ex.Message);
+            Assert.Contains("conceptSchemeId parameter must be set", ex.Message);
+            Assert.Equal("conceptSchemeId", ex.ParamName);
         }
 
         [Fact]
