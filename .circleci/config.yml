@@ -1,9 +1,10 @@
-version: 2.1
+version: 2
 jobs:
   build:
     docker:
-      - image: cimg/dotnet:8.0
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
+      - run: apt-get update && apt-get install -y ssh git
       - checkout
       - run:
           name: Build
