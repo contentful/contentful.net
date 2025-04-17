@@ -2227,7 +2227,7 @@ namespace Contentful.Core
 
             var sourceHeaders = new List<KeyValuePair<string, IEnumerable<string>>>(1)
             {
-                new("x-contentful-source-environment", [sourceEnvironmentId])
+                new("x-contentful-source-environment", new[] { sourceEnvironmentId })
             };
 
             using var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/environments/{id}", ConvertObjectToJsonStringContent(new { name }), cancellationToken, null, additionalHeaders: sourceHeaders).ConfigureAwait(false);
