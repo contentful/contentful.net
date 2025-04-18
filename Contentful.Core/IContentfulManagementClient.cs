@@ -666,6 +666,18 @@ namespace Contentful.Core
         Task<Entry<dynamic>> PublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Publishes an entry with locale-based publishing by the specified id.
+        /// This method adds support for publishing specific locales
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="locales">The list of locale codes to be published.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        Task<Entry<dynamic>> PublishEntryLocales(string entryId, int version, string[] locales, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Unarchives an asset by the specified id.
         /// </summary>
         /// <param name="assetId">The id of the asset to unarchive.</param>
@@ -704,6 +716,20 @@ namespace Contentful.Core
         /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         Task<Entry<dynamic>> UnpublishEntry(string entryId, int version, string spaceId = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// UnPublishes an entry with locale-based publishing by the specified id.
+        /// This method adds support for publishing specific locales
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="locales">The list of locale codes to be Unpublished.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <paramref name="entryId"/> parameter was null or empty.</exception>
+        Task<Entry<dynamic>> UnPublishEntryLocales(string entryId, int version, string[] locales, string spaceId = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates a <see cref="Contentful.Core.Models.Management.EditorInterface"/> for a specific <see cref="ContentType"/>.
