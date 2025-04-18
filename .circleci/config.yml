@@ -2,8 +2,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: microsoft/aspnetcore-build:2.0
+      - image: mcr.microsoft.com/dotnet/sdk:6.0
     steps:
+      - run: apt-get update && apt-get install -y ssh git
       - checkout
       - run:
           name: Build
