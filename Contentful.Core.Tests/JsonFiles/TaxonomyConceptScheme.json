@@ -1,0 +1,48 @@
+{
+  "sys": {
+    "id": "3kZdDUXy9n0l2Xi2cq8TPc",
+    "type": "TaxonomyConceptScheme",
+    "organization": {
+      "sys": {
+        "id": "0D9ZC8rLWiw6x5qizZGiRs",
+        "type": "Link",
+        "linkType": "Organization"
+      }
+    },
+    "createdAt": "2015-05-18T11:29:46.809Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "7BslKh9TdKGOK41VmLDjFZ"
+      }
+    },
+    "updatedAt": "2015-05-18T11:29:46.809Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "4FLrUHftHW3v2BLi9fzfjU"
+      }
+    },
+    "version": 0
+  },
+  "uri": "",
+  "prefLabel": {
+    "en-US": "Home Products"
+  },
+  "definition": {
+    "en-US": ""
+  },
+  "topConcepts": [
+    {
+      "id": "1Py5SjffQHkGGY3dZ02W14"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "1Py5SjffQHkGGY3dZ02W14"
+    }
+  ],
+  "totalConcepts": 1
+} 

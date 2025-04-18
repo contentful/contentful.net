@@ -2729,11 +2729,487 @@ namespace Contentful.Core
         {
             return SendHttpRequest(url, HttpMethod.Get, _options.ManagementApiKey, cancellationToken, version: version, additionalHeaders: additionalHeaders);
         }
+        
+        private Task<HttpResponseMessage> PatchAsync(string url, HttpContent content, CancellationToken cancellationToken, int? version, string contentTypeId = null, string organisationId = null, List<KeyValuePair<string, IEnumerable<string>>> additionalHeaders = null)
+        {
+            return SendHttpRequest(url, new HttpMethod("PATCH"), _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId, additionalHeaders);
+        }
 
         private static StringContent ConvertObjectToJsonStringContent(object ob)
         {
             var serializedObject = ob.ConvertObjectToJsonString();
             return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
+        }
+
+        /// <summary>
+        /// Gets a taxonomy concept by its ID.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the taxonomy concept.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="TaxonomyConcept"/>.</returns>
+        public async Task<TaxonomyConcept> GetTaxonomyConcept(string organizationId, string conceptId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException(nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptId))
+            {
+                throw new ArgumentException(nameof(conceptId));
+            }
+
+            using var res = await GetAsync($"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts/{conceptId}", cancellationToken).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConcept>(res).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Updates a taxonomy concept using JSON Patch format.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the taxonomy concept.</param>
+        /// <param name="version">The last known version of the concept.</param>
+        /// <param name="patches">The JSON Patch operations to apply.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The updated <see cref="TaxonomyConcept"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<TaxonomyConcept> UpdateTaxonomyConcept(string organizationId, string conceptId, int version, IEnumerable<JsonPatchOperation> patches, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptId))
+            {
+                throw new ArgumentException("The concept ID must be set.", nameof(conceptId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts/{conceptId}";
+            var content = ConvertObjectToJsonStringContent(patches);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json-patch+json");
+
+            using var res = await PatchAsync(url, content, cancellationToken, version).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConcept>(res).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Deletes a taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the taxonomy concept.</param>
+        /// <param name="version">The last known version of the concept.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteTaxonomyConcept(string organizationId, string conceptId, int version, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptId))
+            {
+                throw new ArgumentException("The concept ID must be set.", nameof(conceptId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts/{conceptId}";
+            using var res = await DeleteAsync(url, cancellationToken, version).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Creates a new taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="concept">The taxonomy concept to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="TaxonomyConcept"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<TaxonomyConcept> CreateTaxonomyConcept(string organizationId, TaxonomyConcept concept, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts";
+            var content = ConvertObjectToJsonStringContent(concept);
+
+            using var res = await PostAsync(url, content, cancellationToken, null).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConcept>(res).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<TaxonomyConcept> CreateTaxonomyConceptWithId(string organizationId, string conceptId, TaxonomyConcept concept, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organizationId must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptId))
+            {
+                throw new ArgumentException("The conceptId must be set.", nameof(conceptId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts/{conceptId}";
+            using var res = await PutAsync(url, ConvertObjectToJsonStringContent(concept), cancellationToken, null).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConcept>(res).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<ContentfulCollection<TaxonomyConcept>> GetTaxonomyConcepts(string organizationId, int? limit = null, string order = null, string conceptScheme = null, string query = null, string pageNext = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organizationId parameter must be set.", nameof(organizationId));
+            }
+
+            var queryString = new List<string>();
+            if (limit.HasValue)
+            {
+                queryString.Add($"limit={limit}");
+            }
+            if (!string.IsNullOrEmpty(order))
+            {
+                queryString.Add($"order={order}");
+            }
+            if (!string.IsNullOrEmpty(conceptScheme))
+            {
+                queryString.Add($"conceptScheme={conceptScheme}");
+            }
+            if (!string.IsNullOrEmpty(query))
+            {
+                queryString.Add($"query={query}");
+            }
+            if (!string.IsNullOrEmpty(pageNext))
+            {
+                queryString.Add($"pageNext={pageNext}");
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts";
+            if (queryString.Any())
+            {
+                url += "?" + string.Join("&", queryString);
+            }
+
+            using var res = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+            var jsonObject = await GetJObjectFromResponse(res).ConfigureAwait(false);
+            var collection = jsonObject.ToObject<ContentfulCollection<TaxonomyConcept>>(Serializer);
+            var concepts = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<TaxonomyConcept>(Serializer));
+            collection.Items = concepts;
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Gets a collection of descendants for a taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the concept.</param>
+        /// <param name="depth">Number of levels to traverse downwards to retrieve descendants. Default=1 (i.e. direct children only).</param>
+        /// <param name="limit">Limits the maximum number of concepts returned (per page).</param>
+        /// <param name="order">Order the results by a field. Options: sys.createdAt, sys.updatedAt, prefLabel, -sys.createdAt, -sys.updatedAt, -prefLabel</param>
+        /// <param name="query">Filter results using a full-text search query, looking at prefLabel, altLabels, hiddenLabels and notations fields.</param>
+        /// <param name="pageNext">Pagination cursor from which to return the next page of concepts.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{TaxonomyConcept}"/> of taxonomy concept descendants.</returns>
+        /// <exception cref="ArgumentException">The <see name="organizationId">organizationId</see> or <see name="conceptId">conceptId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<ContentfulCollection<TaxonomyConcept>> GetTaxonomyConceptDescendants(string organizationId, string conceptId, int? depth = null, int? limit = null, string order = null, string query = null, string pageNext = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organizationId parameter must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptId))
+            {
+                throw new ArgumentException("The conceptId parameter must be set.", nameof(conceptId));
+            }
+
+            var queryString = new List<string>();
+            if (depth.HasValue)
+            {
+                queryString.Add($"depth={depth}");
+            }
+            if (limit.HasValue)
+            {
+                queryString.Add($"limit={limit}");
+            }
+            if (!string.IsNullOrEmpty(order))
+            {
+                queryString.Add($"order={order}");
+            }
+            if (!string.IsNullOrEmpty(query))
+            {
+                queryString.Add($"query={query}");
+            }
+            if (!string.IsNullOrEmpty(pageNext))
+            {
+                queryString.Add($"pageNext={pageNext}");
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concepts/{conceptId}/descendants";
+            if (queryString.Any())
+            {
+                url += "?" + string.Join("&", queryString);
+            }
+
+            using var res = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+            var jsonObject = await GetJObjectFromResponse(res).ConfigureAwait(false);
+            var collection = jsonObject.ToObject<ContentfulCollection<TaxonomyConcept>>(Serializer);
+            var concepts = jsonObject.SelectTokens("$..items[*]").Select(c => c.ToObject<TaxonomyConcept>(Serializer));
+            collection.Items = concepts;
+
+            return collection;
+        }
+
+        /// <inheritdoc />
+        public async Task<ContentfulCollection<TaxonomyConcept>> GetTaxonomyConceptAncestors(string organizationId, string conceptId, int? depth = null, int? limit = null, string order = null, string query = null, string pageNext = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptId))
+            {
+                throw new ArgumentException("The concept ID must be set.", nameof(conceptId));
+            }
+
+            var queryString = new List<string>();
+
+            if (depth.HasValue)
+            {
+                queryString.Add($"depth={depth}");
+            }
+
+            if (limit.HasValue)
+            {
+                queryString.Add($"limit={limit}");
+            }
+
+            if (!string.IsNullOrEmpty(order))
+            {
+                queryString.Add($"order={order}");
+            }
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                queryString.Add($"query={query}");
+            }
+
+            if (!string.IsNullOrEmpty(pageNext))
+            {
+                queryString.Add($"pageNext={pageNext}");
+            }
+
+            var url = $"{_baseUrl}/organizations/{organizationId}/taxonomy/concepts/{conceptId}/ancestors";
+
+            if (queryString.Any())
+            {
+                url += "?" + string.Join("&", queryString);
+            }
+
+            var response = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var jsonObject = JObject.Parse(content);
+            return jsonObject.ToObject<ContentfulCollection<TaxonomyConcept>>();
+        }
+
+        /// <inheritdoc />
+        public async Task<int> GetTotalTaxonomyConcepts(string organizationId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organizationId parameter must be set.", nameof(organizationId));
+            }
+
+            var url = $"{_baseUrl}/organizations/{organizationId}/taxonomy/concepts/total";
+
+            using var res = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var jsonObject = await GetJObjectFromResponse(res).ConfigureAwait(false);
+            return jsonObject.Value<int>("total");
+        }
+
+        /// <inheritdoc />
+        public async Task<TaxonomyConceptScheme> GetTaxonomyConceptScheme(string organizationId, string conceptSchemeId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organizationId parameter must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptSchemeId))
+            {
+                throw new ArgumentException("The conceptSchemeId parameter must be set.", nameof(conceptSchemeId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}";
+
+            using var res = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConceptScheme>(res).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<TaxonomyConceptScheme> CreateTaxonomyConceptScheme(string organizationId, TaxonomyConceptScheme conceptScheme, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes";
+            var content = ConvertObjectToJsonStringContent(conceptScheme);
+
+            using var res = await PostAsync(url, content, cancellationToken, null).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConceptScheme>(res).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<TaxonomyConceptScheme> CreateTaxonomyConceptSchemeWithId(string organizationId, string conceptSchemeId, TaxonomyConceptScheme conceptScheme, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptSchemeId))
+            {
+                throw new ArgumentException("The concept scheme ID must be set.", nameof(conceptSchemeId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}";
+            var content = ConvertObjectToJsonStringContent(conceptScheme);
+
+            using var res = await PutAsync(url, content, cancellationToken, null).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConceptScheme>(res).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Updates a taxonomy concept scheme using JSON Patch operations.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptSchemeId">The ID of the concept scheme.</param>
+        /// <param name="version">The version of the concept scheme to update.</param>
+        /// <param name="patches">The JSON Patch operations to apply.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The updated <see cref="TaxonomyConceptScheme"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptSchemeId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task<TaxonomyConceptScheme> UpdateTaxonomyConceptScheme(string organizationId, string conceptSchemeId, int version, IEnumerable<JsonPatchOperation> patches, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptSchemeId))
+            {
+                throw new ArgumentException("The concept scheme ID must be set.", nameof(conceptSchemeId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}";
+            var content = ConvertObjectToJsonStringContent(patches);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json-patch+json");
+
+            using var res = await PatchAsync(url, content, cancellationToken, version).ConfigureAwait(false);
+            return await GetObjectFromResponse<TaxonomyConceptScheme>(res).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Deletes a taxonomy concept scheme.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptSchemeId">The ID of the concept scheme.</param>
+        /// <param name="version">The last known version of the concept scheme.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptSchemeId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        public async Task DeleteTaxonomyConceptScheme(string organizationId, string conceptSchemeId, int version, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            if (string.IsNullOrEmpty(conceptSchemeId))
+            {
+                throw new ArgumentException("The concept scheme ID must be set.", nameof(conceptSchemeId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}";
+            using var res = await DeleteAsync(url, cancellationToken, version).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<ContentfulCollection<TaxonomyConceptScheme>> GetTaxonomyConceptSchemes(string organizationId, int? limit = null, string order = null, string query = null, string pageNext = null, string pagePrev = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organization ID must be set.", nameof(organizationId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes";
+
+            var queryParams = new List<string>();
+            
+            if (limit.HasValue)
+            {
+                queryParams.Add($"limit={limit.Value}");
+            }
+
+            if (!string.IsNullOrEmpty(order))
+            {
+                queryParams.Add($"order={order}");
+            }
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                queryParams.Add($"query={query}");
+            }
+
+            if (!string.IsNullOrEmpty(pageNext))
+            {
+                queryParams.Add($"pageNext={pageNext}");
+            }
+
+            if (!string.IsNullOrEmpty(pagePrev))
+            {
+                queryParams.Add($"pagePrev={pagePrev}");
+            }
+
+            if (queryParams.Any())
+            {
+                url = $"{url}?{string.Join("&", queryParams)}";
+            }
+
+            using var res = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+            return await GetObjectFromResponse<ContentfulCollection<TaxonomyConceptScheme>>(res).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> GetTotalTaxonomyConceptSchemes(string organizationId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(organizationId))
+            {
+                throw new ArgumentException("The organizationId parameter must be set.", nameof(organizationId));
+            }
+
+            var url = $"{_directApiUrl}organizations/{organizationId}/taxonomy/concept-schemes/total";
+
+            using var res = await GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var jsonObject = await GetJObjectFromResponse(res).ConfigureAwait(false);
+            return jsonObject.Value<int>("total");
         }
     }
 }

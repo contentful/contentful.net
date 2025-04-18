@@ -28,10 +28,20 @@
     <None Remove="JsonFiles\SampleUser.json" />
     <None Remove="JsonFiles\UpdateScheduledAction.json" />
     <None Remove="JsonFiles\UsagePeriods.json" />
+    <None Remove="JsonFiles\TaxonomyConcept.json" />
+    <None Remove="JsonFiles\TaxonomyConceptCollection.json" />
+    <None Remove="JsonFiles\TaxonomyConceptDescendantsCollection.json" />
+    <None Remove="JsonFiles\TaxonomyConceptsTotal.json" />
+    <None Remove="JsonFiles\TaxonomyConceptScheme.json" />
+    <None Remove="JsonFiles\TaxonomyConceptSchemesCollection.json" />
+    <None Remove="JsonFiles\TaxonomyConceptSchemesTotal.json" />
+    <None Remove="JsonFiles\ContentTypeWithTaxonomy.json" />
+
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JsonFiles\ApiKey.json" />
     <EmbeddedResource Include="JsonFiles\CancelScheduledAction.json" />
+    <EmbeddedResource Include="JsonFiles\ContentTypeWithTaxonomy.json" />
     <EmbeddedResource Include="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
     <EmbeddedResource Include="JsonFiles\UpdateScheduledAction.json" />
     <EmbeddedResource Include="JsonFiles\GetScheduledAction.json" />
@@ -83,7 +93,9 @@
     <EmbeddedResource Include="JsonFiles\EntriesCollectionManagement.json" />
     <EmbeddedResource Include="JsonFiles\SampleLocale.json" />
     <EmbeddedResource Include="JsonFiles\SampleAssetManagement.json" />
+    <EmbeddedResource Include="JsonFiles\SampleAssetManagementWithConcepts.json" />
     <EmbeddedResource Include="JsonFiles\SampleEntryManagement.json" />
+    <EmbeddedResource Include="JsonFiles\SampleEntryManagementWithConcepts.json" />
     <EmbeddedResource Include="JsonFiles\SampleWebHook.json" />
     <EmbeddedResource Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
     <EmbeddedResource Include="JsonFiles\SnapshotsCollection.json" />
@@ -109,6 +121,15 @@
     <EmbeddedResource Include="JsonFiles\WebhookCollection.json" />
     <EmbeddedResource Include="JsonFiles\WebhookCallDetails.json" />
     <EmbeddedResource Include="JsonFiles\GetScheduledActions.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConcept.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptCollection.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptDescendantsCollection.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptAncestorsCollection.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptsTotal.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptScheme.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptSchemesCollection.json" />
+    <EmbeddedResource Include="JsonFiles\TaxonomyConceptSchemesTotal.json" />
+
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk">

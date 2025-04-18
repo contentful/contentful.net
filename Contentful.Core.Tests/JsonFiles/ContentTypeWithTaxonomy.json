@@ -1,0 +1,59 @@
+{
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "n9r7gd2bwvqt"
+      }
+    },
+    "id": "2PqfXUJwE8qSYKuM0U6w8M",
+    "type": "ContentType",
+    "createdAt": "2016-11-03T10:49:52.264Z",
+    "updatedAt": "2016-11-03T12:43:54.326Z",
+    "revision": 2
+  },
+  "displayField": "title",
+  "name": "Blog Post",
+  "description": null,
+  "fields": [
+    {
+      "id": "title",
+      "name": "Title",
+      "type": "Text",
+      "localized": true,
+      "required": true,
+      "disabled": false,
+      "omitted": false
+    },
+    {
+      "id": "body",
+      "name": "Body",
+      "type": "Text",
+      "localized": true,
+      "required": true,
+      "disabled": false,
+      "omitted": false
+    }
+  ],
+  "metadata": {
+    "taxonomy": [
+      {
+        "required": "false",
+        "sys": {
+          "type": "Link",
+          "linkType": "TaxonomyConcept",
+          "id": "3kZdDUXy9n0l2Xi2cq8TPc"
+        }
+      },
+      {
+        "required": "true",
+        "sys": {
+          "type": "Link",
+          "linkType": "TaxonomyConceptScheme",
+          "id": "2s0F7127ajju1AVToMaCtE"
+        }
+      }
+    ]
+  }
+} 

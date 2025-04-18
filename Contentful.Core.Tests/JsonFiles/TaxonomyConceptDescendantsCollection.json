@@ -1,0 +1,101 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "sys": {
+        "id": "3kZdDUXy9n0l2Xi2cq8TPc",
+        "type": "TaxonomyConcept",
+        "organization": {
+          "sys": {
+            "id": "0D9ZC8rLWiw6x5qizZGiRs",
+            "type": "Link",
+            "linkType": "Organization"
+          }
+        },
+        "createdAt": "2015-05-18T11:29:46.809Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "7BslKh9TdKGOK41VmLDjFZ"
+          }
+        },
+        "updatedAt": "2015-05-18T11:29:46.809Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "4FLrUHftHW3v2BLi9fzfjU"
+          }
+        },
+        "version": 0
+      },
+      "uri": "",
+      "prefLabel": {
+        "en-US": "Sofas"
+      },
+      "altLabels": {
+        "en-US": [
+          "Couches",
+          "Settees"
+        ]
+      },
+      "hiddenLabels": {
+        "en-US": [
+          "Davenports"
+        ]
+      },
+      "notations": [
+        "FURN0017B"
+      ],
+      "note": {
+        "en-US": ""
+      },
+      "changeNote": {
+        "en-US": ""
+      },
+      "definition": {
+        "en-US": ""
+      },
+      "editorialNote": {
+        "en-US": ""
+      },
+      "example": {
+        "en-US": ""
+      },
+      "historyNote": {
+        "en-US": ""
+      },
+      "scopeNote": {
+        "en-US": ""
+      },
+      "broader": [
+        {
+          "sys": {
+            "id": "1Py5SjffQHkGGY3dZ02W14",
+            "type": "Link",
+            "linkType": "TaxonomyConcept"
+          }
+        }
+      ],
+      "related": [
+        {
+          "sys": {
+            "id": "5abcWINB018mASQ5Fdrkbj",
+            "type": "Link",
+            "linkType": "TaxonomyConcept"
+          }
+        }
+      ]
+    }
+  ],
+  "pages": {
+    "prev": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concepts/3kZdDUXy9n0l2Xi2cq8TPc/descendants?pagePrev=cursor123",
+    "next": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concepts/3kZdDUXy9n0l2Xi2cq8TPc/descendants?pageNext=cursor456"
+  }
+} 

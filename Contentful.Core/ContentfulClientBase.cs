@@ -93,53 +93,12 @@ namespace Contentful.Core
         {
             var responseContent = await res.Content.ReadAsStringAsync().ConfigureAwait(false);
             var jsonError = string.IsNullOrEmpty(responseContent) ? null : JObject.Parse(responseContent);
-            var sys = jsonError?.SelectToken("$.sys").ToObject<SystemProperties>();
+            var sys = jsonError?.SelectToken("$.sys")?.ToObject<SystemProperties>();
             var errorDetails = jsonError?.SelectToken("$.details")?.ToObject<ErrorDetails>();
-            var message = jsonError?.SelectToken("$.message")?.ToString();
+            var message = jsonError?.SelectToken("$.message")?.ToString() ?? "An error occurred.";
             var statusCode = (int)res.StatusCode;
 
-            if (string.IsNullOrEmpty(message))
-            {
-                message = GetGenericErrorMessageForStatusCode(statusCode, sys?.Id);
-            }
-
-            if(errorDetails != null)
-            {
-                message += errorDetails.Errors?.ToString();
-            }
-
-            if (statusCode == 429 && res.Headers.TryGetValues("X-Contentful-RateLimit-Reset", out var headers))
-            {
-                var rateLimitException = new ContentfulRateLimitException(message)
-                {
-                    RequestId = jsonError.SelectToken("$.requestId")?.ToString(),
-                    ErrorDetails = errorDetails,
-                    SystemProperties = sys,
-                    SecondsUntilNextRequest = int.TryParse(headers.FirstOrDefault(), out var rateLimitReset) ? rateLimitReset: 0
-                };
-
-                throw rateLimitException;
-            }
-
-            if(statusCode == 504)
-            {
-                var gatewayTimeoutException = new GatewayTimeoutException()
-                {
-                    RequestId = jsonError?.SelectToken("$.requestId")?.ToString(),
-                    ErrorDetails = errorDetails,
-                    SystemProperties = sys
-                };
-
-                throw gatewayTimeoutException;
-            }
-
-            var ex = new ContentfulException(statusCode, message)
-            {
-                RequestId = jsonError.SelectToken("$.requestId")?.ToString(),
-                ErrorDetails = errorDetails,
-                SystemProperties = sys
-            };
-            throw ex;
+            throw new ContentfulException(message, statusCode, sys, errorDetails);
         }
 
         private static string GetGenericErrorMessageForStatusCode(int statusCode, string id)

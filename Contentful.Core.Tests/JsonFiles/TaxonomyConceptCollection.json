@@ -1,0 +1,48 @@
+{
+    "sys": {
+        "type": "Array"
+    },
+    "total": 1,
+    "skip": 0,
+    "limit": 100,
+    "items": [
+        {
+            "sys": {
+                "id": "3kZdDUXy9n0l2Xi2cq8TPc",
+                "type": "TaxonomyConcept",
+                "createdAt": "2024-03-21T10:00:00Z",
+                "updatedAt": "2024-03-21T10:00:00Z"
+            },
+            "prefLabel": {
+                "en-US": "Sofas"
+            },
+            "altLabels": {
+                "en-US": ["Couches", "Couch"]
+            },
+            "hiddenLabels": {
+                "en-US": ["Davenports"]
+            },
+            "notations": ["FURN0017B"],
+            "broader": [
+                {
+                    "sys": {
+                        "id": "1Py5SjffQHkGGY3dZ02W14",
+                        "type": "Link"
+                    }
+                }
+            ],
+            "related": [
+                {
+                    "sys": {
+                        "id": "5abcWINB018mASQ5Fdrkbj",
+                        "type": "Link"
+                    }
+                }
+            ]
+        }
+    ],
+    "pages": {
+        "prev": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concepts?pagePrev=cursor123",
+        "next": "https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concepts?pageNext=cursor456"
+    }
+} 
