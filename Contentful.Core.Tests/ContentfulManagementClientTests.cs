@@ -1,7 +1,6 @@
 ﻿using Contentful.Core.Configuration;
 using Contentful.Core.Models;
 using Contentful.Core.Models.Management;
-using Contentful.Core.Errors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
