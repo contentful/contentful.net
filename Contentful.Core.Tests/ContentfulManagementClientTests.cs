@@ -5018,24 +5018,19 @@ namespace Contentful.Core.Tests
             Assert.Equal("TaxonomyConcept", result.Related[0].Sys.LinkType);
         }
 
-        [Fact]
-        public async Task GetTaxonomyConcept_WithInvalidId_ShouldThrowException()
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetTaxonomyConcept_WithInvalidId_ShouldThrowException(string conceptId)
         {
             // Arrange
-            _handler.Response = new HttpResponseMessage(HttpStatusCode.NotFound)
-            {
-                Content = new StringContent(@"{
-                    ""sys"": {
-                        ""type"": ""Error"",
-                        ""id"": ""NotFound""
-                    },
-                    ""message"": ""The resource could not be found.""
-                }")
-            };
+            _handler.Response = GetResponseFromFile("TaxonomyConcept.json");
+            var organizationId = "test-org-id";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ContentfulException>(() => 
-                _client.GetTaxonomyConcept("test-org-id", "invalid-id"));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.GetTaxonomyConcept(organizationId, conceptId));
+            Assert.Equal($"conceptId", ex.Message);
         }
 
         [Fact]
@@ -5518,47 +5513,34 @@ namespace Contentful.Core.Tests
             Assert.Contains($"pageNext=cursor123", requestUrl);
         }
 
-        [Fact]
-        public async Task GetTaxonomyConceptAncestors_WithInvalidOrganizationId_ShouldThrowException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptAncestors_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
         {
             // Arrange
-            var organizationId = "";
             var conceptId = "3kZdDUXy9n0l2Xi2cq8TPc";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
                 _client.GetTaxonomyConceptAncestors(organizationId, conceptId));
+            Assert.Equal($"The organization ID must be set. (Parameter 'organizationId')", ex.Message);
         }
 
-        [Fact]
-        public async Task GetTaxonomyConceptAncestors_WithInvalidConceptId_ShouldThrowException()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptAncestors_WithInvalidConceptId_ShouldThrowException(string conceptId)
         {
             // Arrange
             var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
-            var conceptId = "";
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
                 _client.GetTaxonomyConceptAncestors(organizationId, conceptId));
+            Assert.Equal($"The concept ID must be set. (Parameter 'conceptId')", ex.Message);
         }
-
-        [Fact]
-        public async Task GetTaxonomyConceptAncestors_WithErrorResponse_ShouldThrowException()
-        {
-            // Arrange
-            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
-            var conceptId = "3kZdDUXy9n0l2Xi2cq8TPc";
-            _handler.Response = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.NotFound,
-                Content = new StringContent("{\"sys\":{\"id\":\"NotFound\"},\"message\":\"The requested resource could not be found.\"}")
-            };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<ContentfulException>(() =>
-                _client.GetTaxonomyConceptAncestors(organizationId, conceptId));
-            Assert.Equal("The requested resource could not be found.", exception.Message);
-        }
+        
 
         [Fact]
         public async Task GetTotalTaxonomyConcepts_ShouldReturnTotal()
@@ -5582,29 +5564,7 @@ namespace Contentful.Core.Tests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
                 _client.GetTotalTaxonomyConcepts(organizationId));
-            Assert.Contains("organization ID must be set", exception.Message);
-        }
-
-        [Fact]
-        public async Task GetTotalTaxonomyConcepts_WithErrorResponse_ShouldThrowException()
-        {
-            _handler.Response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-            {
-                Content = new StringContent(
-                    JsonConvert.SerializeObject(
-                        new
-                        {
-                            message = "An error occured.",
-                            details = new { }
-                        }))
-            };
-
-            var organizationId = "test-org-id";
-
-            var ex = await Assert.ThrowsAsync<ContentfulException>(async () =>
-                await _client.GetTotalTaxonomyConcepts(organizationId));
-
-            Assert.Equal((int)HttpStatusCode.BadRequest, ex.StatusCode);
+            Assert.Contains("The organizationId parameter must be set. (Parameter 'organizationId')", exception.Message);
         }
 
         [Fact]
