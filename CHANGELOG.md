@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Version [1.3.0]
+## Version [8.4.0]
 - Added support for Taxonomy endpoints in the Management API
 - Added support for Taxonomy concepts in Entry and Asset metadata
 - Added new models for TaxonomyConcept and TaxonomyConceptScheme
