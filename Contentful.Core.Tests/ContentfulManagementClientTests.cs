@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -4990,6 +4991,1119 @@ namespace Contentful.Core.Tests
             };
             var client = new ContentfulManagementClient(httpClient, options);
             return client;
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConcept_ShouldReturnConcept()
+        {
+            // Arrange
+            _handler.Response = GetResponseFromFile("TaxonomyConcept.json");
+            var organizationId = "test-org-id";
+            var conceptId = "test-concept-id";
+
+            // Act
+            var result = await _client.GetTaxonomyConcept(organizationId, conceptId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(conceptId, result.SystemProperties.Id);
+            Assert.Equal("Test Concept", result.PrefLabel["en-US"]);
+            Assert.Equal(2, result.AltLabels["en-US"].Length);
+            Assert.Equal("Hidden Label 1", result.HiddenLabels["en-US"][0]);
+            Assert.Equal(2, result.Notations.Length);
+            Assert.Equal("broader-concept-id", result.Broader[0].Sys.Id);
+            Assert.Equal("related-concept-id", result.Related[0].Sys.Id);
+            Assert.Equal("TaxonomyConcept", result.Broader[0].Sys.LinkType);
+            Assert.Equal("TaxonomyConcept", result.Related[0].Sys.LinkType);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task GetTaxonomyConcept_WithInvalidId_ShouldThrowException(string conceptId)
+        {
+            // Arrange
+            _handler.Response = GetResponseFromFile("TaxonomyConcept.json");
+            var organizationId = "test-org-id";
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.GetTaxonomyConcept(organizationId, conceptId));
+            Assert.Equal($"conceptId", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdateTaxonomyConcept_ShouldUpdateConcept()
+        {
+            //Arrange
+            var organizationId = "org123";
+            var conceptId = "concept123";
+            var version = 234;
+            var patches = new[]
+            {
+                new JsonPatchOperation
+                {
+                    Operation = "replace",
+                    Path = "/prefLabel/en-US",
+                    Value = "Updated Label"
+                }
+            };
+
+            _handler.Response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(@"
+                {
+                    ""sys"": {
+                        ""type"": ""TaxonomyConcept"",
+                        ""id"": ""concept123"",
+                        ""version"": 235
+                    },
+                    ""prefLabel"": {
+                        ""en-US"": ""Updated Label""
+                    }
+                }")
+            };
+
+            //Act
+            var result = await _client.UpdateTaxonomyConcept(organizationId, conceptId, version, patches);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal("concept123", result.SystemProperties.Id);
+            Assert.Equal("Updated Label", result.PrefLabel["en-US"]);
+            Assert.Equal(235, result.SystemProperties.Version);
+        }
+
+        [Fact]
+        public async Task UpdateTaxonomyConcept_ShouldSendCorrectHeaders()
+        {
+            //Arrange
+            var organizationId = "org123";
+            var conceptId = "concept123";
+            var version = 234;
+            var patches = new[]
+            {
+                new JsonPatchOperation
+                {
+                    Operation = "replace",
+                    Path = "/prefLabel/en-US",
+                    Value = "Updated Label"
+                }
+            };
+
+            _handler.Response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(@"
+                {
+                    ""sys"": {
+                        ""type"": ""TaxonomyConcept"",
+                        ""id"": ""concept123"",
+                        ""version"": 235
+                    },
+                    ""prefLabel"": {
+                        ""en-US"": ""Updated Label""
+                    }
+                }")
+            };
+
+            var requestMessage = new HttpRequestMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMessage = request;
+            };
+
+            //Act
+            await _client.UpdateTaxonomyConcept(organizationId, conceptId, version, patches);
+
+            //Assert
+            Assert.Equal(new HttpMethod("PATCH"), requestMessage.Method);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concepts/{conceptId}", requestMessage.RequestUri.ToString());
+            Assert.Equal("234", requestMessage.Headers.GetValues("X-Contentful-Version").First());
+            Assert.Equal("application/json-patch+json", requestMessage.Content.Headers.ContentType.MediaType);
+        }
+
+        [Theory]
+        [InlineData(null, "concept123")]
+        [InlineData("", "concept123")]
+        [InlineData("org123", null)]
+        [InlineData("org123", "")]
+        public async Task DeleteTaxonomyConcept_WithInvalidIds_ShouldThrowException(string organizationId, string conceptId)
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new StringContent(@"
+                {
+                    ""sys"": {
+                        ""type"": ""Error"",
+                        ""id"": ""NotFound""
+                    },
+                    ""message"": ""The resource could not be found.""
+                }")
+            };
+
+            //Act
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _client.DeleteTaxonomyConcept(organizationId, conceptId, 1));
+            
+            //Assert
+            Assert.Contains("must be set", ex.Message);
+        }
+
+        [Fact]
+        public async Task DeleteTaxonomyConcept_ShouldSendCorrectHeaders()
+        {
+            //Arrange
+            var organizationId = "org123";
+            var conceptId = "concept123";
+            var version = 234;
+
+            _handler.Response = new HttpResponseMessage(HttpStatusCode.NoContent);
+            var requestMessage = new HttpRequestMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMessage = request;
+            };
+
+            //Act
+            await _client.DeleteTaxonomyConcept(organizationId, conceptId, version);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMessage.Method);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concepts/{conceptId}", requestMessage.RequestUri.ToString());
+            Assert.Equal("234", requestMessage.Headers.GetValues("X-Contentful-Version").First());
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConcept_ShouldCreateConcept()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var concept = new TaxonomyConcept
+            {
+                Uri = "",
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Test Concept" } },
+                AltLabels = new Dictionary<string, string[]> { { "en-US", new[] { "Alternative Label 1", "Alternative Label 2" } } },
+                HiddenLabels = new Dictionary<string, string[]> { { "en-US", new[] { "Hidden Label 1" } } },
+                Notations = new[] { "T1", "T2" },
+                Note = new Dictionary<string, string> { { "en-US", "" } },
+                ChangeNote = new Dictionary<string, string> { { "en-US", "" } },
+                Definition = new Dictionary<string, string> { { "en-US", "" } },
+                EditorialNote = new Dictionary<string, string> { { "en-US", "" } },
+                Example = new Dictionary<string, string> { { "en-US", "" } },
+                HistoryNote = new Dictionary<string, string> { { "en-US", "" } },
+                ScopeNote = new Dictionary<string, string> { { "en-US", "" } },
+                Broader = new[] { new Reference { Sys = new ReferenceProperties { Id = "broader-concept-id", LinkType = "TaxonomyConcept" } } },
+                Related = new[] { new Reference { Sys = new ReferenceProperties { Id = "related-concept-id", LinkType = "TaxonomyConcept" } } }
+            };
+
+            _handler.Response = GetResponseFromFile("TaxonomyConcept.json");
+
+            // Act
+            var result = await _client.CreateTaxonomyConcept(organizationId, concept);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("test-concept-id", result.SystemProperties.Id);
+            Assert.Equal("Test Concept", result.PrefLabel["en-US"]);
+            Assert.Equal(2, result.AltLabels["en-US"].Length);
+            Assert.Equal("Hidden Label 1", result.HiddenLabels["en-US"][0]);
+            Assert.Equal(2, result.Notations.Length);
+            Assert.Equal("broader-concept-id", result.Broader[0].Sys.Id);
+            Assert.Equal("related-concept-id", result.Related[0].Sys.Id);
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConcept_ShouldSendCorrectHeaders()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var concept = new TaxonomyConcept
+            {
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Test Concept" } }
+            };
+
+            _handler.Response = GetResponseFromFile("TaxonomyConcept.json");
+            var requestMessage = new HttpRequestMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMessage = request;
+            };
+
+            // Act
+            await _client.CreateTaxonomyConcept(organizationId, concept);
+
+            // Assert
+            Assert.Equal(HttpMethod.Post, requestMessage.Method);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concepts", requestMessage.RequestUri.ToString());
+            Assert.Equal("application/vnd.contentful.management.v1+json", requestMessage.Content.Headers.ContentType.MediaType);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task CreateTaxonomyConcept_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
+        {
+            // Arrange
+            var concept = new TaxonomyConcept
+            {
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Test Concept" } }
+            };
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.CreateTaxonomyConcept(organizationId, concept));
+            Assert.Contains("must be set", ex.Message);
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConceptWithIdShouldCreateConceptWithCorrectId()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var conceptId = "test-concept-id";
+            var concept = new TaxonomyConcept
+            {
+                PrefLabel = new Dictionary<string, string>
+                {
+                    { "en-US", "Test Concept" }
+                },
+                AltLabels = new Dictionary<string, string[]>
+                {
+                    { "en-US", new[] { "Alternative Label 1", "Alternative Label 2" } }
+                },
+                HiddenLabels = new Dictionary<string, string[]>
+                {
+                    { "en-US", new[] { "Hidden Label 1" } }
+                },
+                Notations = new[] { "T1", "T2" }
+            };
+
+            _handler.Response = GetResponseFromFile(@"TaxonomyConcept.json");
+            string requestUrl = null;
+            _handler.VerifyRequest = (request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            // Act
+            var result = await _client.CreateTaxonomyConceptWithId(organizationId, conceptId, concept);
+
+            // Assert
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concepts/{conceptId}", requestUrl);
+            Assert.Equal(conceptId, result.SystemProperties.Id);
+            Assert.Equal("Test Concept", result.PrefLabel["en-US"]);
+            Assert.Equal(2, result.AltLabels["en-US"].Length);
+            Assert.Equal("Hidden Label 1", result.HiddenLabels["en-US"][0]);
+            Assert.Equal(2, result.Notations.Length);
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConceptWithIdShouldThrowIfOrganizationIdIsNull()
+        {
+            // Arrange
+            var conceptId = "test-concept-id";
+            var concept = new TaxonomyConcept();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.CreateTaxonomyConceptWithId(null, conceptId, concept));
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConceptWithIdShouldThrowIfConceptIdIsNull()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var concept = new TaxonomyConcept();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.CreateTaxonomyConceptWithId(organizationId, null, concept));
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConcepts_ShouldReturnConcepts()
+        {
+            // Arrange
+            _handler.Response = GetResponseFromFile("TaxonomyConceptCollection.json");
+            var organizationId = "test-org-id";
+
+            // Act
+            var result = await _client.GetTaxonomyConcepts(organizationId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(100, result.Limit);
+            Assert.NotNull(result.Pages);
+            Assert.Equal("cursor123", result.Pages.Prev.Split("pagePrev=")[1]);
+            Assert.Equal("cursor456", result.Pages.Next.Split("pageNext=")[1]);
+            Assert.Single(result.Items);
+            var concept = result.Items.First();
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", concept.SystemProperties.Id);
+            Assert.Equal("Sofas", concept.PrefLabel["en-US"]);
+            Assert.Equal(2, concept.AltLabels["en-US"].Length);
+            Assert.Equal("Davenports", concept.HiddenLabels["en-US"][0]);
+            Assert.Equal("FURN0017B", concept.Notations[0]);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", concept.Broader[0].Sys.Id);
+            Assert.Equal("5abcWINB018mASQ5Fdrkbj", concept.Related[0].Sys.Id);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConcepts_WithQueryParameters_ShouldSendCorrectQueryString()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var limit = 10;
+            var order = "sys.createdAt";
+            var conceptScheme = "1Ijjir8N7tiDH7NfX1oAW3";
+            var query = "bed";
+            var pageNext = "cursor123";
+
+            _handler.Response = GetResponseFromFile("TaxonomyConceptCollection.json");
+            var requestUrl = "";
+            _handler.VerifyRequest = (request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            // Act
+            await _client.GetTaxonomyConcepts(organizationId, limit, order, conceptScheme, query, pageNext);
+
+            // Assert
+            Assert.Contains($"limit={limit}", requestUrl);
+            Assert.Contains($"order={order}", requestUrl);
+            Assert.Contains($"conceptScheme={conceptScheme}", requestUrl);
+            Assert.Contains($"query={query}", requestUrl);
+            Assert.Contains($"pageNext={pageNext}", requestUrl);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConcepts_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
+        {
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.GetTaxonomyConcepts(organizationId));
+            Assert.Contains("must be set", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptDescendants_ShouldReturnDescendants()
+        {
+            // Arrange
+            _handler.Response = GetResponseFromFile("TaxonomyConceptDescendantsCollection.json");
+            var organizationId = "test-org-id";
+            var conceptId = "test-concept-id";
+
+            // Act
+            var result = await _client.GetTaxonomyConceptDescendants(organizationId, conceptId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(100, result.Limit);
+            Assert.NotNull(result.Pages);
+            Assert.Equal("cursor123", result.Pages.Prev.Split("pagePrev=")[1]);
+            Assert.Equal("cursor456", result.Pages.Next.Split("pageNext=")[1]);
+            Assert.Single(result.Items);
+            var concept = result.Items.First();
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", concept.SystemProperties.Id);
+            Assert.Equal("Sofas", concept.PrefLabel["en-US"]);
+            Assert.Equal(2, concept.AltLabels["en-US"].Length);
+            Assert.Equal("Davenports", concept.HiddenLabels["en-US"][0]);
+            Assert.Equal("FURN0017B", concept.Notations[0]);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", concept.Broader[0].Sys.Id);
+            Assert.Equal("5abcWINB018mASQ5Fdrkbj", concept.Related[0].Sys.Id);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptDescendants_WithQueryParameters_ShouldSendCorrectQueryString()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var conceptId = "test-concept-id";
+            var depth = 5;
+            var limit = 10;
+            var order = "sys.createdAt";
+            var query = "bed";
+            var pageNext = "cursor123";
+
+            _handler.Response = GetResponseFromFile("TaxonomyConceptDescendantsCollection.json");
+            var requestUrl = "";
+            _handler.VerifyRequest = (request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            // Act
+            await _client.GetTaxonomyConceptDescendants(organizationId, conceptId, depth, limit, order, query, pageNext);
+
+            // Assert
+            Assert.Contains($"depth={depth}", requestUrl);
+            Assert.Contains($"limit={limit}", requestUrl);
+            Assert.Contains($"order={order}", requestUrl);
+            Assert.Contains($"query={query}", requestUrl);
+            Assert.Contains($"pageNext={pageNext}", requestUrl);
+        }
+
+        [Theory]
+        [InlineData(null, "test-concept-id")]
+        [InlineData("", "test-concept-id")]
+        [InlineData("test-org-id", null)]
+        [InlineData("test-org-id", "")]
+        public async Task GetTaxonomyConceptDescendants_WithInvalidIds_ShouldThrowException(string organizationId, string conceptId)
+        {
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.GetTaxonomyConceptDescendants(organizationId, conceptId));
+            Assert.Contains("must be set", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptAncestors_ShouldReturnCollection()
+        {
+            // Arrange
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+            var conceptId = "3kZdDUXy9n0l2Xi2cq8TPc";
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptAncestorsCollection.json");
+
+            // Act
+            var result = await _client.GetTaxonomyConceptAncestors(organizationId, conceptId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result.Items);
+            Assert.Equal("Furniture", result.Items.First().PrefLabel["en-US"]);
+            Assert.Equal("FURN0017", result.Items.First().Notations.First());
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.Items.First().SystemProperties.Id);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptAncestors_WithParameters_ShouldReturnCollection()
+        {
+            // Arrange
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+            var conceptId = "3kZdDUXy9n0l2Xi2cq8TPc";
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptAncestorsCollection.json");
+            var requestUrl = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            // Act
+            var result = await _client.GetTaxonomyConceptAncestors(
+                organizationId,
+                conceptId,
+                depth: 5,
+                limit: 10,
+                order: "sys.createdAt",
+                query: "furniture",
+                pageNext: "cursor123");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result.Items);
+            Assert.Equal("Furniture", result.Items.First().PrefLabel["en-US"]);
+            Assert.Contains($"depth=5", requestUrl);
+            Assert.Contains($"limit=10", requestUrl);
+            Assert.Contains($"order=sys.createdAt", requestUrl);
+            Assert.Contains($"query=furniture", requestUrl);
+            Assert.Contains($"pageNext=cursor123", requestUrl);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptAncestors_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
+        {
+            // Arrange
+            var conceptId = "3kZdDUXy9n0l2Xi2cq8TPc";
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+                _client.GetTaxonomyConceptAncestors(organizationId, conceptId));
+            Assert.Equal($"The organization ID must be set. (Parameter 'organizationId')", ex.Message);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptAncestors_WithInvalidConceptId_ShouldThrowException(string conceptId)
+        {
+            // Arrange
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+                _client.GetTaxonomyConceptAncestors(organizationId, conceptId));
+            Assert.Equal($"The concept ID must be set. (Parameter 'conceptId')", ex.Message);
+        }
+        
+
+        [Fact]
+        public async Task GetTotalTaxonomyConcepts_ShouldReturnTotal()
+        {
+            // Arrange
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptsTotal.json");
+
+            // Act
+            var result = await _client.GetTotalTaxonomyConcepts(organizationId);
+
+            // Assert
+            Assert.Equal(1893, result);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTotalTaxonomyConcepts_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
+        {
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                _client.GetTotalTaxonomyConcepts(organizationId));
+            Assert.Contains("The organizationId parameter must be set. (Parameter 'organizationId')", exception.Message);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptScheme_ShouldReturnConceptScheme()
+        {
+            // Arrange
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptScheme.json");
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+            var conceptSchemeId = "3kZdDUXy9n0l2Xi2cq8TPc";
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+            // Act
+            var result = await _client.GetTaxonomyConceptScheme(organizationId, conceptSchemeId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(conceptSchemeId, result.SystemProperties.Id);
+            Assert.Equal("TaxonomyConceptScheme", result.SystemProperties.Type);
+            Assert.Equal("Home Products", result.PrefLabel["en-US"]);
+            Assert.Equal(1, result.TopConcepts.Count);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Id);
+            Assert.Equal(1, result.Concepts.Count);
+            Assert.Equal(1, result.TotalConcepts);
+
+            Assert.Equal(HttpMethod.Get, requestMethod);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}", requestUrl);
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConceptScheme_ShouldCreateConceptScheme()
+        {
+            // Arrange
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            var requestContent = "";
+
+            var conceptScheme = new TaxonomyConceptScheme
+            {
+                Uri = "",
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Home Products" } },
+                Definition = new Dictionary<string, string> { { "en-US", "" } },
+                TopConcepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } },
+                Concepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } }
+            };
+
+            _handler.Response = GetResponseFromFile("TaxonomyConceptScheme.json");
+            
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+                requestContent = request.Content.ReadAsStringAsync().Result;
+            };
+
+            // Act
+            var result = await _client.CreateTaxonomyConceptScheme(organizationId, conceptScheme);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", result.SystemProperties.Id);
+            Assert.Equal("TaxonomyConceptScheme", result.SystemProperties.Type);
+            Assert.Equal("Home Products", result.PrefLabel["en-US"]);
+            Assert.Equal(1, result.TopConcepts.Count);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Id);
+
+            Assert.Equal(HttpMethod.Post, requestMethod);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes", requestUrl);
+            Assert.Contains("\"uri\":\"\"", requestContent);
+            Assert.Contains("\"prefLabel\":{\"en-US\":\"Home Products\"}", requestContent);
+            Assert.Contains("\"concepts\":[{\"id\":\"1Py5SjffQHkGGY3dZ02W14\"}]", requestContent);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task CreateTaxonomyConceptScheme_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
+        {
+            // Arrange
+            var conceptScheme = new TaxonomyConceptScheme
+            {
+                Uri = "",
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Test Scheme" } }
+            };
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await _client.CreateTaxonomyConceptScheme(organizationId, conceptScheme));
+
+            Assert.Contains("organization ID must be set", ex.Message);
+            Assert.Equal("organizationId", ex.ParamName);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptScheme_WithInvalidOrganizationId_ShouldThrowException(string organizationId)
+        {
+            // Arrange
+            var conceptSchemeId = "valid-scheme-id";
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await _client.GetTaxonomyConceptScheme(organizationId, conceptSchemeId));
+
+            Assert.Equal("organizationId", ex.ParamName);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptScheme_WithInvalidConceptSchemeId_ShouldThrowException(string conceptSchemeId)
+        {
+            //Arrange
+            var organizationId = "test-org-id";
+
+            //Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await _client.GetTaxonomyConceptScheme(organizationId, conceptSchemeId));
+
+            Assert.Contains("conceptSchemeId parameter must be set", ex.Message);
+            Assert.Equal("conceptSchemeId", ex.ParamName);
+        }
+
+        [Fact]
+        public async Task UpdateTaxonomyConceptScheme_ShouldUpdateConceptScheme()
+        {
+            //Arrange
+            var organizationId = "test-org-id";
+            var conceptSchemeId = "test-scheme-id";
+            var version = 1;
+            var patches = new[]
+            {
+                new JsonPatchOperation
+                {
+                    Operation = "replace",
+                    Path = "/prefLabel/en-US",
+                    Value = "Updated Scheme Label"
+                }
+            };
+
+            _handler.Response = GetResponseFromFile("TaxonomyConceptScheme.json");
+
+            // Act
+            var result = await _client.UpdateTaxonomyConceptScheme(organizationId, conceptSchemeId, version, patches);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", result.SystemProperties.Id);
+            Assert.Equal("Home Products", result.PrefLabel["en-US"]);
+        }
+
+        [Theory]
+        [InlineData(null, "scheme123")]
+        [InlineData("", "scheme123")]
+        [InlineData("org123", null)]
+        [InlineData("org123", "")]
+        public async Task DeleteTaxonomyConceptScheme_WithInvalidIds_ShouldThrowException(string organizationId, string conceptSchemeId)
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new StringContent(@"
+                {
+                    ""sys"": {
+                        ""type"": ""Error"",
+                        ""id"": ""NotFound""
+                    },
+                    ""message"": ""The resource could not be found.""
+                }")
+            };
+
+            //Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await _client.DeleteTaxonomyConceptScheme(organizationId, conceptSchemeId, 1));
+            
+            //Assert
+            Assert.Contains("must be set", ex.Message);
+        }
+
+        [Fact]
+        public async Task DeleteTaxonomyConceptScheme_ShouldSendCorrectHeaders()
+        {
+            //Arrange
+            var organizationId = "org123";
+            var conceptSchemeId = "scheme123";
+            var version = 4;
+
+            _handler.Response = new HttpResponseMessage(HttpStatusCode.NoContent);
+            var requestMessage = new HttpRequestMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMessage = request;
+            };
+
+            //Act
+            await _client.DeleteTaxonomyConceptScheme(organizationId, conceptSchemeId, version);
+
+            //Assert
+            Assert.Equal(HttpMethod.Delete, requestMessage.Method);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}", requestMessage.RequestUri.ToString());
+            Assert.Equal("4", requestMessage.Headers.GetValues("X-Contentful-Version").First());
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConceptSchemeWithId_ShouldCreateSchemeWithCorrectId()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var conceptSchemeId = "test-scheme-id";
+            HttpMethod requestMethod = null;
+            string requestUrl = null;
+            string requestContent = "";
+
+            var conceptScheme = new TaxonomyConceptScheme
+            {
+                Uri = "",
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Home Products" } },
+                Definition = new Dictionary<string, string> { { "en-US", "" } },
+                TopConcepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } },
+                Concepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } }
+            };
+
+            _handler.Response = GetResponseFromFile("TaxonomyConceptScheme.json");
+            
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+                requestContent = request.Content.ReadAsStringAsync().Result;
+            };
+
+            // Act
+            var result = await _client.CreateTaxonomyConceptSchemeWithId(organizationId, conceptSchemeId, conceptScheme);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", result.SystemProperties.Id);
+            Assert.Equal("TaxonomyConceptScheme", result.SystemProperties.Type);
+            Assert.Equal("Home Products", result.PrefLabel["en-US"]);
+            Assert.Equal(1, result.TopConcepts.Count);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Id);
+
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}", requestUrl);
+            Assert.Contains("\"uri\":\"\"", requestContent);
+            Assert.Contains("\"prefLabel\":{\"en-US\":\"Home Products\"}", requestContent);
+            Assert.Contains("\"concepts\":[{\"id\":\"1Py5SjffQHkGGY3dZ02W14\"}]", requestContent);
+        }
+
+        [Fact]
+        public async Task CreateTaxonomyConceptSchemeWithId_ShouldThrowIfOrganizationIdIsNull()
+        {
+            // Arrange
+            var conceptSchemeId = "test-scheme-id";
+            var conceptScheme = new TaxonomyConceptScheme
+            {
+                Uri = "",
+                PrefLabel = new Dictionary<string, string> { { "en-US", "Test Scheme" } }
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => 
+                _client.CreateTaxonomyConceptSchemeWithId(null, conceptSchemeId, conceptScheme));
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptSchemes_ShouldReturnConceptSchemes()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptSchemesCollection.json");
+
+            // Act
+            var result = await _client.GetTaxonomyConceptSchemes(organizationId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Items.Count());
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", result.Items.First().SystemProperties.Id);
+            Assert.Equal("Furniture Categories", result.Items.First().PrefLabel["en-US"]);
+            Assert.Equal("Electronics Categories", result.Items.Last().PrefLabel["en-US"]);
+            Assert.Equal(5, result.Limit);
+            Assert.Equal("https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concept-schemes?pageNext=prevCursor", result.Pages.Prev);
+            Assert.Equal("https://api.contentful.com/organizations/0D9ZC8rLWiw6x5qizZGiRs/taxonomy/concept-schemes?pageNext=nextCursor", result.Pages.Next);
+        }
+
+        [Fact]
+        public async Task GetTaxonomyConceptSchemes_WithQueryParameters_ShouldSendCorrectQueryString()
+        {
+            // Arrange
+            var organizationId = "test-org-id";
+            var limit = 10;
+            var order = "sys.createdAt";
+            var query = "furniture";
+            var pageNext = "nextCursor";
+            var pagePrev = "prevCursor";
+
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptSchemesCollection.json");
+            var requestMessage = new HttpRequestMessage();
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMessage = request;
+            };
+
+            // Act
+            var result = await _client.GetTaxonomyConceptSchemes(organizationId, limit, order, query, pageNext, pagePrev);
+
+            // Assert
+            Assert.Equal(HttpMethod.Get, requestMessage.Method);
+            var expectedUri = $"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes?limit={limit}&order={order}&query={query}&pageNext={pageNext}&pagePrev={pagePrev}";
+            Assert.Equal(expectedUri, requestMessage.RequestUri.ToString());
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task GetTaxonomyConceptSchemes_WithInvalidOrganizationId_ShouldThrowException(
+            string organizationId)
+        {
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ArgumentException>(
+                () => _client.GetTaxonomyConceptSchemes(organizationId));
+            Assert.Contains("organization ID must be set", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetTotalTaxonomyConceptSchemes_ShouldReturnTotal()
+        {
+            // Arrange
+            var organizationId = "0D9ZC8rLWiw6x5qizZGiRs";
+            _handler.Response = GetResponseFromFile(@"TaxonomyConceptSchemesTotal.json");
+
+            // Act
+            var result = await _client.GetTotalTaxonomyConceptSchemes(organizationId);
+
+            // Assert
+            Assert.Equal(3, result);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateContentTypeWithTaxonomyShouldCreateCorrectObject()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"ContentTypeWithTaxonomy.json");
+            
+            var contentType = new ContentType()
+            {
+                Name = "Blog Post",
+                DisplayField = "title",
+                SystemProperties = new SystemProperties() { Id = "hfM9RCJIk0wIm06WkEOQY" },
+                Fields = new List<Field>()
+                {
+                    new Field
+                    {
+                        Id = "title",
+                        Name = "Title",
+                        Required = true,
+                        Localized = true,
+                        Type = "Text"
+                    },
+                    new Field
+                    {
+                        Id = "body",
+                        Name = "Body",
+                        Required = true,
+                        Localized = true,
+                        Type = "Text"
+                    }
+                },
+                Metadata = new ContentTypeMetadata
+                {
+                    Taxonomy = new List<TaxonomyReference>
+                    {
+                        new TaxonomyReference
+                        {
+                            Required = "false",
+                            Sys = new ReferenceProperties
+                            {
+                                LinkType = SystemLinkTypes.TaxonomyConcept,
+                                Id = "3kZdDUXy9n0l2Xi2cq8TPc"
+                            }
+                        },
+                        new TaxonomyReference
+                        {
+                            Required = "true",
+                            Sys = new ReferenceProperties
+                            {
+                                LinkType = SystemLinkTypes.TaxonomyConceptScheme,
+                                Id = "2s0F7127ajju1AVToMaCtE"
+                            }
+                        }
+                    }
+                }
+            };
+
+            var contentSet = "";
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+
+            //Act
+            var res = await _client.CreateOrUpdateContentType(contentType);
+
+            //Assert
+            Assert.NotNull(res.Metadata);
+            Assert.NotNull(res.Metadata.Taxonomy);
+            Assert.Equal(2, res.Metadata.Taxonomy.Count);
+            
+            Assert.Equal("false", res.Metadata.Taxonomy[0].Required);
+            Assert.Equal(SystemLinkTypes.TaxonomyConcept, res.Metadata.Taxonomy[0].Sys.LinkType);
+            Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", res.Metadata.Taxonomy[0].Sys.Id);
+            
+            Assert.Equal("true", res.Metadata.Taxonomy[1].Required);
+            Assert.Equal(SystemLinkTypes.TaxonomyConceptScheme, res.Metadata.Taxonomy[1].Sys.LinkType);
+            Assert.Equal("2s0F7127ajju1AVToMaCtE", res.Metadata.Taxonomy[1].Sys.Id);
+            
+            Assert.Contains(@"""taxonomy"":[{""required"":""false"",""sys"":{""type"":""Link"",""linkType"":""TaxonomyConcept"",""id"":""3kZdDUXy9n0l2Xi2cq8TPc""}},{""required"":""true"",""sys"":{""type"":""Link"",""linkType"":""TaxonomyConceptScheme"",""id"":""2s0F7127ajju1AVToMaCtE""}}]", contentSet);
+        }
+        
+        [Fact]
+        public async Task CreateAssetWithConceptsInMetadata_ShouldCreateCorrectObject()
+        {
+            // Arrange
+            HttpMethod requestMethod = null;
+            string requestUrl = null;
+            string requestContent = "";
+
+            var asset = new ManagementAsset()
+            {
+                SystemProperties = new SystemProperties()
+                {
+                    Type = "Asset",
+                    Id = "test-asset-id"
+                },
+                Title = new Dictionary<string, string>
+                {
+                    { "en-US", "Playsam Streamliner" }
+                },
+                Files = new Dictionary<string, File>
+                {
+                    {
+                        "en-US", new File
+                        {
+                            ContentType = "image/jpeg",
+                            FileName = "example.jpeg",
+                            UploadUrl = "https://example.com/example.jpg"
+                        }
+                    }
+                },
+                Metadata = new ContentfulMetadata()
+                {
+                    Tags = new List<Reference>(),
+                    Concepts = new List<Reference>()
+                    {
+                        new Reference() { Sys = new ReferenceProperties
+                        {
+                            Id = "3kZdDUXy9n0l2Xi2cq8TPc",
+                            LinkType = SystemLinkTypes.TaxonomyConcept
+                        }}
+                    }
+                }
+            };
+
+            _handler.Response = GetResponseFromFile(@"SampleAssetManagementWithConcepts.json");
+            
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+                requestContent = request.Content.ReadAsStringAsync().Result;
+            };
+
+            // Act
+            var result = await _client.CreateOrUpdateAsset(asset);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal("https://api.contentful.com/spaces/666/assets/test-asset-id", requestUrl);
+            Assert.Contains(@"""metadata"":{", requestContent);
+            Assert.Contains(@"""concepts"":[{""sys"":{""type"":""Link"",""linkType"":""TaxonomyConcept"",""id"":""3kZdDUXy9n0l2Xi2cq8TPc""}}]", requestContent);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdateEntryWithConceptsInMetadata_ShouldCreateCorrectObject()
+        {
+            // Arrange
+            var contentTypeId = "test-content-type";
+            HttpMethod requestMethod = null;
+            string requestUrl = null;
+            string requestContent = "";
+
+            var entry = new Entry<dynamic>()
+            {
+                SystemProperties = new SystemProperties()
+                {
+                    Id = "test-entry-id",
+                    Type = "Entry"
+                },
+                Fields = new ExpandoObject(),
+                Metadata = new ContentfulMetadata()
+                {
+                    Concepts = new List<Reference>()
+                    {
+                        new Reference() { Sys = new ReferenceProperties()
+                        {
+                            Id = "3kZdDUXy9n0l2Xi2cq8TPc",
+                            LinkType = SystemLinkTypes.TaxonomyConcept,
+                        }}
+                    }
+                }
+            };
+
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagementWithConcepts.json");
+            
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+                requestContent = request.Content.ReadAsStringAsync().Result;
+            };
+
+            // Act
+            var result = await _client.CreateOrUpdateEntry(entry, contentTypeId: contentTypeId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal($"https://api.contentful.com/spaces/666/entries/test-entry-id", requestUrl);
+            Assert.Contains(@"""metadata"":{", requestContent);
+            Assert.Contains(@"""concepts"":[{""sys"":{""type"":""Link"",""linkType"":""TaxonomyConcept"",""id"":""3kZdDUXy9n0l2Xi2cq8TPc""}}]", requestContent);
         }
     }
 }
