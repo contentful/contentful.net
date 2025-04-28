@@ -2538,6 +2538,41 @@ namespace Contentful.Core.Tests
         }
 
         [Theory]
+        [InlineData("test-role-123", 42)]
+        [InlineData("another-role-456", 99)]
+        public async Task UpdateRoleShouldSetVersionHeader(string id, int version)
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleRole.json");
+
+            var role = new Role()
+            {
+                SystemProperties = new SystemProperties()
+                {
+                    Id = id,
+                    Version = version
+                },
+                Name = "Test Role",
+                Description = "Test role description"
+            };
+            
+            var versionHeader = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                if (request.Headers.TryGetValues("X-Contentful-Version", out var values))
+                {
+                    versionHeader = values.FirstOrDefault();
+                }
+            };
+
+            //Act
+            var res = await _client.UpdateRole(role);
+
+            //Assert
+            Assert.Equal(version.ToString(), versionHeader);
+        }
+
+        [Theory]
         [InlineData("09hfdh4-34")]
         [InlineData("643")]
         [InlineData("fdgs34")]
