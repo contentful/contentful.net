@@ -9,8 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -2736,10 +2736,10 @@ namespace Contentful.Core
             return SendHttpRequest(url, new HttpMethod("PATCH"), _options.ManagementApiKey, cancellationToken, content, version, contentTypeId, organisationId, additionalHeaders);
         }
 
-        private static StringContent ConvertObjectToJsonStringContent(object ob)
+        private static readonly MediaTypeHeaderValue ManagementClientMediaTypeHeaderValue = new("application/vnd.contentful.management.v1+json");
+        private static NewtonsoftJsonUtf8Content ConvertObjectToJsonStringContent(object ob)
         {
-            var serializedObject = ob.ConvertObjectToJsonString();
-            return new StringContent(serializedObject, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
+            return ob.ToNewtonsoftJsonUtf8HttpContent(mediaTypeHeaderValue: in ManagementClientMediaTypeHeaderValue);
         }
 
         /// <summary>
