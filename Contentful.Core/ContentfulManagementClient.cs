@@ -1440,11 +1440,12 @@ namespace Contentful.Core
             }
 
             var id = role.SystemProperties.Id;
+            var version = role.SystemProperties.Version;
 
             //Not allowed to post system properties
             role.SystemProperties = null;
 
-            using var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role), cancellationToken, null).ConfigureAwait(false);
+            using var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/roles/{id}", ConvertObjectToJsonStringContent(role), cancellationToken, version).ConfigureAwait(false);
 
             return await GetObjectFromResponse<Role>(res).ConfigureAwait(false);
         }
