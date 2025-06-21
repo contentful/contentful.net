@@ -315,6 +315,8 @@ namespace Contentful.Core
                 }
                 if((int)response.StatusCode == 429 && _options.MaxNumberOfRateLimitRetries > 0)
                 {
+                    var requestMessage = response.RequestMessage;
+                    
                     //Limit retries to 10 regardless of config
                     for (var i = 0; i < _options.MaxNumberOfRateLimitRetries && i < 10; i++)
                     {
@@ -327,7 +329,13 @@ namespace Contentful.Core
                             await Task.Delay(ex.SecondsUntilNextRequest * 1000).ConfigureAwait(false);
                         }
                        
-                        using var clonedMessage = await CloneHttpRequest(response.RequestMessage);
+                        if (requestMessage == null)
+                        {
+                            // If we don't have a request message to clone, we can't retry
+                            break;
+                        }
+
+                        using var clonedMessage = await CloneHttpRequest(requestMessage);
 
                         response = await _httpClient.SendAsync(clonedMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 

@@ -269,6 +269,56 @@ namespace Contentful.Core.Tests
         }
 
         [Fact]
+        public async Task MultipleRateLimitResponsesShouldNotThrowObjectDisposedException()
+        {
+            //Arrange
+            _handler = new FakeMessageHandler();
+            var httpClient = new HttpClient(_handler);
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "123",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                MaxNumberOfRateLimitRetries = 2  // Set to 2 to trigger the issue on second retry
+            });
+
+            var response1 = GetResponseFromFile(@"ErrorRateLimit.json");
+            response1.StatusCode = (HttpStatusCode)429;
+            response1.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+
+            var response2 = GetResponseFromFile(@"ErrorRateLimit.json");
+            response2.StatusCode = (HttpStatusCode)429;
+            response2.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+
+            var response3 = GetResponseFromFile(@"ErrorRateLimit.json");
+            response3.StatusCode = (HttpStatusCode)429;
+            response3.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+
+            _handler.Response = response1;
+            var numberOfTimesCalled = 0;
+            
+            _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
+            _handler.VerifyRequest = (HttpRequestMessage msg) => { 
+                response1.RequestMessage = msg;
+                response2.RequestMessage = msg;
+                response3.RequestMessage = msg;
+            };
+
+            _handler.Responses.Enqueue(response1);
+            _handler.Responses.Enqueue(response2);
+            _handler.Responses.Enqueue(response3);
+
+            //Act & Assert
+            // With the fix, this should throw ContentfulRateLimitException after all retries
+            // This test verifies that we don't get ObjectDisposedException when multiple 429s occur
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntry<TestEntryModel>("12"));
+            
+            //Verify we made the expected number of calls (1 initial + 2 retries)
+            Assert.Equal(3, numberOfTimesCalled);
+        }
+
+        [Fact]
         public async Task GatewayTimeoutExceptionShouldBeThrownCorrectly()
         {
             //Arrange
