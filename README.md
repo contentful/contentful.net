@@ -64,8 +64,10 @@
 
 ## Getting started
 
+This repository is the source of two NuGet Packages: *contentful.csharp* and *contentful.aspnetcore*.
 We recommend you use the NuGet Package Manager to add the library to your .NET Application using one of the following options:
 
+### contentful.csharp
 - In Visual Studio, open Package Manager Console window and run the following command:
 
   ```powershell
@@ -76,6 +78,18 @@ We recommend you use the NuGet Package Manager to add the library to your .NET A
 
   ```console
   > dotnet add package contentful.csharp
+  ```
+### contentful.aspnetcore
+- In Visual Studio, open Package Manager Console window and run the following command:
+
+  ```powershell
+  PM> Install-Package contentful.aspnetcore
+  ```
+
+- In a command-line, run the following .NET CLI command:
+
+  ```console
+  > dotnet add package contentful.aspnetcore
   ```
 
 ## Usage
@@ -102,7 +116,15 @@ var options = new ContentfulOptions
 var client = new ContentfulClient(httpClient, options);
 ```
 
-If you are running asp.net core and wish to take advantage of [the options pattern][2] you can do so by passing an `IOptions<ContentfulOptions>` to the constructor. This lets you keep your authorization token in your application settings, in environment variables or your own custom `Microsoft.Extensions.Configuration.IConfigurationSource` provider.
+If you are running asp.net core and wish to take advantage of [the options pattern][2] you can add the *contentful.aspnetcore* package to your project. You can update your appsettings.json as described here https://www.contentful.com/developers/docs/net/tutorials/aspnet-core/ then in your Program.cs you can add: 
+
+```csharp
+using Contentful.AspNetCore;
+
+
+builder.Services.AddContentful(builder.Configuration);
+```
+This lets you keep your authorization tokens in your application settings.
 
 ### Your first request
 
