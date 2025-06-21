@@ -14,5 +14,10 @@ namespace Contentful.Core.Models
         /// The tags associated with this entry or asset.
         /// </summary>
         public List<Reference> Tags { get; set; }
+
+        /// <summary>
+        /// The taxonomy concepts associated with this entry or asset.
+        /// </summary>
+        public List<Reference> Concepts { get; set; }
     }
 }

@@ -50,6 +50,16 @@ namespace Contentful.Core.Models.Management
         public const string Environment = "Environment";
 
         /// <summary>
+        /// A reference to a taxonomy concept.
+        /// </summary>
+        public const string TaxonomyConcept = "TaxonomyConcept";
+
+        /// <summary>
+        /// A reference to a taxonomy concept scheme.
+        /// </summary>
+        public const string TaxonomyConceptScheme = "TaxonomyConceptScheme";
+
+        /// <summary>
         /// A reference to an entry.
         /// </summary>
         public const string CrossSpaceEntry = "Contentful:Entry";

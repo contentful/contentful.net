@@ -309,6 +309,9 @@ namespace Contentful.Core
         {
             if (!response.IsSuccessStatusCode)
             {
+                // Store the original request message to prevent disposal issues during retries
+                var requestMessage = response.RequestMessage;
+                
                 if(response.StatusCode == System.Net.HttpStatusCode.NotModified)
                 {
                     return response;
@@ -322,19 +325,20 @@ namespace Contentful.Core
                     {
                         try
                         {
-                            await CreateExceptionForFailedRequest(response).ConfigureAwait(false); ;
+                            await CreateExceptionForFailedRequest(response).ConfigureAwait(false);
                         }
                         catch (ContentfulRateLimitException ex)
                         {
                             await Task.Delay(ex.SecondsUntilNextRequest * 1000).ConfigureAwait(false);
                         }
-                       
+
                         if (requestMessage == null)
                         {
                             // If we don't have a request message to clone, we can't retry
                             break;
                         }
 
+                        // Clone from the original request message to avoid disposed message issues
                         using var clonedMessage = await CloneHttpRequest(requestMessage);
 
                         response = await _httpClient.SendAsync(clonedMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
