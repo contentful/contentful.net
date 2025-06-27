@@ -14,4 +14,3 @@ Backup/
 *.nuget.targets
 *.orig
 .ionide/
-.idea/
