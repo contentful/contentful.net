@@ -90,7 +90,10 @@ namespace Contentful.Core.Models
         /// The link to the status that the current object had. Used only for resources that have a status.
         /// </summary>
         public Status Status { get; set; }
+
+        /// <summary>
+        /// The link to the field status that the current object has. Used to get locale based publishing status.
+        /// </summary>
+        public FieldStatus FieldStatus { get; set; }
     }
 }
-
-
