@@ -1195,5 +1195,196 @@ namespace Contentful.Core
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         Task<ScheduledAction> CancelScheduledAction(string scheduledActionId, string environmentId, string spaceId = null,
             CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a taxonomy concept by its ID.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the taxonomy concept.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="TaxonomyConcept"/>.</returns>
+        Task<TaxonomyConcept> GetTaxonomyConcept(string organizationId, string conceptId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Updates a taxonomy concept using JSON Patch format.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the taxonomy concept.</param>
+        /// <param name="version">The last known version of the concept.</param>
+        /// <param name="patches">The JSON Patch operations to apply.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The updated <see cref="TaxonomyConcept"/>.</returns>
+        Task<TaxonomyConcept> UpdateTaxonomyConcept(string organizationId, string conceptId, int version, IEnumerable<JsonPatchOperation> patches, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes a taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the taxonomy concept.</param>
+        /// <param name="version">The last known version of the concept.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task DeleteTaxonomyConcept(string organizationId, string conceptId, int version, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a new taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="concept">The taxonomy concept to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="TaxonomyConcept"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<TaxonomyConcept> CreateTaxonomyConcept(string organizationId, TaxonomyConcept concept, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a taxonomy concept with a user-defined ID.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The user-defined ID of the concept.</param>
+        /// <param name="concept">The taxonomy concept to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created taxonomy concept.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptId must be set.</exception>
+        /// <exception cref="ContentfulException">There was an error communicating with the Contentful API.</exception>
+        Task<TaxonomyConcept> CreateTaxonomyConceptWithId(string organizationId, string conceptId, TaxonomyConcept concept, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a collection of taxonomy concepts for an organization.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="limit">Limits the maximum number of concepts returned (per page).</param>
+        /// <param name="order">Order the results by a field. Options: sys.createdAt, sys.updatedAt, prefLabel, -sys.createdAt, -sys.updatedAt, -prefLabel</param>
+        /// <param name="conceptScheme">Return only concepts belonging to the specified concept scheme.</param>
+        /// <param name="query">Filter results using a full-text search query, looking at prefLabel, altLabels, hiddenLabels and notations fields.</param>
+        /// <param name="pageNext">Pagination cursor from which to return the next page of concepts.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{TaxonomyConcept}"/> of taxonomy concepts.</returns>
+        /// <exception cref="ArgumentException">The <see name="organizationId">organizationId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<TaxonomyConcept>> GetTaxonomyConcepts(string organizationId, int? limit = null, string order = null, string conceptScheme = null, string query = null, string pageNext = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a collection of descendants for a taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the concept.</param>
+        /// <param name="depth">Number of levels to traverse downwards to retrieve descendants. Default=1 (i.e. direct children only).</param>
+        /// <param name="limit">Limits the maximum number of concepts returned (per page).</param>
+        /// <param name="order">Order the results by a field. Options: sys.createdAt, sys.updatedAt, prefLabel, -sys.createdAt, -sys.updatedAt, -prefLabel</param>
+        /// <param name="query">Filter results using a full-text search query, looking at prefLabel, altLabels, hiddenLabels and notations fields.</param>
+        /// <param name="pageNext">Pagination cursor from which to return the next page of concepts.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{TaxonomyConcept}"/> of taxonomy concept descendants.</returns>
+        /// <exception cref="ArgumentException">The <see name="organizationId">organizationId</see> or <see name="conceptId">conceptId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<TaxonomyConcept>> GetTaxonomyConceptDescendants(string organizationId, string conceptId, int? depth = null, int? limit = null, string order = null, string query = null, string pageNext = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets the ancestors of a taxonomy concept.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptId">The ID of the concept.</param>
+        /// <param name="depth">Number of levels to traverse upwards to retrieve ancestors. Default=1 (i.e. direct parents only).</param>
+        /// <param name="limit">Limits the maximum number of concepts returned (per page).</param>
+        /// <param name="order">Order by field. Options: sys.createdAt, sys.updatedAt, prefLabel, -sys.createdAt, -sys.updatedAt, -prefLabel.</param>
+        /// <param name="query">Filter results using a full-text search query, looking at prefLabel, altLabels, hiddenLabels and notations fields.</param>
+        /// <param name="pageNext">Pagination cursor from which to return the next page of concepts.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A collection of taxonomy concepts.</returns>
+        /// <exception cref="ArgumentException">The organization ID or concept ID must be set.</exception>
+        Task<ContentfulCollection<TaxonomyConcept>> GetTaxonomyConceptAncestors(string organizationId, string conceptId, int? depth = null, int? limit = null, string order = null, string query = null, string pageNext = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets the total number of taxonomy concepts in an organization.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the total number of concepts.</returns>
+        Task<int> GetTotalTaxonomyConcepts(string organizationId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a concept scheme by its ID.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptSchemeId">The ID of the concept scheme.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="TaxonomyConceptScheme"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptSchemeId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<TaxonomyConceptScheme> GetTaxonomyConceptScheme(string organizationId, string conceptSchemeId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a new taxonomy concept scheme in an organization.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptScheme">The taxonomy concept scheme to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created <see cref="TaxonomyConceptScheme"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<TaxonomyConceptScheme> CreateTaxonomyConceptScheme(string organizationId, TaxonomyConceptScheme conceptScheme, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Creates a taxonomy concept scheme with a user-defined ID.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptSchemeId">The user-defined ID of the concept scheme.</param>
+        /// <param name="conceptScheme">The taxonomy concept scheme to create.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The created taxonomy concept scheme.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptSchemeId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<TaxonomyConceptScheme> CreateTaxonomyConceptSchemeWithId(string organizationId, string conceptSchemeId, TaxonomyConceptScheme conceptScheme, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Updates a taxonomy concept scheme using JSON Patch operations.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptSchemeId">The ID of the concept scheme.</param>
+        /// <param name="version">The version of the concept scheme to update.</param>
+        /// <param name="patches">The JSON Patch operations to apply.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The updated <see cref="TaxonomyConceptScheme"/>.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptSchemeId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<TaxonomyConceptScheme> UpdateTaxonomyConceptScheme(string organizationId, string conceptSchemeId, int version, IEnumerable<JsonPatchOperation> patches, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes a taxonomy concept scheme.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="conceptSchemeId">The ID of the concept scheme.</param>
+        /// <param name="version">The last known version of the concept scheme.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentException">The organizationId or conceptSchemeId parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task DeleteTaxonomyConceptScheme(string organizationId, string conceptSchemeId, int version, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets a collection of concept schemes for an organization.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="limit">Limits the maximum number of concept schemes returned (per page).</param>
+        /// <param name="order">Order the results by a field. Options: sys.createdAt, sys.updatedAt, prefLabel, totalConcepts, -sys.createdAt, -sys.updatedAt, -prefLabel, -totalConcepts</param>
+        /// <param name="query">Filter results using a full-text search query, looking at prefLabel, altLabels, hiddenLabels and notations fields.</param>
+        /// <param name="pageNext">Pagination cursor from which to return the next page of concept schemes.</param>
+        /// <param name="pagePrev">Pagination cursor from which to return the previous page of concept schemes.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="ContentfulCollection{TaxonomyConceptScheme}"/> of concept schemes.</returns>
+        /// <exception cref="ArgumentException">The <see name="organizationId">organizationId</see> parameter was null or empty.</exception>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        Task<ContentfulCollection<TaxonomyConceptScheme>> GetTaxonomyConceptSchemes(string organizationId, int? limit = null, string order = null, string query = null, string pageNext = null, string pagePrev = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gets the total number of taxonomy concept schemes in an organization.
+        /// </summary>
+        /// <param name="organizationId">The ID of the organization.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the total number of concept schemes.</returns>
+        Task<int> GetTotalTaxonomyConceptSchemes(string organizationId, CancellationToken cancellationToken = default);
     }
 }

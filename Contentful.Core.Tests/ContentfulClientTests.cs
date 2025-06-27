@@ -1695,6 +1695,38 @@ namespace Contentful.Core.Tests
             Assert.Equal("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE6MSJ9.eyJleHAiOjE2Mzc2MjM4MDAsInN1YiI6InRlc3RzcGFjZXZhbHVlIiwiYXVkIjoiYWRuIiwianRpIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwiY3RmOnVucHViIjp0cnVlfQ.BHtBHdrInzu3KtGxTJ7FLxGF0WN9HEdJ9C5CeB3hx7g", res.Policy);
         }
 
+        [Fact]
+        public async Task RateLimitWithMultipleRetriesShouldNotThrowObjectDisposedException()
+        {
+            //Arrange
+            _handler = new FakeMessageHandler();
+            var httpClient = new HttpClient(_handler);
+            _client = new ContentfulClient(httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "123",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                MaxNumberOfRateLimitRetries = 3
+            });
+
+            var response = GetResponseFromFile(@"ErrorRateLimit.json");
+            response.StatusCode = (HttpStatusCode)429;
+            response.Headers.Add("X-Contentful-RateLimit-Reset", "1");
+            
+            _handler.Response = response;
+            var numberOfTimesCalled = 0;
+            _handler.VerificationBeforeSend = () => { numberOfTimesCalled++; };
+            _handler.VerifyRequest = (HttpRequestMessage msg) => { response.RequestMessage = msg; };
+
+            //Act & Assert
+            // This should not throw ObjectDisposedException
+            var ex = await Assert.ThrowsAsync<ContentfulRateLimitException>(async () => await _client.GetEntry<TestEntryModel>("12"));
+            
+            Assert.Equal(1, ex.SecondsUntilNextRequest);
+            Assert.Equal(4, numberOfTimesCalled); // 1 initial request + 3 retries
+        }
+
         private ContentfulClient GetClientWithEnvironment(string env = "special")
         {
             var httpClient = new HttpClient(_handler);

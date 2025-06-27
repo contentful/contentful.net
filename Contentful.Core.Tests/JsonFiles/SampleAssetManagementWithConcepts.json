@@ -1,0 +1,83 @@
+{
+  "fields": {
+    "title": {
+      "en-US": "Ernest Hemingway (1950)"
+    },
+    "description": {
+      "en-US": "Hemingway in the cabin of his boat Pilar, off the coast of Cuba"
+    },
+    "file": {
+      "en-US": {
+        "fileName": "Ernest_Hemingway_1950.jpg",
+        "contentType": "image/jpeg",
+        "details": {
+          "image": {
+            "width": 2940,
+            "height": 2934
+          },
+          "size": 2290561
+        },
+        "url": "//images.contentful.com/gw484zixu8ng/3S1ngcWajSia6I4sssQwyK/a71cb5b54327134340031a89dc43a4fc/Ernest_Hemingway_1950.jpg"
+      }
+    }
+  },
+  "metadata": {
+    "tags": [
+      {
+        "sys": {
+          "type": "Link",
+          "linkType": "Tag",
+          "id": "tag1"
+        }
+      }
+    ],
+    "concepts": [
+      {
+        "sys": {
+          "type": "Link",
+          "linkType": "TaxonomyConcept",
+          "id": "3kZdDUXy9n0l2Xi2cq8TPc"
+        }
+      }
+    ]
+  },
+  "sys": {
+    "id": "3S1ngcWajSia6I4sssQwyK",
+    "type": "Asset",
+    "createdAt": "2016-11-15T07:35:04.262Z",
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "gw484zixu8ng"
+      }
+    },
+    "firstPublishedAt": "2016-11-15T07:35:06.685Z",
+    "publishedCounter": 5,
+    "publishedAt": "2016-11-24T09:55:28.322Z",
+    "publishedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    },
+    "publishedVersion": 26,
+    "version": 27,
+    "updatedAt": "2016-11-24T09:55:28.326Z",
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "0w7AzFDgzUA8MWo79R1Qf7"
+      }
+    }
+  }
+} 
