@@ -226,7 +226,7 @@ namespace Contentful.Core.Tests
             };
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
                 headerSet = request.Headers.GetValues("X-Contentful-Organization").First() == "112";
             };
 
@@ -249,7 +249,7 @@ namespace Contentful.Core.Tests
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 headerSet = request.Headers.GetValues("X-Contentful-Version").First() == "37";
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -360,7 +360,7 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
                 versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
             };
 
@@ -612,7 +612,7 @@ namespace Contentful.Core.Tests
             {
                 versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
             _handler.Response = GetResponseFromFile(@"EditorInterface.json");
 
@@ -698,7 +698,7 @@ namespace Contentful.Core.Tests
 
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             _handler.Response = GetResponseFromFile(@"EditorInterface.json");
@@ -848,7 +848,7 @@ namespace Contentful.Core.Tests
                 contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
                 versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -881,7 +881,7 @@ namespace Contentful.Core.Tests
                 contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
                 versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -936,7 +936,7 @@ namespace Contentful.Core.Tests
                 contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
                 versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
                 requestUrl = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
@@ -965,7 +965,7 @@ namespace Contentful.Core.Tests
 
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -988,7 +988,7 @@ namespace Contentful.Core.Tests
 
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -1036,7 +1036,7 @@ namespace Contentful.Core.Tests
 
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -1062,7 +1062,7 @@ namespace Contentful.Core.Tests
 
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -1089,7 +1089,7 @@ namespace Contentful.Core.Tests
 
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -1118,7 +1118,7 @@ namespace Contentful.Core.Tests
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 requestUrl = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
                 contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
@@ -1148,7 +1148,7 @@ namespace Contentful.Core.Tests
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
                 requestUrl = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
                 contentTypeHeader = request.Headers.GetValues("X-Contentful-Content-Type").First();
             };
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
@@ -1433,7 +1433,7 @@ namespace Contentful.Core.Tests
             var requestMethod = HttpMethod.Trace;
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
             };
@@ -1465,7 +1465,7 @@ namespace Contentful.Core.Tests
             var requestMethod = HttpMethod.Trace;
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
                 requestMethod = request.Method;
                 requestUrl = request.RequestUri.ToString();
             };
@@ -1780,7 +1780,7 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -1913,7 +1913,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -1980,7 +1980,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2038,7 +2038,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2097,7 +2097,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2444,7 +2444,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2521,7 +2521,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2788,7 +2788,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2843,7 +2843,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2947,7 +2947,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -2973,7 +2973,7 @@ namespace Contentful.Core.Tests
                 headerSet = request.Headers.GetValues("X-Contentful-Version").First() == "5";
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -3418,7 +3418,7 @@ namespace Contentful.Core.Tests
             var contentSet = "";
             _handler.VerifyRequest = async (HttpRequestMessage request) =>
             {
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -4652,7 +4652,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -4696,7 +4696,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -4776,7 +4776,7 @@ namespace Contentful.Core.Tests
                 headerSet = request.Headers.GetValues("X-Contentful-Version").First() == "5";
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -4804,7 +4804,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
@@ -4832,7 +4832,7 @@ namespace Contentful.Core.Tests
             {
                 method = request.Method;
                 url = request.RequestUri.ToString();
-                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+                contentSet = await request.Content?.ReadAsStringAsync();
             };
 
             //Act
