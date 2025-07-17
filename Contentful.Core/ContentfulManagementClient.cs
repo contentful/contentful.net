@@ -785,7 +785,7 @@ namespace Contentful.Core
         /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
         /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
         /// <exception cref="ArgumentException">The <paramref name="entryId"/> parameter was null or empty.</exception>
-        public async Task<Entry<dynamic>> UnPublishEntryLocales(string entryId, int version, string[] locales, string spaceId = null, CancellationToken cancellationToken = default)
+        public async Task<Entry<dynamic>> UnpublishEntryLocales(string entryId, int version, string[] locales, string spaceId = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(entryId))
             {

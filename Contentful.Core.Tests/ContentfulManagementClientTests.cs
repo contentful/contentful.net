@@ -6198,7 +6198,7 @@ namespace Contentful.Core.Tests
             _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
 
             //Act
-            await _client.UnPublishEntryLocales(id, 23, locales);
+            await _client.UnpublishEntryLocales(id, 23, locales);
 
             //Assert
             Assert.Equal(HttpMethod.Put, requestMethod);
