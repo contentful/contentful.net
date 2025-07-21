@@ -6,7 +6,7 @@ jobs:
       dotnet-version:
         type: string
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:<< parameters.dotnet-version >>
+      - image: mcr.microsoft.com/dotnet/sdk:<< parameters.dotnet-version >>-latest
     steps:
       - checkout
       - run:
@@ -20,14 +20,11 @@ jobs:
           name: Restore dependencies
           command: dotnet restore
       - run:
-          name: Build
-          command: dotnet build --no-restore
-      - run:
-          name: Run Contentful.Core tests
-          command: dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
-      - run:
-          name: Run Contentful.AspNetCore tests
-          command: dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+          name: Build and test .NET << parameters.dotnet-version >>
+          command: |
+            dotnet build --no-restore --framework net<< parameters.dotnet-version >>
+            dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --framework net<< parameters.dotnet-version >> --verbosity normal --logger trx --results-directory test-results
+            dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --framework net<< parameters.dotnet-version >> --verbosity normal --logger trx --results-directory test-results
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -41,5 +38,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              dotnet-version: ["8.0.412", "9.0.100"]
+              dotnet-version: ["8.0", "9.0"]
           name: test-dotnet-<< matrix.dotnet-version >>
