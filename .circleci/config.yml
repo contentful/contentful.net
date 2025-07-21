@@ -14,6 +14,9 @@ jobs:
           command: |
             apt-get update && apt-get install -y ssh git
       - run:
+          name: Show .NET version
+          command: dotnet --version
+      - run:
           name: Restore dependencies
           command: dotnet restore
       - run:
@@ -21,10 +24,10 @@ jobs:
           command: dotnet build --no-restore
       - run:
           name: Run Contentful.Core tests
-          command: dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --verbosity normal
+          command: dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
       - run:
           name: Run Contentful.AspNetCore tests
-          command: dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --verbosity normal
+          command: dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
       - store_test_results:
           path: test-results
       - store_artifacts:

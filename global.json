@@ -2,5 +2,8 @@
   "sdk": {
     "version": "8.0.100",
     "rollForward": "latestMajor"
+  },
+  "msbuild-sdks": {
+    "Microsoft.NET.Sdk": "8.0.100"
   }
 }
