@@ -41,5 +41,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              dotnet-version: ["8.0", "9.0"]
+              dotnet-version: ["8.0.412", "9.0.100"]
           name: test-dotnet-<< matrix.dotnet-version >>
