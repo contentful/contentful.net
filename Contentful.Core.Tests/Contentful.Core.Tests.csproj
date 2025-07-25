@@ -1,163 +1,163 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="JsonFiles\ApiKey.json" />
-    <None Remove="JsonFiles\ApiUsage.json" />
-    <None Remove="JsonFiles\CancelScheduledAction.json" />
-    <None Remove="JsonFiles\CreateScheduledAction.json" />
-    <None Remove="JsonFiles\EditorInterfaceWithMetadata.json" />
-    <None Remove="JsonFiles\EntriesCollectionWithCrossReference.json" />
-    <None Remove="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
-    <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
-    <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
-    <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
-    <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
-    <None Remove="JsonFiles\EntriesMultipleLocale.json" />
-    <None Remove="JsonFiles\EnvironmentsCollection.json" />
-    <None Remove="JsonFiles\GetScheduledAction.json" />
-    <None Remove="JsonFiles\SampleContentTag.json" />
-    <None Remove="JsonFiles\SampleContentTagCollection.json" />
-    <None Remove="JsonFiles\SampleContentTypeFields.json" />
-    <None Remove="JsonFiles\SampleEnvironment.json" />
-    <None Remove="JsonFiles\SampleOrgMembershipsCollection.json" />
-    <None Remove="JsonFiles\SampleTag.json" />
-    <None Remove="JsonFiles\SampleTags.json" />
-    <None Remove="JsonFiles\SampleUser.json" />
-    <None Remove="JsonFiles\UpdateScheduledAction.json" />
-    <None Remove="JsonFiles\UsagePeriods.json" />
-    <None Remove="JsonFiles\TaxonomyConcept.json" />
-    <None Remove="JsonFiles\TaxonomyConceptCollection.json" />
-    <None Remove="JsonFiles\TaxonomyConceptDescendantsCollection.json" />
-    <None Remove="JsonFiles\TaxonomyConceptsTotal.json" />
-    <None Remove="JsonFiles\TaxonomyConceptScheme.json" />
-    <None Remove="JsonFiles\TaxonomyConceptSchemesCollection.json" />
-    <None Remove="JsonFiles\TaxonomyConceptSchemesTotal.json" />
-    <None Remove="JsonFiles\ContentTypeWithTaxonomy.json" />
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Remove="JsonFiles\ApiKey.json" />
+        <None Remove="JsonFiles\ApiUsage.json" />
+        <None Remove="JsonFiles\CancelScheduledAction.json" />
+        <None Remove="JsonFiles\CreateScheduledAction.json" />
+        <None Remove="JsonFiles\EditorInterfaceWithMetadata.json" />
+        <None Remove="JsonFiles\EntriesCollectionWithCrossReference.json" />
+        <None Remove="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
+        <None Remove="JsonFiles\EntriesCollectionWithRichTextField.json" />
+        <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
+        <None Remove="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
+        <None Remove="JsonFiles\EntriesCollectionWithSelfreference.json" />
+        <None Remove="JsonFiles\EntriesMultipleLocale.json" />
+        <None Remove="JsonFiles\EnvironmentsCollection.json" />
+        <None Remove="JsonFiles\GetScheduledAction.json" />
+        <None Remove="JsonFiles\SampleContentTag.json" />
+        <None Remove="JsonFiles\SampleContentTagCollection.json" />
+        <None Remove="JsonFiles\SampleContentTypeFields.json" />
+        <None Remove="JsonFiles\SampleEnvironment.json" />
+        <None Remove="JsonFiles\SampleOrgMembershipsCollection.json" />
+        <None Remove="JsonFiles\SampleTag.json" />
+        <None Remove="JsonFiles\SampleTags.json" />
+        <None Remove="JsonFiles\SampleUser.json" />
+        <None Remove="JsonFiles\UpdateScheduledAction.json" />
+        <None Remove="JsonFiles\UsagePeriods.json" />
+        <None Remove="JsonFiles\TaxonomyConcept.json" />
+        <None Remove="JsonFiles\TaxonomyConceptCollection.json" />
+        <None Remove="JsonFiles\TaxonomyConceptDescendantsCollection.json" />
+        <None Remove="JsonFiles\TaxonomyConceptsTotal.json" />
+        <None Remove="JsonFiles\TaxonomyConceptScheme.json" />
+        <None Remove="JsonFiles\TaxonomyConceptSchemesCollection.json" />
+        <None Remove="JsonFiles\TaxonomyConceptSchemesTotal.json" />
+        <None Remove="JsonFiles\ContentTypeWithTaxonomy.json" />
 
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="JsonFiles\ApiKey.json" />
-    <EmbeddedResource Include="JsonFiles\CancelScheduledAction.json" />
-    <EmbeddedResource Include="JsonFiles\ContentTypeWithTaxonomy.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
-    <EmbeddedResource Include="JsonFiles\UpdateScheduledAction.json" />
-    <EmbeddedResource Include="JsonFiles\GetScheduledAction.json" />
-    <EmbeddedResource Include="JsonFiles\CreateScheduledAction.json" />
-    <EmbeddedResource Include="JsonFiles\EditorInterfaceWithMetadata.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithCrossReference.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextField.json" />
-    <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesMultipleLocale.json" />
-    <EmbeddedResource Include="JsonFiles\EmbargoAssetKey.json" />
-    <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesMissingEntries.json" />
-    <EmbeddedResource Include="JsonFiles\EntryCollectionLoopedReferences.json" />
-    <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
-    <EmbeddedResource Include="JsonFiles\ContentTypeSnapshotsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\ErrorSpaceNotFound.json" />
-    <EmbeddedResource Include="JsonFiles\OrganizationsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
-    <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
-    <EmbeddedResource Include="JsonFiles\ApiUsage.json" />
-    <EmbeddedResource Include="JsonFiles\SampleTag.json" />
-    <EmbeddedResource Include="JsonFiles\SampleTags.json" />
-    <EmbeddedResource Include="JsonFiles\SampleContentTagCollection.json" />
-    <EmbeddedResource Include="JsonFiles\SampleContentTag.json" />
-    <EmbeddedResource Include="JsonFiles\UsagePeriods.json" />
-    <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
-    <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />
-    <EmbeddedResource Include="JsonFiles\SampleEnvironment.json" />
-    <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
-    <EmbeddedResource Include="JsonFiles\SampleOrgMembershipsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\SampleUser.json" />
-    <EmbeddedResource Include="JsonFiles\TokensCollection.json" />
-    <EmbeddedResource Include="JsonFiles\RevokedToken.json" />
-    <EmbeddedResource Include="JsonFiles\GetToken.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAndLocales.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAuthor.json" />
-    <EmbeddedResource Include="JsonFiles\CreatedToken.json" />
-    <EmbeddedResource Include="JsonFiles\SampleExtension.json" />
-    <EmbeddedResource Include="JsonFiles\SampleExtensionsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\UploadResult.json" />
-    <EmbeddedResource Include="JsonFiles\ErrorRateLimit.json" />
-    <EmbeddedResource Include="JsonFiles\LocalesCollection.json" />
-    <EmbeddedResource Include="JsonFiles\AssetsCollectionManagement.json" />
-    <EmbeddedResource Include="JsonFiles\ContenttypesCollectionManagement.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionManagement.json" />
-    <EmbeddedResource Include="JsonFiles\SampleLocale.json" />
-    <EmbeddedResource Include="JsonFiles\SampleAssetManagement.json" />
-    <EmbeddedResource Include="JsonFiles\SampleAssetManagementWithConcepts.json" />
-    <EmbeddedResource Include="JsonFiles\SampleEntryManagement.json" />
-    <EmbeddedResource Include="JsonFiles\SampleEntryManagementWithConcepts.json" />
-    <EmbeddedResource Include="JsonFiles\SampleWebHook.json" />
-    <EmbeddedResource Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\SnapshotsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\AssetsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\ContenttypesCollection.json" />
-    <EmbeddedResource Include="JsonFiles\EditorInterface.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollection.json" />
-    <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludes.json" />
-    <EmbeddedResource Include="JsonFiles\ErrorInvalidToken.json" />
-    <EmbeddedResource Include="JsonFiles\InitialSyncDeletionOnly.json" />
-    <EmbeddedResource Include="JsonFiles\InitialSyncNextPagePresent.json" />
-    <EmbeddedResource Include="JsonFiles\InitialSyncNoNextPage.json" />
-    <EmbeddedResource Include="JsonFiles\NextSyncUrl.json" />
-    <EmbeddedResource Include="JsonFiles\SampleAsset.json" />
-    <EmbeddedResource Include="JsonFiles\SampleContentType.json" />
-    <EmbeddedResource Include="JsonFiles\SampleRole.json" />
-    <EmbeddedResource Include="JsonFiles\SampleEntry.json" />
-    <EmbeddedResource Include="JsonFiles\SampleRolesCollection.json" />
-    <EmbeddedResource Include="JsonFiles\SampleSpace.json" />
-    <EmbeddedResource Include="JsonFiles\WebhookCallDetailsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\SampleSnapshot.json" />
-    <EmbeddedResource Include="JsonFiles\WebhookHealth.json" />
-    <EmbeddedResource Include="JsonFiles\WebhookCollection.json" />
-    <EmbeddedResource Include="JsonFiles\WebhookCallDetails.json" />
-    <EmbeddedResource Include="JsonFiles\GetScheduledActions.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConcept.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptCollection.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptDescendantsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptAncestorsCollection.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptsTotal.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptScheme.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptSchemesCollection.json" />
-    <EmbeddedResource Include="JsonFiles\TaxonomyConceptSchemesTotal.json" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="JsonFiles\ApiKey.json" />
+        <EmbeddedResource Include="JsonFiles\CancelScheduledAction.json" />
+        <EmbeddedResource Include="JsonFiles\ContentTypeWithTaxonomy.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithNestedEmbeddedEntry.json" />
+        <EmbeddedResource Include="JsonFiles\UpdateScheduledAction.json" />
+        <EmbeddedResource Include="JsonFiles\GetScheduledAction.json" />
+        <EmbeddedResource Include="JsonFiles\CreateScheduledAction.json" />
+        <EmbeddedResource Include="JsonFiles\EditorInterfaceWithMetadata.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithCrossReference.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldTable.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextFieldCalledFields.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithRichTextField.json" />
+        <EmbeddedResource Include="JsonFiles\EnvironmentsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithSelfreference.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesMultipleLocale.json" />
+        <EmbeddedResource Include="JsonFiles\EmbargoAssetKey.json" />
+        <EmbeddedResource Include="JsonFiles\NestedSharedStructure.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithoutSys.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesMissingEntries.json" />
+        <EmbeddedResource Include="JsonFiles\EntryCollectionLoopedReferences.json" />
+        <EmbeddedResource Include="JsonFiles\ApiKeysCollection.json" />
+        <EmbeddedResource Include="JsonFiles\ContentTypeSnapshotsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\ErrorSpaceNotFound.json" />
+        <EmbeddedResource Include="JsonFiles\OrganizationsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\NestedAsset.json" />
+        <EmbeddedResource Include="JsonFiles\MultipleLinksSameAsset.json" />
+        <EmbeddedResource Include="JsonFiles\ApiUsage.json" />
+        <EmbeddedResource Include="JsonFiles\SampleTag.json" />
+        <EmbeddedResource Include="JsonFiles\SampleTags.json" />
+        <EmbeddedResource Include="JsonFiles\SampleContentTagCollection.json" />
+        <EmbeddedResource Include="JsonFiles\SampleContentTag.json" />
+        <EmbeddedResource Include="JsonFiles\UsagePeriods.json" />
+        <EmbeddedResource Include="JsonFiles\SampleAssetManagementUnprocessed.json" />
+        <EmbeddedResource Include="JsonFiles\SampleContentTypeFields.json" />
+        <EmbeddedResource Include="JsonFiles\SampleEnvironment.json" />
+        <EmbeddedResource Include="JsonFiles\SampleSnapshotContentType.json" />
+        <EmbeddedResource Include="JsonFiles\SampleOrgMembershipsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\SampleUser.json" />
+        <EmbeddedResource Include="JsonFiles\TokensCollection.json" />
+        <EmbeddedResource Include="JsonFiles\RevokedToken.json" />
+        <EmbeddedResource Include="JsonFiles\GetToken.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAndLocales.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludesAuthor.json" />
+        <EmbeddedResource Include="JsonFiles\CreatedToken.json" />
+        <EmbeddedResource Include="JsonFiles\SampleExtension.json" />
+        <EmbeddedResource Include="JsonFiles\SampleExtensionsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\UploadResult.json" />
+        <EmbeddedResource Include="JsonFiles\ErrorRateLimit.json" />
+        <EmbeddedResource Include="JsonFiles\LocalesCollection.json" />
+        <EmbeddedResource Include="JsonFiles\AssetsCollectionManagement.json" />
+        <EmbeddedResource Include="JsonFiles\ContenttypesCollectionManagement.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionManagement.json" />
+        <EmbeddedResource Include="JsonFiles\SampleLocale.json" />
+        <EmbeddedResource Include="JsonFiles\SampleAssetManagement.json" />
+        <EmbeddedResource Include="JsonFiles\SampleAssetManagementWithConcepts.json" />
+        <EmbeddedResource Include="JsonFiles\SampleEntryManagement.json" />
+        <EmbeddedResource Include="JsonFiles\SampleEntryManagementWithConcepts.json" />
+        <EmbeddedResource Include="JsonFiles\SampleWebHook.json" />
+        <EmbeddedResource Include="JsonFiles\SampleSpaceMembershipsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\SnapshotsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\AssetsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\ContenttypesCollection.json" />
+        <EmbeddedResource Include="JsonFiles\EditorInterface.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollection.json" />
+        <EmbeddedResource Include="JsonFiles\EntriesCollectionWithIncludes.json" />
+        <EmbeddedResource Include="JsonFiles\ErrorInvalidToken.json" />
+        <EmbeddedResource Include="JsonFiles\InitialSyncDeletionOnly.json" />
+        <EmbeddedResource Include="JsonFiles\InitialSyncNextPagePresent.json" />
+        <EmbeddedResource Include="JsonFiles\InitialSyncNoNextPage.json" />
+        <EmbeddedResource Include="JsonFiles\NextSyncUrl.json" />
+        <EmbeddedResource Include="JsonFiles\SampleAsset.json" />
+        <EmbeddedResource Include="JsonFiles\SampleContentType.json" />
+        <EmbeddedResource Include="JsonFiles\SampleRole.json" />
+        <EmbeddedResource Include="JsonFiles\SampleEntry.json" />
+        <EmbeddedResource Include="JsonFiles\SampleRolesCollection.json" />
+        <EmbeddedResource Include="JsonFiles\SampleSpace.json" />
+        <EmbeddedResource Include="JsonFiles\WebhookCallDetailsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\SampleSnapshot.json" />
+        <EmbeddedResource Include="JsonFiles\WebhookHealth.json" />
+        <EmbeddedResource Include="JsonFiles\WebhookCollection.json" />
+        <EmbeddedResource Include="JsonFiles\WebhookCallDetails.json" />
+        <EmbeddedResource Include="JsonFiles\GetScheduledActions.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConcept.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptCollection.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptDescendantsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptAncestorsCollection.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptsTotal.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptScheme.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptSchemesCollection.json" />
+        <EmbeddedResource Include="JsonFiles\TaxonomyConceptSchemesTotal.json" />
 
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk">
-      <Version>17.2.0</Version>
-    </PackageReference>
-    <PackageReference Include="xunit">
-      <Version>2.4.1</Version>
-    </PackageReference>
-    <PackageReference Include="xunit.runner.console">
-      <Version>2.4.1</Version>
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.runner.visualstudio">
-      <Version>2.4.5</Version>
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Contentful.Core\Contentful.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-  <ProjectExtensions>
-    <VisualStudio xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-      <UserProperties />
-    </VisualStudio>
-  </ProjectExtensions>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk">
+            <Version>17.2.0</Version>
+        </PackageReference>
+        <PackageReference Include="xunit">
+            <Version>2.4.1</Version>
+        </PackageReference>
+        <PackageReference Include="xunit.runner.console">
+            <Version>2.4.1</Version>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="xunit.runner.visualstudio">
+            <Version>2.4.5</Version>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Contentful.Core\Contentful.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    </ItemGroup>
+    <ProjectExtensions>
+        <VisualStudio xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+            <UserProperties />
+        </VisualStudio>
+    </ProjectExtensions>
 </Project>
