@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Version [8.4.2]
+- Remove extra test methods
+- Fix SystemProperties serialization to ignore null values
+
 ## Version [8.4.1]
 
 - Add version header to UpdateRole method to fix ContentfulException

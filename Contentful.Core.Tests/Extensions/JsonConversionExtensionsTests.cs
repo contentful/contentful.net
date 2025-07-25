@@ -1,4 +1,5 @@
 using Contentful.Core.Extensions;
+using Contentful.Core.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -133,6 +134,34 @@ namespace Contentful.Core.Tests.Extensions
             Assert.Equal("{\"expiresAt\":1620788645000}", convertedString);
 
         }
+
+        [Fact]
+        public void SystemPropertiesSerializationIgnoresNullValues()
+        {
+            // Arrange
+            var systemProperties = new SystemProperties
+            {
+                Id = "test-asset-id",
+                Type = "Link",
+                LinkType = "Asset"
+                // All other properties are null and should be ignored
+            };
+
+            // Act
+            var convertedString = systemProperties.ConvertObjectToJsonString();
+
+            // Assert
+            Assert.Contains("\"id\":\"test-asset-id\"", convertedString);
+            Assert.Contains("\"type\":\"Link\"", convertedString);
+            Assert.Contains("\"linkType\":\"Asset\"", convertedString);
+            // Should not contain any null values
+            Assert.DoesNotContain("\"archivedAt\":null", convertedString);
+            Assert.DoesNotContain("\"createdAt\":null", convertedString);
+            Assert.DoesNotContain("\"updatedAt\":null", convertedString);
+            Assert.DoesNotContain("\"revision\":null", convertedString);
+        }
+
+
 
         [Theory]
         [InlineData(null, null)]
