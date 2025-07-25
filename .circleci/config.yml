@@ -26,14 +26,18 @@ jobs:
             # Build the library projects (they target netstandard2.0)
             dotnet build Contentful.Core/Contentful.Core.csproj --no-restore
             dotnet build Contentful.AspNetCore/Contentful.AspNetCore.csproj --no-restore
-            # Temporarily update test project files to target the current .NET version
-            sed -i "s/<TargetFramework>net8.0<\/TargetFramework>/<TargetFramework>net$FRAMEWORK_VERSION<\/TargetFramework>/g" Contentful.Core.Tests/Contentful.Core.Tests.csproj
-            sed -i "s/<TargetFramework>net8.0<\/TargetFramework>/<TargetFramework>net$FRAMEWORK_VERSION<\/TargetFramework>/g" Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj
-            # Build and test the test projects
-            dotnet build Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-restore
-            dotnet build Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-restore
-            dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
-            dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+            # Build and test the test projects for the specific .NET version
+            if [ "$FRAMEWORK_VERSION" = "9.0" ]; then
+              dotnet build Contentful.Core.Tests/Contentful.Core.Tests.net9.0.csproj --no-restore
+              dotnet build Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.net9.0.csproj --no-restore
+              dotnet test Contentful.Core.Tests/Contentful.Core.Tests.net9.0.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+              dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.net9.0.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+            else
+              dotnet build Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-restore
+              dotnet build Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-restore
+              dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+              dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+            fi
       - store_test_results:
           path: test-results
       - store_artifacts:
