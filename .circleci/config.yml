@@ -23,7 +23,12 @@ jobs:
           name: Build and test .NET << parameters.dotnet-version >>
           command: |
             FRAMEWORK_VERSION=$(echo << parameters.dotnet-version >> | cut -d. -f1,2)
-            dotnet build --no-restore --framework net$FRAMEWORK_VERSION
+            # Build the library projects (they target netstandard2.0)
+            dotnet build Contentful.Core/Contentful.Core.csproj --no-restore
+            dotnet build Contentful.AspNetCore/Contentful.AspNetCore.csproj --no-restore
+            # Build and test the test projects for the specific .NET version
+            dotnet build Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-restore --framework net$FRAMEWORK_VERSION
+            dotnet build Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-restore --framework net$FRAMEWORK_VERSION
             dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --framework net$FRAMEWORK_VERSION --verbosity normal --logger trx --results-directory test-results
             dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --framework net$FRAMEWORK_VERSION --verbosity normal --logger trx --results-directory test-results
       - store_test_results:
