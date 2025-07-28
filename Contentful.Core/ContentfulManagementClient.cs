@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Contentful.Core
 {
@@ -726,6 +727,90 @@ namespace Contentful.Core
             }
 
             using var res = await DeleteAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}entries/{entryId}/published", cancellationToken, version).ConfigureAwait(false);
+
+            return await GetObjectFromResponse<Entry<dynamic>>(res).ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// Publishes an entry with locale-based publishing by the specified id.
+        /// This method adds support for publishing specific locales
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="locales">The list of locale codes to be published.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <paramref name="entryId"/> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> PublishEntryLocales(string entryId, int version, string[] locales, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+            if (locales == null || locales.Length == 0)
+            {
+                throw new ArgumentException("Locales array cannot be null or empty.", nameof(locales));
+            }
+
+            var payload = new
+            {
+                add = new
+                {
+                    fields = new Dictionary<string, IEnumerable<string>>
+                    {
+                        { "*", locales }
+                    }
+                }
+            };
+
+            var jsonPayload = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
+
+            using var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}entries/{entryId}/published", content, cancellationToken, version).ConfigureAwait(false);
+
+            return await GetObjectFromResponse<Entry<dynamic>>(res).ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// UnPublishes an entry with locale-based publishing by the specified id.
+        /// This method adds support for publishing specific locales
+        /// </summary>
+        /// <param name="entryId">The id of the entry.</param>
+        /// <param name="version">The last known version of the entry.</param>
+        /// <param name="locales">The list of locale codes to be Unpublished.</param>
+        /// <param name="spaceId">The id of the space. Will default to the one set when creating the client.</param>
+        /// <param name="cancellationToken">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The response from the API serialized into <see cref="Entry{dynamic}"/></returns>
+        /// <exception cref="ContentfulException">There was an error when communicating with the Contentful API.</exception>
+        /// <exception cref="ArgumentException">The <paramref name="entryId"/> parameter was null or empty.</exception>
+        public async Task<Entry<dynamic>> UnpublishEntryLocales(string entryId, int version, string[] locales, string spaceId = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(entryId))
+            {
+                throw new ArgumentException(nameof(entryId));
+            }
+            if (locales == null || locales.Length == 0)
+            {
+                throw new ArgumentException("Locales array cannot be null or empty.", nameof(locales));
+            }
+
+            var payload = new
+            {
+                remove = new
+                {
+                    fields = new Dictionary<string, IEnumerable<string>>
+                    {
+                        { "*", locales }
+                    }
+                }
+            };
+
+            var jsonPayload = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/vnd.contentful.management.v1+json");
+
+            using var res = await PutAsync($"{_baseUrl}{spaceId ?? _options.SpaceId}/{EnvironmentsBase}entries/{entryId}/published", content, cancellationToken, version).ConfigureAwait(false);
 
             return await GetObjectFromResponse<Entry<dynamic>>(res).ConfigureAwait(false);
         }

@@ -107,6 +107,12 @@ namespace Contentful.Core.Models
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Status Status { get; set; }
+
+        /// <summary>
+        /// The link to the field status that the current object has. Used to get locale based publishing status.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public FieldStatus FieldStatus { get; set; }
     }
 }
 
