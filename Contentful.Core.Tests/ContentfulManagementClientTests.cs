@@ -35,6 +35,39 @@ namespace Contentful.Core.Tests
                 UsePreviewApi = false
             });
         }
+        
+        [Fact]
+        public async Task UpdatingDirectApiUrlShouldCallCorrectUrl()
+        {
+            //Arrange
+
+            var client = new ContentfulManagementClient(_httpClient, new ContentfulOptions()
+            {
+                DeliveryApiKey = "123",
+                ManagementApiKey = "564",
+                SpaceId = "666",
+                UsePreviewApi = false,
+                DirectApiUrl = "https://da.contentful.com/"
+            });
+            _handler.Response = new HttpResponseMessage() {
+                Content = new StringContent(JsonConvert.SerializeObject(new User()))
+            };
+            var requestUrl = "";
+            var requestMethod = HttpMethod.Trace;
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+            };
+
+
+            //Act
+            await client.GetCurrentUser();
+
+            //Assert
+            Assert.Equal(HttpMethod.Get, requestMethod);
+            Assert.Equal($"https://da.contentful.com/users/me", requestUrl);
+        }
 
         [Fact]
         public async Task CreatingManagementClientAndMakingCallShouldSetHeadersCorrectly()

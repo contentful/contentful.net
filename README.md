@@ -102,6 +102,24 @@ var options = new ContentfulOptions
 var client = new ContentfulClient(httpClient, options);
 ```
 
+To connect to a different API endpoint, for example the EU region endpoint, you can provide the `DirectApiUrl` and `ManagementBaseUrl` options:
+
+```csharp
+var httpClient = new HttpClient();
+var options = new ContentfulOptions
+{
+    DeliveryApiKey = "<content_delivery_api_key>",
+    PreviewApiKey = "<content_preview_api_key>",
+    ManagementApiKey = "<content_management_api_key>",
+    SpaceId = "<space_id>",
+    // Use the EU region API endpoint.
+    DirectApiUrl = "https://api.eu.contentful.com/",
+    ManagementBaseUrl = "https://api.eu.contentful.com/spaces/"
+};
+var client = new ContentfulClient(httpClient, options);
+var managementClient = new ContentfulManagementClient(httpClient, options);
+```
+
 If you are running asp.net core and wish to take advantage of [the options pattern][2] you can do so by passing an `IOptions<ContentfulOptions>` to the constructor. This lets you keep your authorization token in your application settings, in environment variables or your own custom `Microsoft.Extensions.Configuration.IConfigurationSource` provider.
 
 ### Your first request
