@@ -64,6 +64,12 @@ namespace Contentful.Core.Configuration
         public string ManagementBaseUrl { get; set; } = "https://api.contentful.com/spaces/";
 
         /// <summary>
+        /// Gets or sets the direct URL for the Contentful management API.
+        /// Default is "https://api.contentful.com/".
+        /// </summary>
+        public string DirectApiUrl { get; set; } = "https://api.contentful.com/";
+
+        /// <summary>
         /// Whether to use HTTP compression for responses. Only disable if you are hosting in the same datacenter as contentful
         /// Default is true
         /// </summary>

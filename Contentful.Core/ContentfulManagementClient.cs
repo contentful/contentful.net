@@ -42,6 +42,7 @@ namespace Contentful.Core
                 throw new ArgumentException("The ContentfulOptions cannot be null.", nameof(options));
             }
 
+            _directApiUrl = options.DirectApiUrl ?? _directApiUrl;
             _baseUrl = options.ManagementBaseUrl ?? _baseUrl;
 
             SerializerSettings.Converters.Add(new ExtensionJsonConverter());
