@@ -1299,6 +1299,109 @@ namespace Contentful.Core.Tests
             Assert.Equal($"https://api.contentful.com/spaces/666/entries/{id}/published", requestUrl);
         }
 
+        [Fact]
+        public async Task PublishingEntryLocalesShouldCallCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var versionHeader = "";
+            var requestMethod = HttpMethod.Trace;
+            var contentSet = "";
+            var locales = new[] { "en-US", "de-DE" };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            await _client.PublishEntryLocales("123", 23, locales);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal("23", versionHeader);
+            Assert.Equal($"https://api.contentful.com/spaces/666/entries/123/published", requestUrl);
+            
+            // Verify the request body contains the correct payload structure
+            Assert.Contains("\"add\"", contentSet);
+            Assert.Contains("\"fields\"", contentSet);
+            Assert.Contains("\"*\"", contentSet);
+            
+            // Verify all locales are present in the request
+            foreach (var locale in locales)
+            {
+                Assert.Contains($"\"{locale}\"", contentSet);
+            }
+        }
+
+        [Fact]
+        public async Task PublishingEntryLocalesWithSingleLocaleShouldCallCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var contentSet = "";
+            var locales = new[] { "en-US" };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            await _client.PublishEntryLocales("abc", 45, locales);
+
+            //Assert
+            Assert.Equal($"https://api.contentful.com/spaces/666/entries/abc/published", requestUrl);
+            Assert.Contains("\"en-US\"", contentSet);
+        }
+
+        [Fact]
+        public async Task PublishingEntryLocalesShouldThrowForEmptyLocales()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+
+            //Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.PublishEntryLocales("123", 1, null));
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.PublishEntryLocales("123", 1, new string[0]));
+        }
+
+        [Fact]
+        public async Task PublishingEntryLocalesShouldThrowForEmptyEntryId()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+
+            //Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.PublishEntryLocales("", 1, new[] { "en-US" }));
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.PublishEntryLocales(null, 1, new[] { "en-US" }));
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForPublishingEntryLocalesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.PublishEntryLocales("123", 43, new[] { "en-US", "de-DE" });
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123/published", path);
+        }
+
         [Theory]
         [InlineData("777")]
         [InlineData("abc")]
@@ -1325,6 +1428,110 @@ namespace Contentful.Core.Tests
             Assert.Equal(HttpMethod.Put, requestMethod);
             Assert.Equal("23", versionHeader);
             Assert.Equal($"https://api.contentful.com/spaces/666/entries/{id}/published", requestUrl);
+        }
+
+        [Fact]
+        public async Task UnpublishingEntryLocalesShouldCallCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var versionHeader = "";
+            var requestMethod = HttpMethod.Trace;
+            var contentSet = "";
+            var locales = new[] { "en-US", "de-DE" };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestMethod = request.Method;
+                requestUrl = request.RequestUri.ToString();
+                versionHeader = request.Headers.GetValues("X-Contentful-Version").First();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            await _client.UnPublishEntryLocales("123", 23, locales);
+
+            //Assert
+            Assert.Equal(HttpMethod.Put, requestMethod);
+            Assert.Equal("23", versionHeader);
+            Assert.Equal($"https://api.contentful.com/spaces/666/entries/123/published", requestUrl);
+            
+            // Verify the request body contains the correct payload structure with "remove"
+            Assert.Contains("\"remove\"", contentSet);
+            Assert.Contains("\"fields\"", contentSet);
+            Assert.Contains("\"*\"", contentSet);
+            
+            // Verify all locales are present in the request
+            foreach (var locale in locales)
+            {
+                Assert.Contains($"\"{locale}\"", contentSet);
+            }
+        }
+
+        [Fact]
+        public async Task UnpublishingEntryLocalesWithSingleLocaleShouldCallCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+            var requestUrl = "";
+            var contentSet = "";
+            var locales = new[] { "en-US" };
+            _handler.VerifyRequest = async (HttpRequestMessage request) =>
+            {
+                requestUrl = request.RequestUri.ToString();
+                contentSet = await (request.Content as StringContent).ReadAsStringAsync();
+            };
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+
+            //Act
+            await _client.UnPublishEntryLocales("abc", 45, locales);
+
+            //Assert
+            Assert.Equal($"https://api.contentful.com/spaces/666/entries/abc/published", requestUrl);
+            Assert.Contains("\"remove\"", contentSet);
+            Assert.Contains("\"en-US\"", contentSet);
+        }
+
+        [Fact]
+        public async Task UnpublishingEntryLocalesShouldThrowForEmptyLocales()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+
+            //Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.UnPublishEntryLocales("123", 1, null));
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.UnPublishEntryLocales("123", 1, new string[0]));
+        }
+
+        [Fact]
+        public async Task UnpublishingEntryLocalesShouldThrowForEmptyEntryId()
+        {
+            //Arrange
+            _handler.Response = new HttpResponseMessage();
+
+            //Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.UnPublishEntryLocales("", 1, new[] { "en-US" }));
+            await Assert.ThrowsAsync<ArgumentException>(() => _client.UnPublishEntryLocales(null, 1, new[] { "en-US" }));
+        }
+
+        [Fact]
+        public async Task SettingEnvironmentForUnpublishingEntryLocalesShouldYieldCorrectUrl()
+        {
+            //Arrange
+            _handler.Response = GetResponseFromFile(@"SampleEntryManagement.json");
+            var client = GetClientWithEnvironment();
+            var path = "";
+            _handler.VerifyRequest = (HttpRequestMessage request) =>
+            {
+                path = request.RequestUri.ToString();
+            };
+
+            //Act
+            var res = await client.UnPublishEntryLocales("123", 43, new[] { "en-US", "de-DE" });
+
+            //Assert
+            Assert.Equal("https://api.contentful.com/spaces/564/environments/special/entries/123/published", path);
         }
 
         [Theory]
