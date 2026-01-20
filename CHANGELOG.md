@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Version [8.5.0]
+- Support locale based publishing
+
 ## Version [8.4.3]
 - Allow DirectApiUrl to be configurable 
 
