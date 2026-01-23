@@ -565,6 +565,105 @@ namespace Contentful.Core.Tests.Search
         }
 
         [Fact]
+        public void TagsMatchAllShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsMatchAll(new[] { "tagA", "tagB" }).Build();
+            //Assert
+            Assert.Equal("?metadata.tags.sys.id[all]=tagA%2CtagB", result);
+        }
+
+        [Fact]
+        public void TagsMatchAllWithSingleTagShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsMatchAll(new[] { "tagA" }).Build();
+            //Assert
+            Assert.Equal("?metadata.tags.sys.id[all]=tagA", result);
+        }
+
+        [Fact]
+        public void TagsMatchAllWithMultipleTagsShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsMatchAll(new[] { "tag1", "tag2", "tag3" }).Build();
+            //Assert
+            Assert.Equal("?metadata.tags.sys.id[all]=tag1%2Ctag2%2Ctag3", result);
+        }
+
+        [Fact]
+        public void TagsMatchAnyShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsMatchAny(new[] { "tagA", "tagB" }).Build();
+            //Assert
+            Assert.Equal("?metadata.tags.sys.id[in]=tagA%2CtagB", result);
+        }
+
+        [Fact]
+        public void TagsMatchAnyWithSingleTagShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsMatchAny(new[] { "tagA" }).Build();
+            //Assert
+            Assert.Equal("?metadata.tags.sys.id[in]=tagA", result);
+        }
+
+        [Fact]
+        public void TagsMatchAnyWithMultipleTagsShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsMatchAny(new[] { "tag1", "tag2", "tag3" }).Build();
+            //Assert
+            Assert.Equal("?metadata.tags.sys.id[in]=tag1%2Ctag2%2Ctag3", result);
+        }
+
+        [Fact]
+        public void TagsExistShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsExist(true).Build();
+            //Assert
+            Assert.Equal("?metadata.tags[exists]=true", result);
+        }
+
+        [Fact]
+        public void TagsExistWithFalseShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsExist(false).Build();
+            //Assert
+            Assert.Equal("?metadata.tags[exists]=false", result);
+        }
+
+        [Fact]
+        public void TagsExistWithDefaultParameterShouldAddCorrectQueryString()
+        {
+            //Arrange
+            var builder = new QueryBuilder<object>();
+            //Act
+            var result = builder.TagsExist().Build();
+            //Assert
+            Assert.Equal("?metadata.tags[exists]=true", result);
+        }
+
+        [Fact]
         public void FieldEqualsForSubreferenceFieldShouldAddCorrectQueryString()
         {
             //Arrange
