@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## Version [8.6.0]
 - Support querying content based on tags
 
 ## Version [8.5.0]
