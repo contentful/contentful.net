@@ -504,6 +504,37 @@ namespace Contentful.Core.Search
             return AddFieldRestriction("links_to_asset", id, string.Empty);
         }
 
+        /// <summary>
+        /// Adds a restriction to only return entries or assets that match all the specified tag values.
+        /// </summary>
+        /// <param name="tagIds">The tag IDs that the entry or asset must include all of.</param>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
+        public QueryBuilder<T> TagsMatchAll(IEnumerable<string> tagIds)
+        {
+            return AddFieldRestriction("metadata.tags.sys.id", string.Join(",", tagIds), "[all]");
+        }
+
+        /// <summary>
+        /// Adds a restriction to only return entries or assets that match at least one of the specified tag values.
+        /// </summary>
+        /// <param name="tagIds">The tag IDs that the entry or asset must include at least one of.</param>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
+        public QueryBuilder<T> TagsMatchAny(IEnumerable<string> tagIds)
+        {
+            return AddFieldRestriction("metadata.tags.sys.id", string.Join(",", tagIds), "[in]");
+        }
+
+        /// <summary>
+        /// Adds a restriction to only return entries or assets that have tags (or do not have tags).
+        /// </summary>
+        /// <param name="hasTags">Whether or not the entry or asset must have tags. A value of false means only include entries/assets where tags do NOT exist.</param>
+        /// <returns>The <see cref="QueryBuilder{T}"/> instance.</returns>
+        public QueryBuilder<T> TagsExist(bool hasTags = true)
+        {
+            _querystringValues.Add(new KeyValuePair<string, string>("metadata.tags[exists]", hasTags.ToString().ToLower()));
+            return this;
+        }
+
         public QueryBuilder<T> SelectFields<TResult, TSys>(Expression<Func<T, TResult>> fieldsSelector, Expression<Func<SystemProperties, TSys>> sysSelector)
             where TResult : class
             where TSys : class
