@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,14 +22,16 @@ namespace Contentful.Core.Tests
             var response = new HttpResponseMessage();
             var resources = assembly.GetManifestResourceNames();
             var resourceName = resources.FirstOrDefault(f => f.Equals($"Contentful.Core.Tests.JsonFiles.{file}" , StringComparison.OrdinalIgnoreCase));
-            string json = "";
+            byte[] jsonBytes;
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
             {
-                json = reader.ReadToEnd();
+                jsonBytes = new byte[stream.Length];
+                int bytesRead = stream.Read(jsonBytes);
+                if (bytesRead != stream.Length)
+                    throw new InvalidProgramException();
             }
 
-            response.Content = new StringContent(json);
+            response.Content = new ByteArrayContent(jsonBytes);
             return response;
         }
     }
@@ -337,7 +338,7 @@ namespace Contentful.Core.Tests
 
         public Type Resolve(string contentTypeId)
         {
-            return _types.TryGetValue(contentTypeId, out var type) ? type : null;
+            return _types.GetValueOrDefault(contentTypeId);
         }
     }
 
