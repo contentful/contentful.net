@@ -27,7 +27,8 @@
                 {
                     "sys": {
                         "id": "1Py5SjffQHkGGY3dZ02W14",
-                        "type": "Link"
+                        "type": "Link",
+                        "linkType": "TaxonomyConcept"
                     }
                 }
             ],
@@ -35,7 +36,8 @@
                 {
                     "sys": {
                         "id": "5abcWINB018mASQ5Fdrkbj",
-                        "type": "Link"
+                        "type": "Link",
+                        "linkType": "TaxonomyConcept"
                     }
                 }
             ]

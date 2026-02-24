@@ -46,21 +46,41 @@
       },
       "topConcepts": [
         {
-          "id": "1Py5SjffQHkGGY3dZ02W14"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "1Py5SjffQHkGGY3dZ02W14"
+          }
         },
         {
-          "id": "4Rt8WiHvQgKiGECsYeaSkY"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "4Rt8WiHvQgKiGECsYeaSkY"
+          }
         }
       ],
       "concepts": [
         {
-          "id": "1Py5SjffQHkGGY3dZ02W14"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "1Py5SjffQHkGGY3dZ02W14"
+          }
         },
         {
-          "id": "4Rt8WiHvQgKiGECsYeaSkY"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "4Rt8WiHvQgKiGECsYeaSkY"
+          }
         },
         {
-          "id": "3kZdDUXy9n0l2Xi2cq8TPc"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "3kZdDUXy9n0l2Xi2cq8TPc"
+          }
         }
       ],
       "totalConcepts": 3
@@ -103,15 +123,27 @@
       },
       "topConcepts": [
         {
-          "id": "2Qw9YjGgThMmAeWo0k2S8i"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "2Qw9YjGgThMmAeWo0k2S8i"
+          }
         }
       ],
       "concepts": [
         {
-          "id": "2Qw9YjGgThMmAeWo0k2S8i"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "2Qw9YjGgThMmAeWo0k2S8i"
+          }
         },
         {
-          "id": "5NsQ1pDrTt3AWqOsKqCu6k"
+          "sys": {
+            "type": "Link",
+            "linkType": "TaxonomyConcept",
+            "id": "5NsQ1pDrTt3AWqOsKqCu6k"
+          }
         }
       ],
       "totalConcepts": 2

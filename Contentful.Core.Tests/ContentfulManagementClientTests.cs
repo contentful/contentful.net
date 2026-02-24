@@ -5865,9 +5865,9 @@ namespace Contentful.Core.Tests
             Assert.Equal(conceptSchemeId, result.SystemProperties.Id);
             Assert.Equal("TaxonomyConceptScheme", result.SystemProperties.Type);
             Assert.Equal("Home Products", result.PrefLabel["en-US"]);
-            Assert.Equal(1, result.TopConcepts.Count);
-            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Id);
-            Assert.Equal(1, result.Concepts.Count);
+            Assert.Single(result.TopConcepts);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Sys.Id);
+            Assert.Single(result.Concepts);
             Assert.Equal(1, result.TotalConcepts);
 
             Assert.Equal(HttpMethod.Get, requestMethod);
@@ -5888,12 +5888,12 @@ namespace Contentful.Core.Tests
                 Uri = "",
                 PrefLabel = new Dictionary<string, string> { { "en-US", "Home Products" } },
                 Definition = new Dictionary<string, string> { { "en-US", "" } },
-                TopConcepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } },
-                Concepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } }
+                TopConcepts = new[] { new Reference { Sys = new ReferenceProperties { LinkType = "TaxonomyConcept", Id = "1Py5SjffQHkGGY3dZ02W14" } } },
+                Concepts = new[] { new Reference { Sys = new ReferenceProperties { LinkType = "TaxonomyConcept", Id = "1Py5SjffQHkGGY3dZ02W14" } } }
             };
 
             _handler.Response = GetResponseFromFile("TaxonomyConceptScheme.json");
-            
+
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 requestMethod = request.Method;
@@ -5909,14 +5909,14 @@ namespace Contentful.Core.Tests
             Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", result.SystemProperties.Id);
             Assert.Equal("TaxonomyConceptScheme", result.SystemProperties.Type);
             Assert.Equal("Home Products", result.PrefLabel["en-US"]);
-            Assert.Equal(1, result.TopConcepts.Count);
-            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Id);
+            Assert.Single(result.TopConcepts);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Sys.Id);
 
             Assert.Equal(HttpMethod.Post, requestMethod);
             Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes", requestUrl);
             Assert.Contains("\"uri\":\"\"", requestContent);
             Assert.Contains("\"prefLabel\":{\"en-US\":\"Home Products\"}", requestContent);
-            Assert.Contains("\"concepts\":[{\"id\":\"1Py5SjffQHkGGY3dZ02W14\"}]", requestContent);
+            Assert.Contains("\"concepts\":[{\"sys\":{\"type\":\"Link\",\"linkType\":\"TaxonomyConcept\",\"id\":\"1Py5SjffQHkGGY3dZ02W14\"}}]", requestContent);
         }
 
         [Theory]
@@ -6065,12 +6065,12 @@ namespace Contentful.Core.Tests
                 Uri = "",
                 PrefLabel = new Dictionary<string, string> { { "en-US", "Home Products" } },
                 Definition = new Dictionary<string, string> { { "en-US", "" } },
-                TopConcepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } },
-                Concepts = new List<ConceptReference> { new ConceptReference { Id = "1Py5SjffQHkGGY3dZ02W14" } }
+                TopConcepts = new[] { new Reference { Sys = new ReferenceProperties { LinkType = "TaxonomyConcept", Id = "1Py5SjffQHkGGY3dZ02W14" } } },
+                Concepts = new[] { new Reference { Sys = new ReferenceProperties { LinkType = "TaxonomyConcept", Id = "1Py5SjffQHkGGY3dZ02W14" } } }
             };
 
             _handler.Response = GetResponseFromFile("TaxonomyConceptScheme.json");
-            
+
             _handler.VerifyRequest = (HttpRequestMessage request) =>
             {
                 requestMethod = request.Method;
@@ -6086,14 +6086,14 @@ namespace Contentful.Core.Tests
             Assert.Equal("3kZdDUXy9n0l2Xi2cq8TPc", result.SystemProperties.Id);
             Assert.Equal("TaxonomyConceptScheme", result.SystemProperties.Type);
             Assert.Equal("Home Products", result.PrefLabel["en-US"]);
-            Assert.Equal(1, result.TopConcepts.Count);
-            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Id);
+            Assert.Single(result.TopConcepts);
+            Assert.Equal("1Py5SjffQHkGGY3dZ02W14", result.TopConcepts[0].Sys.Id);
 
             Assert.Equal(HttpMethod.Put, requestMethod);
             Assert.Equal($"https://api.contentful.com/organizations/{organizationId}/taxonomy/concept-schemes/{conceptSchemeId}", requestUrl);
             Assert.Contains("\"uri\":\"\"", requestContent);
             Assert.Contains("\"prefLabel\":{\"en-US\":\"Home Products\"}", requestContent);
-            Assert.Contains("\"concepts\":[{\"id\":\"1Py5SjffQHkGGY3dZ02W14\"}]", requestContent);
+            Assert.Contains("\"concepts\":[{\"sys\":{\"type\":\"Link\",\"linkType\":\"TaxonomyConcept\",\"id\":\"1Py5SjffQHkGGY3dZ02W14\"}}]", requestContent);
         }
 
         [Fact]

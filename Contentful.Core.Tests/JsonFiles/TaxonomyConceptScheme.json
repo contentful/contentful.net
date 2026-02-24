@@ -36,12 +36,20 @@
   },
   "topConcepts": [
     {
-      "id": "1Py5SjffQHkGGY3dZ02W14"
+      "sys": {
+        "type": "Link",
+        "linkType": "TaxonomyConcept",
+        "id": "1Py5SjffQHkGGY3dZ02W14"
+      }
     }
   ],
   "concepts": [
     {
-      "id": "1Py5SjffQHkGGY3dZ02W14"
+      "sys": {
+        "type": "Link",
+        "linkType": "TaxonomyConcept",
+        "id": "1Py5SjffQHkGGY3dZ02W14"
+      }
     }
   ],
   "totalConcepts": 1
