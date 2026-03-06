@@ -1,5 +1,8 @@
 # Change Log
 
+## Master
+- Aligned Taxonomy API
+
 ## Version [8.6.0]
 - Support querying content based on tags
 
