@@ -210,8 +210,9 @@ The Management API supports working with taxonomies through concept schemes and 
 // Create a taxonomy concept scheme
 var conceptScheme = new TaxonomyConceptScheme
 {
-    Name = "Product Categories",
-    Description = "Categories for our products"
+    Uri = "",
+    PrefLabel = new Dictionary<string, string> { { "en-US", "Product Categories" } },
+    Definition = new Dictionary<string, string> { { "en-US", "Categories for our products" } }
 };
 var createdScheme = await managementClient.CreateTaxonomyConceptScheme(organizationId, conceptScheme);
 
@@ -230,7 +231,7 @@ var totalSchemes = await managementClient.GetTotalTaxonomyConceptSchemes(organiz
 // Update a concept scheme
 var patches = new List<JsonPatchOperation>
 {
-    new JsonPatchOperation { Op = "replace", Path = "/name", Value = "Updated Name" }
+    new JsonPatchOperation { Op = "replace", Path = "/prefLabel/en-US", Value = "Updated Name" }
 };
 var updatedScheme = await managementClient.UpdateTaxonomyConceptScheme(organizationId, "scheme-id", version, patches);
 
@@ -244,8 +245,9 @@ await managementClient.DeleteTaxonomyConceptScheme(organizationId, "scheme-id", 
 // Create a taxonomy concept
 var concept = new TaxonomyConcept
 {
-    Name = "Electronics",
-    Description = "Electronic products"
+    Uri = "",
+    PrefLabel = new Dictionary<string, string> { { "en-US", "Electronics" } },
+    Definition = new Dictionary<string, string> { { "en-US", "Electronic products" } }
 };
 var createdConcept = await managementClient.CreateTaxonomyConcept(organizationId, concept);
 
@@ -273,7 +275,7 @@ var ancestors = await managementClient.GetTaxonomyConceptAncestors(organizationI
 // Update a concept
 var patches = new List<JsonPatchOperation>
 {
-    new JsonPatchOperation { Op = "replace", Path = "/name", Value = "Updated Name" }
+    new JsonPatchOperation { Op = "replace", Path = "/prefLabel/en-US", Value = "Updated Name" }
 };
 var updatedConcept = await managementClient.UpdateTaxonomyConcept(organizationId, "concept-id", version, patches);
 
