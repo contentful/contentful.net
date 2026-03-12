@@ -1,6 +1,8 @@
 # Change Log
 
 ## Master
+
+## Version [8.6.1]
 - Aligned Taxonomy API
 
 ## Version [8.6.0]
