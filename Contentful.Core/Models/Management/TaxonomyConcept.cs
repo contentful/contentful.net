@@ -99,5 +99,11 @@ namespace Contentful.Core.Models.Management
         /// </summary>
         [JsonProperty("related")]
         public Reference[] Related { get; set; }
+
+        /// <summary>
+        /// The concept scheme this concept belongs to.
+        /// </summary>
+        [JsonProperty("conceptScheme")]
+        public Reference ConceptScheme { get; set; }
     }
 } 

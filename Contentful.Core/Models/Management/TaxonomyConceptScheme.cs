@@ -38,30 +38,18 @@ namespace Contentful.Core.Models.Management
         /// Top concepts in the scheme.
         /// </summary>
         [JsonProperty("topConcepts")]
-        public List<ConceptReference> TopConcepts { get; set; }
+        public Reference[] TopConcepts { get; set; }
 
         /// <summary>
         /// All concepts in the scheme.
         /// </summary>
         [JsonProperty("concepts")]
-        public List<ConceptReference> Concepts { get; set; }
+        public Reference[] Concepts { get; set; }
 
         /// <summary>
         /// Total number of concepts in the scheme.
         /// </summary>
         [JsonProperty("totalConcepts")]
         public int TotalConcepts { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a reference to a concept within a concept scheme.
-    /// </summary>
-    public class ConceptReference
-    {
-        /// <summary>
-        /// The ID of the concept.
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
     }
 } 
