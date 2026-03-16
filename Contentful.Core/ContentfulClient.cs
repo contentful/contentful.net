@@ -364,7 +364,7 @@ namespace Contentful.Core
                         continue;
                     }
                     linkId = ((JValue)linkToken["urn"]).Value.ToString();
-                    linkId = ParseIdFromContentfulUrn(linkId);
+                    linkId = ParseIdFromContentfulUrn(in linkId);
                     linktype = linktype.Contains("Entry") ? "Entry" : "Asset";
                 } else {
                     linkId = ((JValue)linkToken["id"]).Value.ToString();
@@ -966,19 +966,18 @@ namespace Contentful.Core
                 var jsonString = JsonConvert.SerializeObject(headerObject);
                 var base64EncodedValue = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonString));
 
-                headers.Add(new KeyValuePair<string, IEnumerable<string>>("x-contentful-resource-resolution", new List<string> { base64EncodedValue }));
+                headers.Add(new KeyValuePair<string, IEnumerable<string>>("x-contentful-resource-resolution", [base64EncodedValue]));
             }
             return await SendHttpRequest(url, HttpMethod.Get, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken, additionalHeaders: headers).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> Post(string url, object body, CancellationToken cancellationToken)
         {
-            var bodyJson = body.ConvertObjectToJsonString();
-            var bodyContent = new StringContent(bodyJson, Encoding.UTF8, "application/json");
+            using var bodyContent = body.ToNewtonsoftJsonUtf8HttpContent();
             return await SendHttpRequest(url, HttpMethod.Post, _options.UsePreviewApi ? _options.PreviewApiKey : _options.DeliveryApiKey, cancellationToken, bodyContent).ConfigureAwait(false);
         }
 
-        private string ParseIdFromContentfulUrn(string s)
+        private static string ParseIdFromContentfulUrn(in string s)
         {
             if (string.IsNullOrEmpty(s))
                 return s;
