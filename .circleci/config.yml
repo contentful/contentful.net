@@ -1,16 +1,55 @@
-version: 2
+version: 2.1
+
 jobs:
-  build:
+  test:
+    parameters:
+      dotnet-version:
+        type: string
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: mcr.microsoft.com/dotnet/sdk:<< parameters.dotnet-version >>
     steps:
-      - run: apt-get update && apt-get install -y ssh git
       - checkout
       - run:
-          name: Build
-          command: dotnet build
-      - run:
-          name: Unit tests
+          name: Install dependencies
           command: |
-            dotnet test Contentful.AspNetCore.Tests
-            dotnet test Contentful.Core.Tests
+            apt-get update && apt-get install -y ssh git
+      - run:
+          name: Show .NET version
+          command: dotnet --version
+      - run:
+          name: Restore dependencies
+          command: dotnet restore
+      - run:
+          name: Build and test .NET << parameters.dotnet-version >>
+          command: |
+            FRAMEWORK_VERSION=$(echo << parameters.dotnet-version >> | cut -d. -f1,2)
+            # Build the library projects (they target netstandard2.0)
+            dotnet build Contentful.Core/Contentful.Core.csproj --no-restore
+            dotnet build Contentful.AspNetCore/Contentful.AspNetCore.csproj --no-restore
+            # Build and test the test projects for the specific .NET version
+            if [ "$FRAMEWORK_VERSION" = "9.0" ]; then
+              dotnet build Contentful.Core.Tests/Contentful.Core.Tests.net9.0.csproj --no-restore
+              dotnet build Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.net9.0.csproj --no-restore
+              dotnet test Contentful.Core.Tests/Contentful.Core.Tests.net9.0.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+              dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.net9.0.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+            else
+              dotnet build Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-restore
+              dotnet build Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-restore
+              dotnet test Contentful.Core.Tests/Contentful.Core.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+              dotnet test Contentful.AspNetCore.Tests/Contentful.AspNetCore.Tests.csproj --no-build --verbosity normal --logger trx --results-directory test-results
+            fi
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+
+workflows:
+  version: 2
+  test-matrix:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              dotnet-version: ["8.0.412", "9.0.100"]
+          name: test-dotnet-<< matrix.dotnet-version >>
