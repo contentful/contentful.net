@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run build and tests in dev container
+        uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: >-
+            bash -lc "dotnet build &&
+            dotnet test Contentful.AspNetCore.Tests &&
+            dotnet test Contentful.Core.Tests"
