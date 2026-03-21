@@ -1,18 +1,40 @@
-We appreciate any community contributions to this project, whether in the form of issues or Pull Requests.
+# Contributing
 
-This document outlines what we'd like you to follow in terms of commit messages and code style.
+Thanks for helping improve `contentful.net`.
 
-It also explains what to do in case you want to setup the project locally and run tests.
+## Development with Dev Containers
 
-# Setup
+This repository includes a `.devcontainer` configuration for a reproducible local setup. GitHub Actions uses the same devcontainer configuration for CI.
 
-This project is written using Visual Studio 2017 RC and the latest dotnet core SDKs. Clone the repository, run `dotnet restore` 
-and then `dotnet build` to compile.
+### Visual Studio Code
 
-# Code style
+Open the repository in Visual Studio Code, install the Dev Containers extension if needed, then run `Dev Containers: Reopen in Container`. Wait for the container build and post-create setup to finish.
 
-This project uses Microsoft standard code styles. They can be found in the `editorstyles.config` file. Read more at [editorconfig.org](http://EditorConfig.org)
+### Terminal or other editors
 
-# Running tests
+Install Docker and the Dev Container CLI (`npm install -g @devcontainers/cli`). From the repository root, run:
 
-To run the tests for this solution, either start the runner from within visual studio or run `dotnet test` in the test project directories.
+```bash
+devcontainer up --workspace-folder .
+devcontainer exec --workspace-folder . bash
+```
+
+### Verify the environment
+
+```bash
+dotnet build && dotnet test Contentful.AspNetCore.Tests && dotnet test Contentful.Core.Tests
+```
+
+## Other Useful Commands
+
+```bash
+dotnet restore
+dotnet test Contentful.AspNetCore.Tests
+dotnet test Contentful.Core.Tests
+```
+
+## Pull Requests
+
+1. Fork the repository and create a branch for your change.
+2. Run the relevant checks from the dev container.
+3. Open a pull request with a short summary of the change and any follow-up context.
