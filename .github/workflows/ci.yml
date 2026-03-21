@@ -14,13 +14,12 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli@0
 
       - name: Run build and tests in dev container
-        uses: devcontainers/ci@v0.3
-        with:
-          push: never
-          runCmd: >-
-            bash -lc "dotnet build &&
-            dotnet test Contentful.AspNetCore.Tests &&
-            dotnet test Contentful.Core.Tests"
+        run: |
+          devcontainer up --workspace-folder .
+          devcontainer exec --workspace-folder . bash -lc "dotnet build && dotnet test Contentful.AspNetCore.Tests && dotnet test Contentful.Core.Tests"
