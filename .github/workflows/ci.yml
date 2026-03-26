@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install devcontainer CLI
+        run: npm install -g @devcontainers/cli@0
+
+      - name: Run build and tests in dev container
+        run: |
+          devcontainer up --workspace-folder .
+          devcontainer exec --workspace-folder . bash -lc "dotnet build && dotnet test Contentful.AspNetCore.Tests && dotnet test Contentful.Core.Tests"

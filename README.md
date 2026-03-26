@@ -20,8 +20,8 @@
     <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License" />
   </a>
   &nbsp;
-  <a href="https://circleci.com/gh/contentful/contentful.net">
-    <img src="https://circleci.com/gh/contentful/contentful.net.svg?style=shield" alt="Build Status" />
+  <a href="https://github.com/contentful/contentful.net/actions/workflows/ci.yml">
+    <img src="https://github.com/contentful/contentful.net/actions/workflows/ci.yml/badge.svg" alt="CI" />
   </a>
 </p>
 
@@ -424,6 +424,14 @@ You can read the full documentation at https://www.contentful.com/developers/doc
 ## Get involved
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?maxAge=31557600)](http://makeapullrequest.com)
+
+For a reproducible local setup, open this repository in its included dev container. The container restores the solution automatically when it is created.
+
+After the container is ready, run:
+
+```bash
+dotnet build && dotnet test Contentful.AspNetCore.Tests && dotnet test Contentful.Core.Tests
+```
 
 We appreciate any help on our repositories. For more details about how to contribute see our [CONTRIBUTING.md](CONTRIBUTING.md) document.
 
