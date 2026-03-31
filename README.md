@@ -9,7 +9,6 @@
       alt="Join Contentful Community Forum">
   </a>
 </p>
-
 # contentful.net - Contentful .NET Library
 
 > .NET library for the Contentful [Content Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/), [Content Preview API](https://www.contentful.com/developers/docs/references/content-preview-api/) and the [Contentful Management API](https://www.contentful.com/developers/docs/references/content-management-api/). It helps you to easily access your Content stored in Contentful with your .NET applications.
