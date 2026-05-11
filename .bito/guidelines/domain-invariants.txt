@@ -1,0 +1,26 @@
+Critical technical invariants for contentful.net. These must not be violated.
+
+SERIALIZATION
+- Newtonsoft.Json is the sole JSON library. Do not introduce System.Text.Json. JToken/JObject are part of the public API contract.
+- The Entry<T> deserialization pattern relies on C# property names matching Contentful field IDs (case-insensitively via Newtonsoft conventions). Renaming public model properties breaks deserialization for callers.
+- Custom JsonConverter implementations must handle null fields gracefully — Contentful APIs can omit optional fields entirely.
+
+HTTP CLIENT
+- HttpClient is ALWAYS injected by the caller. Never instantiate HttpClient inside library code.
+- Rate-limit retry logic is built into ContentfulClientBase. Do not add external retry decorators without accounting for double-retrying.
+- MaxNumberOfRateLimitRetries controls the retry budget. The default is 5.
+
+TARGETING
+- Both projects target netstandard2.0. Never use runtime-specific APIs (net6.0+, netfx-only) in Contentful.Core or Contentful.AspNetCore without adding a multi-target configuration.
+
+PACKAGES
+- contentful.csharp must have zero ASP.NET Core dependencies.
+- contentful.aspnetcore depends on contentful.csharp — never create a reverse or circular dependency.
+- Both packages version in lockstep. Never publish one at a different version than the other.
+
+REGIONS
+- EU region support is configuration-only (DirectApiUrl, ManagementBaseUrl). Never hardcode region-specific URLs in library code.
+
+VERSIONING
+- Follow semver. Public API surface changes (interface changes, model property changes, serialization behavior changes) require at minimum a minor bump; breaking changes require a major bump.
+- CHANGELOG.md must be updated for every release.

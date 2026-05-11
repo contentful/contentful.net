@@ -1,0 +1,10 @@
+Use the repository's written documentation as review context and check whether the change matches the documented intent.
+
+- Start from README.md, ARCHITECTURE.md, AGENTS.md, CONTRIBUTING.md, and docs/ADRs/ for architectural context.
+- Check whether code, tests, and documentation all tell the same story. Flag mismatches between implementation and documented architecture or ADRs.
+- Treat AGENTS.md as the authoritative guide for sharp edges and invariants. If a change violates an invariant documented there, flag it.
+- This is a netstandard2.0 library — flag any code that uses APIs not available in netstandard2.0.
+- Two NuGet packages (contentful.csharp and contentful.aspnetcore) must remain independently publishable. Flag any new cross-project dependency or circular reference.
+- If CI or another required check already enforces a merge rule, do not ask for duplicate PR template sections or manual checklists.
+- Ask for an ADR update when a change is architecture-significant (new dependency, new API surface, changed serialization strategy, changed targeting, new integration endpoint).
+- Distinguish the current public API from internal implementation details. Public type/interface/method signature changes require extra scrutiny given the SDK's external consumers.
