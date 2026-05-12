@@ -8,7 +8,7 @@ SERIALIZATION
 HTTP CLIENT
 - HttpClient is ALWAYS injected by the caller. Never instantiate HttpClient inside library code.
 - Rate-limit retry logic is built into ContentfulClientBase. Do not add external retry decorators without accounting for double-retrying.
-- MaxNumberOfRateLimitRetries controls the retry budget. The default is 5.
+- MaxNumberOfRateLimitRetries controls the retry budget. The default is 0 (no retries). Maximum enforced by the library is 10.
 
 TARGETING
 - Both projects target netstandard2.0. Never use runtime-specific APIs (net6.0+, netfx-only) in Contentful.Core or Contentful.AspNetCore without adding a multi-target configuration.

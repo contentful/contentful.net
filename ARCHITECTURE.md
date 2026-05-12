@@ -40,7 +40,7 @@ Consumer applications pass in an `HttpClient` (or rely on DI via the ASP.NET Cor
 
 1. **Read path (CDA/CPA):** Caller builds an optional `QueryBuilder<T>` → passes to `ContentfulClient` method → client serializes to query string → `HttpClient` makes authenticated GET → JSON response → `Newtonsoft.Json` deserializes into caller-provided generic type `T` → returned to caller.
 2. **Write path (CMA):** Caller constructs a model object → calls `ContentfulManagementClient` method → client serializes to JSON → `HttpClient` makes authenticated POST/PUT/PATCH/DELETE → JSON response or version header captured → returned to caller.
-3. **Rate limiting:** Built-in retry logic with exponential backoff on `429` responses. `ContentfulRateLimitException` is thrown when limits are exceeded beyond retry budget.
+3. **Rate limiting:** Built-in retry logic on `429` responses — waits the number of seconds specified by the `X-Contentful-RateLimit-Reset` response header before retrying (fixed-interval, server-driven). `ContentfulRateLimitException` is thrown immediately if `MaxNumberOfRateLimitRetries` is `0`, or after the retry budget is exhausted.
 4. **Sync:** `SyncInitial` / `SyncNextResult` methods traverse Contentful's sync API and return `SyncResult` with full and delta payloads.
 
 ## Key Dependencies
@@ -62,10 +62,10 @@ Consumer applications pass in an `HttpClient` (or rely on DI via the ASP.NET Cor
 | `ManagementApiKey` | CMA access token | — (optional) |
 | `SpaceId` | Contentful space identifier | — (required) |
 | `UsePreviewApi` | Route reads to the Preview API endpoint | `false` |
-| `DirectApiUrl` | Override the CDA base URL (e.g., EU region) | `https://cdn.contentful.com/` |
+| `DirectApiUrl` | Override the CMA base URL for non-space-scoped endpoints (`/users/me`, `/organizations/`, `/taxonomy/`, etc.) — used only by `ContentfulManagementClient` | `https://api.contentful.com/` |
 | `ManagementBaseUrl` | Override the CMA base URL (e.g., EU region) | `https://api.contentful.com/spaces/` |
 | `Environment` | Target a non-default Contentful environment | `master` |
-| `MaxNumberOfRateLimitRetries` | Retry budget for rate-limit responses | `5` |
+| `MaxNumberOfRateLimitRetries` | Retry budget for rate-limit responses | `0` (no retries by default) |
 
 ## Integration Points
 
