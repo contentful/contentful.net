@@ -605,7 +605,7 @@ namespace Contentful.Core.Models
         {
             if (string.IsNullOrEmpty(url))
                 return url;
-            if (Uri.TryParse(url, UriKind.Absolute, out var uri) &&
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
                 uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
                 return "#";
             return url;
