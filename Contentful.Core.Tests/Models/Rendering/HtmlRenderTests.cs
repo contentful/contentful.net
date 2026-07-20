@@ -238,5 +238,186 @@ namespace Contentful.Core.Tests.Models.Rendering
             //Assert
             Assert.Equal(expected, html);
         }
+
+        // AIS-251: HyperlinkContentRenderer encodes href and title attributes
+        [Fact]
+        public async Task HyperlinkRendererShouldHtmlEncodeHrefAndTitle()
+        {
+            var renderer = new HyperlinkContentRenderer(new ContentRendererCollection());
+            var link = new Hyperlink
+            {
+                Content = new List<IContent>(),
+                Data = new HyperlinkData
+                {
+                    Uri = "https://example.com/?a=1&b=2",
+                    Title = "Click <here>"
+                }
+            };
+
+            var html = await renderer.RenderAsync(link);
+
+            Assert.Contains("href=\"https://example.com/?a=1&amp;b=2\"", html);
+            Assert.Contains("title=\"Click &lt;here&gt;\"", html);
+        }
+
+        // AIS-254: javascript: and data: URIs must be blocked in HyperlinkContentRenderer
+        [Theory]
+        [InlineData("javascript:alert(1)")]
+        [InlineData("JAVASCRIPT:alert(1)")]
+        [InlineData("data:text/html,<script>alert(1)</script>")]
+        public async Task HyperlinkRendererShouldRejectDangerousUriSchemes(string maliciousUrl)
+        {
+            var renderer = new HyperlinkContentRenderer(new ContentRendererCollection());
+            var link = new Hyperlink
+            {
+                Content = new List<IContent>(),
+                Data = new HyperlinkData { Uri = maliciousUrl, Title = "safe" }
+            };
+
+            var html = await renderer.RenderAsync(link);
+
+            Assert.Contains("href=\"#\"", html);
+        }
+
+        // AIS-252: AssetRenderer encodes src, alt, and fallback title body
+        [Fact]
+        public async Task AssetRendererShouldHtmlEncodeImageAttributes()
+        {
+            var renderer = new AssetRenderer(new ContentRendererCollection());
+            var assetStructure = new AssetStructure
+            {
+                Content = new List<IContent>(),
+                NodeType = "embedded-asset-block",
+                Data = new AssetStructureData
+                {
+                    Target = new Asset
+                    {
+                        Title = "My \"Asset\" <title>",
+                        File = new Contentful.Core.Models.File
+                        {
+                            Url = "https://example.com/img.png",
+                            ContentType = "image/png"
+                        }
+                    }
+                }
+            };
+
+            var html = await renderer.RenderAsync(assetStructure);
+
+            Assert.Contains("src=\"https://example.com/img.png\"", html);
+            Assert.Contains("alt=\"My &quot;Asset&quot; &lt;title&gt;\"", html);
+        }
+
+        [Fact]
+        public async Task AssetRendererShouldHtmlEncodeFallbackTitleInAnchor()
+        {
+            var renderer = new AssetRenderer(new ContentRendererCollection());
+            var assetStructure = new AssetStructure
+            {
+                Content = new List<IContent>(),
+                NodeType = "",
+                Data = new AssetStructureData
+                {
+                    Target = new Asset
+                    {
+                        Title = "<script>evil()</script>",
+                        File = new Contentful.Core.Models.File
+                        {
+                            Url = "https://example.com/file.pdf",
+                            ContentType = "application/pdf"
+                        }
+                    }
+                }
+            };
+
+            var html = await renderer.RenderAsync(assetStructure);
+
+            Assert.Contains("&lt;script&gt;evil()&lt;/script&gt;", html);
+            Assert.DoesNotContain("<script>", html);
+        }
+
+        // AIS-254: javascript: blocked in AssetRenderer href
+        [Fact]
+        public async Task AssetRendererShouldRejectJavascriptUriInHref()
+        {
+            var renderer = new AssetRenderer(new ContentRendererCollection());
+            var assetStructure = new AssetStructure
+            {
+                Content = new List<IContent>(),
+                NodeType = "",
+                Data = new AssetStructureData
+                {
+                    Target = new Asset
+                    {
+                        Title = "click",
+                        File = new Contentful.Core.Models.File
+                        {
+                            Url = "javascript:alert(document.domain)",
+                            ContentType = "application/pdf"
+                        }
+                    }
+                }
+            };
+
+            var html = await renderer.RenderAsync(assetStructure);
+
+            Assert.Contains("href=\"#\"", html);
+        }
+
+        // AIS-253: AssetHyperlinkRenderer encodes href and fallback title
+        [Fact]
+        public async Task AssetHyperlinkRendererShouldHtmlEncodeHrefAndTitle()
+        {
+            var renderer = new AssetHyperlinkRenderer(new ContentRendererCollection());
+            var assetHyperlink = new AssetHyperlink
+            {
+                Content = new List<IContent>(),
+                Data = new AssetHyperlinkData
+                {
+                    Target = new Asset
+                    {
+                        Title = "<b>Bold</b>",
+                        File = new Contentful.Core.Models.File
+                        {
+                            Url = "https://example.com/file.pdf",
+                            ContentType = "application/pdf"
+                        }
+                    }
+                }
+            };
+
+            var html = await renderer.RenderAsync(assetHyperlink);
+
+            Assert.Contains("href=\"https://example.com/file.pdf\"", html);
+            Assert.Contains("&lt;b&gt;Bold&lt;/b&gt;", html);
+            Assert.DoesNotContain("<b>", html);
+        }
+
+        // AIS-254: javascript: blocked in AssetHyperlinkRenderer href
+        [Fact]
+        public async Task AssetHyperlinkRendererShouldRejectJavascriptUri()
+        {
+            var renderer = new AssetHyperlinkRenderer(new ContentRendererCollection());
+            var assetHyperlink = new AssetHyperlink
+            {
+                Content = new List<IContent>(),
+                Data = new AssetHyperlinkData
+                {
+                    Target = new Asset
+                    {
+                        Title = "click",
+                        File = new Contentful.Core.Models.File
+                        {
+                            Url = "javascript:alert(1)",
+                            ContentType = "application/pdf"
+                        }
+                    }
+                }
+            };
+
+            var html = await renderer.RenderAsync(assetHyperlink);
+
+            Assert.Contains("href=\"#\"", html);
+        }
     }
 }
