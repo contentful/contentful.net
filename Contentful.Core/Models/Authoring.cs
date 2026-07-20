@@ -605,6 +605,13 @@ namespace Contentful.Core.Models
         {
             if (string.IsNullOrEmpty(url))
                 return url;
+            // Protocol-relative URLs (e.g. Contentful asset URLs like //images.ctfassets.net/...)
+            // and relative URLs are safe: they inherit the page scheme and cannot carry a
+            // script-executing scheme such as javascript: or data:.
+            if (url.StartsWith("//"))
+                return url;
+            // Absolute URLs must be http/https; anything else (javascript:, data:, vbscript:, ...)
+            // is neutralized to a harmless anchor.
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
                 uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
                 return "#";
