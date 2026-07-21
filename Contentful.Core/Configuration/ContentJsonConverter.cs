@@ -51,12 +51,6 @@ namespace Contentful.Core.Configuration
                 return serializer.ReferenceResolver.ResolveReference(serializer, ((JValue)refId).Value.ToString());
             }
             var type = jObject.Value<string>("nodeType");
-            var serializationType = jObject.Value<string>("$type");
-            if (!string.IsNullOrEmpty(serializationType))
-            {
-                var typeinfo = Type.GetType(serializationType);
-                return jObject.ToObject(typeinfo, serializer);
-            }
 
             if(type == null)
             {

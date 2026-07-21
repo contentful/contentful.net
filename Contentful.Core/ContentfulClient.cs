@@ -50,7 +50,7 @@ namespace Contentful.Core
             }
             SerializerSettings.Converters.Add(new AssetJsonConverter());
             SerializerSettings.Converters.Add(new ContentJsonConverter());
-            SerializerSettings.TypeNameHandling = TypeNameHandling.All;
+            SerializerSettings.TypeNameHandling = TypeNameHandling.None;
         }
 
         /// <summary>
