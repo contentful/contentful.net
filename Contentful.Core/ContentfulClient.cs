@@ -255,7 +255,8 @@ namespace Contentful.Core
                 var token = entryTokens[i];
                 var grandParent = token.Parent.Parent;
 
-                if (grandParent["sys"]?["type"] != null && grandParent["sys"]["type"]?.ToString() != "Entry" || token.Parent.Path.EndsWith(".fields.fields"))
+                var grandParentSysType = grandParent["sys"]?["type"];
+                if (grandParentSysType != null && grandParentSysType.ToString() != "Entry" || token.Parent.Path.EndsWith(".fields.fields"))
                 {
                     continue;
                 }
@@ -317,7 +318,7 @@ namespace Contentful.Core
 
         private void ResolveLinks(JObject json, JObject entryToken, ISet<string> processedIds, Type type)
         {
-            var id = ((JValue)entryToken.SelectToken("$.sys.id"))?.Value?.ToString();
+            var id = entryToken["sys"]?["id"]?.ToString();
 
             if (id == null)
             {
@@ -332,9 +333,10 @@ namespace Contentful.Core
 
             ResolveContentTypes(entryToken);
 
-            if (entryToken["$type"] != null)
+            var entryTokenType = entryToken["$type"];
+            if (entryTokenType != null)
             {
-                type = Type.GetType(entryToken["$type"].Value<string>());
+                type = Type.GetType(entryTokenType.Value<string>());
             }
 
             if (!processedIds.Contains(id))
@@ -348,11 +350,12 @@ namespace Contentful.Core
             foreach (var linkToken in links)
             {
                 var propName = linkToken.Path.Substring(linkToken.Path.LastIndexOf(".fields.") + 8);
-                propName = propName.Substring(0, propName.IndexOf("."));
+                propName = propName.Substring(0, propName.IndexOf('.'));
                 //remove any [] from propname if it's a collection property
-                if (propName.IndexOf("[") > 0)
+                int indexOfStartBracket = propName.IndexOf('[');
+                if (indexOfStartBracket > 0)
                 {
-                    propName = propName.Substring(0, propName.IndexOf("["));
+                    propName = propName.Substring(0, indexOfStartBracket);
                 }
                 var linkId = "";
                 var linktype = linkToken["linkType"]?.ToString();
