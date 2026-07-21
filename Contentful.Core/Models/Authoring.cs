@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -598,6 +599,26 @@ namespace Contentful.Core.Models
         }
     }
 
+    internal static class RendererHelpers
+    {
+        internal static string SanitizeUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return url;
+            // Protocol-relative URLs (e.g. Contentful asset URLs like //images.ctfassets.net/...)
+            // and relative URLs are safe: they inherit the page scheme and cannot carry a
+            // script-executing scheme such as javascript: or data:.
+            if (url.StartsWith("//"))
+                return url;
+            // Absolute URLs must be http/https; anything else (javascript:, data:, vbscript:, ...)
+            // is neutralized to a harmless anchor.
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+                uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+                return "#";
+            return url;
+        }
+    }
+
     /// <summary>
     /// A renderer for an asset.
     /// </summary>
@@ -642,12 +663,12 @@ namespace Contentful.Core.Models
             var sb = new StringBuilder();
             if (nodeType != "asset-hyperlink" && asset.File?.ContentType != null && asset.File.ContentType.ToLower().Contains("image"))
             {
-                sb.Append($"<img src=\"{asset.File.Url}\" alt=\"{asset.Title}\" />");
+                sb.Append($"<img src=\"{WebUtility.HtmlEncode(RendererHelpers.SanitizeUrl(asset.File.Url))}\" alt=\"{WebUtility.HtmlEncode(asset.Title)}\" />");
             }
             else
             {
-                var url = asset.File?.Url;
-                sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{asset.File.Url}\">");
+                var url = RendererHelpers.SanitizeUrl(asset.File?.Url);
+                sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{WebUtility.HtmlEncode(url)}\">");
 
                 if (assetStructure.Content != null && assetStructure.Content.Any())
                 {
@@ -659,7 +680,7 @@ namespace Contentful.Core.Models
                 }
                 else
                 {
-                    sb.Append(asset.Title);
+                    sb.Append(WebUtility.HtmlEncode(asset.Title));
                 }
                 sb.Append("</a>");
             }
@@ -710,8 +731,8 @@ namespace Contentful.Core.Models
             var asset = assetStructure.Data.Target;
             var sb = new StringBuilder();
 
-            var url = asset.File?.Url;
-            sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{asset.File.Url}\">");
+            var url = RendererHelpers.SanitizeUrl(asset.File?.Url);
+            sb.Append(string.IsNullOrEmpty(url) ? "<a>" : $"<a href=\"{WebUtility.HtmlEncode(url)}\">");
 
             if (assetStructure.Content != null && assetStructure.Content.Any())
             {
@@ -723,7 +744,7 @@ namespace Contentful.Core.Models
             }
             else
             {
-                sb.Append(asset.Title);
+                sb.Append(WebUtility.HtmlEncode(asset.Title));
             }
             sb.Append("</a>");
 
@@ -772,7 +793,7 @@ namespace Contentful.Core.Models
             var link = content as Hyperlink;
             var sb = new StringBuilder();
 
-            sb.Append($"<a href=\"{link.Data.Uri}\" title=\"{link.Data.Title}\">");
+            sb.Append($"<a href=\"{WebUtility.HtmlEncode(RendererHelpers.SanitizeUrl(link.Data.Uri))}\" title=\"{WebUtility.HtmlEncode(link.Data.Title)}\">");
 
             foreach (var subContent in link.Content)
             {
