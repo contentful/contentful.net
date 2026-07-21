@@ -50,7 +50,12 @@ namespace Contentful.Core
             }
             SerializerSettings.Converters.Add(new AssetJsonConverter());
             SerializerSettings.Converters.Add(new ContentJsonConverter());
-            SerializerSettings.TypeNameHandling = TypeNameHandling.None;
+            // TypeNameHandling.Auto: reads $type only when the target type is abstract/interface,
+            // which is required for IContentTypeResolver to instantiate concrete CLR types.
+            // The actual unsafe gadget-chain vector (Type.GetType on raw API $type values from
+            // ContentJsonConverter) was removed separately — this setting only sees $type values
+            // that ResolveContentTypes() writes from developer-registered IContentTypeResolver mappings.
+            SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
         }
 
         /// <summary>
