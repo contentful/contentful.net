@@ -24,6 +24,7 @@ namespace Contentful.Core
     public class ContentfulClient : ContentfulClientBase, IContentfulClient
     {
         private string _baseUrl = "https://cdn.contentful.com/spaces/";
+        private readonly ContentTypeResolverBinder _typeResolverBinder = new ContentTypeResolverBinder();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class. 
@@ -50,12 +51,14 @@ namespace Contentful.Core
             }
             SerializerSettings.Converters.Add(new AssetJsonConverter());
             SerializerSettings.Converters.Add(new ContentJsonConverter());
-            // TypeNameHandling.Auto: reads $type only when the target type is abstract/interface,
-            // which is required for IContentTypeResolver to instantiate concrete CLR types.
-            // The actual unsafe gadget-chain vector (Type.GetType on raw API $type values from
-            // ContentJsonConverter) was removed separately — this setting only sees $type values
-            // that ResolveContentTypes() writes from developer-registered IContentTypeResolver mappings.
+            // TypeNameHandling.Auto is required so IContentTypeResolver can instantiate concrete CLR
+            // types via the $type we inject in ResolveContentTypes(). On its own, Auto would let ANY
+            // $type in an API response (including on object/dynamic members that never hit
+            // ContentJsonConverter, e.g. ContentfulCollection.IncludedEntries) load an arbitrary type
+            // (CWE-502). The SerializationBinder below is the actual guard: it only binds $type values
+            // to types this client explicitly allowed from a developer-configured resolver mapping.
             SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
+            SerializerSettings.SerializationBinder = _typeResolverBinder;
         }
 
         /// <summary>
@@ -316,6 +319,9 @@ namespace Contentful.Core
 
             if (type != null)
             {
+                // Whitelist this type before writing the $type so the SerializationBinder will bind it.
+                // Only types originating from the developer-configured resolver are ever allowed.
+                _typeResolverBinder.Allow(type);
                 container.AddFirst(new JProperty("$type", type.AssemblyQualifiedName));
             }
         }
