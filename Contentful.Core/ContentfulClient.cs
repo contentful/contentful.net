@@ -343,9 +343,14 @@ namespace Contentful.Core
 
             ResolveContentTypes(entryToken);
 
-            if (entryToken["$type"] != null)
+            // Only honor a $type that this client whitelisted from a developer-configured resolver.
+            // An attacker-injected $type in the raw response is ignored (Type.GetType is never called
+            // on it), so link resolution falls back to the caller-provided type. This mirrors the
+            // SerializationBinder gate used during deserialization.
+            if (entryToken["$type"] != null &&
+                _typeResolverBinder.TryResolveAllowed(entryToken["$type"].Value<string>(), out var resolvedType))
             {
-                type = Type.GetType(entryToken["$type"].Value<string>());
+                type = resolvedType;
             }
 
             if (!processedIds.Contains(id))

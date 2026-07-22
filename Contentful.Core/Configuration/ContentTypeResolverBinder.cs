@@ -42,6 +42,34 @@ namespace Contentful.Core.Configuration
         }
 
         /// <summary>
+        /// Resolves a raw <c>$type</c> string to a CLR type without loading arbitrary types, returning
+        /// <c>true</c> only if that type was previously allowed via <see cref="Allow"/>. Unlike
+        /// <see cref="BindToType"/> this never throws and never calls <c>Type.GetType</c>, so callers can
+        /// safely test an attacker-influenceable <c>$type</c> value.
+        /// </summary>
+        /// <param name="typeName">The raw <c>$type</c> value (typically an assembly-qualified name).</param>
+        /// <param name="type">The resolved type when allowed; otherwise <c>null</c>.</param>
+        /// <returns><c>true</c> if the value maps to an allowed type.</returns>
+        public bool TryResolveAllowed(string typeName, out Type type)
+        {
+            type = null;
+
+            if (string.IsNullOrEmpty(typeName))
+            {
+                return false;
+            }
+
+            if (_allowed.TryGetValue(typeName, out type))
+            {
+                return true;
+            }
+
+            // A $type may be written as a bare full name or as an assembly-qualified name; the allow
+            // list is keyed on both, but only the exact strings we registered will ever match.
+            return false;
+        }
+
+        /// <summary>
         /// Resolves a <c>$type</c> value to a CLR type, but only if that type was previously allowed via
         /// <see cref="Allow"/>. Unknown types are rejected rather than loaded.
         /// </summary>
