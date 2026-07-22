@@ -33,6 +33,14 @@ namespace Contentful.Core.Tests
             response.Content = new StringContent(json);
             return response;
         }
+
+        protected HttpResponseMessage GetResponseFromString(string json)
+        {
+            return new HttpResponseMessage
+            {
+                Content = new StringContent(json)
+            };
+        }
     }
 
     public class FakeMessageHandler : HttpClientHandler
@@ -112,6 +120,25 @@ namespace Contentful.Core.Tests
 
     public class TestCategory : IMarker, IContent
     {
+        public string Title { get; set; }
+    }
+
+    /// <summary>
+    /// Stand-in for a deserialization "gadget": a type that is NOT produced by any IContentTypeResolver
+    /// and records when it is instantiated by the serializer. Used to prove that an attacker-injected
+    /// $type in an API response cannot cause an arbitrary loadable type to be constructed. It lives in
+    /// the test assembly so, unlike a WPF gadget, it is genuinely loadable in the test runtime — the
+    /// binder is therefore the only thing that can stop it.
+    /// </summary>
+    public class MaliciousGadget : IMarker
+    {
+        public static bool WasConstructed { get; set; }
+
+        public MaliciousGadget()
+        {
+            WasConstructed = true;
+        }
+
         public string Title { get; set; }
     }
 

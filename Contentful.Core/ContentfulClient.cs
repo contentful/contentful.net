@@ -24,6 +24,7 @@ namespace Contentful.Core
     public class ContentfulClient : ContentfulClientBase, IContentfulClient
     {
         private string _baseUrl = "https://cdn.contentful.com/spaces/";
+        private readonly ContentTypeResolverBinder _typeResolverBinder = new ContentTypeResolverBinder();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContentfulClient"/> class. 
@@ -50,7 +51,14 @@ namespace Contentful.Core
             }
             SerializerSettings.Converters.Add(new AssetJsonConverter());
             SerializerSettings.Converters.Add(new ContentJsonConverter());
-            SerializerSettings.TypeNameHandling = TypeNameHandling.All;
+            // TypeNameHandling.Auto is required so IContentTypeResolver can instantiate concrete CLR
+            // types via the $type we inject in ResolveContentTypes(). On its own, Auto would let ANY
+            // $type in an API response (including on object/dynamic members that never hit
+            // ContentJsonConverter, e.g. ContentfulCollection.IncludedEntries) load an arbitrary type
+            // (CWE-502). The SerializationBinder below is the actual guard: it only binds $type values
+            // to types this client explicitly allowed from a developer-configured resolver mapping.
+            SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
+            SerializerSettings.SerializationBinder = _typeResolverBinder;
         }
 
         /// <summary>
@@ -311,6 +319,9 @@ namespace Contentful.Core
 
             if (type != null)
             {
+                // Whitelist this type before writing the $type so the SerializationBinder will bind it.
+                // Only types originating from the developer-configured resolver are ever allowed.
+                _typeResolverBinder.Allow(type);
                 container.AddFirst(new JProperty("$type", type.AssemblyQualifiedName));
             }
         }
@@ -332,9 +343,14 @@ namespace Contentful.Core
 
             ResolveContentTypes(entryToken);
 
-            if (entryToken["$type"] != null)
+            // Only honor a $type that this client whitelisted from a developer-configured resolver.
+            // An attacker-injected $type in the raw response is ignored (Type.GetType is never called
+            // on it), so link resolution falls back to the caller-provided type. This mirrors the
+            // SerializationBinder gate used during deserialization.
+            if (entryToken["$type"] != null &&
+                _typeResolverBinder.TryResolveAllowed(entryToken["$type"].Value<string>(), out var resolvedType))
             {
-                type = Type.GetType(entryToken["$type"].Value<string>());
+                type = resolvedType;
             }
 
             if (!processedIds.Contains(id))

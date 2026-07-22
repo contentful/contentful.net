@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Contentful.Core.Configuration;
+using Newtonsoft.Json;
 using Xunit;
 using System.Net;
 using Contentful.Core.Errors;
@@ -1278,6 +1279,54 @@ namespace Contentful.Core.Tests
             //Assert
             Assert.Equal(2, res.Count());
             Assert.IsType<TestCategory>(res.First());
+        }
+
+        [Fact]
+        public async Task ResolverProducedTypesShouldStillDeserializeUnderSerializationBinder()
+        {
+            //Arrange
+            // Positive path: TypeNameHandling.Auto + the SerializationBinder must still allow $type
+            // values the client writes from a developer-configured IContentTypeResolver.
+            _handler.Response = GetResponseFromFile(@"EntriesCollectionWithIncludes.json");
+            _client.ContentTypeResolver = new TestResolver();
+
+            //Act
+            var res = await _client.GetEntries<IMarker>();
+
+            //Assert
+            Assert.All(res, item => Assert.IsType<TestCategory>(item));
+        }
+
+        [Fact]
+        public async Task InjectedTypeInApiResponseShouldBeRejectedBySerializationBinder()
+        {
+            //Arrange
+            // Negative path: a $type injected into the raw API response (not produced by the resolver)
+            // targets a genuinely loadable type the client never allowed. TypeNameHandling.Auto would
+            // otherwise construct it (CWE-502); the SerializationBinder must refuse to bind it and throw.
+            // MaliciousGadget lives in the test assembly so it *is* loadable here — proving the throw
+            // comes from the binder, not from an assembly-not-found accident.
+            MaliciousGadget.WasConstructed = false;
+            var gadgetType = typeof(MaliciousGadget).AssemblyQualifiedName;
+            var maliciousJson = $@"{{
+                ""sys"": {{ ""type"": ""Array"" }},
+                ""total"": 1,
+                ""skip"": 0,
+                ""limit"": 100,
+                ""items"": [
+                    {{
+                        ""$type"": ""{gadgetType.Replace("\\", "\\\\").Replace("\"", "\\\"")}"",
+                        ""sys"": {{ ""type"": ""Entry"", ""id"": ""1"", ""contentType"": {{ ""sys"": {{ ""id"": ""evil"" }} }} }},
+                        ""fields"": {{ ""title"": ""pwned"" }}
+                    }}
+                ]
+            }}";
+            _handler.Response = GetResponseFromString(maliciousJson);
+
+            //Act & Assert
+            await Assert.ThrowsAsync<JsonSerializationException>(async () => await _client.GetEntries<IMarker>());
+            Assert.False(MaliciousGadget.WasConstructed,
+                "The injected gadget type must never be instantiated by the deserializer.");
         }
 
         [Fact]

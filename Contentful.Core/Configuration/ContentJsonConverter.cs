@@ -54,8 +54,14 @@ namespace Contentful.Core.Configuration
             var serializationType = jObject.Value<string>("$type");
             if (!string.IsNullOrEmpty(serializationType))
             {
+                // $type is written by ContentfulClient.ResolveContentTypes() from developer-registered
+                // IContentTypeResolver mappings — never from raw API JSON. Constrain to IContent
+                // implementations so arbitrary gadget-chain types can never be loaded here.
                 var typeinfo = Type.GetType(serializationType);
-                return jObject.ToObject(typeinfo, serializer);
+                if (typeinfo != null && typeof(IContent).IsAssignableFrom(typeinfo))
+                {
+                    return jObject.ToObject(typeinfo, serializer);
+                }
             }
 
             if(type == null)
